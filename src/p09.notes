@@ -213,94 +213,237 @@ C 0x73EE la Y fuera de la pantalla, 0xD8 + el scroll
 C 0x73FA el patron nuevo, si lo hay
 C 0x73FF sin plano: se deja el sprite para el cuadro siguiente
 C 0x740D la marca del sprite sin el bit 7 (este cuadro no se ve)
+C 0x7411 la marca del sprite (byte impar)
+C 0x7413 sin el bit 7: este cuadro no se ve
 C 0x7423 la marca 0x0E: espera un plano
+C 0x7429 0x0E: espera un plano
 C 0x742D los planos de abajo: desde el 0x80, de 4 en 4 bytes
+C 0x742F HL en la tabla de planos
 C 0x7433 el primero libre de los 32
+C 0x7434 libre
+C 0x7436 el plano siguiente (4 bytes)
 C 0x743D acarreo: no hay
 C 0x7442 la marca del sprite a 0 y sus dos planos de cada tabla libres
+C 0x7444 la marca a 0
+C 0x7446 el plano de la primera franja de la primera tabla
+C 0x744C el de la segunda franja
+C 0x7453 la otra tabla: marca a 0
 C 0x7462 el plano queda libre: su patron a 0 y su Y fuera
+C 0x7464 C = el plano, B = su pagina
+C 0x7467 su patron a 0
+C 0x7469 y su Y fuera
 C 0x7475 los 12 sprites dobles del grupo de 0xC03B
+C 0x7476 sin sprite: el siguiente
+C 0x7482 el siguiente (2 bytes)
+C 0x748A los limites de las franjas, como en p09:72ED
+C 0x749E la marca del sprite
+C 0x74A0 en que franja estaba
+C 0x74A6 este cuadro se ve
+C 0x74AF la marca
+C 0x74BC y en la segunda tabla
+C 0x74C4 la marca
+C 0x74D5 la marca
+C 0x74DD la franja 4: sin planos
 C 0x74E0 lo mismo que p09:7345 con dos planos seguidos
 C 0x74E5 la franja 1
+C 0x74E7 los dos planos de la primera mitad: si no tiene, los pide
+C 0x74ED los de la segunda: si tiene, los suelta
+C 0x74F6 el bit 7: otro le quito los planos
 C 0x74FB la franja 2: planos en las dos tablas
+C 0x74FD planos en la primera mitad...
+C 0x7503 ...y en la segunda
+C 0x750C el bit 7: otro le quito los planos
 C 0x7511 la franja 3
+C 0x7513 suelta los de la primera mitad
+C 0x7519 pide los de la segunda
+C 0x7522 el bit 7: otro le quito los planos
 C 0x7527 la franja 4
+C 0x7529 suelta los de las dos mitades
+C 0x753B y vuelve dos niveles atras
 C 0x753E los dos planos en la tabla de la primera franja
+C 0x7541 la pagina de los planos de la primera franja
+C 0x7543 el primer plano
+C 0x7549 el patron que tenia
 C 0x7555 el segundo plano
+C 0x7556 el segundo plano
+C 0x755B su patron, en la pagina 0xC4
 C 0x7566 los dos planos en la tabla de la segunda franja
+C 0x7569 la pagina de la segunda franja
+C 0x756B el primer plano
+C 0x757E el segundo
 C 0x758E la Y mas el scroll (0xD8 pasa a 0xD9)
+C 0x758F la Y mas el scroll
 C 0x7599 la X
+C 0x759A la X
 C 0x75A4 el patron
+C 0x75A5 el patron
+C 0x75A9 la Y del segundo plano
+C 0x75B4 su X
 C 0x75BF el patron del segundo plano: 4 mas (el siguiente de 16 x 16)
 C 0x75C4 el patron nuevo, si lo hay
+C 0x75C5 el patron nuevo, si lo hay
 C 0x75C9 sin planos: se deja para el cuadro siguiente
+C 0x75CA sin planos: se deja para el cuadro siguiente
+C 0x75DB la marca sin el bit 7
 C 0x75ED la marca 0x0E: espera planos
+C 0x75F3 0x0E: espera planos
 C 0x75F7 la marca a 0 y los planos de las dos tablas libres
+C 0x75F9 la marca a 0
+C 0x75FB los planos de las dos franjas de las dos tablas
 C 0x7617 los dos planos libres seguidos, mirando de arriba abajo
+C 0x7619 HL en los planos de abajo, desde el ultimo
+C 0x761B 16 parejas
 C 0x761D el plano libre y el de antes
+C 0x761E el plano de antes
+C 0x7624 los dos libres
 C 0x7626 solo el de antes libre
+C 0x7627 solo el de antes libre
+C 0x762D ninguno: el siguiente
 C 0x762F acarreo: no hay dos seguidos
 C 0x7632 los dos libres
-C 0x7639 o se le quita el de al lado a un sprite sencillo
+C 0x7633 los dos libres
+C 0x7639 o se le quita el suyo a un sprite sencillo
 C 0x7644 el plano de al lado
+C 0x764E quien lo tiene
 C 0x7659 busca en los 25 sprites sencillos el que tiene el plano A
+C 0x765A este sprite tiene el plano A
+C 0x765D el siguiente
+C 0x7661 nadie
 C 0x7663 se lo quita y le pone la marca 0x0E
+C 0x7669 la marca 0x0E: el sencillo espera otro plano
 C 0x766D los dos planos libres: patrones a 0 y las Y fuera
+C 0x766F C = el plano, B = su pagina
+C 0x7672 su patron a 0 y su Y fuera
+C 0x7679 el segundo plano, 4 bytes mas alla
 C 0x7683 la fila del scroll vertical: de 8 en 8 lineas
+C 0x7686 la fila del scroll
 C 0x768C x 4: 32 bytes por fila de la tabla de nombres
+C 0x768D x 4: 32 bytes por fila
 C 0x768E la tabla de nombres de este cuadro: 0xC000 o 0xC400
+C 0x7695 la tabla de nombres de este cuadro
+C 0x769A la fila en la tabla
 C 0x769C la fila de la pantalla en la que empieza el mapa
+C 0x769D entre 8: la fila de la pantalla
 C 0x769F si cabe entera, las 24 filas seguidas
+C 0x76A1 cabe entera
 C 0x76A3 si no, las de abajo primero
+C 0x76A7 24 - (fila - 8): las que caben abajo
 C 0x76AE y luego las de arriba, desde el principio de la tabla
+C 0x76AF el resto desde el principio de la tabla
+C 0x76B3 el puerto de datos
 C 0x76BE apunta la VRAM a la tabla
 C 0x76C6 el mapa de la pantalla
+C 0x76CA B' = cuantas filas
 C 0x76CD con 0xC0B3, la vista de depuracion
+C 0x76D1 la vista de depuracion
+C 0x76D3 una fila
 C 0x76D4 32 caracteres de una fila al VDP
 C 0x7714 salta el margen de 16
+C 0x7717 salta el margen
+C 0x7719 la fila siguiente
+C 0x771C se acabo
 C 0x771F una fila con la vista de depuracion
+C 0x7722 salta el margen
 C 0x772E cada caracter: un nibble segun TAB
+C 0x772F el caracter
+C 0x7735 su nibble
 C 0x7737 al VDP
+C 0x773D A al reves
 C 0x773E fila 7 del teclado (TAB es el bit 3)
+C 0x7740 guarda los registros que la BIOS toca
+C 0x774B TAB pulsado?
 C 0x774D sin TAB, el nibble bajo
+C 0x774E el caracter
+C 0x774F sin TAB, tal cual
 C 0x7750 con TAB, el alto
 C 0x7755 HL = la casilla del scroll en el mapa de la fase
 C 0x775B la columna: si quedan 32 hasta el borde, de una vez
 C 0x7764 24 filas de 32 caracteres
+C 0x7765 una fila
+C 0x776C la fila siguiente de 0xD988
 C 0x776D la fila siguiente del destino (0x30)
+C 0x7771 y la del mapa de la fase
 C 0x7772 la del mapa de la fase (0x40), dando la vuelta a las 32 filas
 C 0x777C la fila partida: lo que hay hasta el borde y el resto desde la columna 0
+C 0x777D cuanto pasa del borde
+C 0x7780 2 bytes por ldi: donde entrar en copia_32
 C 0x7783 IX entra en copia_32 donde copia lo que hay hasta el borde
+C 0x7787 IX copia lo que hay hasta el borde
+C 0x778B lo que queda
 C 0x778E IY donde copia el resto
+C 0x7792 IY copia el resto
 C 0x779D vuelve al principio de la fila del mapa
+C 0x779E la columna 0 de la fila
+C 0x77A7 la fila siguiente de 0xD988
+C 0x77AC y la del mapa
 C 0x77BA 32 ldi seguidos: se entra mas abajo para copiar menos
+C 0x77BC 32 ldi: copia_32 entra mas abajo para copiar menos
+C 0x7858 el mapa de la fase en el banco 27
+C 0x7860 el byte siguiente al 0xFF
+C 0x7866 menos de 0x10: un tramo de scroll
+C 0x786A 0x10-0x1F: una orden (16)
 C 0x789C el tramo A x 12: su entrada en la tabla
+C 0x789D x 12
+C 0x78A8 la velocidad en Y
 C 0x78AC la velocidad del scroll en Y con su signo en 0xC0C5
+C 0x78B0 su signo
+C 0x78B6 la velocidad en X
 C 0x78BA la velocidad en X con su signo en 0xC0BF
+C 0x78BE su signo
+C 0x78C4 lo que avanza la cuenta de columnas
 C 0x78C8 lo que avanza la cuenta de columnas por cuadro
+C 0x78CC la cuenta
 C 0x78D0 la cuenta de columnas
+C 0x78D4 el modo de columnas
+C 0x78DD la direccion
 C 0x78DF la direccion del scroll
+C 0x78E2 un byte que no se usa (p09:78EC es un ret)
 C 0x78E8 sin columnas a medias
 C 0x78F0 la posicion del guion: la siguiente de 0x1000 en 0x1000
+C 0x78F3 la parte alta de la posicion, redondeada a 16
 C 0x798F lee la direccion del salto
+C 0x7992 la direccion del salto
+C 0x7999 solo si 0xCE4C
+C 0x79A7 la palabra del scroll
 C 0x79AE D es la pagina pedida (o una bandera)
 C 0x79B3 se guardan los 3 bits bajos del scroll vertical
 C 0x79BA y los altos llegan en E
 C 0x79C4 espera a que el borde haya cambiado de tablas
+C 0x79C7 espera al borde
+C 0x79CA la pagina
 C 0x79CB de 0 a 6, una pagina
 C 0x79D0 si no, su bit 7 en 0xC0D1 (el scroll vertical solo fino)
+C 0x79D2 0xC0D1: el bit 7
+C 0x79DD salta 0x24 bytes del mapa
+C 0x79E4 el modo 2
 C 0x79EB lee la direccion de los colores
+C 0x79EE la direccion de los colores
 C 0x79F8 el mapa sigue detras
+C 0x7A0B si no hay fundido, sigue
+C 0x7A10 la orden se repite el cuadro siguiente
+C 0x7A15 el tramo 7 mientras tanto
 C 0x7A21 acarreo: la orden acaba el paso
 C 0x7A3B el numero del sonido
 C 0x7A41 0: la musica se apaga (0x84) y 0x30 cuadros despues el sonido 0x39
 C 0x7A54 si se empezo en este punto, no cuenta
 C 0x7A5D pasa el punto de salida
 C 0x7A6A lee la direccion de los colores
+C 0x7A6D la direccion de los colores
 C 0x7A73 solo mientras se adelanta el mapa al empezar, y tal cual
 C 0x7A85 acarreo: espera a que acabe el adelanto
 C 0x7A9C las columnas que faltan para p09:7C33
+C 0x7AA4 solo si aun es 0xFF
+C 0x7AA6 D = las columnas que hay que adelantar
+C 0x7AAE ya esta
 C 0x7AB5 cuadros hasta el sonido 0x39
+C 0x7AB8 0: nada
+C 0x7ABF el sonido 0x39
+C 0x7AD2 la cuenta de columnas mas su avance
+C 0x7ADE ha pasado de 8 en 8?
+C 0x7AE9 no: nada mas
+C 0x7AED una orden ha parado el paso
+C 0x7AF1 el mapa (banco 27)
+C 0x7AF9 0xFE: otra columna en el mismo cuadro
 C 0x7B09 la X del scroll (24 bits en 0xC0BA) mas su velocidad
 C 0x7B1C lo que se suma a la X de los actores: - la velocidad / 8
 C 0x7B33 el scroll fino en X: la posicion / 8

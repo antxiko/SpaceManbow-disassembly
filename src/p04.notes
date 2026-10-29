@@ -1,15 +1,23 @@
 
 
 # --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x6035 el aviso de fin de fase
 C 0x6038 0: nada que hacer
 C 0x603D la segunda vez que llega aqui: fin de fase
 C 0x6040 la primera: lo deja a 2
+C 0x6048 lo que pide 0xCB06
 C 0x604B lo lee y lo borra
 C 0x6050 el nibble bajo: 2 o mas, la marca 0x80
+C 0x605D cada actor de los 20
+C 0x6061 B = cuantos quedan, C = el tamano de la ficha
 C 0x6062 la ficha siguiente (C = 0x40 bytes)
+C 0x6084 cada actor
 C 0x6088 el tipo 0x1B mira lo que tiene debajo
+C 0x608D la ficha siguiente
 C 0x6095 0xCE74 a 0: hecho
 C 0x60B4 las fichas, 20 libres y las pequenas
+C 0x60B7 20 fichas libres
+C 0x60BA y las pequenas
 C 0x60D6 el tercer byte de la entrada del guion: la orden
 C 0x60DB solo hay dos ordenes (1 y 2)
 C 0x60EA el primer byte: el efecto
@@ -18,21 +26,36 @@ C 0x60F5 el efecto
 C 0x60FD 0: ningun efecto
 C 0x6100 1: colores que cambian
 C 0x6103 2: se van los actores
+C 0x610C cada actor: todos se van menos los de tipo 0x65
+C 0x6118 la ficha siguiente
 C 0x6120 hecho: sin efecto
 C 0x6129 0: se acabo
+C 0x612B L = el numero del efecto
 C 0x612C solo un cuadro de cada dos
 C 0x6132 la tabla de colores del efecto: p04:617E + 2 x (numero - 1)
+C 0x6133 su tabla de colores
 C 0x613D su primer byte: cuantos pasos tiene
+C 0x613E C = cuantos pasos
 C 0x6140 el paso de ahora (0xCE68) y el siguiente
+C 0x6143 el paso que toca y la cuenta sube
+C 0x6146 al ultimo, vuelta al primero
 C 0x6148 al llegar al final, vuelve al primero
+C 0x614C los colores de un paso
 C 0x614E el paso B: su entrada en la tabla
 C 0x6153 D = el primer byte del color, B = numero y verde
+C 0x6156 B = numero y verde
 C 0x6157 E = el verde
 C 0x615A A = el numero del color
+C 0x615B el numero del color, del nibble alto
+C 0x6164 el siguiente color: los pasos van de C en C entradas
 C 0x6166 los colores del paso, hasta un 0xFF
+C 0x616C hasta un 0xFF
 C 0x6173 el efecto acaba
+C 0x6222 la tabla de guiones del banco 5
 C 0x6225 la fase (solo el byte bajo)
+C 0x6228 la fase x 2
 C 0x622C el guion de la fase
+C 0x6232 a la RAM
 C 0x6233 0x600 bytes a 0xE900
 C 0x6264 una entrada: 0 acaba el guion
 C 0x6267 D, E = la posicion del scroll en la que sale
@@ -43,59 +66,127 @@ C 0x6281 aun no: el guion espera
 C 0x6282 ya paso: se salta
 C 0x6284 el tipo con el bit 7 solo sale con el nivel 4 o mas
 C 0x62AB el cuarto byte, el largo de la entrada (sin el bit 7)
+C 0x62AC el largo de la entrada (sin el bit 7)
 C 0x62AF menos los 3 que ya se han leido
+C 0x62B5 la entrada siguiente
 C 0x62B6 la entrada siguiente
+C 0x62BB es una orden?
 C 0x62BC 0x5F no es un actor: es una orden del guion
+C 0x62BF la hace
 C 0x62C2 Z: no se crea actor
+C 0x62FE la ficha siguiente
 C 0x6301 la ficha siguiente (0x40)
 C 0x6309 la lista acaba en 0xFF
+C 0x630A el final de la lista
+C 0x630E el siguiente
 C 0x630F esta: Z
+C 0x6311 sigue buscando
 C 0x6347 la ficha libre: nada
+C 0x6349 B = el tipo
+C 0x634A el bit 7: parado
 C 0x634B con el bit 7 el actor esta parado: nada
 C 0x634D tipo - 1
+C 0x634E mas de 0x7C no hay
 C 0x6350 mas de 0x7C tipos no hay
+C 0x6353 2 bytes por tipo
 C 0x6357 la tabla de puestas en marcha
+C 0x635B la puesta en marcha del tipo
 C 0x635F a su puesta en marcha
 C 0x6475 tipo 3 (capsula) a p00:5100, que no hace nada
+C 0x6477 tipo 3 (capsula): p00:5100
+C 0x647A tipo 0x4D: p05:95DD
+C 0x647F tipo 0x27: p05:81AA
 C 0x6496 la ficha pequena siguiente (C = 0x20)
+C 0x6497 la ficha pequena siguiente
 C 0x64B9 A = tipo - 1
+C 0x64BE 4 bytes por tipo
 C 0x64C3 cuatro bytes por tipo
+C 0x64C7 la direccion a la que vuelve
 C 0x64CA la primera palabra a la pila: alli vuelve el movimiento
+C 0x64CC la del movimiento
 C 0x64D0 salta al movimiento
 C 0x66F7 los datos de los tipos estan en el banco 2 (0x8000)
 C 0x66FA el tipo - 1
+C 0x66FB tipo - 1
 C 0x66FC HL a ix+0x13
+C 0x66FF HL en ix+0x13
 C 0x6701 4 bytes por tipo en p02:9100
+C 0x6707 los 4 bytes del tipo
 C 0x670F el alto y el ancho de la caja, las banderas y la vida del tipo
-C 0x672F la primera ficha con el tipo a 0
+C 0x6710 a ix+0x13, 0x14, 0x15 y 0x16
+C 0x671D una menos, si hay
+C 0x6724 HL', DE', B', C' para buscar
+C 0x6728 de 0x40 en 0x40, 20 fichas, la primera es la 1
+C 0x672F el tipo a 0: libre
+C 0x6733 la siguiente
 C 0x6734 C = su numero (1-20)
 C 0x6737 IX en la ficha
+C 0x6738 IX = la ficha libre
+C 0x6748 IX a HL
 C 0x674B 0x40 bytes a 0
+C 0x674C 0x40 bytes
+C 0x674E a 0
 C 0x6757 el byte de la lista: el bit 7 y el sitio
+C 0x6758 sin el bit 7, la posicion
 C 0x675B el sitio por la direccion del scroll (0xC0D5)
+C 0x675E por la direccion del scroll: 1 por la derecha...
+C 0x6761 2 y 3 por abajo
+C 0x6767 4 por la izquierda
+C 0x676A 5 por arriba
+C 0x676D 6 y 7 por arriba tambien
 C 0x6773 entra por arriba: la Y por encima de la pantalla, la X del guion
 C 0x6780 por abajo
 C 0x6785 por la derecha
+C 0x6786 la Y desde abajo
 C 0x67AD el byte de la lista
 C 0x67B0 el tipo, sin el bit 7
+C 0x67B1 el tipo sin el bit 7
 C 0x67B5 el segundo byte: el bit 7 a E
+C 0x67B6 el bit 7 del segundo byte
 C 0x67BD el resto / 2 - 4
 C 0x67C4 la lista del actor (p04:67E8)
 C 0x67E8 con el bit 7, un dato mas en ix+0x30 y el largo en el byte siguiente
+C 0x67E9 con el bit 7, la lista lleva un dato mas
+C 0x67ED los bits 0-5
+C 0x67F2 el largo en el byte siguiente
 C 0x6874 B = las fichas libres
+C 0x6875 C = lo que se pide
+C 0x6876 sin el bit 7
 C 0x6878 las pedidas (sin el bit 7) contra las libres
+C 0x6879 B = lo pedido
 C 0x687B no hay bastantes: acarreo
 C 0x687C con el bit 7, basta con que quede alguna
+C 0x687E con el bit 7, basta con que quede alguna
+C 0x6880 B = las libres
 C 0x6896 el padre de esta ficha (+0x34)
+C 0x6897 +0x34: el padre de la ficha
 C 0x689C es el actor de IX?
+C 0x689F el mismo grupo?
 C 0x68A2 +0x38: el numero de hijo
+C 0x68A5 +0x38: el numero de hijo
+C 0x68A9 lo ha encontrado
 C 0x68AB la ficha siguiente
+C 0x68AE la siguiente (0x40)
 C 0x68B1 no esta: IY a 0xD700, una ficha de mentira
+C 0x68B2 la ficha de mentira de 0xD700
+C 0x68BC 0: no tiene
 C 0x68BF con el bit 7 no vale
+C 0x68C0 con el bit 7, se va a quitar
+C 0x68C1 el numero de la ficha
+C 0x68C7 0: no tiene
+C 0x68CB con el bit 7, se va a quitar
 C 0x68CF ninguna: 0xD700 y acarreo
+C 0x68E1 C = el padre y sus banderas
+C 0x68E2 el numero del padre
+C 0x68E8 el bit 6: se va a quitar
+C 0x68EC Z si el padre sigue siendo el mismo
 C 0x68F2 ninguna: 0xD700 y acarreo
+C 0x68FB IY = la ficha
 C 0x68FF numero - 1
 C 0x6900 x 0x40: los dos bits bajos al alto
+C 0x6901 x 0x40 = el numero en los bits 6-7 de L y 0-3 de H
+C 0x6909 H
+C 0x690D mas el principio de las fichas
 C 0x6988 al actor de delante se le apunta este como el de detras
 C 0x69DA la fase, para las tablas del destello
 C 0x69E0 la vida del jefe / 4, para el destello
@@ -107,90 +198,218 @@ C 0x6A1F quita el bit 1
 C 0x6A25 la tabla de colores de p07:86C0
 C 0x6A2A ha cambiado el destello?
 C 0x6A2D si no, solo cada 4 cuadros
+C 0x6A34 el destello nuevo
 C 0x6A35 el bit 1: los colores de p04:6606
+C 0x6A36 bit 1: los colores de p04:6606
 C 0x6A39 0: los de la fase
+C 0x6A3A 0: los de la fase
 C 0x6A4F la entrada de la fase en la tabla de DE
+C 0x6A52 2 bytes por fase
+C 0x6A57 HL = la tabla de la fase
 C 0x6A5C D = el primer byte
+C 0x6A5D B = el numero y el verde
 C 0x6A5E B = numero y verde
 C 0x6A61 E = el verde
 C 0x6A64 A = el numero
+C 0x6A65 el numero, del nibble alto
+C 0x6A81 HL = la ficha
 C 0x6A82 HL a la Y (+7), DE a la velocidad en Y (+0x0B)
+C 0x6A85 +7: la Y
+C 0x6A88 +4: la velocidad en Y
 C 0x6A8C la Y mas la velocidad en Y, y luego la X mas la en X
 C 0x6A8F el byte bajo
+C 0x6A90 la parte baja
 C 0x6A94 el alto, con el acarreo
+C 0x6A95 la alta con el acarreo
+C 0x6A9C HL = la ficha
 C 0x6A9D HL a la velocidad en Y, DE a la aceleracion en Y
+C 0x6AA0 +0x0B: la velocidad en Y
+C 0x6AA3 +4: la aceleracion en Y
 C 0x6AB1 la entrada de la fase en la tabla de DE
 C 0x6ACD al llegar a B vuelve a 0
+C 0x6ACE si no llega, tal cual
+C 0x6AD0 si llega, 0
 C 0x6AEF el bit 7: va hacia abajo
 C 0x6AF5 sube; al llegar a B cambia
 C 0x6AF9 baja; al llegar a 0 cambia
+C 0x6AFB los 7 bits de la cuenta
+C 0x6B00 al llegar a 0 cambia el sentido
+C 0x6B94 C = el octante; empieza en 0
+C 0x6B9C la distancia en X con su signo en el bit 7
+C 0x6BA2 D = la de X
+C 0x6BA9 la de Y con su signo
 C 0x6BAF E = la distancia en Y con su signo en el bit 7
+C 0x6BB0 si la nave esta a la izquierda...
 C 0x6BB1 segun los signos de las dos distancias, el cuadrante (0, 2, 4 o 6)
+C 0x6BB6 ...y arriba: 0; abajo: 6
+C 0x6BBE a la derecha: arriba 2, abajo 4
+C 0x6BC6 B = el signo de la X
 C 0x6BCE la distancia en X / 2 contra la de Y: el octante dentro del cuadrante
+C 0x6BD0 D = la mitad de la distancia en X
+C 0x6BD9 la de Y contra esa mitad
+C 0x6BDE segun los signos, el octante de al lado
+C 0x6BE1 lo mismo al reves
 C 0x6C6D lo que se suma a los actores cuando el scroll se para (p09:6E37)
 C 0x6C78 la Y en puntos, negada: el scroll vertical que la deja arriba
+C 0x6C7F D = la fila de la pantalla (Y x 8)
 C 0x6C80 la X: el scroll fino en X
+C 0x6C83 la fraccion de la X: el scroll fino
+C 0x6C8C a los bits 0-2
 C 0x6C92 la fraccion de la Y: si no es 0, una fila mas
+C 0x6C95 la fraccion de la Y
+C 0x6C99 si no es 0, una fila menos
 C 0x6C9F el scroll fino en Y
 C 0x6CA6 el registro 23: la fila mas el fino
+C 0x6CB7 BC = el tope de Y
+C 0x6CBB BC = el tope de X
+C 0x6CC5 si no lo pasa, nada
 C 0x6CDE positivo: tal cual
+C 0x6CE0 positivo
 C 0x6CE1 negativo: lo cambia de signo
+C 0x6CE2 negativo: complemento a dos
 C 0x6CEE NZ: vuelve al sitio guardado; Z: guarda el de ahora
 C 0x6D50 BC = el destino en X
+C 0x6D51 BC = el destino en X
+C 0x6D58 DE = la velocidad
 C 0x6D5A 8 x v - v = 7 x v
+C 0x6D5B x 8
+C 0x6D5E - v: 7 x v
 C 0x6D60 mas el destino, / 8
+C 0x6D61 / 8
 C 0x6D73 lo mismo en Y con el destino de HL
+C 0x6D7A la de Y
+C 0x6D7C x 8
+C 0x6D80 - v
+C 0x6D82 mas el destino de Y
+C 0x6D83 / 8
 C 0x6D97 BC = el destino en X
+C 0x6D98 BC = el destino en X
+C 0x6D9F DE = la velocidad
 C 0x6DA1 4 x v - v = 3 x v
+C 0x6DA4 4 x v - v
+C 0x6DA6 mas el destino, / 4
+C 0x6DBC la de Y
+C 0x6DC1 4 x v - v
+C 0x6DC3 mas el destino, / 4
+C 0x6DD6 con el bit 7 o libre, nada
+C 0x6DDE el choque con la nave
 C 0x6E2F B = el tipo
 C 0x6E32 el bit 7 al acarreo
 C 0x6E91 la fase acaba en dos cuadros (p04:6035)
 C 0x6EBB los 6 sprites que puede tener, a 0
+C 0x6EBE a 0 los 6 sprites
+C 0x6ECE B = las banderas
 C 0x6ECF los bits 5 y 6 a los bits 0 y 1
+C 0x6ED2 los bits 5 y 6 en los bits 0 y 1
+C 0x6ED8 Z: sin dibujo
+C 0x6EE0 la Y + 8 contra 0x28
+C 0x6EE4 fuera
+C 0x6EE8 la X + 0x0A contra 0x34
 C 0x6F2D la Y negativa: contra E
 C 0x6F31 positiva: contra D
 C 0x6F39 lo mismo con la X (B) contra L y H
+C 0x6F3A la X negativa
+C 0x6F3E positiva: contra H
 C 0x6F41 sin acarreo: dentro
+C 0x6F67 DE = el sitio
 C 0x6F6E la fraccion de la posicion del scroll (0xCA31-0xCA32), en sentido contrario
+C 0x6F72 la fraccion del scroll en X, al reves
+C 0x6F7B la de Y
+C 0x6F84 sin acarreo: hecho
 C 0x6F85 IX vuelve a ser el que lo creo
 C 0x6F88 no hay ficha: acarreo
 C 0x6F90 la primera opcion libre
 C 0x6F96 o la segunda
 C 0x6FA0 las dos ocupadas: acarreo
+C 0x6FE1 guarda el tipo pedido
 C 0x6FE5 nada que cambiar
+C 0x6FE8 el tipo pedido tal cual
 C 0x6FEA 1: el tipo 0x0E; 2: el 0x0C; y no se vuelve a quien llamo sino al de antes
 C 0x6FF9 el 3, si hay arma en 0xCB48
 C 0x6FFD el 0x0A, si el arma de 0xCB41 es la 0x0A
 C 0x6FFF el 7, si hay armas en 0xCB50 y en 0xCB58
+C 0x700A 1: cambia
+C 0x700D el arma de la casilla principal
+C 0x7014 2: cambia
+C 0x7021 1: cambia
+C 0x7024 sin acarreo
 C 0x7025 0xCC01 en la lista de p04:7042 (8 valores)
+C 0x7028 la lista de p04:7042
 C 0x702E el que va detras; si no esta, 2
+C 0x7030 si no esta, 2
+C 0x7034 el que va detras
 C 0x705D los 20 actores: libres y los del bit 7 no
+C 0x705E libre
+C 0x7061 con el bit 7, no
+C 0x7065 los tipos que no se tocan
 C 0x7067 los 0x23 tipos de p04:70B7 se libran
+C 0x7071 esta en la lista: se libra
 C 0x7073 a los demas, ix+4 = 1 (un golpe)...
+C 0x7078 +4: un golpe
 C 0x707A ...y la vida (ix+0x16) a 0: la bomba los destruye
+C 0x707E +0x16: la vida a 0
 C 0x7081 la ficha siguiente
+C 0x7084 la siguiente
+C 0x7087 y el jefe
 C 0x7090 el primer actor con un tipo de la lista p04:70D2 (los jefes)
+C 0x7091 el tipo en la lista de jefes (8)
+C 0x709F la siguiente ficha
 C 0x70A6 su vida: la de 0xCE4A - 1
+C 0x70A7 HL = la ficha del jefe
+C 0x70A8 +0x16: su vida
+C 0x70AF la del destello - 1
 C 0x70B1 y el destello
+C 0x70B4 destello
 C 0x70DA el tipo en A, a D
 C 0x70DF NZ: no hay ficha pequena
 C 0x70E6 el tipo
 C 0x70EA y sus datos (p04:66F7)
 C 0x7139 la Y y la X de la nave vuelven a ser las de verdad
+C 0x713B la Y y la X de verdad de la nave
 C 0x715C intercambia HL y BC: HL la ficha, BC la velocidad en Y
+C 0x715D HL = la ficha, BC = la velocidad en Y
 C 0x7162 tipo 0x60: la bala
+C 0x7164 el tipo
+C 0x7165 guarda la ficha
 C 0x7166 +8: la Y del que dispara
+C 0x7168 +8
+C 0x716D la Y
+C 0x716E +0x0A
 C 0x7170 +0x0A: su X
+C 0x7173 la X
 C 0x7174 +0x0B-0x0E: las velocidades en Y y en X
+C 0x7175 +0x0B-0x0C: la velocidad en Y
+C 0x7179 +0x0D-0x0E: la de X
 C 0x717C +0x15: banderas 4
+C 0x717F +0x15: las banderas
+C 0x7182 HL = la ficha de nuevo
 C 0x7183 y los datos del tipo 0x60
+C 0x7186 sin tocar HL, DE ni BC
 C 0x7187 la tabla de rapidez: una por nivel
+C 0x718E el nivel (0 a 15)
+C 0x7191 la rapidez de ese nivel
+C 0x7197 sin tocar HL, DE ni BC
+C 0x719F el nivel
+C 0x71A2 la rapidez
 C 0x71EA la fraccion (los 3 bits altos) mas la Y x 8
+C 0x71EB los 3 bits altos de la fraccion
+C 0x71F0 la Y x 8
+C 0x71F6 juntos
 C 0x71F8 lo mismo con la X
+C 0x71F9 lo mismo con la X
 C 0x720D una ficha pequena: libre si su tipo es 0
+C 0x720E el tipo de la ficha
+C 0x7210 libre: HL en ella y Z
 C 0x7211 la siguiente: 0x20 bytes mas
+C 0x7213 la siguiente (0x20)
+C 0x7218 B' veces
 C 0x721B NZ: ninguna libre
+C 0x721C NZ: ninguna libre
+C 0x721E en HL'
+C 0x7220 32 bytes
 C 0x7222 0x20 bytes a 0
+C 0x7224 a 0
+C 0x7228 vuelve HL
 C 0x722A E = el angulo
 C 0x722B D = el rumbo: la rapidez
 C 0x722F el bit 7: el signo de la X
@@ -203,15 +422,30 @@ C 0x7250 y el del angulo, en 0xCA22
 C 0x7254 DE = uno por la rapidez, con su signo
 C 0x725F HL = el otro por la rapidez, con su signo
 C 0x7270 el signo de la distancia en X
+C 0x7273 el signo de X: 0 positivo
 C 0x7275 C - E: la distancia en X (sin signo)
+C 0x7276 C - E
+C 0x7279 negativo: el valor absoluto y el signo
 C 0x727C el signo de la distancia en Y
+C 0x727D el signo de Y
 C 0x727F la de X en el nibble alto
+C 0x7281 E = la distancia en X (nibble alto)
 C 0x7282 B - D: la distancia en Y
+C 0x7283 B - D
+C 0x7286 negativo: el valor absoluto y el signo
 C 0x728A la de Y en el nibble bajo
+C 0x728B la de Y entre 16
+C 0x7291 juntas: el indice de la tabla
 C 0x7295 la tabla de angulos por las dos distancias (16 x 16)
+C 0x7298 el angulo
+C 0x729A en 0xCA20
 C 0x72A1 H = la rapidez
 C 0x72A5 / 32: los 3 bits altos van a A
+C 0x72A6 HL / 32 en A:L...
+C 0x72AC ...el resultado en DE
 C 0x72B0 H x E, desplazando y sumando, bit a bit
+C 0x72B2 D = 0
+C 0x72B3 bit a bit, 8 veces
 C 0x7306 la lista de rumbos acaba en 0xFF
 C 0x730C el rumbo: dos bytes en p04:738D
 C 0x7317 la bala
