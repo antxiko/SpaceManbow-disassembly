@@ -104,3 +104,5 @@ Everything on these pages is made by code in `tools/`:
   engine; `lanza_psg.ps1`, `omsx_psg.tcl` and `coteja_psg.py`, the check
   against openMSX.
 - `omsx_ritmo.tcl`: the game's real pace, VDP frame by VDP frame.
+- `omsx_demo.tcl`, `lanza_demo.ps1` and `coteja_demo.py`: the demo in openMSX
+  against the running cartridge, game frame by game frame.

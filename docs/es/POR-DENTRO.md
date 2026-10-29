@@ -105,3 +105,5 @@ Todo lo que sale en la web lo hace código de `tools/`:
   del cartucho; `lanza_psg.ps1`, `omsx_psg.tcl` y `coteja_psg.py`, el cotejo
   con openMSX.
 - `omsx_ritmo.tcl`: el ritmo de verdad del juego, cuadro a cuadro del VDP.
+- `omsx_demo.tcl`, `lanza_demo.ps1` y `coteja_demo.py`: la demostración en
+  openMSX contra el cartucho ejecutado, cuadro de juego a cuadro de juego.

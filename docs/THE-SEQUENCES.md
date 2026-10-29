@@ -39,6 +39,19 @@ After the story three recorded demos are shown (see
 [Curiosities](CURIOSITIES.html)). They are not here because the running
 cartridge does not replay them as the MSX does: with the same recorded inputs,
 in openMSX the first one reaches its end (1,285 game frames) and here the ship
-dies at frame 667. The game depends on nothing random that is not its own
-(`p00:4678` reads its own bytes), so something the emulator does does not
-match the MSX in those games. It is an **open question**.
+dies at frame 667.
+
+Where they part is measured (`tools/coteja_demo.py`, with openMSX's RAM at the
+start of every game frame, `p01:6256`): **up to frame 67 the game is the
+same** in both. The only differences are what the interrupt moves: the sound
+engine and its queue (`0xC600-0xC8A2`), the palette fade (`0xEF00`) and the
+alternation of the sprite and line tables and of the character page
+(`0xC09B-0xC0B5`). In **frame 68** a shot hits an enemy on the MSX (`0xCF04` =
+3) and here it keeps flying (`0xCC40`), and from there each game goes its own
+way.
+
+On the MSX each game frame lasts 3 or 4 VDP frames (measured in openMSX);
+here, where the VDP commands are instantaneous, always 3. So the interrupt
+falls at another point of the frame, and something that alternates with it
+weighs on the collision. What, exactly, is an **open question**: to
+close it, the VDP here would have to take as long as the real one.
