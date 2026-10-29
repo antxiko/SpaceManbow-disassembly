@@ -1,0 +1,40 @@
+# Puntos de entrada del banco 9 (se ejecuta en 0x6000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de seis bancos. Los que ponen "tabla" salen de una tabla
+# del despachador (cartucho.DESPACHADOR), que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x6D0F   # p00:451B call
+0x6D12   # p00:43F7 call
+0x6D15   # p00:43A8 call
+0x798F   # p09:7871 entrada 0 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x79A4   # p09:7871 entrada 1 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x79DA   # p09:7871 entrada 2 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x79EB   # p09:7871 entrada 3 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x79FD   # p09:7871 entrada 4 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A08   # p09:7871 entrada 5 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A1C   # p09:7871 entrada 6 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A23   # p09:7871 entrada 7 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A30   # p09:7871 entrada 8 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A38   # p09:7871 entrada 9 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A54   # p09:7871 entrada 10 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A65   # p09:7871 entrada 11 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A6A   # p09:7871 entrada 12 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A80   # p09:7871 entrada 13 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A87   # p09:7871 entrada 14 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7A94   # p09:7871 entrada 15 de la tabla de 0x7874 (call 0x461A en 0x7871)
+0x7C6D   # p09:7C58 entrada 8 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7D88   # p09:7C58 entrada 2 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7DA7   # p09:7C58 entrada 0 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7E1C   # p09:7C58 entrada 3 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7E28   # p09:7C58 entrada 1 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7E3F   # p09:7C58 entrada 5 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7ECE   # p09:7C58 entrada 6 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7EDE   # p09:7C58 entrada 4 de la tabla de 0x7C5B (call 0x461A en 0x7C58)

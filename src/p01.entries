@@ -1,0 +1,51 @@
+# Puntos de entrada del banco 1 (se ejecuta en 0x6000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de seis bancos. Los que ponen "tabla" salen de una tabla
+# del despachador (cartucho.DESPACHADOR), que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x6000   # p00:436B call
+0x6003   # p00:439B call
+0x6006   # p00:4521 call
+0x6009   # p03:BDE1 call
+0x603E   # p01:602F entrada 0 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x6050   # p01:602F entrada 1 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x6065   # p01:605C entrada 0 de la tabla de 0x605F (call 0x461A en 0x605C)
+0x607B   # p01:605C entrada 1 de la tabla de 0x605F (call 0x461A en 0x605C)
+0x6096   # p01:605C entrada 2 de la tabla de 0x605F (call 0x461A en 0x605C)
+0x609D   # p01:602F entrada 2 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x60AA   # p01:60A3 entrada 0 de la tabla de 0x60A6 (call 0x461A en 0x60A3)
+0x60C6   # p01:60A3 entrada 1 de la tabla de 0x60A6 (call 0x461A en 0x60A3)
+0x60DB   # p01:602F entrada 3 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x60E8   # p01:60E1 entrada 0 de la tabla de 0x60E4 (call 0x461A en 0x60E1)
+0x6199   # p01:60E1 entrada 1 de la tabla de 0x60E4 (call 0x461A en 0x60E1)
+0x61B0   # p01:602F entrada 4 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x61BD   # p01:61B6 entrada 0 de la tabla de 0x61B9 (call 0x461A en 0x61B6)
+0x61D0   # p01:61B6 entrada 1 de la tabla de 0x61B9 (call 0x461A en 0x61B6)
+0x61E2   # p01:602F entrada 5 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x61EF   # p01:61E8 entrada 0 de la tabla de 0x61EB (call 0x461A en 0x61E8)
+0x6202   # p01:61E8 entrada 1 de la tabla de 0x61EB (call 0x461A en 0x61E8)
+0x6271   # p01:6264 entrada 0 de la tabla de 0x6267 (call 0x461A en 0x6264)
+0x627E   # p01:6277 entrada 0 de la tabla de 0x627A (call 0x461A en 0x6277)
+0x6288   # p01:6277 entrada 1 de la tabla de 0x627A (call 0x461A en 0x6277)
+0x6292   # p01:6264 entrada 1 de la tabla de 0x6267 (call 0x461A en 0x6264)
+0x629F   # p01:6298 entrada 0 de la tabla de 0x629B (call 0x461A en 0x6298)
+0x62B0   # p01:6298 entrada 1 de la tabla de 0x629B (call 0x461A en 0x6298)
+0x62C1   # p01:6264 entrada 2 de la tabla de 0x6267 (call 0x461A en 0x6264)
+0x62D0   # p01:62C7 entrada 0 de la tabla de 0x62CA (call 0x461A en 0x62C7)
+0x62E8   # p01:62C7 entrada 1 de la tabla de 0x62CA (call 0x461A en 0x62C7)
+0x6308   # p01:62C7 entrada 2 de la tabla de 0x62CA (call 0x461A en 0x62C7)
+0x632D   # p01:6264 entrada 3 de la tabla de 0x6267 (call 0x461A en 0x6264)
+0x6340   # p01:6333 entrada 0 de la tabla de 0x6336 (call 0x461A en 0x6333)
+0x6367   # p01:6333 entrada 1 de la tabla de 0x6336 (call 0x461A en 0x6333)
+0x6399   # p01:6333 entrada 2 de la tabla de 0x6336 (call 0x461A en 0x6333)
+0x63C7   # p01:6333 entrada 3 de la tabla de 0x6336 (call 0x461A en 0x6333)
+0x63D5   # p01:6333 entrada 4 de la tabla de 0x6336 (call 0x461A en 0x6333)
+0x6440   # p01:6264 entrada 4 de la tabla de 0x6267 (call 0x461A en 0x6264)

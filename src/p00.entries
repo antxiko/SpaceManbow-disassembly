@@ -1,0 +1,70 @@
+# Puntos de entrada del banco 0 (se ejecuta en 0x4000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de seis bancos. Los que ponen "tabla" salen de una tabla
+# del despachador (cartucho.DESPACHADOR), que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x4033   # cabecera AB: INIT
+0x4100   # p01:62F0 call
+0x4103   # p01:6471 call
+0x4109   # p09:784B call
+0x4110   # gancho de interrupcion H.KEYI: INIT escribe 0xC3 en 0xFD9A y esta direccion en 0xFD9B (p00:4074-p00:407C)
+0x4270   # gancho de interrupcion H.KEYI: p00:4083 escribe 0xC3 en 0xFD9A y esta direccion en 0xFD9B (p00:4089-p00:408C)
+0x4600   # p02:8400 call
+0x460A   # p09:7B20 call
+0x4612   # p09:6EB0 call
+0x461A   # p01:602F call
+0x4624   # p04:6704 call
+0x4639   # p09:781C call
+0x4650   # p04:627D call
+0x4678   # p09:6E80 call
+0x468E   # p09:7809 call
+0x4699   # p03:A898 jp cc
+0x469B   # p04:7AA5 jp
+0x469D   # p07:81A1 jp cc
+0x469F   # p04:69AB jp cc
+0x46AC   # p02:8810 call
+0x46AD   # p10:8277 call
+0x46C5   # p01:6B40 call
+0x4725   # p01:6045 call
+0x474B   # p01:7840 call
+0x476B   # p09:6D39 call
+0x47C4   # p01:6673 call
+0x47D2   # p01:6402 jp
+0x47FC   # p01:63FF call
+0x4838   # p03:ADC8 call
+0x487C   # p03:ADB6 call
+0x4921   # p01:6AB8 call
+0x493D   # p03:AF21 jp
+0x49B9   # p01:6743 call
+0x49D9   # p01:6746 call
+0x4A1F   # p01:63F3 call
+0x4AE0   # p01:602C jp cc
+0x4AEB   # p01:7845 call
+0x4AF0   # p01:7824 call
+0x4B78   # p01:783A call
+0x4B8F   # p09:6D62 call
+0x4C0E   # p03:AEA6 call
+0x4C15   # p28:6436 call
+0x4C23   # p28:6AD9 call
+0x4C7A   # p01:7837 call
+0x4C94   # p03:AA2A call
+0x4CDC   # p09:7A77 call cc
+0x4D27   # p01:7827 call
+0x4DD7   # p02:8929 call
+0x4E37   # p09:7D9E call
+0x4E3A   # p09:7EFD call
+0x4E4A   # p09:7755 call
+0x4E65   # p02:8926 call
+0x4E6B   # p09:7A2B call
+0x4E73   # p09:7A00 call
+0x4E79   # p02:8724 call
+0x4E8A   # p10:826A call
+0x5100   # p04:6477 jp cc
