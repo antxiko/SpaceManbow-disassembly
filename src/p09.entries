@@ -11,6 +11,8 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x6D09   # p04:6C4F llamada lejana (call 0x4C2A con los bancos 9-10-11 detras)
+0x6D0C   # p04:6C60 llamada lejana (call 0x4C2A con los bancos 9-10-11 detras)
 0x6D0F   # p00:451B call
 0x6D12   # p00:43F7 call
 0x6D15   # p00:43A8 call

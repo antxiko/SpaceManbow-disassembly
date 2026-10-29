@@ -7,3 +7,5 @@
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x60E3 0x60E9   tabla de 3 palabras del despachador (call 0x461A en 0x60E0)
+0x6C52 0x6C57   bancos 9-10-11 y destino 0x6D09 de la llamada lejana de 0x6C4F
+0x6C63 0x6C68   bancos 9-10-11 y destino 0x6D0C de la llamada lejana de 0x6C60

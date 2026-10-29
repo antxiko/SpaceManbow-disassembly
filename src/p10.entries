@@ -11,5 +11,9 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x8000   # p09:6D0C jp
+0x8004   # se ejecuta jugando (tools/cobertura.py): se llega desde p10:822D (ret)
+0x800B   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4698 (ret)
+0x800E   # se ejecuta jugando (tools/cobertura.py): se llega desde p10:8068 (ret)
 0x800F   # p09:6D09 jp
 0x801F   # p09:6D00 jp

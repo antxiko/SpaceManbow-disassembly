@@ -23,7 +23,7 @@ COMO = {0xE9: "jp (hl)", 0xC9: "ret", 0xC3: "jp", 0xCD: "call", 0x18: "jr"}
 
 
 def calcula():
-    rom = open(os.path.join(RAIZ, "nemesis3.rom"), "rb").read()
+    rom = open(os.path.join(RAIZ, "spacemanbow.rom"), "rb").read()
     t = bancos.traza_completa(rom, os.path.join(RAIZ, "src"))[0]
     d = cobertura.carga()
     llega = d.get("llega", {})

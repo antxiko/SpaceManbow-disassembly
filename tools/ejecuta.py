@@ -204,10 +204,13 @@ class Partida(Msx):
                 # que el VBLANK, con FH puesto en S#1
                 self.vdp.fh = 1
                 self._atiende()
+                self.regs_linea = bytes(self.vdp.r)
             if v is not None:
                 self.vdp.f = 0x80             # S#0: el VBLANK
             if self.iff:
                 self._atiende()
+            if v is not None:
+                self.regs_cuadro = bytes(self.vdp.r)
             self.cuadro += 1
             if cada:
                 cada(self)
@@ -245,3 +248,52 @@ class Partida(Msx):
             v.sprites(im)
         return im
 
+    def _punto_g3(self, r, x, y):
+        """Un punto de SCREEN 4 (G3, patrones como SCREEN 2): la tabla de
+        nombres de R2, los dibujos de R4 y los colores de R3/R10, en tres
+        tercios de 8 filas."""
+        vr = self.vdp.vram
+        nom = (r[2] & 0x7F) << 10
+        pat = (r[4] & 0x3C) << 11
+        col = ((r[10] & 7) << 14) | ((r[3] & 0x80) << 6)
+        fila = (y >> 3) % 24
+        n = vr[(nom + fila * 32 + (x >> 3)) & 0x1FFFF]
+        o = ((fila >> 3) << 11) + n * 8 + (y & 7)
+        b = vr[(pat + o) & 0x1FFFF]
+        c = vr[(col + o) & 0x1FFFF]
+        return c >> 4 if (b >> (7 - (x & 7))) & 1 else c & 15
+
+    def foto_partida(self, sprites=True):
+        """La pantalla de SCREEN 5 partida por la interrupcion de linea: hasta
+        la linea de R19 con los registros que dejo el VBLANK (regs_cuadro) y
+        de ahi abajo con los que dejo la interrupcion de linea (regs_linea).
+        En cada tramo, la pagina de R2, el desplazamiento vertical de R23 y el
+        ajuste horizontal de R18 (4 bits con signo: el cuadro entero se corre
+        a la izquierda con los valores positivos)."""
+        from PIL import Image
+        v = self.vdp
+        arriba = getattr(self, "regs_cuadro", None) or bytes(v.r)
+        abajo = getattr(self, "regs_linea", None)
+        corte = 212
+        if abajo is not None and arriba[0] & 0x10:
+            corte = min(212, (arriba[19] - arriba[23]) & 0xFF)
+        im = Image.new("RGB", (256, 212))
+        px = im.load()
+        for y in range(212):
+            r = arriba if (y < corte or abajo is None) else abajo
+            pag = (r[2] >> 5) & 3
+            aj = r[18] & 15
+            dx = aj - 16 if aj >= 8 else aj
+            yy = (y + r[23]) & 0xFF
+            g3 = (r[0] & 0x0E) == 0x04 and not (r[1] & 0x18)
+            for x in range(256):
+                xx = x + dx
+                if not 0 <= xx < 256:
+                    px[x, y] = (0, 0, 0)
+                elif g3:
+                    px[x, y] = v.rgb(self._punto_g3(r, xx, yy))
+                else:
+                    px[x, y] = v.rgb(v.punto(xx, pag * 256 + yy))
+        if sprites and not (v.r[8] & 2):
+            v.sprites(im)
+        return im
