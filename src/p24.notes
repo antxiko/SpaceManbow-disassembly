@@ -1,3 +1,8 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xBFE9 0xC000 relleno_ff  23 bytes a 0xFF hasta el final del banco: relleno; lo leen nadie (23 bytes)
+F 0xBFE9 16
+# --- fin de los bloques de bloques.py ---
 # --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
 D 0xA000 0xB83C leido_A000  lo leen p28:6B9A, p28:7382, p28:738D, p28:73B4, p28:73E8, p28:7409, p28:742C, p28:744F y 14 mas jugando (tools/cobertura.py) (6204 bytes)
 D 0xB83C 0xB8B5 sin_leer_B83C  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (121 bytes)
@@ -14,5 +19,5 @@ D 0xBD53 0xBDF7 sin_leer_BD53  ninguna partida de la campana lo lee (tools/cober
 D 0xBDF7 0xBE59 leido_BDF7  lo leen p28:6B9A, p28:7382, p28:738D, p28:73B4, p28:73E8, p28:7409, p28:744F, p28:7462 y 2 mas jugando (tools/cobertura.py) (98 bytes)
 D 0xBE59 0xBEF9 sin_leer_BE59  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (160 bytes)
 D 0xBEF9 0xBF54 leido_BEF9  lo leen p28:6B9A, p28:7382, p28:738D, p28:73B4, p28:73E8, p28:7409, p28:742C, p28:744F y 3 mas jugando (tools/cobertura.py) (91 bytes)
-D 0xBF54 0xC000 sin_leer_BF54  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (172 bytes)
+D 0xBF54 0xBFE9 sin_leer_BF54  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (149 bytes)
 # --- fin de los datos de datos_leidos.py ---

@@ -88,11 +88,10 @@ L_4083:
 	ret			;408f
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_4090: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (112 bytes)
+; DATOS relleno_ff: 112 bytes a 0xFF entre dos bloques, que no lee nadie:
+;   relleno; lo leen nadie (112 bytes)
 ;   0x4090..0x4100  (112 bytes)
-DATA_sin_leer_4090:
+DATA_4090:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4090  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 40a0  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 40b0  ................
@@ -766,15 +765,22 @@ L_4598:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_45A3: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (93 bytes)
-;   0x45a3..0x4600  (93 bytes)
+;   nadie (1 bytes)
+;   0x45a3..0x45a4  (1 bytes)
 DATA_sin_leer_45A3:
-	defb 000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45a3  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45b3  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45c3  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45d3  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45e3  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45f3  .............
+	defb 000h	; 45a3
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 92 bytes a 0xFF entre dos bloques, que no lee nadie:
+;   relleno; lo leen nadie (92 bytes)
+;   0x45a4..0x4600  (92 bytes)
+DATA_45A4:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45a4  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45b4  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45c4  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45d4  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45e4  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45f4  ............
 
 ; ======================================================================
 ; CODIGO 0x4600..0x47a4  (420 bytes)
@@ -2370,14 +2376,21 @@ L_4EA9:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_4EB8: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (72 bytes)
-;   0x4eb8..0x4f00  (72 bytes)
+;   nadie (1 bytes)
+;   0x4eb8..0x4eb9  (1 bytes)
 DATA_sin_leer_4EB8:
-	defb 000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4eb8  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ec8  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ed8  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ee8  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ef8  ........
+	defb 000h	; 4eb8
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 71 bytes a 0xFF entre dos bloques, que no lee nadie:
+;   relleno; lo leen nadie (71 bytes)
+;   0x4eb9..0x4f00  (71 bytes)
+DATA_4EB9:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4eb9  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ec9  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ed9  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ee9  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 4ef9
 
 ; ======================================================================
 ; CODIGO 0x4f00..0x4f63  (99 bytes)
@@ -2430,11 +2443,12 @@ L_4F58:
 	call L_461A		;4f60
 
 ; ----------------------------------------------------------------------
-; DATOS leido_4F63: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
+; DATOS tabla_4F63: 7 destinos del despachador p00:461A (call en p00:4F60, el
+;   indice en A): 4F71, 4F85, 4F92, 4F98, 4FCA, 4FD3, 4FC9; lo leen p00:4F60
 ;   (14 bytes)
 ;   0x4f63..0x4f71  (14 bytes)
-DATA_leido_4F63:
-	defb 071h,04fh,085h,04fh,092h,04fh,098h,04fh,0cah,04fh,0d3h,04fh,0c9h,04fh	; 4f63  qO.O.O.O.O.O.O
+DATA_tabla_4F63:
+	defw 04f71h,04f85h,04f92h,04f98h,04fcah,04fd3h,04fc9h	; 4f63
 
 ; ======================================================================
 ; CODIGO 0x4f71..0x4ffc  (139 bytes)
@@ -2513,11 +2527,12 @@ L_4FF1:
 	call L_461A		;4ff9
 
 ; ----------------------------------------------------------------------
-; DATOS leido_4FFC: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
+; DATOS tabla_4FFC: 7 destinos del despachador p00:461A (call en p00:4FF9, el
+;   indice en A): 5019, 5026, 5039, 5049, 5053, 5054, 506F; lo leen p00:4FF9
 ;   (14 bytes)
 ;   0x4ffc..0x500a  (14 bytes)
-DATA_leido_4FFC:
-	defb 019h,050h,026h,050h,039h,050h,049h,050h,053h,050h,054h,050h,06fh,050h	; 4ffc  .P&P9PIPSPTPoP
+DATA_tabla_4FFC:
+	defw 05019h,05026h,05039h,05049h,05053h,05054h,0506fh	; 4ffc
 
 ; ======================================================================
 ; CODIGO 0x500a..0x509c  (146 bytes)
@@ -2734,19 +2749,11 @@ L_514C:
 	call L_461A		;5154
 
 ; ----------------------------------------------------------------------
-; DATOS leido_5157: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6
-;   bytes)
-;   0x5157..0x515d  (6 bytes)
-DATA_leido_5157:
-	defb 0fah,051h,001h,052h,0f9h,051h	; 5157
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_515D: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (4 bytes)
-;   0x515d..0x5161  (4 bytes)
-DATA_sin_leer_515D:
-	defb 0a0h,051h,0adh,051h	; 515d
+; DATOS tabla_5157: 5 destinos del despachador p00:461A (call en p00:5154, el
+;   indice en A): 51FA, 5201, 51F9, 51A0, 51AD; lo leen p00:5154 (10 bytes)
+;   0x5157..0x5161  (10 bytes)
+DATA_tabla_5157:
+	defw 051fah,05201h,051f9h,051a0h,051adh	; 5157
 
 ; ======================================================================
 ; CODIGO 0x5161..0x52d2  (369 bytes)
@@ -3366,27 +3373,12 @@ L_557C:
 	call L_461A		;557f
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_5582: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2 bytes)
-;   0x5582..0x5584  (2 bytes)
-DATA_sin_leer_5582:
-	defb 092h,055h	; 5582
-
-; ----------------------------------------------------------------------
-; DATOS leido_5584: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (12 bytes)
-;   0x5584..0x5590  (12 bytes)
-DATA_leido_5584:
-	defb 0b9h,055h,0e4h,055h,0f3h,055h,016h,056h,01dh,056h,042h,056h	; 5584  .U.U.U.V.VBV
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_5590: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2 bytes)
-;   0x5590..0x5592  (2 bytes)
-DATA_sin_leer_5590:
-	defb 042h,056h	; 5590
+; DATOS tabla_5582: 8 destinos del despachador p00:461A (call en p00:557F, el
+;   indice en A): 5592, 55B9, 55E4, 55F3, 5616, 561D, 5642, 5642; lo leen
+;   p00:557F (16 bytes)
+;   0x5582..0x5592  (16 bytes)
+DATA_tabla_5582:
+	defw 05592h,055b9h,055e4h,055f3h,05616h,0561dh,05642h,05642h	; 5582
 
 ; ======================================================================
 ; CODIGO 0x5592..0x575b  (457 bytes)
@@ -3883,19 +3875,12 @@ L_58FF:
 	call L_461A		;5902
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_5905: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2 bytes)
-;   0x5905..0x5907  (2 bytes)
-DATA_sin_leer_5905:
-	defb 011h,059h	; 5905
-
-; ----------------------------------------------------------------------
-; DATOS leido_5907: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (10 bytes)
-;   0x5907..0x5911  (10 bytes)
-DATA_leido_5907:
-	defb 035h,059h,047h,059h,066h,059h,06fh,059h,083h,059h	; 5907  5YGYfYoY.Y
+; DATOS tabla_5905: 6 destinos del despachador p00:461A (call en p00:5902, el
+;   indice en A): 5911, 5935, 5947, 5966, 596F, 5983; lo leen p00:5902 (12
+;   bytes)
+;   0x5905..0x5911  (12 bytes)
+DATA_tabla_5905:
+	defw 05911h,05935h,05947h,05966h,0596fh,05983h	; 5905
 
 ; ======================================================================
 ; CODIGO 0x5911..0x599a  (137 bytes)
@@ -4450,11 +4435,11 @@ L_5D3D:
 	call L_461A		;5d45
 
 ; ----------------------------------------------------------------------
-; DATOS leido_5D48: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_5D48: 2 destinos del despachador p00:461A (call en p00:5D45, el
+;   indice en A): 5D4C, 5D63; lo leen p00:5D45 (4 bytes)
 ;   0x5d48..0x5d4c  (4 bytes)
-DATA_leido_5D48:
-	defb 04ch,05dh,063h,05dh	; 5d48
+DATA_tabla_5D48:
+	defw 05d4ch,05d63h	; 5d48  -> L_5D4C L_5D63
 
 ; ======================================================================
 ; CODIGO 0x5d4c..0x5e4b  (255 bytes)
@@ -4614,30 +4599,37 @@ DATA_leido_5E4B:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_5E8A: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (374 bytes)
-;   0x5e8a..0x6000  (374 bytes)
+;   nadie (1 bytes)
+;   0x5e8a..0x5e8b  (1 bytes)
 DATA_sin_leer_5E8A:
-	defb 05fh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5e8a  _...............
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5e9a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eaa  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eba  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eca  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eda  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eea  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5efa  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f0a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f1a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f2a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f3a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f4a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f5a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f6a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f7a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f8a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f9a  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5faa  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fba  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fca  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fda  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fea  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5ffa
+	defb 05fh	; 5e8a
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 373 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (373 bytes)
+;   0x5e8b..0x6000  (373 bytes)
+DATA_5E8B:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5e8b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5e9b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eab  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5ebb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5ecb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5edb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5eeb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5efb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f0b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f1b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f2b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f3b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f4b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f5b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f6b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f7b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f8b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5f9b  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fab  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fbb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fcb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fdb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5feb  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh	; 5ffb

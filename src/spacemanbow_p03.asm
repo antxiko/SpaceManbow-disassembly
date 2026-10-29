@@ -362,12 +362,14 @@ L_A823:
 	call 0461ah		;a832
 
 ; ----------------------------------------------------------------------
-; DATOS leido_A835: lo leen p04:6236 jugando (tools/cobertura.py) (34 bytes)
+; DATOS tabla_A835: 17 destinos del despachador p00:461A (call en p03:A832, el
+;   indice en A): A86A, A8D2, A925, A94A, A96A, A993, A9BB, A9EF, AA0E, AA33,
+;   AA5B, AA7D, AAAE, AAD5, AAF3, AB19, AB3B; lo leen p03:A832 (34 bytes)
 ;   0xa835..0xa857  (34 bytes)
-DATA_leido_A835:
-	defb 06ah,0a8h,0d2h,0a8h,025h,0a9h,04ah,0a9h,06ah,0a9h,093h,0a9h,0bbh,0a9h,0efh,0a9h	; a835  j...%.J.j.......
-	defb 00eh,0aah,033h,0aah,05bh,0aah,07dh,0aah,0aeh,0aah,0d5h,0aah,0f3h,0aah,019h,0abh	; a845  ..3.[.}.........
-	defb 03bh,0abh	; a855
+DATA_tabla_A835:
+	defw 0a86ah,0a8d2h,0a925h,0a94ah,0a96ah,0a993h,0a9bbh,0a9efh	; a835
+	defw 0aa0eh,0aa33h,0aa5bh,0aa7dh,0aaaeh,0aad5h,0aaf3h,0ab19h	; a845
+	defw 0ab3bh	; a855  -> L_AB3B
 
 ; ======================================================================
 ; CODIGO 0xa857..0xb070  (2073 bytes)
@@ -1982,11 +1984,10 @@ DATA_leido_BDE7:
 	defb 020h,020h,020h,020h,000h,000h,000h	; bf27
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_BF2E: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (210 bytes)
+; DATOS relleno_ff: 210 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (210 bytes)
 ;   0xbf2e..0xc000  (210 bytes)
-DATA_sin_leer_BF2E:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf2e  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf3e  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf4e  ................

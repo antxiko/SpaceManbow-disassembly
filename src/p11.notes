@@ -1,3 +1,6 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+# --- fin de los bloques de bloques.py ---
 # --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
 D 0x6000 0x8000 leido_6000  lo leen p03:AEB0, p03:AEB2, p03:AF9F, p03:AFA1, p03:B000, p03:B002, p03:B004 jugando (tools/cobertura.py) (8192 bytes)
 # --- fin de los datos de datos_leidos.py ---

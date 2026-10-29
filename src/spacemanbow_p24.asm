@@ -626,8 +626,8 @@ DATA_leido_BEF9:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_BF54: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (172 bytes)
-;   0xbf54..0xc000  (172 bytes)
+;   nadie (149 bytes)
+;   0xbf54..0xbfe9  (149 bytes)
 DATA_sin_leer_BF54:
 	defb 0edh,006h,061h,091h,0bbh,0b1h,0b3h,0d2h,017h,011h,021h,041h,0d3h,09fh,0ech,0eah	; bf54  ..a.......!A....
 	defb 003h,091h,0eah,00dh,0ebh,082h,070h,079h,021h,041h,07bh,071h,071h,06bh,041h,021h	; bf64  ......py!A{qqkA!
@@ -638,5 +638,12 @@ DATA_sin_leer_BF54:
 	defb 0f1h,048h,01fh,0d8h,0feh,001h,0f5h,0f8h,002h,0e9h,009h,0eah,00fh,0ebh,032h,051h	; bfb4  .H............2Q
 	defb 0d6h,002h,002h,0f1h,046h,0f2h,014h,0d2h,067h,0f8h,015h,020h,040h,065h,0f8h,002h	; bfc4  ....F...g.. @e..
 	defb 043h,023h,003h,003h,0d3h,0bfh,0f8h,015h,0eah,00ch,0d6h,002h,0a0h,0d1h,02fh,0fbh	; bfd4  C#............/.
-	defb 004h,0d8h,0fdh,00ah,0bfh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfe4  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bff4  ............
+	defb 004h,0d8h,0fdh,00ah,0bfh	; bfe4
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 23 bytes a 0xFF hasta el final del banco: relleno; lo leen
+;   nadie (23 bytes)
+;   0xbfe9..0xc000  (23 bytes)
+DATA_relleno_ff:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfe9  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bff9

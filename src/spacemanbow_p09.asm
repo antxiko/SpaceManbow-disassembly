@@ -2313,12 +2313,13 @@ L_7858:
 	call 0461ah		;7871
 
 ; ----------------------------------------------------------------------
-; DATOS leido_7874: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (32 bytes)
+; DATOS tabla_7874: 16 destinos del despachador p00:461A (call en p09:7871, el
+;   indice en A): 798F, 79A4, 79DA, 79EB, 79FD, 7A08, 7A1C, 7A23, 7A30, 7A38,
+;   7A54, 7A65, 7A6A, 7A80, 7A87, 7A94; lo leen p09:7871 (32 bytes)
 ;   0x7874..0x7894  (32 bytes)
-DATA_leido_7874:
-	defb 08fh,079h,0a4h,079h,0dah,079h,0ebh,079h,0fdh,079h,008h,07ah,01ch,07ah,023h,07ah	; 7874  .y.y.y.y.y.z.z#z
-	defb 030h,07ah,038h,07ah,054h,07ah,065h,07ah,06ah,07ah,080h,07ah,087h,07ah,094h,07ah	; 7884  0z8zTzezjz.z.z.z
+DATA_tabla_7874:
+	defw 0798fh,079a4h,079dah,079ebh,079fdh,07a08h,07a1ch,07a23h	; 7874
+	defw 07a30h,07a38h,07a54h,07a65h,07a6ah,07a80h,07a87h,07a94h	; 7884
 
 ; ======================================================================
 ; CODIGO 0x7894..0x78ed  (89 bytes)
@@ -2840,19 +2841,13 @@ L_7C3E:
 	call 0461ah		;7c58
 
 ; ----------------------------------------------------------------------
-; DATOS leido_7C5B: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (14 bytes)
-;   0x7c5b..0x7c69  (14 bytes)
-DATA_leido_7C5B:
-	defb 0a7h,07dh,028h,07eh,088h,07dh,01ch,07eh,0deh,07eh,03fh,07eh,0ceh,07eh	; 7c5b  .}(~.}.~.~?~.~
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_7C69: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (4 bytes)
-;   0x7c69..0x7c6d  (4 bytes)
-DATA_sin_leer_7C69:
-	defb 0ceh,07eh,06dh,07ch	; 7c69
+; DATOS tabla_7C5B: 9 destinos del despachador p00:461A (call en p09:7C58, el
+;   indice en A): 7DA7, 7E28, 7D88, 7E1C, 7EDE, 7E3F, 7ECE, 7ECE, 7C6D; lo
+;   leen p09:7C58 (18 bytes)
+;   0x7c5b..0x7c6d  (18 bytes)
+DATA_tabla_7C5B:
+	defw 07da7h,07e28h,07d88h,07e1ch,07edeh,07e3fh,07eceh,07eceh	; 7c5b
+	defw 07c6dh	; 7c6b  -> L_7C6D
 
 ; ======================================================================
 ; CODIGO 0x7c6d..0x7c8c  (31 bytes)
@@ -3352,11 +3347,10 @@ L_7F1C:
 	ret			;7f62
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_7F63: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (157 bytes)
+; DATOS relleno_ff: 157 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (157 bytes)
 ;   0x7f63..0x8000  (157 bytes)
-DATA_sin_leer_7F63:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f63  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f73  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f83  ................

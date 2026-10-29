@@ -1,4 +1,9 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x721C 0x8000 relleno_ff  3556 bytes a 0xFF hasta el final del banco: relleno; lo leen nadie (3556 bytes)
+F 0x721C 16
+# --- fin de los bloques de bloques.py ---
 # --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
 D 0x6000 0x6380 leido_6000  lo leen p01:78E0 jugando (tools/cobertura.py) (896 bytes)
-D 0x6380 0x8000 sin_leer_6380  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (7296 bytes)
+D 0x6380 0x721C sin_leer_6380  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (3740 bytes)
 # --- fin de los datos de datos_leidos.py ---

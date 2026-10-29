@@ -489,11 +489,10 @@ DATA_leido_AF30:
 	defb 007h,003h,002h,007h,002h,004h,001h,008h,003h,002h,006h,002h,002h,004h,003h,004h	; b630  ................
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_B640: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2496 bytes)
+; DATOS relleno_ff: 2496 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (2496 bytes)
 ;   0xb640..0xc000  (2496 bytes)
-DATA_sin_leer_B640:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; b640  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; b650  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; b660  ................

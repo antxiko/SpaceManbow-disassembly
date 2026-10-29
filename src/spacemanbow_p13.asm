@@ -482,11 +482,10 @@ DATA_leido_8000:
 	defb 008h,008h,01ch,008h,008h,000h,000h,000h,000h,000h	; 9d10  ..........
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_9D1A: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (742 bytes)
+; DATOS relleno_ff: 742 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (742 bytes)
 ;   0x9d1a..0xa000  (742 bytes)
-DATA_sin_leer_9D1A:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 9d1a  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 9d2a  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 9d3a  ................

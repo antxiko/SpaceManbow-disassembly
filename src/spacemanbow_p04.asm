@@ -146,11 +146,11 @@ L_60D6:
 	call 0461ah		;60e0
 
 ; ----------------------------------------------------------------------
-; DATOS leido_60E3: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6
-;   bytes)
+; DATOS tabla_60E3: 3 destinos del despachador p00:461A (call en p04:60E0, el
+;   indice en A): 60E9, 60E9, 60F4; lo leen p04:60E0 (6 bytes)
 ;   0x60e3..0x60e9  (6 bytes)
-DATA_leido_60E3:
-	defb 0e9h,060h,0e9h,060h,0f4h,060h	; 60e3
+DATA_tabla_60E3:
+	defw 060e9h,060e9h,060f4h	; 60e3  -> L_60E9 L_60E9 L_60F4
 
 ; ======================================================================
 ; CODIGO 0x60e9..0x617e  (149 bytes)
@@ -4477,8 +4477,15 @@ DATA_leido_7F7C:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_7FEB: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (21 bytes)
-;   0x7feb..0x8000  (21 bytes)
+;   nadie (1 bytes)
+;   0x7feb..0x7fec  (1 bytes)
 DATA_sin_leer_7FEB:
-	defb 000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7feb  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh	; 7ffb
+	defb 000h	; 7feb
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 20 bytes a 0xFF hasta el final del banco: relleno; lo leen
+;   nadie (20 bytes)
+;   0x7fec..0x8000  (20 bytes)
+DATA_relleno_ff:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7fec  ................
+	defb 0ffh,0ffh,0ffh,0ffh	; 7ffc

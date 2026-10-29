@@ -520,11 +520,10 @@ DATA_leido_6000:
 	defb 000h,0f0h,000h,000h,000h,0f0h,000h,000h,000h,000h,000h,000h	; 7f70  ............
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_7F7C: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (132 bytes)
+; DATOS relleno_ff: 132 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (132 bytes)
 ;   0x7f7c..0x8000  (132 bytes)
-DATA_sin_leer_7F7C:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f7c  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f8c  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f9c  ................

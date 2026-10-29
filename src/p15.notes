@@ -1,3 +1,109 @@
-# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
-D 0xA000 0xC000 leido_A000  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (8192 bytes)
-# --- fin de los datos de datos_leidos.py ---
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA158 rle_14_BFB7_cola  graficos comprimidos (p10:8290, 417 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x5FB7 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5 (sigue del banco 14); lo leen p10:8290 (344 bytes)
+F 0xA000 16
+D 0xA158 0xA2BE rle_15_A158  graficos comprimidos (p10:8290, 358 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6158 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (358 bytes)
+F 0xA158 16
+D 0xA2BE 0xA2DD rle_15_A2BE  graficos comprimidos (p10:8290, 31 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x62BE con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (31 bytes)
+F 0xA2BE 16
+D 0xA2DD 0xA2F5 rle_15_A2DD  graficos comprimidos (p10:8290, 24 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x62DD con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (24 bytes)
+F 0xA2DD 16
+D 0xA2F5 0xA337 rle_15_A2F5  graficos comprimidos (p10:8290, 66 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x62F5 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (66 bytes)
+F 0xA2F5 16
+D 0xA337 0xA376 rle_15_A337  graficos comprimidos (p10:8290, 63 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6337 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (63 bytes)
+F 0xA337 16
+D 0xA376 0xA405 rle_15_A376  graficos comprimidos (p10:8290, 143 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6376 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (143 bytes)
+F 0xA376 16
+D 0xA405 0xA495 rle_15_A405  graficos comprimidos (p10:8290, 144 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6405 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (144 bytes)
+F 0xA405 16
+D 0xA495 0xA4A2 rle_15_A495  graficos comprimidos (p10:8290, 13 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6495 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (13 bytes)
+F 0xA495 16
+D 0xA4A2 0xA4A7 rle_15_A4A2  graficos comprimidos (p10:8290, 5 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x64A2 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (5 bytes)
+F 0xA4A2 16
+D 0xA4A7 0xA4B3 rle_15_A4A7  graficos comprimidos (p10:8290, 12 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x64A7 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (12 bytes)
+F 0xA4A7 16
+D 0xA4B3 0xA4BE rle_15_A4B3  graficos comprimidos (p10:8290, 11 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x64B3 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (11 bytes)
+F 0xA4B3 16
+D 0xA4BE 0xA58D rle_15_A4BE  graficos comprimidos (p10:8290, 207 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x64BE con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (207 bytes)
+F 0xA4BE 16
+D 0xA58D 0xA678 rle_15_A58D  graficos comprimidos (p10:8290, 235 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x658D con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (235 bytes)
+F 0xA58D 16
+D 0xA678 0xA6FA rle_15_A678  graficos comprimidos (p10:8290, 130 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6678 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (130 bytes)
+F 0xA678 16
+D 0xA6FA 0xA77C rle_15_A6FA  graficos comprimidos (p10:8290, 130 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x66FA con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (130 bytes)
+F 0xA6FA 16
+D 0xA77C 0xA80D rle_15_A77C  graficos comprimidos (p10:8290, 145 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x677C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (145 bytes)
+F 0xA77C 16
+D 0xA80D 0xA88A rle_15_A80D  graficos comprimidos (p10:8290, 125 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x680D con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (125 bytes)
+F 0xA80D 16
+D 0xA88A 0xA8E3 rle_15_A88A  graficos comprimidos (p10:8290, 89 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x688A con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (89 bytes)
+F 0xA88A 16
+D 0xA8E3 0xA918 rle_15_A8E3  graficos comprimidos (p10:8290, 53 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x68E3 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (53 bytes)
+F 0xA8E3 16
+D 0xA918 0xA94C rle_15_A918  graficos comprimidos (p10:8290, 52 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6918 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (52 bytes)
+F 0xA918 16
+D 0xA94C 0xA964 rle_15_A94C  graficos comprimidos (p10:8290, 24 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x694C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (24 bytes)
+F 0xA94C 16
+D 0xA964 0xAB29 rle_15_A964  graficos comprimidos (p10:8290, 453 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6964 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (453 bytes)
+F 0xA964 16
+D 0xAB29 0xABF9 rle_15_AB29  graficos comprimidos (p10:8290, 208 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6B29 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (208 bytes)
+F 0xAB29 16
+D 0xABF9 0xAC29 rle_15_ABF9  graficos comprimidos (p10:8290, 48 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6BF9 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (48 bytes)
+F 0xABF9 16
+D 0xAC29 0xAC40 rle_15_AC29  graficos comprimidos (p10:8290, 23 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6C29 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (23 bytes)
+F 0xAC29 16
+D 0xAC40 0xAE2A rle_15_AC40  graficos comprimidos (p10:8290, 490 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6C40 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (490 bytes)
+F 0xAC40 16
+D 0xAE2A 0xAF20 rle_15_AE2A  graficos comprimidos (p10:8290, 246 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6E2A con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (246 bytes)
+F 0xAE2A 16
+D 0xAF20 0xB1E8 rle_15_AF20  graficos comprimidos (p10:8290, 712 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x6F20 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (712 bytes)
+F 0xAF20 16
+D 0xB1E8 0xB40D rle_15_B1E8  graficos comprimidos (p10:8290, 549 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x71E8 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (549 bytes)
+F 0xB1E8 16
+D 0xB40D 0xB445 rle_15_B40D  graficos comprimidos (p10:8290, 56 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x740D con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (56 bytes)
+F 0xB40D 16
+D 0xB445 0xB47C rle_15_B445  graficos comprimidos (p10:8290, 55 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7445 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (55 bytes)
+F 0xB445 16
+D 0xB47C 0xB4CE rle_15_B47C  graficos comprimidos (p10:8290, 82 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x747C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (82 bytes)
+F 0xB47C 16
+D 0xB4CE 0xB51C rle_15_B4CE  graficos comprimidos (p10:8290, 78 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x74CE con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (78 bytes)
+F 0xB4CE 16
+D 0xB51C 0xB52E rle_15_B51C  graficos comprimidos (p10:8290, 18 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x751C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (18 bytes)
+F 0xB51C 16
+D 0xB52E 0xB548 rle_15_B52E  graficos comprimidos (p10:8290, 26 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x752E con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (26 bytes)
+F 0xB52E 16
+D 0xB548 0xB5AC rle_15_B548  graficos comprimidos (p10:8290, 100 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7548 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (100 bytes)
+F 0xB548 16
+D 0xB5AC 0xB613 rle_15_B5AC  graficos comprimidos (p10:8290, 103 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x75AC con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (103 bytes)
+F 0xB5AC 16
+D 0xB613 0xB634 rle_15_B613  graficos comprimidos (p10:8290, 33 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7613 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (33 bytes)
+F 0xB613 16
+D 0xB634 0xB647 rle_15_B634  graficos comprimidos (p10:8290, 19 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7634 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (19 bytes)
+F 0xB634 16
+D 0xB647 0xB82C rle_15_B647  graficos comprimidos (p10:8290, 485 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7647 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (485 bytes)
+F 0xB647 16
+D 0xB82C 0xB976 rle_15_B82C  graficos comprimidos (p10:8290, 330 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x782C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (330 bytes)
+F 0xB82C 16
+D 0xB976 0xB9C8 rle_15_B976  graficos comprimidos (p10:8290, 82 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7976 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (82 bytes)
+F 0xB976 16
+D 0xB9C8 0xBA05 rle_15_B9C8  graficos comprimidos (p10:8290, 61 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x79C8 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (61 bytes)
+F 0xB9C8 16
+D 0xBA05 0xBCA3 rle_15_BA05  graficos comprimidos (p10:8290, 670 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7A05 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (670 bytes)
+F 0xBA05 16
+D 0xBCA3 0xBEE0 rle_15_BCA3  graficos comprimidos (p10:8290, 573 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7CA3 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (573 bytes)
+F 0xBCA3 16
+D 0xBEE0 0xBEF7 rle_15_BEE0  graficos comprimidos (p10:8290, 23 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7EE0 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (23 bytes)
+F 0xBEE0 16
+D 0xBEF7 0xBF0C rle_15_BEF7  graficos comprimidos (p10:8290, 21 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7EF7 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (21 bytes)
+F 0xBEF7 16
+D 0xBF0C 0xBF36 rle_15_BF0C  graficos comprimidos (p10:8290, 42 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7F0C con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (42 bytes)
+F 0xBF0C 16
+D 0xBF36 0xBF5B rle_15_BF36  graficos comprimidos (p10:8290, 37 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7F36 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (37 bytes)
+F 0xBF36 16
+D 0xBF5B 0xBFA6 rle_15_BF5B  graficos comprimidos (p10:8290, 75 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7F5B con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5; lo leen p10:8290 (75 bytes)
+F 0xBF5B 16
+D 0xBFA6 0xBFF7 rle_15_BFA6  graficos comprimidos (p10:8290, 81 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7FA6 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81F0; lo leen p10:8290 (81 bytes)
+F 0xBFA6 16
+D 0xBFF7 0xC000 rle_15_BFF7  graficos comprimidos (p10:8290, 25 bytes): 0 acaba, n < 0x80 repite el de detras, 0x81-0xFF copian n & 0x7F; puntero 0x7FF7 con base 0 (p10:82BA: banco 0x0C + base + 3 bits altos), lo dan p10:81D5 (sigue en el banco 16, en 0xA000); lo leen p10:8290 (9 bytes)
+F 0xBFF7 16
+# --- fin de los bloques de bloques.py ---

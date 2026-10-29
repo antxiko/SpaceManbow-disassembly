@@ -1,17 +1,32 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6032 0x603E tabla_6032  6 destinos del despachador p00:461A (call en p01:602F, el indice en A): 603E, 6050, 609D, 60DB, 61B0, 61E2; lo leen p01:602F (12 bytes)
+F 0x6032 w6
+D 0x605F 0x6065 tabla_605F  3 destinos del despachador p00:461A (call en p01:605C, el indice en A): 6065, 607B, 6096; lo leen p01:605C (6 bytes)
+F 0x605F w3
+D 0x60A6 0x60AA tabla_60A6  2 destinos del despachador p00:461A (call en p01:60A3, el indice en A): 60AA, 60C6; lo leen p01:60A3 (4 bytes)
+F 0x60A6 w2
+D 0x60E4 0x60E8 tabla_60E4  2 destinos del despachador p00:461A (call en p01:60E1, el indice en A): 60E8, 6199; lo leen p01:60E1 (4 bytes)
+F 0x60E4 w2
+D 0x61B9 0x61BD tabla_61B9  2 destinos del despachador p00:461A (call en p01:61B6, el indice en A): 61BD, 61D0; lo leen p01:61B6 (4 bytes)
+F 0x61B9 w2
+D 0x61EB 0x61EF tabla_61EB  2 destinos del despachador p00:461A (call en p01:61E8, el indice en A): 61EF, 6202; lo leen p01:61E8 (4 bytes)
+F 0x61EB w2
+D 0x6267 0x6271 tabla_6267  5 destinos del despachador p00:461A (call en p01:6264, el indice en A): 6271, 6292, 62C1, 632D, 6440; lo leen p01:6264 (10 bytes)
+F 0x6267 w5
+D 0x627A 0x627E tabla_627A  2 destinos del despachador p00:461A (call en p01:6277, el indice en A): 627E, 6288; lo leen p01:6277 (4 bytes)
+F 0x627A w2
+D 0x629B 0x629F tabla_629B  2 destinos del despachador p00:461A (call en p01:6298, el indice en A): 629F, 62B0; lo leen p01:6298 (4 bytes)
+F 0x629B w2
+D 0x62CA 0x62D0 tabla_62CA  3 destinos del despachador p00:461A (call en p01:62C7, el indice en A): 62D0, 62E8, 6308; lo leen p01:62C7 (6 bytes)
+F 0x62CA w3
+D 0x6336 0x6340 tabla_6336  5 destinos del despachador p00:461A (call en p01:6333, el indice en A): 6340, 6367, 6399, 63C7, 63D5; lo leen p01:6333 (10 bytes)
+F 0x6336 w5
+D 0x794D 0x8000 relleno_ff  1715 bytes a 0xFF hasta el final del banco: relleno; lo leen nadie (1715 bytes)
+F 0x794D 16
+# --- fin de los bloques de bloques.py ---
 # --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
-D 0x6032 0x603E leido_6032  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (12 bytes)
-D 0x605F 0x6065 leido_605F  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6 bytes)
-D 0x60A6 0x60AA leido_60A6  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
-D 0x60E4 0x60E8 leido_60E4  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
 D 0x615D 0x6199 leido_615D  lo leen p00:4CE8, p00:4D5F, p01:6C6F jugando (tools/cobertura.py) (60 bytes)
-D 0x61B9 0x61BD leido_61B9  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
-D 0x61EB 0x61EF leido_61EB  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
-D 0x6267 0x6271 leido_6267  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (10 bytes)
-D 0x627A 0x627E leido_627A  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
-D 0x629B 0x629F leido_629B  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4 bytes)
-D 0x62CA 0x62D0 leido_62CA  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6 bytes)
-D 0x6336 0x633E leido_6336  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (8 bytes)
-D 0x633E 0x6340 sin_leer_633E  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (2 bytes)
 D 0x6405 0x6437 leido_6405  lo leen p00:4A23, p00:4A25, p00:4CE8, p00:4D5F, p01:6C6F jugando (tools/cobertura.py) (50 bytes)
 D 0x6437 0x6440 sin_leer_6437  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (9 bytes)
 D 0x653C 0x6664 sin_leer_653C  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (296 bytes)
@@ -38,5 +53,4 @@ D 0x7755 0x77B5 leido_7755  lo leen p01:6AD3 jugando (tools/cobertura.py) (96 by
 D 0x7877 0x787B sin_leer_7877  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (4 bytes)
 D 0x787B 0x787F leido_787B  lo leen p01:7850, p01:7855, p01:785A, p01:785C jugando (tools/cobertura.py) (4 bytes)
 D 0x787F 0x7883 sin_leer_787F  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (4 bytes)
-D 0x794D 0x8000 sin_leer_794D  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (1715 bytes)
 # --- fin de los datos de datos_leidos.py ---

@@ -24,6 +24,8 @@ avisa, porque algo esta mal y hay que mirarlo.
 
 Uso: bloques.py              informa de lo que encontraria
      bloques.py --escribe    y lo escribe en las notas
+     --restos                tambien los restos que apunta alguien (el tamano es
+                             lo que hay hasta lo siguiente)
 """
 import json
 import os
@@ -408,7 +410,10 @@ def main(argv):
             if b["F"]:
                 lineas.append("F 0x%04X %s" % (b["ini"], b["F"]))
             total += b["fin"] - b["ini"]
-        restos(p, cod, mano, junta(buenos), lineas)
+        # lo que queda lo reparte tools/datos_leidos.py por lo que se lee jugando;
+        # los restos "hasta lo siguiente" solo si se piden
+        if "--restos" in argv:
+            restos(p, cod, mano, junta(buenos), lineas)
         n = len([l for l in lineas if l.startswith("D ")])
         if n:
             print("%s: %d bloques, %d bytes" % (nombre(p), n,

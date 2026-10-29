@@ -1,8 +1,107 @@
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8165 0x8177 listas_8165  9 punteros a listas de graficos, uno por A, detras de la de p10:83FD (p10:803B) (p10:815F y p00:468E); lo leen p10:815F (18 bytes)
+F 0x8165 w9
+D 0x8177 0x8189 listas_8177  9 punteros a listas de graficos, uno por fase (0xCA10) (p10:8015 y p00:468E); lo leen p10:8015 (18 bytes)
+F 0x8177 w9
+D 0x8189 0x818F listas_8189  3 punteros a listas de graficos, uno por A (p10:8005 y p00:468E); lo leen p10:8005 (6 bytes)
+F 0x8189 w3
+D 0x83C0 0x83D2 piezas_por_fase  9 punteros a listas de piezas, uno por fase (p10:83B6: 0x83C0 + 2 x 0xCA10); lo leen p10:83BC (18 bytes)
+F 0x83C0 w9
+D 0x83FD 0x840C paleta_83FD  colores de la lista de graficos de p10:803C para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (15 bytes)
+F 0x83FD 16
+D 0x840C 0x8446 lista_graficos_840C  lista de graficos (p10:803C, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (58 bytes)
+F 0x840C 8
+D 0x8446 0x8459 paleta_8446  colores de la lista de graficos de p10:815F, entrada 0 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8446 16
+D 0x8459 0x8649 lista_graficos_8459  lista de graficos (p10:815F, entrada 0, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (496 bytes)
+F 0x8459 8
+D 0x8649 0x8656 lista_graficos_8649  lista de graficos (p10:8015, entrada 0, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (13 bytes)
+F 0x8649 8
+D 0x8656 0x8666 lista_graficos_8656  lista de graficos (p10:8005, entrada 0, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (16 bytes)
+F 0x8656 8
+D 0x8666 0x867F lista_graficos_8666  lista de graficos (p10:8005, entrada 2, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (25 bytes)
+F 0x8666 8
+D 0x867F 0x8692 paleta_867F  colores de la lista de graficos de p10:815F, entrada 1 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x867F 16
+D 0x8692 0x8709 lista_graficos_8692  lista de graficos (p10:815F, entrada 1, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (119 bytes)
+F 0x8692 8
+D 0x8709 0x8716 lista_graficos_8709  lista de graficos (p10:8015, entrada 1, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (13 bytes)
+F 0x8709 8
+D 0x8716 0x8729 paleta_8716  colores de la lista de graficos de p10:815F, entrada 2 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8716 16
+D 0x8729 0x88B4 lista_graficos_8729  lista de graficos (p10:815F, entrada 2, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (395 bytes)
+F 0x8729 8
+D 0x88B4 0x88C7 paleta_88B4  colores de la lista de graficos de p10:8015, entrada 2 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x88B4 16
+D 0x88C7 0x88D0 lista_graficos_88C7  lista de graficos (p10:8015, entrada 2, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (9 bytes)
+F 0x88C7 8
+D 0x88D0 0x88E3 paleta_88D0  colores de la lista de graficos de p10:815F, entrada 3 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x88D0 16
+D 0x88E3 0x899B lista_graficos_88E3  lista de graficos (p10:815F, entrada 3, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (184 bytes)
+F 0x88E3 8
+D 0x899B 0x89AE paleta_899B  colores de la lista de graficos de p10:8015, entrada 3 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x899B 16
+D 0x89AE 0x89BA lista_graficos_89AE  lista de graficos (p10:8015, entrada 3, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (12 bytes)
+F 0x89AE 8
+D 0x89BA 0x89CD paleta_89BA  colores de la lista de graficos de p10:815F, entrada 4 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x89BA 16
+D 0x89CD 0x8B92 lista_graficos_89CD  lista de graficos (p10:815F, entrada 4, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (453 bytes)
+F 0x89CD 8
+D 0x8B92 0x8BA5 paleta_8B92  colores de la lista de graficos de p10:8015, entrada 4 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8B92 16
+D 0x8BA5 0x8BAE lista_graficos_8BA5  lista de graficos (p10:8015, entrada 4, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (9 bytes)
+F 0x8BA5 8
+D 0x8BAE 0x8BC1 paleta_8BAE  colores de la lista de graficos de p10:815F, entrada 5 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8BAE 16
+D 0x8BC1 0x8E29 lista_graficos_8BC1  lista de graficos (p10:815F, entrada 5, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (616 bytes)
+F 0x8BC1 8
+D 0x8E29 0x8E3C paleta_8E29  colores de la lista de graficos de p10:8015, entrada 5 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8E29 16
+D 0x8E3C 0x8E45 lista_graficos_8E3C  lista de graficos (p10:8015, entrada 5, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (9 bytes)
+F 0x8E3C 8
+D 0x8E45 0x8E64 lista_graficos_8E45  lista de graficos (p10:8005, entrada 1, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (31 bytes)
+F 0x8E45 8
+D 0x8E64 0x8E77 paleta_8E64  colores de la lista de graficos de p10:815F, entrada 6 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x8E64 16
+D 0x8E77 0x914C lista_graficos_8E77  lista de graficos (p10:815F, entrada 6, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (725 bytes)
+F 0x8E77 8
+D 0x914C 0x9156 lista_graficos_914C  lista de graficos (p10:8015, entrada 6, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (10 bytes)
+F 0x914C 8
+D 0x9156 0x9169 paleta_9156  colores de la lista de graficos de p10:815F, entrada 7 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x9156 16
+D 0x9169 0x9172 lista_graficos_9169  lista de graficos (p10:815F, entrada 7, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (9 bytes)
+F 0x9169 8
+D 0x9172 0x9182 lista_graficos_9172  lista de graficos (p10:8015, entrada 7, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (16 bytes)
+F 0x9172 8
+D 0x9182 0x9195 paleta_9182  colores de la lista de graficos de p10:8015, entrada 8 para p00:4CE0: de 2 en 2 hasta un byte 0xF0 o mayor; lo leen p00:4CE8 (19 bytes)
+F 0x9182 16
+D 0x9195 0x92B8 lista_graficos_9195  lista de graficos (p10:8015, entrada 8, p10:8046): secciones de grupos (p10:8198, hasta 0xFF) y fichas de 8 bytes [que][n][fila][patrones][colores][base] (p10:81C2) hasta 0xFE u 0xFF; detras, fichas de 3 bytes [valor][desde][hasta] hasta 0xFF (p10:8209); lo leen p10:8052 (291 bytes)
+F 0x9195 8
+D 0x92B8 0x92D7 piezas_92B8  piezas de todas las fases (p10:8380, antes de las de la fase) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (31 bytes)
+F 0x92B8 6
+D 0x92D7 0x9326 piezas_92D7  piezas de la fase 0 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (79 bytes)
+F 0x92D7 6
+D 0x9326 0x937B piezas_9326  piezas de la fase 1 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (85 bytes)
+F 0x9326 6
+D 0x937B 0x93B8 piezas_937B  piezas de la fase 2 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (61 bytes)
+F 0x937B 6
+D 0x93B8 0x93E3 piezas_93B8  piezas de la fase 3 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (43 bytes)
+F 0x93B8 6
+D 0x93E3 0x940E piezas_93E3  piezas de la fase 4 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (43 bytes)
+F 0x93E3 6
+D 0x940E 0x943F piezas_940E  piezas de la fase 5 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (49 bytes)
+F 0x940E 6
+D 0x943F 0x947C piezas_943F  piezas de la fase 6 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (61 bytes)
+F 0x943F 6
+D 0x947C 0x947D piezas_947C  piezas de la fase 7 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (1 bytes)
+F 0x947C 6
+D 0x947D 0x9496 piezas_947D  piezas de la fase 8 (p10:83B6) (p10:838C): fichas de 6 bytes [que][n][puntero][base][casilla] hasta un 0; lo leen p10:838C (25 bytes)
+F 0x947D 6
+D 0x9496 0x9500 relleno_ff  106 bytes a 0xFF entre dos bloques, que no lee nadie: relleno; lo leen nadie (106 bytes)
+F 0x9496 16
+# --- fin de los bloques de bloques.py ---
 # --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
-D 0x8165 0x818F leido_8165  lo leen p00:4694, p00:4696 jugando (tools/cobertura.py) (42 bytes)
-D 0x83C0 0x83D2 leido_83C0  lo leen p00:4694, p00:4696 jugando (tools/cobertura.py) (18 bytes)
 D 0x83D2 0x83D5 sin_leer_83D2  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (3 bytes)
-D 0x83FD 0x9496 leido_83FD  lo leen p00:4CE8, p00:4D5F, p10:8052, p10:8198, p10:81C2, p10:81CC, p10:81CF, p10:81D2 y 13 mas jugando (tools/cobertura.py) (4249 bytes)
-D 0x9496 0x9500 sin_leer_9496  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (106 bytes)
 D 0x9500 0xA000 leido_9500  lo leen p03:AEB0, p03:AEB2 jugando (tools/cobertura.py) (2816 bytes)
 # --- fin de los datos de datos_leidos.py ---

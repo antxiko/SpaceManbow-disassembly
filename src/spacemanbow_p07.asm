@@ -674,11 +674,10 @@ L_83BF:
 	ret			;83d2
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_83D3: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (45 bytes)
+; DATOS relleno_ff: 45 bytes a 0xFF entre dos bloques, que no lee nadie:
+;   relleno; lo leen nadie (45 bytes)
 ;   0x83d3..0x8400  (45 bytes)
-DATA_sin_leer_83D3:
+DATA_83D3:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 83d3  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 83e3  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 83f3  .............
@@ -761,11 +760,10 @@ DATA_leido_865C:
 	defb 02bh,0a6h,02bh,0a6h,02bh,0a6h,02bh,0a6h,02bh,0a6h	; 868c  +.+.+.+.+.
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_8696: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (42 bytes)
+; DATOS relleno_ff: 42 bytes a 0xFF entre dos bloques, que no lee nadie:
+;   relleno; lo leen nadie (42 bytes)
 ;   0x8696..0x86c0  (42 bytes)
-DATA_sin_leer_8696:
+DATA_8696:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 8696  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 86a6  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 86b6  ..........

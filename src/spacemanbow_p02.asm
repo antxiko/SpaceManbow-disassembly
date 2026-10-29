@@ -844,20 +844,13 @@ L_85FD:
 	call 0461ah		;8605
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_8608: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2 bytes)
-;   0x8608..0x860a  (2 bytes)
-DATA_sin_leer_8608:
-	defb 01eh,086h	; 8608
-
-; ----------------------------------------------------------------------
-; DATOS leido_860A: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (20 bytes)
-;   0x860a..0x861e  (20 bytes)
-DATA_leido_860A:
-	defb 09ch,08ch,01eh,086h,050h,08eh,01eh,086h,01eh,086h,01eh,086h,01eh,086h,01eh,086h	; 860a  ....P...........
-	defb 01eh,086h,0f1h,08bh	; 861a
+; DATOS tabla_8608: 11 destinos del despachador p00:461A (call en p02:8605, el
+;   indice en A): 861E, 8C9C, 861E, 8E50, 861E, 861E, 861E, 861E, 861E, 861E,
+;   8BF1; lo leen p02:8605 (22 bytes)
+;   0x8608..0x861e  (22 bytes)
+DATA_tabla_8608:
+	defw 0861eh,08c9ch,0861eh,08e50h,0861eh,0861eh,0861eh,0861eh	; 8608
+	defw 0861eh,0861eh,08bf1h	; 8618  -> L_861E L_861E L_8BF1
 
 ; ======================================================================
 ; CODIGO 0x861e..0x87ac  (398 bytes)
@@ -1099,19 +1092,13 @@ L_87A4:
 	call 0461ah		;87a9
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_87AC: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (8 bytes)
-;   0x87ac..0x87b4  (8 bytes)
-DATA_sin_leer_87AC:
-	defb 0beh,087h,0beh,087h,0beh,087h,0beh,087h	; 87ac  ........
-
-; ----------------------------------------------------------------------
-; DATOS leido_87B4: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (10 bytes)
-;   0x87b4..0x87be  (10 bytes)
-DATA_leido_87B4:
-	defb 04eh,08dh,0beh,087h,0beh,087h,09bh,08eh,077h,088h	; 87b4  N.......w.
+; DATOS tabla_87AC: 9 destinos del despachador p00:461A (call en p02:87A9, el
+;   indice en A): 87BE, 87BE, 87BE, 87BE, 8D4E, 87BE, 87BE, 8E9B, 8877; lo
+;   leen p02:87A9 (18 bytes)
+;   0x87ac..0x87be  (18 bytes)
+DATA_tabla_87AC:
+	defw 087beh,087beh,087beh,087beh,08d4eh,087beh,087beh,08e9bh	; 87ac
+	defw 08877h	; 87bc  -> L_8877
 
 ; ======================================================================
 ; CODIGO 0x87be..0x8890  (210 bytes)
@@ -1233,11 +1220,12 @@ L_8885:
 	call 0461ah		;888d
 
 ; ----------------------------------------------------------------------
-; DATOS leido_8890: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (12 bytes)
+; DATOS tabla_8890: 6 destinos del despachador p00:461A (call en p02:888D, el
+;   indice en A): 889C, 88B0, 88C4, 88F9, 891C, 8934; lo leen p02:888D (12
+;   bytes)
 ;   0x8890..0x889c  (12 bytes)
-DATA_leido_8890:
-	defb 09ch,088h,0b0h,088h,0c4h,088h,0f9h,088h,01ch,089h,034h,089h	; 8890  ..........4.
+DATA_tabla_8890:
+	defw 0889ch,088b0h,088c4h,088f9h,0891ch,08934h	; 8890
 
 ; ======================================================================
 ; CODIGO 0x889c..0x89b0  (276 bytes)

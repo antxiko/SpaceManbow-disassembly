@@ -46,11 +46,12 @@ L_6021:
 	call 0461ah		;602f
 
 ; ----------------------------------------------------------------------
-; DATOS leido_6032: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (12 bytes)
+; DATOS tabla_6032: 6 destinos del despachador p00:461A (call en p01:602F, el
+;   indice en A): 603E, 6050, 609D, 60DB, 61B0, 61E2; lo leen p01:602F (12
+;   bytes)
 ;   0x6032..0x603e  (12 bytes)
-DATA_leido_6032:
-	defb 03eh,060h,050h,060h,09dh,060h,0dbh,060h,0b0h,061h,0e2h,061h	; 6032  >`P`.`.`.a.a
+DATA_tabla_6032:
+	defw 0603eh,06050h,0609dh,060dbh,061b0h,061e2h	; 6032
 
 ; ======================================================================
 ; CODIGO 0x603e..0x605f  (33 bytes)
@@ -78,11 +79,11 @@ L_6050:
 	call 0461ah		;605c
 
 ; ----------------------------------------------------------------------
-; DATOS leido_605F: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6
-;   bytes)
+; DATOS tabla_605F: 3 destinos del despachador p00:461A (call en p01:605C, el
+;   indice en A): 6065, 607B, 6096; lo leen p01:605C (6 bytes)
 ;   0x605f..0x6065  (6 bytes)
-DATA_leido_605F:
-	defb 065h,060h,07bh,060h,096h,060h	; 605f
+DATA_tabla_605F:
+	defw 06065h,0607bh,06096h	; 605f  -> L_6065 L_607B L_6096
 
 ; ======================================================================
 ; CODIGO 0x6065..0x60a6  (65 bytes)
@@ -125,11 +126,11 @@ L_609D:
 	call 0461ah		;60a3
 
 ; ----------------------------------------------------------------------
-; DATOS leido_60A6: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_60A6: 2 destinos del despachador p00:461A (call en p01:60A3, el
+;   indice en A): 60AA, 60C6; lo leen p01:60A3 (4 bytes)
 ;   0x60a6..0x60aa  (4 bytes)
-DATA_leido_60A6:
-	defb 0aah,060h,0c6h,060h	; 60a6
+DATA_tabla_60A6:
+	defw 060aah,060c6h	; 60a6  -> L_60AA L_60C6
 
 ; ======================================================================
 ; CODIGO 0x60aa..0x60e4  (58 bytes)
@@ -173,11 +174,11 @@ L_60DB:
 	call 0461ah		;60e1
 
 ; ----------------------------------------------------------------------
-; DATOS leido_60E4: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_60E4: 2 destinos del despachador p00:461A (call en p01:60E1, el
+;   indice en A): 60E8, 6199; lo leen p01:60E1 (4 bytes)
 ;   0x60e4..0x60e8  (4 bytes)
-DATA_leido_60E4:
-	defb 0e8h,060h,099h,061h	; 60e4
+DATA_tabla_60E4:
+	defw 060e8h,06199h	; 60e4  -> L_60E8 L_6199
 
 ; ======================================================================
 ; CODIGO 0x60e8..0x615d  (117 bytes)
@@ -276,11 +277,11 @@ L_61B0:
 	call 0461ah		;61b6
 
 ; ----------------------------------------------------------------------
-; DATOS leido_61B9: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_61B9: 2 destinos del despachador p00:461A (call en p01:61B6, el
+;   indice en A): 61BD, 61D0; lo leen p01:61B6 (4 bytes)
 ;   0x61b9..0x61bd  (4 bytes)
-DATA_leido_61B9:
-	defb 0bdh,061h,0d0h,061h	; 61b9
+DATA_tabla_61B9:
+	defw 061bdh,061d0h	; 61b9  -> L_61BD L_61D0
 
 ; ======================================================================
 ; CODIGO 0x61bd..0x61eb  (46 bytes)
@@ -316,11 +317,11 @@ L_61E2:
 	call 0461ah		;61e8
 
 ; ----------------------------------------------------------------------
-; DATOS leido_61EB: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_61EB: 2 destinos del despachador p00:461A (call en p01:61E8, el
+;   indice en A): 61EF, 6202; lo leen p01:61E8 (4 bytes)
 ;   0x61eb..0x61ef  (4 bytes)
-DATA_leido_61EB:
-	defb 0efh,061h,002h,062h	; 61eb
+DATA_tabla_61EB:
+	defw 061efh,06202h	; 61eb  -> L_61EF L_6202
 
 ; ======================================================================
 ; CODIGO 0x61ef..0x6267  (120 bytes)
@@ -406,11 +407,11 @@ L_6256:
 	call 0461ah		;6264
 
 ; ----------------------------------------------------------------------
-; DATOS leido_6267: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py)
-;   (10 bytes)
+; DATOS tabla_6267: 5 destinos del despachador p00:461A (call en p01:6264, el
+;   indice en A): 6271, 6292, 62C1, 632D, 6440; lo leen p01:6264 (10 bytes)
 ;   0x6267..0x6271  (10 bytes)
-DATA_leido_6267:
-	defb 071h,062h,092h,062h,0c1h,062h,02dh,063h,040h,064h	; 6267  qb.b.b-c@d
+DATA_tabla_6267:
+	defw 06271h,06292h,062c1h,0632dh,06440h	; 6267
 
 ; ======================================================================
 ; CODIGO 0x6271..0x627a  (9 bytes)
@@ -424,11 +425,11 @@ L_6271:
 	call 0461ah		;6277
 
 ; ----------------------------------------------------------------------
-; DATOS leido_627A: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_627A: 2 destinos del despachador p00:461A (call en p01:6277, el
+;   indice en A): 627E, 6288; lo leen p01:6277 (4 bytes)
 ;   0x627a..0x627e  (4 bytes)
-DATA_leido_627A:
-	defb 07eh,062h,088h,062h	; 627a
+DATA_tabla_627A:
+	defw 0627eh,06288h	; 627a  -> L_627E L_6288
 
 ; ======================================================================
 ; CODIGO 0x627e..0x629b  (29 bytes)
@@ -454,11 +455,11 @@ L_6292:
 	call 0461ah		;6298
 
 ; ----------------------------------------------------------------------
-; DATOS leido_629B: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (4
-;   bytes)
+; DATOS tabla_629B: 2 destinos del despachador p00:461A (call en p01:6298, el
+;   indice en A): 629F, 62B0; lo leen p01:6298 (4 bytes)
 ;   0x629b..0x629f  (4 bytes)
-DATA_leido_629B:
-	defb 09fh,062h,0b0h,062h	; 629b
+DATA_tabla_629B:
+	defw 0629fh,062b0h	; 629b  -> L_629F L_62B0
 
 ; ======================================================================
 ; CODIGO 0x629f..0x62ca  (43 bytes)
@@ -492,11 +493,11 @@ L_62C1:
 	call 0461ah		;62c7
 
 ; ----------------------------------------------------------------------
-; DATOS leido_62CA: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6
-;   bytes)
+; DATOS tabla_62CA: 3 destinos del despachador p00:461A (call en p01:62C7, el
+;   indice en A): 62D0, 62E8, 6308; lo leen p01:62C7 (6 bytes)
 ;   0x62ca..0x62d0  (6 bytes)
-DATA_leido_62CA:
-	defb 0d0h,062h,0e8h,062h,008h,063h	; 62ca
+DATA_tabla_62CA:
+	defw 062d0h,062e8h,06308h	; 62ca  -> L_62D0 L_62E8 L_6308
 
 ; ======================================================================
 ; CODIGO 0x62d0..0x6336  (102 bytes)
@@ -558,19 +559,11 @@ L_632D:
 	call 0461ah		;6333
 
 ; ----------------------------------------------------------------------
-; DATOS leido_6336: lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (8
-;   bytes)
-;   0x6336..0x633e  (8 bytes)
-DATA_leido_6336:
-	defb 040h,063h,067h,063h,099h,063h,0c7h,063h	; 6336  @cgc.c.c
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_633E: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (2 bytes)
-;   0x633e..0x6340  (2 bytes)
-DATA_sin_leer_633E:
-	defb 0d5h,063h	; 633e
+; DATOS tabla_6336: 5 destinos del despachador p00:461A (call en p01:6333, el
+;   indice en A): 6340, 6367, 6399, 63C7, 63D5; lo leen p01:6333 (10 bytes)
+;   0x6336..0x6340  (10 bytes)
+DATA_tabla_6336:
+	defw 06340h,06367h,06399h,063c7h,063d5h	; 6336
 
 ; ======================================================================
 ; CODIGO 0x6340..0x6405  (197 bytes)
@@ -2041,11 +2034,10 @@ L_7921:
 	ret			;794c
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_794D: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1715 bytes)
+; DATOS relleno_ff: 1715 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (1715 bytes)
 ;   0x794d..0x8000  (1715 bytes)
-DATA_sin_leer_794D:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 794d  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 795d  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 796d  ................

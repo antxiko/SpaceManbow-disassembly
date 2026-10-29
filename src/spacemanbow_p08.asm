@@ -632,7 +632,14 @@ DATA_leido_B9A4:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_BFF0: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (16 bytes)
-;   0xbff0..0xc000  (16 bytes)
+;   nadie (1 bytes)
+;   0xbff0..0xbff1  (1 bytes)
 DATA_sin_leer_BFF0:
-	defb 000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bff0  ................
+	defb 000h	; bff0
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 15 bytes a 0xFF hasta el final del banco: relleno; lo leen
+;   nadie (15 bytes)
+;   0xbff1..0xc000  (15 bytes)
+DATA_relleno_ff:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bff1  ...............

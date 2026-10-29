@@ -763,10 +763,9 @@ DATA_leido_BD05:
 	defb 0d1h,053h,023h,043h,003h,005h,0fdh,0e1h,0bfh	; bfe5  .S#C.....
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_BFEE: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+; DATOS relleno_ff: 18 bytes a 0xFF hasta el final del banco: relleno; lo leen
 ;   nadie (18 bytes)
 ;   0xbfee..0xc000  (18 bytes)
-DATA_sin_leer_BFEE:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfee  ................
 	defb 0ffh,0ffh	; bffe

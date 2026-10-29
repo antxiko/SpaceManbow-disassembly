@@ -553,8 +553,8 @@ DATA_leido_BABC:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_BCF0: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (784 bytes)
-;   0xbcf0..0xc000  (784 bytes)
+;   nadie (128 bytes)
+;   0xbcf0..0xbd70  (128 bytes)
 DATA_sin_leer_BCF0:
 	defb 0f5h,060h,0b0h,060h,09ch,060h,08ch,0fbh,002h,0f5h,070h,0a8h,070h,094h,070h,089h	; bcf0  .`.`.`....p.p.p.
 	defb 0fbh,002h,0f5h,080h,0a0h,080h,08ch,080h,083h,0fbh,002h,0f5h,090h,098h,090h,084h	; bd00  ................
@@ -564,6 +564,12 @@ DATA_sin_leer_BCF0:
 	defb 0fbh,002h,0f5h,040h,098h,040h,084h,040h,07dh,0fbh,002h,0f5h,050h,090h,050h,07ch	; bd40  ...@.@.@}...P.P|
 	defb 050h,077h,0fbh,002h,0f5h,060h,088h,060h,074h,060h,071h,0fbh,002h,0f5h,060h,080h	; bd50  Pw...`.`t`q...`.
 	defb 060h,070h,060h,067h,0fbh,002h,0f5h,060h,078h,060h,06ch,060h,064h,0fbh,002h,0fah	; bd60  `p`g...`x`l`d...
+
+; ----------------------------------------------------------------------
+; DATOS relleno_ff: 656 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (656 bytes)
+;   0xbd70..0xc000  (656 bytes)
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bd70  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bd80  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bd90  ................

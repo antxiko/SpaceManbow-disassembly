@@ -463,11 +463,10 @@ DATA_leido_B935:
 	defb 027h,033h,0feh,0ffh,016h	; bae5
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_BAEA: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1302 bytes)
+; DATOS relleno_ff: 1302 bytes a 0xFF hasta el final del banco: relleno; lo
+;   leen nadie (1302 bytes)
 ;   0xbaea..0xc000  (1302 bytes)
-DATA_sin_leer_BAEA:
+DATA_relleno_ff:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; baea  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bafa  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bb0a  ................
