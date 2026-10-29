@@ -160,6 +160,130 @@ C 0x48D4 registro 2: la tabla de nombres
 C 0x48E0 registro 10: la de colores (alta)
 C 0x48EC registro 4: la de patrones
 C 0x48F8 registro 11: la de atributos de los sprites (alta)
+C 0x490F una fila del caracter: 4 bytes (8 puntos)
+C 0x4917 la fila siguiente de la VRAM: 0x80 bytes mas
+C 0x4923 C bytes de una fila
+C 0x4929 la fila siguiente (0x80)
+C 0x4941 el caracter siguiente, 8 puntos (4 bytes) a la derecha
+C 0x4944 al llegar al borde (0x80), 8 lineas mas abajo y a la columna 0
+C 0x4956 una fila de 16 puntos: 8 bytes
+C 0x495D la fila siguiente (0x80)
+C 0x496D D = la columna en puntos y E = la fila
+C 0x4971 la letra; 0xFF acaba (inc b da 0)
+C 0x4977 0xFE: otra posicion (vuelve a leer D y E)
+C 0x4979 and C: con C = 0 la letra es la 0, el hueco (borrar)
+C 0x497D la letra siguiente, 8 puntos a la derecha
+C 0x4989 un caracter de 8 x 8
+C 0x498C de la pagina 1 (la fuente) a la 0
+C 0x49B0 copia con transparencia (la operacion 8, TIMP) a la pagina 1
+C 0x49C2 de la pagina 1 a la 1
+C 0x49CC la columna de la letra en la fuente: 32 letras por fila, 8 puntos cada una
+C 0x49D3 la fila: 8 lineas por fila de letras
+C 0x49DA 8 puntos a la derecha
+C 0x49DD si da la vuelta a la linea, 8 lineas mas abajo
+C 0x4A23 C = el registro, B = el valor
+C 0x4A63 C = lo de antes, (HL) = lo de ahora
+C 0x4A65 lo que esta ahora y no estaba antes: recien pulsado
+C 0x4A67 en (HL - 1)
+C 0x4A70 los mandos de antes en C y los de ahora en 0xC909
+C 0x4A72 recien pulsados, a 0xC90A
+C 0x4A76 y se juntan en 0xC90B hasta que se copien
+C 0x4A8C registro 15 del PSG = 0x8F: lee el puerto de mandos 1
+C 0x4A96 registro 14: los botones del mando (a 0 si se pulsan)
+C 0x4A9A pulsado = 1: arriba, abajo, izquierda, derecha y los dos botones
+C 0x4A9E fila 4 del teclado: M y N (bits 2 y 3)
+C 0x4AA8 cualquiera de las dos es el boton 2 (bit 5)
+C 0x4AAB fila 8: espacio y cursores
+C 0x4AB1 el espacio (bit 0) pasa al bit 4: disparo
+C 0x4AB9 izquierda y abajo (bits 4 y 6) pasan a los bits 2 y 1... y arriba y derecha a 0 y 3
+C 0x4AC5 los del mando y los del teclado juntos
+C 0x4AC8 fila 6: F1, F2 y F3 en los bits 5-7
+C 0x4AD1 fila 7: F4 y F5 en los bits 0-1
+C 0x4ADA los cinco a los bits 0-4
+C 0x4AEC hasta 0x1F sonidos en la cola
+C 0x4AF1 hasta 0x17
+C 0x4AF9 B = el sonido
+C 0x4AFF con el bit 0 de 0xC947 no se aceptan
+C 0x4B07 la cola esta llena
+C 0x4B0D vacia: va el primero
+C 0x4B13 busca el sonido en la cola
+C 0x4B15 no esta: al final
+C 0x4B17 esta: si es el ultimo, nada
+C 0x4B1D si no, los de detras se adelantan y el va al final
+C 0x4B26 al final de la cola y uno mas
+C 0x4B5E los 32 sitios de la cola
+C 0x4B63 cada sonido apuntado, al motor (p28:6003)
+C 0x4B6F la cola vacia
+C 0x4B7C 0xC940-0xC9FF a 0: el estado y las tablas de las lineas
+C 0x4B82 el registro 0 sin el bit 4: sin interrupcion de linea
+C 0x4C2C DE = la vuelta: los datos detras del call
+C 0x4C2D la vuelta de verdad, 5 bytes mas alla
+C 0x4C32 guarda los bancos de ahora en la pila
+C 0x4C3D los tres bancos nuevos
+C 0x4C4A DE = el destino
+C 0x4C59 al volver del destino se pasa por p00:4C61, que devuelve los bancos
+C 0x4C5D y el ret salta al destino
+C 0x4C9C los colores hasta un byte 0xF0 o mayor
+C 0x4CD0 el componente (0-7) en los bits 5-7, con el bit 4 de sin cambio
+C 0x4CD7 en las dos casillas: la actual y la de destino
+C 0x4CE8 un color de la lista o el final
+C 0x4CEF el fundido queda preparado (0x80): p00:4CF5 lo empieza
+C 0x4D47 E = el componente de destino
+C 0x4D48 el actual, sin lo de abajo
+C 0x4D4F el actual en los bits 0-2
+C 0x4D53 lo que falta: destino - actual, con el bit 4 de signo
+C 0x4D5F el byte de la lista
+C 0x4D62 B = el nibble alto
+C 0x4D69 C = el bajo
+C 0x4D8C cada componente con su paso a 0
+C 0x4D9E cada componente queda sin cambio (bit 4)
+C 0x4DAF el rojo (bits 4-6 del primer byte)
+C 0x4DB6 el verde (el segundo byte)
+C 0x4DBF el azul (bits 0-2 del primer byte)
+C 0x4DC9 el numero del color
+C 0x4DCE al VDP
+C 0x4E0E 4 pasos mas claro
+C 0x4E11 sin pasar de 7
+C 0x4E19 a cada componente le suma su paso (bits 0-4, con signo)
+C 0x4E3A la columna mas la del scroll (64 columnas)
+C 0x4E41 la fila mas la del scroll (32 filas)
+C 0x4E4E la columna (0-63)
+C 0x4E52 la fila x 4
+C 0x4E5A x 64
+C 0x4E65 la paleta se mandara dentro de 4 cuadros
+C 0x4E6D el registro 6: la tabla de patrones de los sprites
+C 0x4E7B de 1 a 8: 1
+C 0x4E80 9 o mas: 2
+C 0x4E83 A x 4 y en la pagina baja
+C 0x4E8F la fila de trozos: 4 por fila, 0x4000 bytes
+C 0x4E97 la columna: 0x800 bytes
+C 0x4EA2 mas lo de 0xC93E (0x20: la tabla de colores)
+C 0x4EA7 A = la pagina: 0 o 0xFF
+C 0x4EAE desde el 12, en los 64 KB altos
+C 0x4F12 0xDF0D a 0
+C 0x4F16 velocidad en Y hacia arriba: -0x80
+C 0x4FD3 ix+6 = el dibujo + 1
+C 0x4FDF el nivel a la mitad mientras dispara tres veces
+C 0x4FEC y vuelve a ser el de antes
+C 0x5039 si la nave esta cerca, nada
+C 0x5041 hacia la nave con la rapidez 0x12
+C 0x5049 si el cuadrante hacia la nave ha cambiado, siguiente paso
+C 0x5073 cada 14 cuadros
+C 0x507B un actor nuevo de tipo 0x21
+C 0x5095 tras ix+0x22 veces, desaparece
+C 0x50B9 HL - DE x 3
+C 0x50C3 los signos de H y D en los bits 6 y 7: el cuadrante
+C 0x50D6 mira el fondo en las cuatro esquinas (D, E y H, L de 0 y 1)
+C 0x50EA siguiente paso
+C 0x50F3 hay fondo ahi?
+C 0x50FA si lo hay, desaparece y no sigue
+C 0x5135 segun el nivel, mas o menos rapido
+C 0x5182 la cuenta a 0
+C 0x51CC B veces o hasta que no haya ficha
+C 0x5254 con signo
+C 0x5259 HL = H x ix+0x21 / 8
+C 0x526C el valor absoluto, y el signo despues
+C 0x52B7 segun el nivel, 0x18 o 0x20
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x4090 0x4100 relleno_ff  112 bytes a 0xFF entre dos bloques, que no lee nadie: relleno; lo leen nadie (112 bytes)

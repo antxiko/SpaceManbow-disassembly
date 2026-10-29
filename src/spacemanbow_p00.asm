@@ -1361,11 +1361,11 @@ copia_caracter:		; copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter d
 	ld b,008h		;490c
 L_490E:
 	push bc			;490e
-	ld bc,00004h		;490f
+	ld bc,00004h		;490f   ; una fila del caracter: 4 bytes (8 puntos)
 	xor a			;4912
 	call copia_a_vram_baja		;4913   ; copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 	ex de,hl			;4916
-	ld bc,00080h		;4917
+	ld bc,00080h		;4917   ; la fila siguiente de la VRAM: 0x80 bytes mas
 	add hl,bc			;491a
 	ex de,hl			;491b
 	pop bc			;491c
@@ -1376,10 +1376,10 @@ copia_rectangulo:		; copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes 
 	push de			;4921
 L_4922:
 	push bc			;4922
-	ld b,000h		;4923
+	ld b,000h		;4923   ; C bytes de una fila
 	call copia_a_vram_segun_pagina		;4925   ; copia_a_vram_segun_pagina: copia BC bytes a la VRAM, en los 64 KB bajos si 0xC91B es 0 y en los altos si no
 	ex de,hl			;4928
-	ld bc,00080h		;4929
+	ld bc,00080h		;4929   ; la fila siguiente (0x80)
 	add hl,bc			;492c
 	ex de,hl			;492d
 	pop bc			;492e
@@ -1394,9 +1394,9 @@ copia_a_vram_segun_pagina:		; copia BC bytes a la VRAM, en los 64 KB bajos si 0x
 copia_caracteres:		; B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 	push bc			;493d
 	call copia_caracter		;493e   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
-	ld a,004h		;4941
+	ld a,004h		;4941   ; el caracter siguiente, 8 puntos (4 bytes) a la derecha
 	add a,e			;4943
-	cp 080h		;4944
+	cp 080h		;4944   ; al llegar al borde (0x80), 8 lineas mas abajo y a la columna 0
 	jr nz,L_494D		;4946
 	ld a,004h		;4948
 	add a,d			;494a
@@ -1412,10 +1412,10 @@ copia_bloque_16:		; copia 16 filas de 8 bytes de HL a la VRAM en DE (16 x 16 pun
 	ld b,010h		;4953
 L_4955:
 	push bc			;4955
-	ld bc,00008h		;4956
+	ld bc,00008h		;4956   ; una fila de 16 puntos: 8 bytes
 	call copia_a_vram_baja		;4959   ; copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 	ex de,hl			;495c
-	ld bc,00080h		;495d
+	ld bc,00080h		;495d   ; la fila siguiente (0x80)
 	add hl,bc			;4960
 	ex de,hl			;4961
 	pop bc			;4962
@@ -1428,21 +1428,21 @@ escribe_texto:		; el texto de HL: posicion D, E, letras (p00:4983) y 0xFE con ot
 borra_texto:		; el mismo recorrido con cada letra a 0
 	ld c,000h		;496b
 L_496D:
-	ld d,(hl)			;496d
+	ld d,(hl)			;496d   ; D = la columna en puntos y E = la fila
 	inc hl			;496e
 	ld e,(hl)			;496f
 	inc hl			;4970
 L_4971:
-	ld a,(hl)			;4971
+	ld a,(hl)			;4971   ; la letra; 0xFF acaba (inc b da 0)
 	inc hl			;4972
 	ld b,a			;4973
 	inc b			;4974
 	ret z			;4975
 	inc b			;4976
-	jr z,escribe_texto		;4977
-	and c			;4979
+	jr z,escribe_texto		;4977   ; 0xFE: otra posicion (vuelve a leer D y E)
+	and c			;4979   ; and C: con C = 0 la letra es la 0, el hueco (borrar)
 	call pinta_letra		;497a   ; pinta_letra: copia la letra A de la fuente de la VRAM (p00:49CB) a D, E: orden HMMM de 8 x 8
-	ld a,d			;497d
+	ld a,d			;497d   ; la letra siguiente, 8 puntos a la derecha
 	add a,008h		;497e
 	ld d,a			;4980
 	jr L_4971		;4981
@@ -1451,8 +1451,8 @@ pinta_letra:		; copia la letra A de la fuente de la VRAM (p00:49CB) a D, E: orde
 	push hl			;4984
 	push de			;4985
 	call sitio_de_la_letra		;4986   ; sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
-	ld bc,00808h		;4989
-	ld a,001h		;498c
+	ld bc,00808h		;4989   ; un caracter de 8 x 8
+	ld a,001h		;498c   ; de la pagina 1 (la fuente) a la 0
 	call orden_copia		;498e   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 	pop de			;4991
 	pop hl			;4992
@@ -1476,7 +1476,7 @@ pinta_letra_transparente:		; la letra A con una copia logica (p00:487C, A = 0x48
 	push de			;49a9
 	call sitio_de_la_letra		;49aa   ; sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
 	ld bc,00808h		;49ad
-	ld a,048h		;49b0
+	ld a,048h		;49b0   ; copia con transparencia (la operacion 8, TIMP) a la pagina 1
 	call orden_copia_logica		;49b2   ; orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
 	pop de			;49b5
 	pop hl			;49b6
@@ -1488,7 +1488,7 @@ pinta_letra_c:		; la letra A con p00:4838 y A = 5
 	push de			;49bb
 	call sitio_de_la_letra		;49bc   ; sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
 	ld bc,00808h		;49bf
-	ld a,005h		;49c2
+	ld a,005h		;49c2   ; de la pagina 1 a la 1
 	call orden_copia		;49c4   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 	pop de			;49c7
 	pop hl			;49c8
@@ -1496,22 +1496,22 @@ pinta_letra_c:		; la letra A con p00:4838 y A = 5
 	ret			;49ca
 sitio_de_la_letra:		; de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
 	ld b,a			;49cb
-	and 01fh		;49cc
+	and 01fh		;49cc   ; la columna de la letra en la fuente: 32 letras por fila, 8 puntos cada una
 	add a,a			;49ce
 	add a,a			;49cf
 	add a,a			;49d0
 	ld h,a			;49d1
 	ld a,b			;49d2
-	and 0e0h		;49d3
+	and 0e0h		;49d3   ; la fila: 8 lineas por fila de letras
 	rrca			;49d5
 	rrca			;49d6
 	ld l,a			;49d7
 	ret			;49d8
 avanza_8_puntos:		; D + 8 y, si da la vuelta, E + 8
 	ld a,d			;49d9
-	add a,008h		;49da
+	add a,008h		;49da   ; 8 puntos a la derecha
 	ld d,a			;49dc
-	ret nz			;49dd
+	ret nz			;49dd   ; si da la vuelta a la linea, 8 lineas mas abajo
 	ld a,e			;49de
 	add a,008h		;49df
 	ld e,a			;49e1
@@ -1552,7 +1552,7 @@ L_4A1F:
 	call espera_orden_vdp		;4a1f   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 L_4A22:
 	push bc			;4a22
-	ld c,(hl)			;4a23
+	ld c,(hl)			;4a23   ; C = el registro, B = el valor
 	inc hl			;4a24
 	ld b,(hl)			;4a25
 	inc hl			;4a26
@@ -1604,23 +1604,23 @@ DATA_sin_leer_4A60:
 
 
 recien_pulsadas:		; guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
-	ld c,(hl)			;4a63
+	ld c,(hl)			;4a63   ; C = lo de antes, (HL) = lo de ahora
 	ld (hl),a			;4a64
-	xor c			;4a65
+	xor c			;4a65   ; lo que esta ahora y no estaba antes: recien pulsado
 	and (hl)			;4a66
-	dec hl			;4a67
+	dec hl			;4a67   ; en (HL - 1)
 	ld (hl),a			;4a68
 	ret			;4a69
 mandos_del_cuadro:		; lee los mandos (p00:4A8C) en 0xC909, lo recien pulsado en 0xC90A y lo junta en 0xC90B
 	call lee_mandos		;4a6a   ; lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
 	ld hl,0c909h		;4a6d   ; apunta a los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
-	ld c,(hl)			;4a70
+	ld c,(hl)			;4a70   ; los mandos de antes en C y los de ahora en 0xC909
 	ld (hl),a			;4a71
-	xor c			;4a72
+	xor c			;4a72   ; recien pulsados, a 0xC90A
 	and (hl)			;4a73
 	inc hl			;4a74
 	ld (hl),a			;4a75
-	inc hl			;4a76
+	inc hl			;4a76   ; y se juntan en 0xC90B hasta que se copien
 	or (hl)			;4a77
 	ld (hl),a			;4a78
 	ret			;4a79
@@ -1635,35 +1635,35 @@ copia_mandos:		; 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
 	ei			;4a8a
 	ret			;4a8b
 lee_mandos:		; el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
-	ld e,08fh		;4a8c
+	ld e,08fh		;4a8c   ; registro 15 del PSG = 0x8F: lee el puerto de mandos 1
 	ld a,00fh		;4a8e
 	call 00093h		;4a90   ; BIOS WRTPSG - Writes data to PSG-register
 	ld a,00eh		;4a93
 	di			;4a95
-	call 00096h		;4a96   ; BIOS RDPSG - Reads value from PSG-register
+	call 00096h		;4a96   ; BIOS RDPSG - Reads value from PSG-register | registro 14: los botones del mando (a 0 si se pulsan)
 	ei			;4a99
-	cpl			;4a9a
+	cpl			;4a9a   ; pulsado = 1: arriba, abajo, izquierda, derecha y los dos botones
 	and 03fh		;4a9b
 	push af			;4a9d
-	ld a,004h		;4a9e
+	ld a,004h		;4a9e   ; fila 4 del teclado: M y N (bits 2 y 3)
 	call 00141h		;4aa0   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
 	cpl			;4aa3
 	and 00ch		;4aa4
 	jr z,L_4AAA		;4aa6
-	ld a,020h		;4aa8
+	ld a,020h		;4aa8   ; cualquiera de las dos es el boton 2 (bit 5)
 L_4AAA:
 	ld e,a			;4aaa
-	ld a,008h		;4aab
+	ld a,008h		;4aab   ; fila 8: espacio y cursores
 	call 00141h		;4aad   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
 	cpl			;4ab0
-	rrca			;4ab1
+	rrca			;4ab1   ; el espacio (bit 0) pasa al bit 4: disparo
 	rrca			;4ab2
 	ld b,a			;4ab3
 	and 004h		;4ab4
 	or e			;4ab6
 	ld c,a			;4ab7
 	ld a,b			;4ab8
-	rrca			;4ab9
+	rrca			;4ab9   ; izquierda y abajo (bits 4 y 6) pasan a los bits 2 y 1... y arriba y derecha a 0 y 3
 	rrca			;4aba
 	ld b,a			;4abb
 	and 018h		;4abc
@@ -1673,21 +1673,21 @@ L_4AAA:
 	rrca			;4ac1
 	and 003h		;4ac2
 	or c			;4ac4
-	pop bc			;4ac5
+	pop bc			;4ac5   ; los del mando y los del teclado juntos
 	or b			;4ac6
 	ret			;4ac7
 lee_teclas_de_funcion:		; F1-F5 (filas 6 y 7 del teclado) en los bits 0-4
-	ld a,006h		;4ac8
+	ld a,006h		;4ac8   ; fila 6: F1, F2 y F3 en los bits 5-7
 	call 00141h		;4aca   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
 	cpl			;4acd
 	and 0e0h		;4ace
 	ld e,a			;4ad0
-	ld a,007h		;4ad1
+	ld a,007h		;4ad1   ; fila 7: F4 y F5 en los bits 0-1
 	call 00141h		;4ad3   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
 	cpl			;4ad6
 	and 003h		;4ad7
 	or e			;4ad9
-	rlca			;4ada
+	rlca			;4ada   ; los cinco a los bits 0-4
 	rlca			;4adb
 	rlca			;4adc
 	and 01fh		;4add
@@ -1716,41 +1716,41 @@ DATA_leido_4AE2:
 
 pide_sonido:		; mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	push bc			;4aeb
-	ld c,01fh		;4aec
+	ld c,01fh		;4aec   ; hasta 0x1F sonidos en la cola
 	jr L_4AF8		;4aee
 pide_sonido_b:		; lo mismo con hasta 0x17 en la cola
 	push bc			;4af0
-	ld c,017h		;4af1
+	ld c,017h		;4af1   ; hasta 0x17
 	jr L_4AF8		;4af3
 pide_musica:		; lo mismo con hasta 0x17 en la cola
 	push bc			;4af5
 	ld c,017h		;4af6
 L_4AF8:
 	di			;4af8
-	ld b,a			;4af9
+	ld b,a			;4af9   ; B = el sonido
 	push hl			;4afa
 	push de			;4afb
 	ld hl,0c947h		;4afc   ; apunta a bit 0: no se aceptan sonidos
-	bit 0,(hl)		;4aff
+	bit 0,(hl)		;4aff   ; con el bit 0 de 0xC947 no se aceptan
 	jp nz,L_4B2B		;4b01
 	ld hl,0c882h		;4b04   ; apunta a cuantos sonidos hay en la cola (detras, los numeros)
-	ld a,(hl)			;4b07
+	ld a,(hl)			;4b07   ; la cola esta llena
 	inc hl			;4b08
 	cp c			;4b09
 	jr nc,L_4B2B		;4b0a
 	or a			;4b0c
-	jr z,L_4B25		;4b0d
+	jr z,L_4B25		;4b0d   ; vacia: va el primero
 	ld c,a			;4b0f
 	ld a,b			;4b10
 	ld b,000h		;4b11
-	cpir		;4b13
-	jr nz,L_4B26		;4b15
-	ex af,af'			;4b17
+	cpir		;4b13   ; busca el sonido en la cola
+	jr nz,L_4B26		;4b15   ; no esta: al final
+	ex af,af'			;4b17   ; esta: si es el ultimo, nada
 	ld a,c			;4b18
 	or a			;4b19
 	jr z,L_4B2B		;4b1a
 	ex af,af'			;4b1c
-	ld d,h			;4b1d
+	ld d,h			;4b1d   ; si no, los de detras se adelantan y el va al final
 	ld e,l			;4b1e
 	dec de			;4b1f
 	ldir		;4b20
@@ -1759,7 +1759,7 @@ L_4AF8:
 L_4B25:
 	ld a,b			;4b25
 L_4B26:
-	ld (hl),a			;4b26
+	ld (hl),a			;4b26   ; al final de la cola y uno mas
 	ld hl,0c882h		;4b27   ; apunta a cuantos sonidos hay en la cola (detras, los numeros)
 	inc (hl)			;4b2a
 L_4B2B:
@@ -1804,12 +1804,12 @@ sonido_del_cuadro:		; bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso de
 	ret			;4b5a
 manda_cola_de_sonidos:		; cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
 	ld hl,0c882h		;4b5b   ; apunta a cuantos sonidos hay en la cola (detras, los numeros)
-	ld b,020h		;4b5e
+	ld b,020h		;4b5e   ; los 32 sitios de la cola
 	ld a,(hl)			;4b60
 	or a			;4b61
 	ret z			;4b62
 L_4B63:
-	inc hl			;4b63
+	inc hl			;4b63   ; cada sonido apuntado, al motor (p28:6003)
 	ld a,(hl)			;4b64
 	or a			;4b65
 	push bc			;4b66
@@ -1824,9 +1824,9 @@ L_4B63:
 apaga_lineas:		; borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
 	di			;4b78
 	ld hl,0c940h		;4b79   ; apunta a el estado de las interrupciones de linea (0 apagadas)
-	ld bc,000bfh		;4b7c
+	ld bc,000bfh		;4b7c   ; 0xC940-0xC9FF a 0: el estado y las tablas de las lineas
 	call borra_memoria		;4b7f   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	ld a,(0f3dfh)		;4b82
+	ld a,(0f3dfh)		;4b82   ; el registro 0 sin el bit 4: sin interrupcion de linea
 	res 4,a		;4b85
 	ld b,a			;4b87
 	ld c,000h		;4b88
@@ -1916,8 +1916,8 @@ banco_en_A000:		; pone el banco A en 0xA000
 llamada_lejana:		; lee detras del call los tres bancos y la direccion (5 bytes), los pone, llama y vuelve por p00:4C61 detras de los 5 bytes
 	exx			;4c2a
 	ex af,af'			;4c2b
-	pop de			;4c2c
-	ld hl,00005h		;4c2d
+	pop de			;4c2c   ; DE = la vuelta: los datos detras del call
+	ld hl,00005h		;4c2d   ; la vuelta de verdad, 5 bytes mas alla
 	add hl,de			;4c30
 	push hl			;4c31
 	ld a,(0f0f1h)		;4c32   ; lee la copia del banco de 0x6000
@@ -1926,7 +1926,7 @@ llamada_lejana:		; lee detras del call los tres bancos y la direccion (5 bytes),
 	push bc			;4c3a
 	ex de,hl			;4c3b
 	di			;4c3c
-	ld a,(hl)			;4c3d
+	ld a,(hl)			;4c3d   ; los tres bancos nuevos
 	inc hl			;4c3e
 	ld (0f0f1h),a		;4c3f   ; guarda la copia del banco de 0x6000
 	ld c,(hl)			;4c42
@@ -1934,7 +1934,7 @@ llamada_lejana:		; lee detras del call los tres bancos y la direccion (5 bytes),
 	ld b,(hl)			;4c44
 	inc hl			;4c45
 	ld (0f0f2h),bc		;4c46   ; guarda la copia del banco de 0x8000 y el byte siguiente (16 bits)
-	ld e,(hl)			;4c4a
+	ld e,(hl)			;4c4a   ; DE = el destino
 	inc hl			;4c4b
 	ld d,(hl)			;4c4c
 	ei			;4c4d
@@ -1943,9 +1943,9 @@ llamada_lejana:		; lee detras del call los tres bancos y la direccion (5 bytes),
 	ld (09000h),a		;4c52   ; el mapper: pone en 0x8000 el banco de A
 	ld a,b			;4c55
 	ld (0b000h),a		;4c56   ; el mapper: pone en 0xA000 el banco de A
-	ld hl,vuelta_de_llamada_lejana		;4c59
+	ld hl,vuelta_de_llamada_lejana		;4c59   ; al volver del destino se pasa por p00:4C61, que devuelve los bancos
 	push hl			;4c5c
-	push de			;4c5d
+	push de			;4c5d   ; y el ret salta al destino
 	exx			;4c5e
 	ex af,af'			;4c5f
 	ret			;4c60
@@ -1982,7 +1982,7 @@ pon_colores_ya:		; espera al fundido y pone tal cual los colores de la lista de 
 	and 03fh		;4c98
 	jr nz,pon_colores_ya		;4c9a
 L_4C9C:
-	ld a,(hl)			;4c9c
+	ld a,(hl)			;4c9c   ; los colores hasta un byte 0xF0 o mayor
 	cp 0f0h		;4c9d
 	jr nc,L_4CA7		;4c9f
 	call pon_color_ya		;4ca1   ; pon_color_ya: un color de la lista: [rojo, azul][numero, verde] (cuatro nibbles) a su sitio en 0xEF00
@@ -2013,13 +2013,13 @@ pon_color_ya:		; un color de la lista: [rojo, azul][numero, verde] (cuatro nibbl
 	pop hl			;4cce
 	ret			;4ccf
 componente_ya:		; un componente (0-7) en el formato de 0xEF00, en las dos casillas
-	add a,a			;4cd0
+	add a,a			;4cd0   ; el componente (0-7) en los bits 5-7, con el bit 4 de sin cambio
 	add a,a			;4cd1
 	add a,a			;4cd2
 	add a,a			;4cd3
 	add a,a			;4cd4
 	or 010h		;4cd5
-	ld (hl),a			;4cd7
+	ld (hl),a			;4cd7   ; en las dos casillas: la actual y la de destino
 	inc hl			;4cd8
 	ld (hl),a			;4cd9
 	inc hl			;4cda
@@ -2032,11 +2032,11 @@ prepara_paleta:		; espera al fundido de antes y apunta como destino los colores 
 	ei			;4ce3
 	and 03fh		;4ce4
 	jr nz,prepara_paleta		;4ce6
-	ld a,(hl)			;4ce8
+	ld a,(hl)			;4ce8   ; un color de la lista o el final
 	cp 0f0h		;4ce9
 	jp c,L_4CFB		;4ceb
 	inc a			;4cee
-	ld a,080h		;4cef
+	ld a,080h		;4cef   ; el fundido queda preparado (0x80): p00:4CF5 lo empieza
 	ld (0ef60h),a		;4cf1   ; guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
 	ret			;4cf4
 empieza_fundido:		; 0xEF60 = 0x20: 32 pasos de fundido
@@ -2091,18 +2091,18 @@ L_4D34:
 	jr empieza_fundido		;4d44
 componente_de_destino:		; apunta en 0xEF00 un componente de destino y lo que le falta
 	push de			;4d46
-	ld e,a			;4d47
-	ld a,(hl)			;4d48
+	ld e,a			;4d47   ; E = el componente de destino
+	ld a,(hl)			;4d48   ; el actual, sin lo de abajo
 	and 0e0h		;4d49
 	ld (hl),a			;4d4b
 	inc hl			;4d4c
 	ld (hl),a			;4d4d
 	dec hl			;4d4e
-	rlca			;4d4f
+	rlca			;4d4f   ; el actual en los bits 0-2
 	rlca			;4d50
 	rlca			;4d51
 	ld d,a			;4d52
-	ld a,e			;4d53
+	ld a,e			;4d53   ; lo que falta: destino - actual, con el bit 4 de signo
 	sub d			;4d54
 	and 01fh		;4d55
 	xor 010h		;4d57
@@ -2113,16 +2113,16 @@ componente_de_destino:		; apunta en 0xEF00 un componente de destino y lo que le 
 	pop de			;4d5d
 	ret			;4d5e
 dos_nibbles:		; B = el nibble alto de (HL) y C el bajo; HL + 1
-	ld a,(hl)			;4d5f
+	ld a,(hl)			;4d5f   ; el byte de la lista
 	inc hl			;4d60
 	ld c,a			;4d61
-	and 0f0h		;4d62
+	and 0f0h		;4d62   ; B = el nibble alto
 	rrca			;4d64
 	rrca			;4d65
 	rrca			;4d66
 	rrca			;4d67
 	ld b,a			;4d68
-	ld a,c			;4d69
+	ld a,c			;4d69   ; C = el bajo
 	and 00fh		;4d6a
 	ld c,a			;4d6c
 	ret			;4d6d
@@ -2143,7 +2143,7 @@ fija_paleta:		; copia los 48 componentes de destino a los actuales
 	ld de,0ef00h		;4d87   ; apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
 	ld b,030h		;4d8a
 L_4D8C:
-	ld a,(hl)			;4d8c
+	ld a,(hl)			;4d8c   ; cada componente con su paso a 0
 	and 0e0h		;4d8d
 	or 010h		;4d8f
 	ld (de),a			;4d91
@@ -2157,7 +2157,7 @@ limpia_destinos:		; marca los 48 componentes como sin cambio
 	ld b,030h		;4d99
 	ld hl,0ef01h		;4d9b
 L_4D9E:
-	ld a,(hl)			;4d9e
+	ld a,(hl)			;4d9e   ; cada componente queda sin cambio (bit 4)
 	and 0e0h		;4d9f
 	or 010h		;4da1
 	ld (hl),a			;4da3
@@ -2169,13 +2169,13 @@ manda_paleta:		; los 16 colores de 0xEF00 al VDP (p00:4776)
 	ld bc,01000h		;4da9
 	ld hl,0ef01h		;4dac
 L_4DAF:
-	ld a,(hl)			;4daf
+	ld a,(hl)			;4daf   ; el rojo (bits 4-6 del primer byte)
 	and 0e0h		;4db0
 	rrca			;4db2
 	ld d,a			;4db3
 	inc hl			;4db4
 	inc hl			;4db5
-	ld a,(hl)			;4db6
+	ld a,(hl)			;4db6   ; el verde (el segundo byte)
 	and 0e0h		;4db7
 	rlca			;4db9
 	rlca			;4dba
@@ -2183,7 +2183,7 @@ L_4DAF:
 	ld e,a			;4dbc
 	inc hl			;4dbd
 	inc hl			;4dbe
-	ld a,(hl)			;4dbf
+	ld a,(hl)			;4dbf   ; el azul (bits 0-2 del primer byte)
 	and 0e0h		;4dc0
 	rlca			;4dc2
 	rlca			;4dc3
@@ -2192,7 +2192,7 @@ L_4DAF:
 	ld d,a			;4dc6
 	inc hl			;4dc7
 	inc hl			;4dc8
-	ld a,c			;4dc9
+	ld a,c			;4dc9   ; el numero del color
 	inc c			;4dca
 	push af			;4dcb
 	push hl			;4dcc
@@ -2245,15 +2245,15 @@ L_4DDD:
 	djnz L_4DDD		;4e0b
 	ret			;4e0d
 aclara:		; el componente A + 4, sin pasar de 7
-	add a,080h		;4e0e
+	add a,080h		;4e0e   ; 4 pasos mas claro
 	ret nc			;4e10
-	ld a,0e0h		;4e11
+	ld a,0e0h		;4e11   ; sin pasar de 7
 	ret			;4e13
 paso_de_colores:		; suma a cada componente de 0xEF00 su paso
 	ld b,010h		;4e14
 	ld hl,0ef00h		;4e16   ; apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
 L_4E19:
-	ld a,(hl)			;4e19
+	ld a,(hl)			;4e19   ; a cada componente le suma su paso (bits 0-4, con signo)
 	and 01fh		;4e1a
 	add a,0f0h		;4e1c
 	inc hl			;4e1e
@@ -2279,11 +2279,11 @@ L_4E19:
 casilla_del_borde:		; la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
 	ld de,01f00h		;4e37
 casilla_mas_scroll:		; la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
-	ld a,(0c0cdh)		;4e3a
+	ld a,(0c0cdh)		;4e3a   ; la columna mas la del scroll (64 columnas)
 	add a,d			;4e3d
 	and 03fh		;4e3e
 	ld d,a			;4e40
-	ld a,(0c0cch)		;4e41
+	ld a,(0c0cch)		;4e41   ; la fila mas la del scroll (32 filas)
 	add a,e			;4e44
 	and 01fh		;4e45
 	ld e,a			;4e47
@@ -2291,16 +2291,16 @@ casilla_mas_scroll:		; la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4
 casilla_del_scroll:		; la casilla de 0xC0CD, 0xC0CC
 	ld de,(0c0cch)		;4e4a
 sitio_en_el_mapa:		; HL = 0xE000 + 64 x (E and 0x1F) + (D and 0x3F): la casilla D, E del mapa de 64 x 32 de la RAM
-	ld a,d			;4e4e
+	ld a,d			;4e4e   ; la columna (0-63)
 	and 03fh		;4e4f
 	ld c,a			;4e51
-	ld a,e			;4e52
+	ld a,e			;4e52   ; la fila x 4
 	and 01fh		;4e53
 	add a,a			;4e55
 	add a,a			;4e56
 	ld l,a			;4e57
 	ld h,000h		;4e58
-	ld b,h			;4e5a
+	ld b,h			;4e5a   ; x 64
 	add hl,hl			;4e5b
 	add hl,hl			;4e5c
 	add hl,hl			;4e5d
@@ -2310,12 +2310,12 @@ sitio_en_el_mapa:		; HL = 0xE000 + 64 x (E and 0x1F) + (D and 0x3F): la casilla 
 	add hl,bc			;4e63
 	ret			;4e64
 pon_c0d8_4:		; 0xC0D8 = 4
-	ld a,004h		;4e65
+	ld a,004h		;4e65   ; la paleta se mandara dentro de 4 cuadros
 	ld (0c0d8h),a		;4e67
 	ret			;4e6a
 registro_6:		; el registro 6 del VDP (patrones de los sprites) = A + 0x19
 	add a,019h		;4e6b
-	ld b,a			;4e6d
+	ld b,a			;4e6d   ; el registro 6: la tabla de patrones de los sprites
 	ld c,006h		;4e6e
 	jp 00047h		;4e70   ; BIOS WRTVDP - Writes data in the VDP-register
 pon_c0d4_1:		; 0xC0D4 = 1
@@ -2325,14 +2325,14 @@ pon_c0d4_1:		; 0xC0D4 = 1
 tramo_de_a:		; A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	or a			;4e79
 	ret z			;4e7a
-	cp 009h		;4e7b
+	cp 009h		;4e7b   ; de 1 a 8: 1
 	ld a,001h		;4e7d
 	ret c			;4e7f
-	inc a			;4e80
+	inc a			;4e80   ; 9 o mas: 2
 	ret			;4e81
 trozo_de_vram_4:		; la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
 	add a,a			;4e82
-	add a,a			;4e83
+	add a,a			;4e83   ; A x 4 y en la pagina baja
 	push af			;4e84
 	xor a			;4e85
 	ld (0c93eh),a		;4e86
@@ -2341,14 +2341,14 @@ trozo_de_vram:		; HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y
 	call pagina_del_trozo		;4e8a   ; pagina_del_trozo: si A >= 12, A - 12 y C = 0xFF; si no, C = 0
 	push bc			;4e8d
 	push af			;4e8e
-	and 0fch		;4e8f
+	and 0fch		;4e8f   ; la fila de trozos: 4 por fila, 0x4000 bytes
 	add a,a			;4e91
 	add a,a			;4e92
 	add a,a			;4e93
 	add a,a			;4e94
 	ld c,a			;4e95
 	pop af			;4e96
-	and 003h		;4e97
+	and 003h		;4e97   ; la columna: 0x800 bytes
 	add a,a			;4e99
 	add a,a			;4e9a
 	add a,a			;4e9b
@@ -2357,16 +2357,16 @@ trozo_de_vram:		; HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y
 	ld h,a			;4e9e
 	ld l,000h		;4e9f
 	add hl,de			;4ea1
-	ld a,(0c93eh)		;4ea2
+	ld a,(0c93eh)		;4ea2   ; mas lo de 0xC93E (0x20: la tabla de colores)
 	add a,h			;4ea5
 	ld h,a			;4ea6
-	ld a,c			;4ea7
+	ld a,c			;4ea7   ; A = la pagina: 0 o 0xFF
 	ret			;4ea8
 pagina_del_trozo:		; si A >= 12, A - 12 y C = 0xFF; si no, C = 0
 	ld c,000h		;4ea9
 	ld e,c			;4eab
 	ld d,000h		;4eac
-	cp 00ch		;4eae
+	cp 00ch		;4eae   ; desde el 12, en los 64 KB altos
 	ret c			;4eb0
 	sub 00ch		;4eb1
 	ld c,0ffh		;4eb3
@@ -2408,9 +2408,9 @@ arranca_tipo_0D:		; la puesta en marcha del actor del tipo 0x0D (tabla p04:6360,
 	ld a,(ix+001h)		;4f0d   ; lee el paso del actor
 	dec a			;4f10
 	ret z			;4f11
-	xor a			;4f12
+	xor a			;4f12   ; 0xDF0D a 0
 	ld (0df0dh),a		;4f13
-	ld hl,0ff80h		;4f16
+	ld hl,0ff80h		;4f16   ; velocidad en Y hacia arriba: -0x80
 	jp 06bf3h		;4f19   ; pon_velocidad_y: la velocidad en Y = HL
 arranca_tipo_0E:		; la puesta en marcha del actor del tipo 0x0E (tabla p04:6360, desde p04:6344)
 	ld a,001h		;4f1c
@@ -2512,7 +2512,7 @@ L_4FD3:
 	ld hl,0ca19h		;4fda   ; apunta a el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	ld a,(hl)			;4fdd
 	push af			;4fde
-	srl a		;4fdf
+	srl a		;4fdf   ; el nivel a la mitad mientras dispara tres veces
 	ld (hl),a			;4fe1
 	call L_4F9E		;4fe2
 	call L_4F9E		;4fe5
@@ -2563,14 +2563,14 @@ L_5026:
 L_5036:
 	jp 06c1dh		;5036   ; siguiente_paso: el paso del actor + 1
 L_5039:
-	call L_509F		;5039
+	call L_509F		;5039   ; si la nave esta cerca, nada
 	ret c			;503c
 	ld iy,0ca40h		;503d   ; apunta a la nave: su ficha de actor (0 = muerta)
-	ld a,012h		;5041
+	ld a,012h		;5041   ; hacia la nave con la rapidez 0x12
 	call 06b6ch		;5043   ; velocidad_hacia_iy: la velocidad del actor hacia el de IY con la rapidez A (p04:6B85 y p04:7240)
 	jp 06c1dh		;5046   ; siguiente_paso: el paso del actor + 1
 L_5049:
-	call L_50C3		;5049
+	call L_50C3		;5049   ; si el cuadrante hacia la nave ha cambiado, siguiente paso
 	cp (ix+002h)		;504c   ; compara con un dato propio de cada tipo de actor (ix+2)
 	ret z			;504f
 	jp 06c1dh		;5050   ; siguiente_paso: el paso del actor + 1
@@ -2594,7 +2594,7 @@ L_506F:
 	ld (ix+018h),00eh		;5073   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0E
 	push ix		;5077
 	push ix		;5079
-	ld a,021h		;507b
+	ld a,021h		;507b   ; un actor nuevo de tipo 0x21
 	call 069a3h		;507d   ; crea_actor: un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
 L_5080:
 	pop iy		;5080
@@ -2605,7 +2605,7 @@ L_5080:
 	ld (ix+017h),001h		;508f   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 L_5093:
 	pop ix		;5093
-	dec (ix+022h)		;5095
+	dec (ix+022h)		;5095   ; tras ix+0x22 veces, desaparece
 	ret nz			;5098
 	jp 06e98h		;5099   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 
@@ -2635,7 +2635,7 @@ L_50B4:
 	ccf			;50b7
 	ret			;50b8
 L_50B9:
-	ex de,hl			;50b9
+	ex de,hl			;50b9   ; HL - DE x 3
 	ld b,h			;50ba
 	ld c,l			;50bb
 	add hl,hl			;50bc
@@ -2645,7 +2645,7 @@ L_50B9:
 	sbc hl,de		;50c0
 	ret			;50c2
 L_50C3:
-	ld a,h			;50c3
+	ld a,h			;50c3   ; los signos de H y D en los bits 6 y 7: el cuadrante
 	rrca			;50c4
 	and 040h		;50c5
 	ld c,a			;50c7
@@ -2659,7 +2659,7 @@ mueve_tipo_03:		; lo que hace en cada cuadro el actor del tipo 0x03 (tabla p04:6
 	ld a,(ix+001h)		;50d0   ; lee el paso del actor
 	or a			;50d3
 	jr nz,L_50F0		;50d4
-	xor a			;50d6
+	xor a			;50d6   ; mira el fondo en las cuatro esquinas (D, E y H, L de 0 y 1)
 	ld d,a			;50d7
 	ld e,a			;50d8
 	ld h,a			;50d9
@@ -2806,7 +2806,7 @@ L_51C0:
 	ld (ix+003h),0f6h		;51c4   ; un dato propio de cada tipo de actor (ix+3) = 0xF6
 	ld (ix+018h),002h		;51c8   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x02
 L_51CC:
-	push bc			;51cc
+	push bc			;51cc   ; B veces o hasta que no haya ficha
 	call L_51D9		;51cd
 	jr c,L_51D7		;51d0
 	pop bc			;51d2
@@ -2871,7 +2871,7 @@ L_521D:
 	ret nc			;5250
 	jp 06e98h		;5251   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 L_5254:
-	bit 7,h		;5254
+	bit 7,h		;5254   ; con signo
 	jr nz,L_526C		;5256
 	ld h,l			;5258
 L_5259:
@@ -2885,7 +2885,7 @@ L_5259:
 	rr l		;5269
 	ret			;526b
 L_526C:
-	ld a,l			;526c
+	ld a,l			;526c   ; el valor absoluto, y el signo despues
 	neg		;526d
 	ld h,a			;526f
 	call L_5259		;5270
