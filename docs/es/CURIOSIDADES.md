@@ -73,6 +73,39 @@ El texto de la historia está dos veces: `p01:615D` dice "IN 189.S.D. / DANGER
 THREATENED OUR GALAXY." y `p03:BEEB` dice "IN THE SD.189 / DANGER THREATEND /
 OUR GALAXY", con la errata. Solo se ve la primera (ver [Los textos](LOS-TEXTOS.html)).
 
+## Una fuente que nadie carga
+
+`p01:64F6` es una rutina a la que no llega nada: en los 256 KB del cartucho no
+hay una llamada, un salto ni un puntero con su dirección, y ninguna partida de
+las jugadas la ejecuta. Manda a la VRAM dieciséis cuadros llenos, uno de cada
+color (el carácter de `p01:665C`), las letras de la BIOS desde el espacio y
+una fuente que no está en ningún otro sitio del cartucho, la de `p01:653C`:
+los diez números, las veintiséis letras y un cuadro lleno. Pide 0x2B letras
+(`p01:6525`), 43, y la fuente tiene 37: las seis que sobran son el código que
+va detrás (en rojo).
+
+![](../imagenes/fuente_sin_uso.png)
+
+## Caza de fallos
+
+- **La primera interrupción.** Al encender, `p00:4063` borra la RAM del juego
+  de `0xC000` a `0xF0EF`, sin tocar lo de `0xF0F0` en adelante, donde quedan la
+  fase y las vidas para seguir (`0xF0FC` y `0xF0FD`). Pero ahí están también las
+  copias de los bancos puestos (`0xF0F0-0xF0F3`), que la interrupción guarda al
+  entrar y vuelve a poner en el mapper al salir (`p00:4126` y `p00:4136`). La
+  primera vez nadie las ha escrito: el mapper recibe lo que hubiera en la RAM
+  al encender. No pasa nada, porque el programa espera en el banco 0
+  (`p00:4307`) y quien usa otro banco lo pone antes. Es la única lectura de RAM
+  sin escribir que sale jugando el cartucho entero: la presentación, las nueve
+  fases y el fin de partida (`tools/ram_sin_escribir.py`).
+- **La fuente de `p01:64F6`** copia seis letras de más (arriba), pero nadie la
+  llama.
+- **La música de la fase 3** se desfasa en cada vuelta (arriba).
+- Saltos condicionales que siempre o nunca se toman: ninguno
+  (`saltos_imposibles.py` de la serie). Los seis casos dudosos de `caza_bugs.py`
+  (un `inc` o `dec` entre lo que pone la bandera y el salto) están hechos a
+  propósito: esas instrucciones no tocan la bandera que se mira.
+
 ## Preguntas abiertas
 
 - Qué había en el banco 31 cuando se escribió `p02:8F64`.

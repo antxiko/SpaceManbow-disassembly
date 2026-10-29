@@ -19,7 +19,7 @@ stage with the ship invincible, firing and moving up and down by itself; so
 that it does not last for minutes, when the stage starts it picks up the
 capsules the game hands out in their order (nine power ones, the three-way
 shot and two options; see [The ship](THE-SHIP.html)). The GIF goes from the
-moment the scroll stops until the stage ends, capped at 90 seconds, at the
+moment the scroll stops until the stage ends, whole, at the
 MSX's pace (measured in openMSX, see [Under the hood](UNDER-THE-HOOD.html)).
 
 Stage 8 loads no graphics of its own: it is played coming from stage 7, as in
@@ -34,7 +34,7 @@ the game (starting it directly, its boss would not be seen).
 | 3 | 44 s | ![](imagenes/jefe_f2.gif) |
 | 4 | 52 s | ![](imagenes/jefe_f3.gif) |
 | 5 | 55 s | ![](imagenes/jefe_f4.gif) |
-| 6 | the first 90 s (the fight goes on) | ![](imagenes/jefe_f5.gif) |
+| 6 | 182 s, the longest | ![](imagenes/jefe_f5.gif) |
 | 7 | 83 s, with its own tune | ![](imagenes/jefe_f6.gif) |
 | 8 | 68 s, coming from stage 7 | ![](imagenes/jefe_f7.gif) |
 | 9 | 70 s; when it is beaten, the [ending](THE-SEQUENCES.html) | ![](imagenes/jefe_f8.gif) |

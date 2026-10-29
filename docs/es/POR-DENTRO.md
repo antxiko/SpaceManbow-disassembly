@@ -101,12 +101,17 @@ Todo lo que sale en la web lo hace código de `tools/`:
   pantalla partida), para los GIF y para cotejar.
 - `armas.py`, `enemigos.py`, `jefes.py` y `secuencias.py`: los GIF;
   `gif_juego.py`, el ritmo.
+- `capsulas.py`, `enemigo_suelto.py` y `fuente_sin_uso.py`: las cápsulas, cada
+  tipo de enemigo suelto y la fuente que nadie carga.
+- `ram_sin_escribir.py`: la caza de lecturas de RAM sin escribir, jugando.
 - `musica.py` y `motor_musica.py`: la música, ejecutando el motor de sonido
   del cartucho; `lanza_psg.ps1`, `omsx_psg.tcl` y `coteja_psg.py`, el cotejo
   con openMSX.
 - `omsx_ritmo.tcl`: el ritmo de verdad del juego, cuadro a cuadro del VDP.
 - `omsx_demo.tcl`, `lanza_demo.ps1` y `coteja_demo.py`: la demostración en
-  openMSX contra el cartucho ejecutado, cuadro de juego a cuadro de juego.
+  openMSX contra el cartucho ejecutado, cuadro de juego a cuadro de juego;
+  `ciclos.py`, los ciclos de reloj de cada instrucción del Z80 para ejecutarlo
+  al ritmo de verdad.
 
 ## Código compartido con otros cartuchos de Konami
 

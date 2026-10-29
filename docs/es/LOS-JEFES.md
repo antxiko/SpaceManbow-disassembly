@@ -19,7 +19,7 @@ la nave invencible, disparando y subiendo y bajando sola; para que no dure
 minutos, al empezar la fase recoge las cápsulas que el juego da en su orden
 (nueve de potencia, el disparo triple y dos opciones; ver
 [La nave](LA-NAVE.html)). El GIF va desde que se para el scroll hasta que la
-fase acaba, con un tope de 90 segundos, al ritmo del MSX (medido en openMSX,
+fase acaba, entera, al ritmo del MSX (medido en openMSX,
 ver [Por dentro](POR-DENTRO.html)).
 
 La fase 8 no carga gráficos propios: se juega viniendo de la 7, como en el
@@ -34,7 +34,7 @@ juego (empezándola directamente, su jefe no se vería).
 | 3 | 44 s | ![](../imagenes/jefe_f2.gif) |
 | 4 | 52 s | ![](../imagenes/jefe_f3.gif) |
 | 5 | 55 s | ![](../imagenes/jefe_f4.gif) |
-| 6 | los primeros 90 s (la pelea sigue) | ![](../imagenes/jefe_f5.gif) |
+| 6 | 182 s, la más larga | ![](../imagenes/jefe_f5.gif) |
 | 7 | 83 s, con su propia música | ![](../imagenes/jefe_f6.gif) |
 | 8 | 68 s, viniendo de la fase 7 | ![](../imagenes/jefe_f7.gif) |
 | 9 | 70 s; al vencerlo, el [final](LAS-SECUENCIAS.html) | ![](../imagenes/jefe_f8.gif) |

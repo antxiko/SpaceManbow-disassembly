@@ -44,6 +44,13 @@ class V9938:
         self.f = 0                # S#0 bit 7: VBLANK pendiente (tools/ejecuta.py)
         self.fh = 0               # S#1 bit 0: interrupcion de linea (R19) pendiente
         self.hr = 0               # S#2 bit 5: retrazado horizontal
+        # el tiempo de las ordenes (tiempos = True): CE (S#2 bit 0) sigue
+        # puesto hasta que el reloj (instrucciones del Z80, ver reloj) llega a
+        # ocupado_hasta. Sin tiempos, las ordenes acaban al instante.
+        self.tiempos = False
+        self.reloj = lambda: 0
+        self.unidad = 1           # COSTE por unidad del reloj: 1 instrucciones, 6,6 ciclos
+        self.ocupado_hasta = 0
 
     # --------------------------------------------------------------- puertos
     def puerto(self, p, v):
@@ -86,7 +93,8 @@ class V9938:
                 # HR (bit 5) cambia en cada lectura: las esperas de "que
                 # empiece el retrazado horizontal" y "que acabe" pasan solas
                 self.hr ^= 0x20
-                return 0x80 | self.hr | (1 if self.hmmc else 0)
+                ce = self.hmmc or (self.tiempos and self.reloj() < self.ocupado_hasta)
+                return 0x80 | self.hr | (1 if ce else 0)
             if s == 0:                    # F: hubo VBLANK (se borra al leerlo)
                 v, self.f = self.f, 0
                 return v
@@ -122,6 +130,27 @@ class V9938:
         else:
             self.vram[o] = (self.vram[o] & 0xF0) | c
 
+    # lo que tarda cada orden, en instrucciones del Z80 (~6,6 ciclos) por byte
+    # o por punto, con los sprites y la pantalla encendidos: HMMM unos 80
+    # ciclos del VDP (21,48 MHz) por byte, HMMV 48, YMMM 80, LMMM 120 por
+    # punto, LMMV 88, LINE 88 (ordenes de magnitud de openMSX, VDPCmdEngine)
+    COSTE = {0xD: 2.0, 0xC: 1.2, 0xE: 2.0, 0x9: 3.0, 0x8: 2.2, 0x7: 2.2, 0x5: 1.0}
+
+    def _tiempo(self, cmd, nx, ny, dx, ix):
+        if not self.tiempos or cmd not in self.COSTE:
+            return
+        if cmd in (0xD, 0xC):
+            n = ((nx + 1) // 2) * ny
+        elif cmd == 0xE:
+            n = ((256 - dx if ix > 0 else dx + 1) // 2) * ny
+        elif cmd == 0x7:
+            n = (self._w(40, 41) & 1023) + 1
+        elif cmd == 0x5:
+            n = 1
+        else:
+            n = nx * ny
+        self.ocupado_hasta = self.reloj() + int(n * self.COSTE[cmd] * self.unidad)
+
     def orden(self, v):
         cmd, op = v >> 4, v & 15
         sx, sy = self._w(32, 33) & 511, self._w(34, 35) & 1023
@@ -131,6 +160,7 @@ class V9938:
         arg = self.r[45]
         ix = -1 if arg & 4 else 1
         iy = -1 if arg & 8 else 1
+        self._tiempo(cmd, nx, ny, dx, ix)
         if cmd == 0xD:                      # HMMM: bytes
             for j in range(ny):
                 for i in range(0, nx, 2):

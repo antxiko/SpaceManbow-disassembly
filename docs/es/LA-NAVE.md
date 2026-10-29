@@ -15,19 +15,27 @@ portadores al romperse (`p05:9A5C` llama a `p04:6F55`). No se eligen: salen
 la última. La cápsula es una pieza de caracteres del fondo (`p04:7049`), y la
 nave la coge al tocarla (`p02:875F`: el bit 5 del carácter; `p02:87BF`).
 
-| Orden | Cápsula | Lo que hace (`p02:83B8`) |
-|---|---|---|
-| 1 | 0x02 | más velocidad (`0xCB01`, hasta 4) |
-| 2 | 0x0E | más potencia del disparo (`0xCB08`, hasta 16; baja sola con el tiempo, `p02:8530`) |
-| 3 | 0x03 | el misil que va por el suelo (el arma 0x80 en `0xCB48`) |
-| 4 | 0x07 | una opción (hasta dos) |
-| 5 | 0x0A | el disparo triple (nivel 10 en las armas) |
-| 6 | 0x0B | la bomba: el siguiente disparo la lanza |
+| Orden | Cápsula | | Lo que hace (`p02:83B8`) |
+|---|---|---|---|
+| 1 | 0x02 | ![](../imagenes/capsula_02.png) | más velocidad (`0xCB01`, hasta 4) |
+| 2 | 0x0E | ![](../imagenes/capsula_0E.png) | más potencia del disparo (`0xCB08`, hasta 16; baja sola con el tiempo, `p02:8530`) |
+| 3 | 0x03 | ![](../imagenes/capsula_03.png) | el misil que va por el suelo (el arma 0x80 en `0xCB48`) |
+| 4 | 0x07 | ![](../imagenes/capsula_07.png) | una opción (hasta dos) |
+| 5 | 0x0A | ![](../imagenes/capsula_0A.png) | el disparo triple (nivel 10 en las armas) |
+| 6 | 0x0B | ![](../imagenes/capsula_0B.png) | la bomba: el siguiente disparo la lanza |
+| | 0x0C | ![](../imagenes/capsula_0C.png) | vuelta al disparo sencillo (sale en lugar de la 0x0A) |
 
 Y vuelta a empezar. Tres se cambian por otra si ya no sirven (`p04:6FF7`):
 con el misil puesto, la 3 sale como 0x0E; con el disparo triple, la 0x0A sale
 como **0x0C**, que devuelve el disparo sencillo; y con las dos opciones, la 7
-sale como 0x0E. La 0x0D solo suena, y ninguna de la lista la da.
+sale como 0x0E. La 0x0D solo suena, y ninguna de la lista la da; su dibujo
+es el de la 0x0C.
+
+Los dibujos los pinta el cartucho (`tools/capsulas.py`): cada cápsula pedida
+con la rutina del juego y recortada de la pantalla, a cuatro aumentos. La
+pieza de cada tipo sale de `p04:7049`, y las piezas, de la tabla del tipo 3
+(`p07:87E4`): 2 x 2 caracteres. Son siete dibujos: la 0x0C y la 0x0D llevan
+el mismo, y la pieza 5, que no pide ningún tipo, repite la de la 0x0E.
 
 El **botón 2** (la tecla M o el segundo botón del mando) cambia la formación
 de las opciones (`p02:8569`: encima de la nave, delante o detrás) y con ella

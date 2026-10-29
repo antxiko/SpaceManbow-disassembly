@@ -51,8 +51,12 @@ página de caracteres (`0xC09B-0xC0B5`). En el **cuadro 68** un disparo da a un
 enemigo en el MSX (`0xCF04` = 3) y aquí sigue volando (`0xCC40`), y desde ahí
 las dos partidas van cada una por su lado.
 
-En el MSX cada cuadro de juego dura 3 o 4 del VDP (medido en openMSX); aquí,
-donde las órdenes del VDP son instantáneas, siempre 3. Así, la interrupción
-cae en otro momento del cuadro, y algo de lo que alterna con ella pesa en el
-choque. Qué, exactamente, es una **pregunta abierta**: para
-cerrarla habría que hacer que el VDP de aquí tardara lo que el de verdad.
+En el MSX cada cuadro de juego dura 3 o 4 del VDP (medido en openMSX), y
+aquí, contando por instrucciones y con las órdenes del VDP instantáneas,
+casi siempre 3. Pero el ritmo **no es la causa**, medido: con las órdenes del
+VDP tardando lo suyo (`--tiempos`) y luego con el Z80 contado por ciclos de
+reloj, con la espera M1 del MSX y las interrupciones de línea en su línea
+(`--ciclos`, `tools/ciclos.py`), los cuadros de juego pasan a durar 3, 4, 5 o
+6 del VDP y la partida se separa **en el mismo cuadro 68 y con los mismos
+bytes**. Lo que lo decide es otra cosa, y sigue siendo una **pregunta
+abierta**.

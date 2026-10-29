@@ -100,12 +100,16 @@ Everything on these pages is made by code in `tools/`:
   screen), for the GIFs and for checking.
 - `armas.py`, `enemigos.py`, `jefes.py` and `secuencias.py`: the GIFs;
   `gif_juego.py`, the pace.
+- `capsulas.py`, `enemigo_suelto.py` and `fuente_sin_uso.py`: the capsules,
+  each enemy type on its own and the font nobody loads.
+- `ram_sin_escribir.py`: the hunt for reads of unwritten RAM, while playing.
 - `musica.py` and `motor_musica.py`: the music, running the cartridge's sound
   engine; `lanza_psg.ps1`, `omsx_psg.tcl` and `coteja_psg.py`, the check
   against openMSX.
 - `omsx_ritmo.tcl`: the game's real pace, VDP frame by VDP frame.
 - `omsx_demo.tcl`, `lanza_demo.ps1` and `coteja_demo.py`: the demo in openMSX
-  against the running cartridge, game frame by game frame.
+  against the running cartridge, game frame by game frame; `ciclos.py`, the
+  clock cycles of every Z80 instruction, to run it at the real pace.
 
 ## Code shared with other Konami cartridges
 

@@ -14,7 +14,15 @@ tablas de sprites y de lineas
 y de la pagina de caracteres (0xC09B-0xC0B5), que van con la interrupcion. En el 68 un disparo da en el MSX
 (0xCF04 = 3) y aqui no (0xCC40 sigue vivo).
 
-Uso: coteja_demo.py <fichero de openMSX> [cuadros]
+Y no es el ritmo: con --tiempos y con --ciclos (los cuadros de juego pasan de
+durar casi siempre 3 cuadros del VDP a 3-6, como en openMSX) se separa en el
+mismo cuadro 68 y con los mismos bytes.
+
+Con --tiempos, las ordenes del VDP tardan (tools/msx2run.py, V9938.COSTE);
+con --ciclos, el cuadro va por ciclos del Z80 y las interrupciones de linea
+llegan en su linea (tools/ejecuta.py, cuadros_ciclos; lleva --tiempos).
+
+Uso: coteja_demo.py <fichero de openMSX> [cuadros] [--tiempos] [--ciclos]
 """
 import os
 import sys
@@ -40,10 +48,18 @@ class J(Juego):
 
 
 def main(argv):
+    tiempos = "--tiempos" in argv or "--ciclos" in argv
+    reales = "--ciclos" in argv
+    argv = [a for a in argv if not a.startswith("--")]
     tope = int(argv[1]) if len(argv) > 1 else 150
     om = [(int(c), bytes.fromhex(h)) for c, h in (ln.split() for ln in open(argv[0]))][:tope]
     j = J(tope)
     j.apunta = False
+    j.vdp.tiempos = tiempos
+    if reales:
+        j.ciclos_reales = True
+        j.vdp.unidad = 6.6
+        j.vdp.reloj = lambda: j.t_total
     while len(j.fotos) < len(om):
         j.cuadros(1)
     for k, ((c1, a), (c2, b)) in enumerate(zip(om, j.fotos)):

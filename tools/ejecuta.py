@@ -28,8 +28,18 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 from msx2run import Msx                 # noqa: E402
 from z80run import ParadaZ80            # noqa: E402
+from ciclos import ciclos               # noqa: E402
 
 INS_POR_CUADRO = 9000                   # unos 59.700 ciclos / ~6,6 por instruccion
+
+# con ciclos_reales (cuadros_ciclos): el cuadro de 60 Hz son 262 lineas de
+# 228 ciclos del Z80 (3,58 MHz); el VBLANK llega al acabar la linea 212 de la
+# pantalla (192 sin el bit LN de R9) y la interrupcion de linea al empezar la
+# linea (R19 - R23) de la pantalla. Lo que hace la BIOS en Python (la entrada
+# a 0x0038, su salida, las rutinas llamadas) se cuenta con un coste fijo.
+LINEA, LINEAS = 228, 262
+CICLOS_CUADRO = LINEA * LINEAS          # 59.736
+CICLOS_BIOS = 100
 
 
 class Partida(Msx):
@@ -46,6 +56,12 @@ class Partida(Msx):
         self.cuadro = 0
         self.extrom = []
         self.en_halt = False
+        self.ins = 0                    # instrucciones corridas: el reloj del VDP
+        self.ciclos_reales = False      # cuadros por ciclos del Z80 (cuadros_ciclos)
+        self.t = 0                      # ciclos desde el ultimo VBLANK
+        self.t_total = 0
+        if self.vdp is not None:
+            self.vdp.reloj = lambda: self.ins
         self.palanca = {}               # GTSTCK: {0 cursores, 1/2 mandos: 1..8}
         self.botones = set()            # GTTRIG: 0 espacio, 1/2 mando A, 3/4 mando B
         # los ganchos de la RAM de sistema, a `ret`
@@ -184,12 +200,24 @@ class Partida(Msx):
                                               self.bancos[0xA000]))
             self._prev = k
         self._op = pc
-        self._una()
+        if self.ciclos_reales:
+            bc = self.bc
+            self._una()
+            self._cuenta(ciclos(self.mem, pc, self.pc, bc, self.bc))
+        else:
+            self._una()
         self._op = -1
+        self.ins += 1
+
+    def _cuenta(self, c):
+        self.t += c
+        self.t_total += c
 
     def cuadros(self, n=1, ins=INS_POR_CUADRO, cada=None):
         """n cuadros: ins instrucciones (o hasta un halt) y la interrupcion.
         cada(self) se llama al final de cada cuadro."""
+        if self.ciclos_reales:
+            return self.cuadros_ciclos(n, cada)
         for _ in range(n):
             k = 0
             while k < ins and not self.en_halt:
@@ -198,6 +226,7 @@ class Partida(Msx):
             if self.en_halt:
                 self.en_halt = False
                 self.pc = (self.pc + 1) & 0xFFFF
+                self.ins += ins - k             # el halt espera el resto del cuadro
             v = getattr(self.vdp, "r", None)
             self.regs_linea2 = None
             if v is not None and v[0] & 0x10 and self.iff:
@@ -218,6 +247,58 @@ class Partida(Msx):
                 self._atiende()
             if v is not None:
                 self.regs_cuadro = bytes(self.vdp.r)
+            self.cuadro += 1
+            if cada:
+                cada(self)
+
+    def cuadros_ciclos(self, n=1, cada=None):
+        """n cuadros por ciclos: cada uno, del VBLANK al siguiente, con las
+        interrupciones de linea cuando la pantalla llega a su linea. Las
+        peticiones del VDP (F en S#0, FH en S#1) siguen puestas hasta que se
+        lee su registro de estado (la del VBLANK la lee la BIOS al volver de
+        H.KEYI), y el Z80 las atiende en cuanto hay `ei`.
+        Los registros para la foto, como en cuadros(): los que hay cuando cada
+        interrupcion vuelve a dejar entrar otras (`ei`)."""
+        v = self.vdp
+        if not v.r[1] and not self.cuadro:
+            v.r[1] = 0x60                            # como lo deja la BIOS: pantalla e IE0
+        for _ in range(n):
+            alto = 212 if v.r[9] & 0x80 else 192
+            arriba = CICLOS_CUADRO - alto * LINEA    # del VBLANK a la linea 0
+            vista = -1                               # la ultima linea que ha interrumpido
+            lineas = []
+            sirviendo = None
+            while self.t < CICLOS_CUADRO:
+                ln = (v.r[19] - v.r[23]) & 0xFF
+                if vista < ln < alto and self.t >= arriba + ln * LINEA:
+                    vista = ln
+                    if v.r[0] & 0x10:
+                        v.fh = 1                     # FH solo con IE1 (como openMSX)
+                if self.iff and ((v.fh and v.r[0] & 0x10) or (v.f and v.r[1] & 0x20)):
+                    sirviendo = "linea" if (v.fh and v.r[0] & 0x10) else "vblank"
+                    self.en_halt = False
+                    self.interrupcion()
+                    self._cuenta(13 + CICLOS_BIOS)
+                    continue
+                if self.en_halt:
+                    self._cuenta(5)
+                    continue
+                pc, antes = self.pc, self.t
+                if pc == 0x0039:
+                    v.f = 0                          # la BIOS lee S#0 tras H.KEYI
+                self.paso()
+                if self.t == antes and pc < 0x4000:
+                    self._cuenta(CICLOS_BIOS)        # una rutina de la BIOS
+                if sirviendo and self.iff:
+                    if sirviendo == "vblank":
+                        self.regs_cuadro = bytes(v.r)
+                    else:
+                        lineas.append(bytes(v.r))
+                    sirviendo = None
+            self.t -= CICLOS_CUADRO
+            v.f = 0x80                               # el VBLANK
+            self.regs_linea = lineas[0] if lineas else None
+            self.regs_linea2 = lineas[1] if len(lineas) > 1 else None
             self.cuadro += 1
             if cada:
                 cada(self)

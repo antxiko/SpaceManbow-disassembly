@@ -21,7 +21,8 @@ sys.path.insert(0, AQUI)
 from armas import Nave, CREA_CAPSULA      # noqa: E402
 from gif_juego import Gif                 # noqa: E402
 
-TOPE = 1550                               # cuadros procesados (unos 90 s)
+TOPE = 3500                               # cuadros procesados (unos 200 s; la
+                                          # pelea mas larga, la de la fase 6, 3144)
 EQUIPO = [0x0E] * 9 + [0x0A, 0x07, 0x07]
 
 

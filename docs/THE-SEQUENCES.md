@@ -50,8 +50,11 @@ alternation of the sprite and line tables and of the character page
 3) and here it keeps flying (`0xCC40`), and from there each game goes its own
 way.
 
-On the MSX each game frame lasts 3 or 4 VDP frames (measured in openMSX);
-here, where the VDP commands are instantaneous, always 3. So the interrupt
-falls at another point of the frame, and something that alternates with it
-weighs on the collision. What, exactly, is an **open question**: to
-close it, the VDP here would have to take as long as the real one.
+On the MSX each game frame lasts 3 or 4 VDP frames (measured in openMSX),
+and here, counting by instructions and with instantaneous VDP commands,
+nearly always 3. But the pace is **not the cause**, measured: with the VDP
+commands taking their time (`--tiempos`) and then with the Z80 counted in
+clock cycles, with the MSX's M1 wait and the line interrupts on their line
+(`--ciclos`, `tools/ciclos.py`), game frames last 3, 4, 5 or 6 VDP frames and
+the game parts **at the same frame 68 and with the same bytes**. Something
+else decides it, and it is still an **open question**.

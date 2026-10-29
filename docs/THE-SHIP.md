@@ -16,20 +16,27 @@ the last one. The capsule is a piece of background characters (`p04:7049`),
 and the ship takes it on touching it (`p02:875F`: bit 5 of the character;
 `p02:87BF`).
 
-| Order | Capsule | What it does (`p02:83B8`) |
-|---|---|---|
-| 1 | 0x02 | more speed (`0xCB01`, up to 4) |
-| 2 | 0x0E | more shot power (`0xCB08`, up to 16; it drops by itself over time, `p02:8530`) |
-| 3 | 0x03 | the missile that runs along the ground (weapon 0x80 in `0xCB48`) |
-| 4 | 0x07 | an option (up to two) |
-| 5 | 0x0A | the three-way shot (level 10 on the weapons) |
-| 6 | 0x0B | the bomb: the next shot fires it |
+| Order | Capsule | | What it does (`p02:83B8`) |
+|---|---|---|---|
+| 1 | 0x02 | ![](imagenes/capsula_02.png) | more speed (`0xCB01`, up to 4) |
+| 2 | 0x0E | ![](imagenes/capsula_0E.png) | more shot power (`0xCB08`, up to 16; it drops by itself over time, `p02:8530`) |
+| 3 | 0x03 | ![](imagenes/capsula_03.png) | the missile that runs along the ground (weapon 0x80 in `0xCB48`) |
+| 4 | 0x07 | ![](imagenes/capsula_07.png) | an option (up to two) |
+| 5 | 0x0A | ![](imagenes/capsula_0A.png) | the three-way shot (level 10 on the weapons) |
+| 6 | 0x0B | ![](imagenes/capsula_0B.png) | the bomb: the next shot fires it |
+| | 0x0C | ![](imagenes/capsula_0C.png) | back to the single shot (it comes instead of 0x0A) |
 
 And round again. Three are swapped for another when they are no longer of use
 (`p04:6FF7`): with the missile on, 3 comes out as 0x0E; with the three-way
 shot, 0x0A comes out as **0x0C**, which brings back the single shot; and with
 both options, 7 comes out as 0x0E. 0x0D only makes a sound, and none in the
-list gives it.
+list gives it; its drawing is that of 0x0C.
+
+The drawings are painted by the cartridge (`tools/capsulas.py`): each capsule
+requested with the game's own routine and cut out of the screen, enlarged four
+times. Each type's piece comes from `p04:7049`, and the pieces from the type 3
+table (`p07:87E4`): 2 x 2 characters. There are seven drawings: 0x0C and 0x0D
+share one, and piece 5, which no type asks for, repeats that of 0x0E.
 
 **Button 2** (the M key or the joystick's second button) changes the options'
 formation (`p02:8569`: above the ship, in front or behind) and with it each

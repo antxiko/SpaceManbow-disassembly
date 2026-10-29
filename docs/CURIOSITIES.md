@@ -75,6 +75,38 @@ THREATENED OUR GALAXY." and `p03:BEEB` says "IN THE SD.189 / DANGER THREATEND /
 OUR GALAXY", with the typo. Only the first is seen (see
 [The texts](THE-TEXTS.html)).
 
+## A font nobody loads
+
+`p01:64F6` is a routine nothing reaches: in the cartridge's 256 KB there is
+no call, jump or pointer with its address, and none of the games played runs
+it. It sends to VRAM sixteen solid squares, one of each colour (the character
+at `p01:665C`), the BIOS letters from the space onwards, and a font that is
+nowhere else in the cartridge, the one at `p01:653C`: the ten digits, the
+twenty-six letters and a solid square. It asks for 0x2B letters (`p01:6525`),
+43, and the font has 37: the six left over are the code that follows (in red).
+
+![](imagenes/fuente_sin_uso.png)
+
+## Bug hunt
+
+- **The first interrupt.** At power-on, `p00:4063` clears the game's RAM from
+  `0xC000` to `0xF0EF`, leaving out `0xF0F0` onwards, where the stage and the
+  lives are kept for continuing (`0xF0FC` and `0xF0FD`). But the copies of the
+  banks in place are there too (`0xF0F0-0xF0F3`), and the interrupt saves them
+  on entry and puts them back in the mapper on exit (`p00:4126` and
+  `p00:4136`). The first time nobody has written them: the mapper gets whatever
+  the RAM held at power-on. Nothing happens, because the program is waiting in
+  bank 0 (`p00:4307`) and whoever uses another bank sets it first. It is the
+  only read of unwritten RAM found playing the whole cartridge: the intro, the
+  nine stages and the game over (`tools/ram_sin_escribir.py`).
+- **The font at `p01:64F6`** copies six letters too many (above), but nobody
+  calls it.
+- **Stage 3's tune** drifts every round (above).
+- Conditional jumps that are always or never taken: none (the series'
+  `saltos_imposibles.py`). The six doubtful cases from `caza_bugs.py` (an
+  `inc` or `dec` between what sets the flag and the jump) are on purpose:
+  those instructions do not touch the flag being tested.
+
 ## Open questions
 
 - What was in bank 31 when `p02:8F64` was written.

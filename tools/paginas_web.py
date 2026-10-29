@@ -9,6 +9,12 @@ cada oleada se publica el GIF del primero (tools/enemigos.py graba), que
 enseña la pantalla entera desde ese cuadro; los demas GIF no se usan, asi
 ninguna imagen sale dos veces.
 
+Debajo de las oleadas, cada tipo suelto (tools/enemigo_suelto.py, en
+work/suelto2): el recorte de lo que deja de verse al quitarlo, en la fase en
+que sale por primera vez (asi tampoco se repite ninguno). Los que no dibujan
+nada y los que al quitarlos cambia la pantalla entera van sin imagen, y se
+dice cuales van en las fichas de las balas.
+
 Uso: paginas_web.py <docs>
 """
 import json
@@ -21,6 +27,26 @@ sys.path.insert(0, AQUI)
 from enemigos import TOPE        # noqa: E402
 
 ANCHO = TOPE - 40                 # que se vea al menos 40 cuadros
+SUELTO = os.path.join(RAIZ, "work", "suelto2")
+ENTERA = 160                      # un recorte mas ancho y alto que esto: la pantalla entera
+
+
+def sueltos():
+    """{fase: [(tipo, info)]} con cada tipo en la primera fase en que sale."""
+    vistos, out = set(), {}
+    for f in range(9):
+        fich = os.path.join(SUELTO, "f%d.json" % f)
+        d = json.load(open(fich)) if os.path.exists(fich) else {}
+        for t, info in sorted(d.items(), key=lambda x: (x[1]["cuadro"], x[0])):
+            if t in vistos:
+                continue
+            vistos.add(t)
+            c = info.get("caja")
+            if c and c[2] - c[0] > ENTERA and c[3] - c[1] > ENTERA:
+                info = dict(info, entera=True)
+                info.pop("imagen")
+            out.setdefault(f, []).append((int(t, 16), info))
+    return out
 
 
 def oleadas(fase):
@@ -57,6 +83,15 @@ primeros %d cuadros), con la lista de los que estrenan. Pantalla entera y al
 ritmo del MSX (ver [Por dentro](POR-DENTRO.html)). En el cartucho no hay
 nombres de enemigos: van por su número de tipo.
 
+Debajo de cada fase, **cada tipo suelto**, en la fase en que sale por primera
+vez (`tools/enemigo_suelto.py`): en un cuadro en que se ve, la partida se
+copia y en la copia se quita ese tipo; lo que cambia entre las dos pantallas
+tres cuadros después es lo que él dibuja, y el recorte es esa zona (a tres
+aumentos, con lo que haya alrededor). Los que van en las fichas de `0xD460`
+son **balas** para el juego (`p04:7840`); los que al quitarlos no cambia nada
+no dibujan por sí mismos (ponen en marcha a otros), y hay alguno que al
+quitarlo cambia la pantalla entera.
+
 Los jefes están en [Los jefes](LOS-JEFES.html); las cápsulas (el tipo 3), en
 [La nave](LA-NAVE.html).""" % ANCHO,
         fase="## Fase %d",
@@ -64,6 +99,9 @@ Los jefes están en [Los jefes](LOS-JEFES.html); las cápsulas (el tipo 3), en
         fila="| %s | ![](../imagenes/%s) |",
         tipo="tipo", tipos="tipos", img="../imagenes/",
         jefe="(ya con el jefe)",
+        cab2="| Tipo | Suelto | |\n|---|---|---|",
+        fila2="| 0x%02X | %s | %s |",
+        bala="bala", nada="no dibuja nada", entera="cambia la pantalla entera",
     ),
     "en": dict(
         titulo="# The enemies",
@@ -82,6 +120,15 @@ its first %d frames), with the list of those that debut. Full screen and at
 the MSX's pace (see [Under the hood](UNDER-THE-HOOD.html)). There are no enemy
 names in the cartridge: they go by their type number.
 
+Under each stage, **each type on its own**, in the stage where it first
+appears (`tools/enemigo_suelto.py`): on a frame where it is seen, the game is
+copied and that type is removed from the copy; what changes between the two
+screens three frames later is what it draws, and the cut-out is that area
+(enlarged three times, with whatever is around it). Those in the `0xD460`
+records are **shots** to the game (`p04:7840`); those whose removal changes
+nothing draw nothing themselves (they set others going), and there is one or
+another whose removal changes the whole screen.
+
 The bosses are in [The bosses](THE-BOSSES.html); the capsules (type 3), in
 [The ship](THE-SHIP.html).""" % ANCHO,
         fase="## Stage %d",
@@ -89,6 +136,9 @@ The bosses are in [The bosses](THE-BOSSES.html); the capsules (type 3), in
         fila="| %s | ![](imagenes/%s) |",
         tipo="type", tipos="types", img="imagenes/",
         jefe="(with the boss already)",
+        cab2="| Type | On its own | |\n|---|---|---|",
+        fila2="| 0x%02X | %s | %s |",
+        bala="shot", nada="draws nothing", entera="changes the whole screen",
     ),
 }
 
@@ -109,13 +159,25 @@ def enemigos(idioma, docs):
                 txt += " " + T["jefe"]
             out.append(T["fila"] % (txt, gif))
         out.append("")
+        tipos = sueltos().get(f, [])
+        if tipos:
+            out += [T["cab2"]]
+            for t, info in tipos:
+                img = "![](%s%s)" % (T["img"], info["imagen"]) if "imagen" in info else ""
+                nota = [T["bala"]] if info.get("balas") else []
+                if info.get("entera"):
+                    nota.append(T["entera"])
+                elif "imagen" not in info:
+                    nota.append(T["nada"])
+                out.append(T["fila2"] % (t, img, ", ".join(nota)))
+            out.append("")
     nombre = "es/LOS-ENEMIGOS.md" if idioma == "es" else "THE-ENEMIES.md"
     open(os.path.join(docs, nombre), "w", encoding="utf-8", newline="\n").write("\n".join(out))
 
 
 def usados(docs):
-    """Los GIF de enemigos que salen en la pagina."""
-    s = set()
+    """Los GIF de enemigos y los recortes que salen en la pagina."""
+    s = {info["imagen"] for tipos in sueltos().values() for t, info in tipos if "imagen" in info}
     for f in range(9):
         for lider, k, tipos in oleadas(f)[0]:
             s.add("enemigo_f%d_%02X.gif" % (f, lider))
