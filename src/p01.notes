@@ -1,4 +1,108 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x6085 0xD702: el logotipo ha acabado de aparecer
+C 0x6091 0x80 cuadros de espera
+C 0x60AD una espera
+C 0x60C9 una espera
+C 0x613D espera 0x3C interrupciones
+C 0x6141 borra la primera pagina de la VRAM
+C 0x61A3 la historia sigue
+C 0x61AB acabo: a la demostracion
+C 0x61CE sigue en el paso siguiente
+C 0x620C la demostracion sigue
+C 0x6232 paso 0
+C 0x6234 sin espera
+C 0x6240 nada pulsado: sigue
+C 0x6242 al titulo
+C 0x6247 acarreo: se ha saltado
+C 0x624A los mandos directamente, sin la interrupcion
+C 0x6253 Z: nada nuevo
+C 0x6304 se aceptan sonidos otra vez
+C 0x639C F5: se sigue jugando
+C 0x63A0 a la cuenta 0xD8, los colores de p01:6413
+C 0x63AA al llegar a 0, se acaba la partida
+C 0x63EE los 6 registros del VDP de p01:6405
+C 0x63F9 la pagina 0 entera a 0
+C 0x649B paso 0
+C 0x64E3 0xCA03 = 0: sin trucos
+C 0x64E8 con el byte 0x4032 a 0xFF no hay depuracion
+C 0x64ED F3 al empezar: el bit 0 de 0xCA03, la nave no choca (p02:8060)
+C 0x64F8 0xFAF6 = 1 mientras se cargan las letras
+C 0x64FE 16 letras de p01:665C, una detras de otra
+C 0x650E C = el color de la letra siguiente
+C 0x6514 desde el espacio de la fuente de la BIOS
+C 0x6519 0x60 letras con el color 0x0F
+C 0x651F y las 0x2B de p01:653C en la pagina 0x8000
+C 0x652C se acabo la carga
+C 0x6533 CGTABL: la fuente de la BIOS
+C 0x6537 8 bytes por letra
+C 0x670A cuenta los cuadros
+C 0x670C uno de cada dos
+C 0x6710 las lineas que faltan
+C 0x6713 ya esta: 0xD702 = 1
+C 0x6719 cuantas lineas lleva
+C 0x671D 0xA8 puntos de ancho
+C 0x671F copia el trozo del logotipo de la pagina 1 a la 0, cada vez una linea mas
+C 0x672E la letra; 0xFF acaba
+C 0x6734 0xFE: la siguiente fila
+C 0x6738 D mas lo que lleva y E 8 lineas mas abajo
+C 0x6942 D = una fila del caracter (1 bit por punto)
+C 0x6944 4 bytes de 2 puntos cada uno
+C 0x6946 el punto: el color C si esta, 0 si no
+C 0x694C al nibble con rld
+C 0x6954 el segundo punto del byte
+C 0x6959 la fila siguiente
+C 0x6968 D, E (columna y fila en puntos) a direccion de VRAM
+C 0x696B / 2: dos puntos por byte
+C 0x696F en la pagina de 0x8000 de la VRAM
+C 0x6973 los 32 bytes del caracter ya a 4 bits
+C 0x697A la letra siguiente
+C 0x69D5 espera una interrupcion
+C 0x69DB el registro 23 sube 2 lineas por cuadro
+C 0x69DE hasta 0: el titulo sube
+C 0x69E3 los colores del titulo, tal cual
+C 0x69E9 copia un trozo de la pagina 2
+C 0x69F7 y los textos con sus fundidos
+C 0x6A85 jp en el gancho H.KEYI
+C 0x6A8A a la direccion de p00:410E
+C 0x6A93 C = 2 (el titulo), B = 0 (su paso)
+C 0x6AA5 a la direccion de p00:410C: la que salta con el disparo
+C 0x6AB5 8 filas de 4 bytes
+C 0x6AC3 8 filas de 4 bytes
+C 0x6ACD el caracter a 0xD700
+C 0x6AE2 cada byte: dos puntos
+C 0x6AE8 el punto de la izquierda
+C 0x6AED su color cambiado si es 0x0E o 0x0F
+C 0x6AF1 el de la derecha
+C 0x6AF6 los dos juntos
+C 0x6B02 0x0E: el color del nibble bajo de 0xC91C
+C 0x6B0C 0x0F: el del alto
+C 0x6B1C A x 3 x 3
+C 0x6B22 x 4: A x 36
+C 0x6B28 x 32
+C 0x6B2E HL x 2 + HL
+C 0x6B6F 32 caracteres de una fila
+C 0x6B73 4 bytes (8 puntos) mas alla
+C 0x6B7B la fila siguiente de la pantalla: 0x380 mas (8 lineas de 0x80, menos lo andado)
+C 0x6B87 36 bytes por icono de 6 x 6
+C 0x6B9C 32 bytes por cifra (8 x 8 a 4 bits)
+C 0x6BB1 32 bytes por cifra
+C 0x6BC6 32 bytes por caracter
+C 0x6BE0 los iconos que hay pintados
+C 0x6BE5 menos que la potencia: se pinta otro
+C 0x6BE7 mas: se borra el ultimo
+C 0x6BFF del 8 en adelante, la otra clase de icono
+C 0x6C08 6 bytes (12 puntos) por icono
+C 0x6C12 las vidas: 1 byte BCD, su copia y su sitio en la VRAM
+C 0x6C22 el marcador: 3 bytes
+C 0x6C32 el record: 3 bytes
+C 0x6C3F el byte contra su copia
+C 0x6C45 el siguiente (de mayor a menor)
+C 0x6C46 la posicion: 8 bytes (16 puntos) mas alla
+C 0x6C4F la copia al dia
+C 0x6C53 las decenas en el nibble alto
+# --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6032 0x603E tabla_6032  6 destinos del despachador p00:461A (call en p01:602F, el indice en A): 603E, 6050, 609D, 60DB, 61B0, 61E2; lo leen p01:602F (12 bytes)
 F 0x6032 w6

@@ -2133,7 +2133,7 @@ L_7003:
 	xor a			;7003
 	ret			;7004
 L_7005:
-	ld a,(0cb48h)		;7005   ; lee la casilla de las armas 8 en adelante
+	ld a,(0cb48h)		;7005   ; lee la casilla de las armas 1, 5 y de 9 en adelante
 	or a			;7008
 	ret z			;7009
 	ld a,001h		;700a
@@ -2145,7 +2145,7 @@ L_700D:
 	ld a,002h		;7014
 	ret			;7016
 L_7017:
-	ld a,(0cb50h)		;7017   ; lee la casilla de las armas 5 a 7
+	ld a,(0cb50h)		;7017   ; lee la casilla de las armas 6 a 8
 	or a			;701a
 	ret z			;701b
 	ld a,(0cb58h)		;701c   ; lee la casilla de las armas 2 a 4
@@ -4314,7 +4314,7 @@ sonido_del_tipo:		; el sonido del tipo del actor (p00:4AF5)
 	call datos_del_tipo_a		;7dd0   ; datos_del_tipo_a: HL = p04:7E74 + 3 x A
 	inc hl			;7dd3
 	ld a,(hl)			;7dd4
-	jp 04af5h		;7dd5   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;7dd5   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 datos_del_tipo_a:		; HL = p04:7E74 + 3 x A
 	ld h,000h		;7dd8
 	ld l,a			;7dda

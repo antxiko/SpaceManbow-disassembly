@@ -851,7 +851,7 @@ L_AB26:
 	pop hl			;ab30
 	ret			;ab31
 L_AB32:
-	call 04af5h		;ab32   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;ab32   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ret			;ab35
 color_en_linea:		; la orden 0x10 con sus datos detras del call
 	pop hl			;ab36

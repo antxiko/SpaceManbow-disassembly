@@ -1049,7 +1049,7 @@ mueve_tipo_30:		; lo que hace en cada cuadro el actor del tipo 0x30 (tabla p04:6
 	bit 0,(ix+001h)		;87ac   ; mira el bit 0 de el paso del actor
 	ret nz			;87b0
 	ld a,013h		;87b1
-	call 04af5h		;87b3   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;87b3   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	set 0,(ix+001h)		;87b6   ; pone a uno el bit 0 de el paso del actor
 	ret			;87ba
 arranca_tipo_32:		; la puesta en marcha del actor del tipo 0x32 (tabla p04:6360, desde p04:6344)
@@ -2000,7 +2000,7 @@ L_8EBA:
 	ld a,01ah		;8ec2
 	cp b			;8ec4
 	ld a,042h		;8ec5
-	jp z,04af5h		;8ec7   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp z,04af5h		;8ec7   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ret			;8eca
 L_8ECB:
 	call L_8EBA		;8ecb
@@ -2207,7 +2207,7 @@ mueve_tipo_45:		; lo que hace en cada cuadro el actor del tipo 0x45 (tabla p04:6
 	jp mueve_tipo_70		;903c   ; mueve_tipo_70: lo que hace en cada cuadro el actor del tipo 0x70 (tabla p04:64D1, desde p04:64B9)
 arranca_tipo_46:		; la puesta en marcha del actor del tipo 0x46 (tabla p04:6360, desde p04:6344)
 	ld a,030h		;903f
-	call 04af5h		;9041   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;9041   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_9044:
 	call 06754h		;9044   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 	ld (ix+00ah),01fh		;9047   ; la X del actor (en caracteres de 8 puntos) = 0x1F
@@ -2248,9 +2248,9 @@ L_9089:
 	ld a,(ix+003h)		;9090   ; lee un dato propio de cada tipo de actor (ix+3)
 	or a			;9093
 	ld a,031h		;9094
-	jp z,04af5h		;9096   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp z,04af5h		;9096   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ld a,02ch		;9099
-	jp 04af5h		;909b   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;909b   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_909E:
 	bit 0,(ix+017h)		;909e   ; mira el bit 0 de una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;90a2
@@ -2892,7 +2892,7 @@ L_951A:
 	ld a,(ix+004h)		;952a   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;952d
 	ld a,023h		;952e
-	call nz,04af5h		;9530   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call nz,04af5h		;9530   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	call 07cach		;9533   ; resta_golpe_sin_mas: si tiene golpe, se lo resta de la vida
 	jp nc,07747h		;9536   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 	jp 07cc3h		;9539   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
@@ -4188,7 +4188,7 @@ L_9ECA:
 	dec a			;9ecf
 	ld (ix+018h),a		;9ed0   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ld a,01dh		;9ed3
-	call 04af5h		;9ed5   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;9ed5   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_9ED8:
 	ld a,(ix+008h)		;9ed8   ; lee la Y del actor (en caracteres de 8 puntos)
 	sub (ix+010h)		;9edb   ; le resta la aceleracion en Y del actor (alta)

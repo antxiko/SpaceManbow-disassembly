@@ -449,7 +449,7 @@ L 0x4AC8 lee_teclas_de_funcion F1-F5 (filas 6 y 7 del teclado) en los bits 0-4
 L 0x4AE0 nada_4AE0 ret
 L 0x4AEB pide_sonido mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 L 0x4AF0 pide_sonido_b lo mismo con hasta 0x17 en la cola
-L 0x4AF5 pide_musica lo mismo con hasta 0x17 en la cola
+L 0x4AF5 pide_sonido_c lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L 0x4B31 sonido_ahora con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
 L 0x4B4A sonido_del_cuadro bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso del sonido (p28:6006)
 L 0x4B5B manda_cola_de_sonidos cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
@@ -698,7 +698,7 @@ C 0x4529 sonido_ahora: con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B
 C 0x452C bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 C 0x452F lee la fase (0 a 8; 9 el final)
 C 0x4535 suma_a_hl: HL = HL + A
-C 0x4539 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4539 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x453E apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x4544 bancos_4_2_3: pone el 4, el 2 y el 3
 C 0x4547 vector_prepara_nave: jp p02:8224
@@ -759,7 +759,7 @@ C 0x49C4 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM 
 C 0x49E3 bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
 C 0x49E8 vector_inicia_sonido: jp p28:6009
 C 0x49EB bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
-C 0x49F0 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x49F0 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x49FB lista_de_registros: B parejas [registro][valor] de HL al VDP con WRTVDP
 C 0x49FE paleta_inicial: los 16 colores de la tabla p00:47A4
 C 0x4A01 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
@@ -905,7 +905,7 @@ C 0x4F24 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x32
 C 0x4F28 lee la Y del actor (en caracteres de 8 puntos)
 C 0x4F2E la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x04
 C 0x4F36 lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
-C 0x4F3C pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4F3C pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x4F3F resta_golpe_sin_mas: si tiene golpe, se lo resta de la vida
 C 0x4F43 lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4F46 guarda el dibujo del actor (p04:7791)
@@ -918,7 +918,7 @@ C 0x4F60 despachador: salta a la entrada A de la tabla de direcciones que va det
 C 0x4F71 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x4F75 suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4F78 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
-C 0x4F7E pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4F7E pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x4F81 suma 1 a el paso del actor
 C 0x4F85 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x4F89 suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
@@ -1230,7 +1230,7 @@ C 0x56AE pon_velocidad: la velocidad en Y = HL y en X = DE
 C 0x56BC lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x56C5 pon_velocidad: la velocidad en Y = HL y en X = DE
 C 0x56CB pon_aceleracion_y: la aceleracion en Y = HL
-C 0x56D0 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x56D0 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x56D8 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x56EA fondo_en: el bit 0 de la tabla 0xDE00 del caracter del mapa en la posicion del actor mas HL, DE
 C 0x56ED velocidad_a_0: las dos velocidades a 0
@@ -1268,7 +1268,7 @@ C 0x57C8 lee la vida del actor (p04:7C44 le resta los golpes)
 C 0x57CE un dato propio de cada tipo de actor (ix+0x27) = 0x08
 C 0x57D2 lee la X guardada del actor (p04:6CF5)
 C 0x57D7 suma 1 a la X guardada del actor (p04:6CF5)
-C 0x57DC pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x57DC pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x57DF lee un dato propio de cada tipo de actor (ix+0x27)
 C 0x57E4 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x57E8 hacia_la_nave_8: E = Y de la nave - Y del actor; D = lo mismo en X
@@ -1324,7 +1324,7 @@ C 0x5932 siguiente_paso: el paso del actor + 1
 C 0x5935 lee la X del actor (en caracteres de 8 puntos)
 C 0x5938 compara con un dato propio de cada tipo de actor (ix+0x20)
 C 0x593C suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
-C 0x5941 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x5941 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x5944 siguiente_paso: el paso del actor + 1
 C 0x594A baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x5951 lee la Y del actor (en caracteres de 8 puntos)
@@ -1397,7 +1397,7 @@ C 0x5B49 pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700)
 C 0x5B4C baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x5B55 siguiente_ix6: ix+6 + 1, a 0 al llegar a B
 C 0x5B58 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-C 0x5B5E pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x5B5E pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x5B62 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x02
 C 0x5BB5 el paso del actor = 0x02
 C 0x5BB9 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x00

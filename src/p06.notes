@@ -160,7 +160,7 @@ C 0xA146 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xA149 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0xA150 olvida_golpe: ix+4 = 0
 C 0xA153 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
-C 0xA15C pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA15C pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA181 lee el paso del actor
 C 0xA184 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0xA197 siguiente_paso: el paso del actor + 1
@@ -175,7 +175,7 @@ C 0xA1CB lee un dato propio de cada tipo de actor (ix+0x21)
 C 0xA1D1 siguiente_paso: el paso del actor + 1
 C 0xA1D4 guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0xA1DD guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
-C 0xA1E4 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA1E4 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA1E7 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA1F1 lee la cuenta de cuadros de la partida
 C 0xA1FB guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
@@ -244,12 +244,12 @@ C 0xA3C4 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA3CA guarda un dato propio de cada tipo de actor (ix+0x20)
 C 0xA3CE lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0xA3D5 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
-C 0xA3DC pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA3DC pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA3DF lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA3E5 guarda un dato propio de cada tipo de actor (ix+0x20)
 C 0xA3E9 lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0xA3EF guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
-C 0xA3F6 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA3F6 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA3F9 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0xA3FD lee la aceleracion en X del actor (baja)
 C 0xA400 lee la aceleracion en X del actor (alta)
@@ -411,12 +411,12 @@ C 0xA91A el paso del actor = 0x00
 C 0xA91F resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xA923 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 C 0xA927 lee un dato propio de cada tipo de actor (ix+0x24)
-C 0xA92F pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA92F pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA934 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0xA93E resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xA942 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 C 0xA946 lee un dato propio de cada tipo de actor (ix+0x24)
-C 0xA94D pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xA94D pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA952 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0xA95D lee un dato propio de cada tipo de actor (ix+0x24)
 C 0xA961 lee un dato propio de cada tipo de actor (ix+0x23)
@@ -481,7 +481,7 @@ C 0xAB13 suma 1 a un dato propio de cada tipo de actor (ix+0x22)
 C 0xAB16 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0xAB1F la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x05
 C 0xAB23 siguiente_paso: el paso del actor + 1
-C 0xAB34 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xAB34 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xAB37 siguiente_paso: el paso del actor + 1
 C 0xAB42 lee el paso del actor
 C 0xAB4B lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
@@ -666,9 +666,9 @@ C 0xB1A5 un dato propio de cada tipo de actor (ix+3) = 0x07
 C 0xB1AB guarda un dato propio de cada tipo de actor (ix+3)
 C 0xB1AF un dato propio de cada tipo de actor (ix+3) = 0x82
 C 0xB1BA crea_actor: un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
-C 0xB1CD pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xB1CD pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xB1D0 mira el bit 0 de un dato propio de cada tipo de actor (ix+2)
-C 0xB1D5 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xB1D5 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xB1E4 lee un dato propio de cada tipo de actor (ix+2)
 C 0xB1E7 guarda un dato propio de cada tipo de actor (ix+3)
 C 0xB1F7 lee la Y del actor (en caracteres de 8 puntos)
@@ -771,7 +771,7 @@ C 0xB57B siguiente_paso: el paso del actor + 1
 C 0xB57E resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xB582 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 C 0xB586 lee un dato propio de cada tipo de actor (ix+0x22)
-C 0xB58D pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xB58D pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xB592 guarda un dato propio de cada tipo de actor (ix+0x22)
 C 0xB598 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 C 0xB59C siguiente_paso: el paso del actor + 1
@@ -791,7 +791,7 @@ C 0xB5D8 siguiente_paso: el paso del actor + 1
 C 0xB5DB resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xB5DF una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 C 0xB5E3 lee un dato propio de cada tipo de actor (ix+0x22)
-C 0xB5EB pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xB5EB pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xB5F0 guarda un dato propio de cada tipo de actor (ix+0x22)
 C 0xB5F4 el paso del actor = 0x01
 C 0xB5F8 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
@@ -810,7 +810,7 @@ C 0xB638 apunta a las 20 fichas de actor de 0x40 bytes
 C 0xB64D crea_actor: un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
 C 0xB659 guarda la X del actor (en caracteres de 8 puntos)
 C 0xB661 guarda la Y del actor (en caracteres de 8 puntos)
-C 0xB668 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xB668 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xB6CB crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 C 0xB6CF lee un dato propio de cada tipo de actor (ix+0x25)
 C 0xB6DB hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
@@ -1143,7 +1143,7 @@ C 0xBF35 la vida del actor (p04:7C44 le resta los golpes) = 0x38
 C 0xBF3C siguiente_paso: el paso del actor + 1
 C 0xBF41 siguiente_ix6: ix+6 + 1, a 0 al llegar a B
 C 0xBF44 resta_golpe_jefe_b: lo mismo sin mirar ix+0x3F
-C 0xBF4F pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xBF4F pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xBF52 puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
 C 0xBF55 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 C 0xBF59 suma 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)

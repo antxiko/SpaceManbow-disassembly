@@ -1125,8 +1125,8 @@ C 0x6FDD guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo 
 C 0x6FE2 mira_cb48_cb41_cb50: 1 o 2 segun A (3, 0x0A o 7) y 0xCB48, 0xCB41, 0xCB50 y 0xCB58
 C 0x6FEF vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 C 0x6FF4 vuelve_quitando_1: quita 1 palabra de la pila y vuelve
-C 0x7005 lee la casilla de las armas 8 en adelante
-C 0x7017 lee la casilla de las armas 5 a 7
+C 0x7005 lee la casilla de las armas 1, 5 y de 9 en adelante
+C 0x7017 lee la casilla de las armas 6 a 8
 C 0x701C lee la casilla de las armas 2 a 4
 C 0x7058 apunta a las 20 fichas de actor de 0x40 bytes
 C 0x708B apunta a las 20 fichas de actor de 0x40 bytes
@@ -1489,7 +1489,7 @@ C 0x7DC6 datos_del_tipo_a: HL = p04:7E74 + 3 x A
 C 0x7DCA suma_puntos_del_tipo: los puntos numero (HL) de la tabla p04:7CF6 (p04:7E03)
 C 0x7DCD lee el tipo del actor (0 = libre)
 C 0x7DD0 datos_del_tipo_a: HL = p04:7E74 + 3 x A
-C 0x7DD5 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x7DD5 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0x7DE4 marcador_a_0: el marcador a 0 y la siguiente vida extra a 50.000 (0xCB10 = 0x50)
 C 0x7DEA guarda el record, en BCD (3 bytes) y el byte siguiente (16 bits)
 C 0x7DFA guarda los puntos de la siguiente vida extra, en BCD y el byte siguiente (16 bits)

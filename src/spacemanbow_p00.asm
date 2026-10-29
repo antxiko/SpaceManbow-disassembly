@@ -705,7 +705,7 @@ L_44F4:
 	ld hl,04ae2h		;4532
 	call suma_a_hl		;4535   ; suma_a_hl: HL = HL + A
 	ld a,(hl)			;4538
-	call pide_musica		;4539   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call pide_sonido_c		;4539   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ret			;453c
 prepara_banco_2:		; p02:8003 con los bancos 4-2-3
 	push hl			;453d
@@ -1522,7 +1522,7 @@ prepara_arranque:		; el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde
 	call 06000h		;49e8   ; vector_inicia_sonido: jp p28:6009
 	call bancos_1_2_3		;49eb   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	ld a,055h		;49ee
-	call pide_musica		;49f0   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call pide_sonido_c		;49f0   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ld a,00fh		;49f3
 	ld (0f3ebh),a		;49f5
 	ld hl,04a30h		;49f8
@@ -1722,7 +1722,7 @@ pide_sonido_b:		; lo mismo con hasta 0x17 en la cola
 	push bc			;4af0
 	ld c,017h		;4af1   ; hasta 0x17
 	jr L_4AF8		;4af3
-pide_musica:		; lo mismo con hasta 0x17 en la cola
+pide_sonido_c:		; lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	push bc			;4af5
 	ld c,017h		;4af6
 L_4AF8:
@@ -2427,7 +2427,7 @@ mueve_tipo_0E:		; lo que hace en cada cuadro el actor del tipo 0x0E (tabla p04:6
 	ld a,(ix+004h)		;4f36   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;4f39
 	ld a,016h		;4f3a
-	call nz,pide_musica		;4f3c   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call nz,pide_sonido_c		;4f3c   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	call 07cach		;4f3f   ; resta_golpe_sin_mas: si tiene golpe, se lo resta de la vida
 	ret nc			;4f42
 	ld a,(ix+006h)		;4f43   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
@@ -2461,7 +2461,7 @@ L_4F71:
 	inc (ix+006h)		;4f75   ; suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld (ix+017h),006h		;4f78   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 	ld a,026h		;4f7c
-	call pide_musica		;4f7e   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call pide_sonido_c		;4f7e   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_4F81:
 	inc (ix+001h)		;4f81   ; suma 1 a el paso del actor
 	ret			;4f84
@@ -3545,7 +3545,7 @@ L_56C8:
 L_56CB:
 	call 06c0ch		;56cb   ; pon_aceleracion_y: la aceleracion en Y = HL
 	ld a,018h		;56ce
-	call pide_musica		;56d0   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call pide_sonido_c		;56d0   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_56D3:
 	ld a,006h		;56d3
 	jp L_5612		;56d5
@@ -3703,7 +3703,7 @@ L_57C8:
 	ret nz			;57d6
 	inc (ix+028h)		;57d7   ; suma 1 a la X guardada del actor (p04:6CF5)
 	ld a,024h		;57da
-	jp pide_musica		;57dc   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp pide_sonido_c		;57dc   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_57DF:
 	ld a,(ix+027h)		;57df   ; lee un dato propio de cada tipo de actor (ix+0x27)
 	and a			;57e2
@@ -3913,7 +3913,7 @@ L_5935:
 	ret nz			;593b
 	inc (ix+017h)		;593c   ; suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ld a,01ah		;593f
-	call pide_musica		;5941   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call pide_sonido_c		;5941   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_5944:
 	jp 06c1dh		;5944   ; siguiente_paso: el paso del actor + 1
 L_5947:
@@ -4179,7 +4179,7 @@ L_5B46:
 	jp z,06e98h		;5b58   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 	dec a			;5b5b
 	ld a,034h		;5b5c
-	jp z,pide_musica		;5b5e   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp z,pide_sonido_c		;5b5e   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	ret			;5b61
 L_5B62:
 	ld (ix+017h),002h		;5b62   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x02

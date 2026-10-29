@@ -103,7 +103,7 @@ p00 0x4AC8 lee_teclas_de_funcion  F1-F5 (filas 6 y 7 del teclado) en los bits 0-
 p00 0x4AE0 nada_4AE0  ret
 p00 0x4AEB pide_sonido  mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 p00 0x4AF0 pide_sonido_b  lo mismo con hasta 0x17 en la cola
-p00 0x4AF5 pide_musica  lo mismo con hasta 0x17 en la cola
+p00 0x4AF5 pide_sonido_c  lo mismo con hasta 0x17 en la cola (musicas y efectos)
 p00 0x4B31 sonido_ahora  con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
 p00 0x4B4A sonido_del_cuadro  bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso del sonido (p28:6006)
 p00 0x4B5B manda_cola_de_sonidos  cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
@@ -812,7 +812,7 @@ p02 0x8479 mas_velocidad  0xCB01 + 1, hasta 4
 p02 0x8484 sube_cb07  0xCB08 + 1 (hasta 0x10) con 0xCB07 = 0xFF; si cambia de tramo (p00:4E79), p02:871E
 p02 0x84A5 arma_inicial  0xCB05 = 0 y el arma 0 con nivel 1 (p02:84AC)
 p02 0x84AC pon_arma  el arma B con el nivel C en su casilla (p02:84C0; B = 0 pasa a ser 1)
-p02 0x84C0 casilla_del_arma  IX = la casilla del arma B: 0 en 0xCB40, 2-4 en 0xCB58, 5-7 en 0xCB50, el resto en 0xCB48
+p02 0x84C0 casilla_del_arma  IX = la casilla del arma B: la 0 en 0xCB40; de 2 a 4 en 0xCB58; de 6 a 8 en 0xCB50; la 1, la 5 y de 9 en adelante en 0xCB48 (con 0 y 1 el primer sub da la vuelta)
 p02 0x84DD nivel_a_las_armas  a las 5 casillas de 0xCB40 cuyo arma es menor que 9, el nivel C
 p02 0x84F6 boton_2  baja 0xCB07 (p02:8530); con el boton 2 recien pulsado y armas en 0xCB50 o 0xCB58: el sonido 8, la formacion siguiente de las opciones (p02:8569) y cada arma cambia por la de la tabla p02:8590
 p02 0x8526 hay_armas_2  NZ si hay arma en 0xCB50 o en 0xCB58
@@ -827,7 +827,7 @@ p02 0x861F datos_del_disparo  de la tabla de BC con 6 bytes por entrada, la entr
 p02 0x8637 origen_del_disparo_ix3  el sitio de salida (p02:8644) con ix+3
 p02 0x863C origen_del_disparo  el sitio de salida con el arma de IY (0 cuenta como 1)
 p02 0x8644 sale_desde  la posicion de quien dispara (p02:8661) mas el desplazamiento L, H x 32: BC (Y) y DE (X)
-p02 0x8661 quien_dispara  BC, DE = la posicion de la nave (0xCA47, 0xCA49) o la de una de las opciones (0xCAC7, 0xCAE7), segun la casilla del arma y el bit 7 de 0xCAD8 y 0xCAF8
+p02 0x8661 quien_dispara  BC, DE = de donde sale el disparo del arma A: las armas 0, 1, 5 y de 9 en adelante de la nave (0xCA47, 0xCA49); las 2 a 4 de la opcion sin el bit 7 en +0x18 y las 6 a 8 de la que lo tiene (0xCAC7, 0xCAE7)
 p02 0x86A5 tipo_del_disparo  ix+0 = A e ix+3 = el arma de IY
 p02 0x86AF disparo_contra_fondo  si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
 p02 0x86BE disparo_contra_fondo_b  lo mismo sin quitarlo si el caracter rompe

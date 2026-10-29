@@ -106,14 +106,14 @@ logotipo_anima:		; un paso del logotipo (p01:6707); cuando 0xD702 lo dice, 0xC90
 	ld (hl),008h		;607f
 	pop hl			;6081
 	call paso_del_logotipo		;6082   ; paso_del_logotipo: cada dos cuadros, una linea mas del logotipo (copia de la VRAM, p00:4838) hasta que 0xD701 llega a 0 y 0xD702 = 1
-	ld a,(0d702h)		;6085
+	ld a,(0d702h)		;6085   ; 0xD702: el logotipo ha acabado de aparecer
 	or a			;6088
 	ret z			;6089
 	push hl			;608a
 	ld hl,0f0f8h		;608b   ; apunta a por que paso va el programa (p01:6021)
 	ld (hl),009h		;608e
 	pop hl			;6090
-	ld a,080h		;6091
+	ld a,080h		;6091   ; 0x80 cuadros de espera
 	jp siguiente_paso_con_a		;6093   ; siguiente_paso_con_a: 0xC904 = A y siguiente paso
 espera_y_sigue:		; baja 0xC904 y, al llegar a 0, pasa al estado siguiente
 	call baja_c904		;6096   ; baja_c904: 0xC904 - 1; Z al llegar a 0
@@ -140,7 +140,7 @@ DATA_tabla_60A6:
 titulo_prepara:		; una espera, p01:6981 y siguiente paso
 	ld bc,01000h		;60aa
 L_60AD:
-	dec bc			;60ad
+	dec bc			;60ad   ; una espera
 	ld a,b			;60ae
 	or c			;60af
 	jr nz,L_60AD		;60b0
@@ -157,7 +157,7 @@ L_60AD:
 titulo_sigue:		; una espera, p01:6994 y siguiente estado
 	ld bc,01000h		;60c6
 L_60C9:
-	dec bc			;60c9
+	dec bc			;60c9   ; una espera
 	ld a,b			;60ca
 	or c			;60cb
 	jr nz,L_60C9		;60cc
@@ -223,9 +223,9 @@ L_6129:
 	ld (0c914h),a		;6137   ; guarda la cuenta de interrupciones del cuadro
 L_613A:
 	ld a,(0c914h)		;613a   ; lee la cuenta de interrupciones del cuadro
-	cp 03ch		;613d
+	cp 03ch		;613d   ; espera 0x3C interrupciones
 	jr c,L_613A		;613f
-	xor a			;6141
+	xor a			;6141   ; borra la primera pagina de la VRAM
 	ld h,a			;6142
 	ld l,a			;6143
 	ld b,a			;6144
@@ -263,12 +263,12 @@ historia_sigue:		; p03:A6A5 y, cuando vuelve con NZ, pasa al estado 5 (la demost
 	ld (hl),022h		;619d
 	pop hl			;619f
 	call L_600F		;61a0
-	ret z			;61a3
+	ret z			;61a3   ; la historia sigue
 	push hl			;61a4
 	ld hl,0f0f8h		;61a5   ; apunta a por que paso va el programa (p01:6021)
 	ld (hl),023h		;61a8
 	pop hl			;61aa
-	ld a,005h		;61ab
+	ld a,005h		;61ab   ; acabo: a la demostracion
 	jp a_estado		;61ad   ; a_estado: al estado A, paso 0
 estado_partida:		; el paso de 0xC901 (tabla p01:61B9)
 	ld a,b			;61b0
@@ -298,7 +298,7 @@ partida_prepara:		; p01:64AC y siguiente paso
 	ld hl,0f0f8h		;61c8   ; apunta a por que paso va el programa (p01:6021)
 	ld (hl),032h		;61cb
 	pop hl			;61cd
-	jr $+72		;61ce
+	jr $+72		;61ce   ; sigue en el paso siguiente
 partida_cuadro:		; un cuadro de la partida (p01:6256)
 	push hl			;61d0
 	ld hl,0f0f8h		;61d1   ; apunta a por que paso va el programa (p01:6021)
@@ -345,7 +345,7 @@ demostracion_cuadro:		; un cuadro de la demostracion (p01:77F0); cuando acaba (Z
 	ld (hl),022h		;6206
 	pop hl			;6208
 	call cuadro_de_demostracion		;6209   ; cuadro_de_demostracion: las entradas grabadas de este cuadro (p01:789C) y un cuadro de partida (p01:6256); al llegar a la marca de fin (tres 0xFF detras), el sonido 0x84 y fundido a negro, y diez cuadros despues acaba (Z)
-	ret nz			;620c
+	ret nz			;620c   ; la demostracion sigue
 	push hl			;620d
 	ld hl,0f0f8h		;620e   ; apunta a por que paso va el programa (p01:6021)
 	ld (hl),023h		;6211
@@ -373,7 +373,7 @@ a_estado:		; al estado A, paso 0
 	ld hl,0c900h		;622d   ; apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	ld (hl),a			;6230
 	inc hl			;6231
-	xor a			;6232
+	xor a			;6232   ; paso 0
 	ld (hl),a			;6233
 	ld (0c904h),a		;6234   ; guarda una espera del programa (p01:6238 la baja)
 	ret			;6237
@@ -383,18 +383,18 @@ baja_c904:		; 0xC904 - 1; Z al llegar a 0
 	ret			;623c
 pulsado_al_titulo:		; si se ha pulsado algo (0xC907), al estado 2 (titulo) con acarreo
 	ld a,(0c907h)		;623d   ; lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
-	or a			;6240
+	or a			;6240   ; nada pulsado: sigue
 	ret z			;6241
-	ld a,002h		;6242
+	ld a,002h		;6242   ; al titulo
 	call a_estado		;6244   ; a_estado: al estado A, paso 0
-	scf			;6247
+	scf			;6247   ; acarreo: se ha saltado
 	ret			;6248
 mandos_en_c921:		; los mandos (p00:4A8C) en 0xC921 y lo recien pulsado en 0xC920
 	exx			;6249
 	call 04a8ch		;624a   ; lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
 	ld hl,0c921h		;624d
 	call 04a63h		;6250   ; recien_pulsadas: guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
-	or a			;6253
+	or a			;6253   ; Z: nada nuevo
 	exx			;6254
 	ret			;6255
 partida:		; 0xCA02 + 1 y salta por el estado de la partida 0xCA00 (tabla p01:6267), con su paso en 0xCA01
@@ -533,7 +533,7 @@ jugando:		; un cuadro de partida (p00:4100): 0 sigue; 1 nave muerta, al estado 3
 sonidos_si:		; 0xC947 = 0
 	push af			;6300
 	ld hl,0c947h		;6301   ; apunta a bit 0: no se aceptan sonidos
-	ld (hl),000h		;6304
+	ld (hl),000h		;6304   ; se aceptan sonidos otra vez
 	pop af			;6306
 	ret			;6307
 fase_siguiente:		; 0xCA10 + 1; despues de la 8, al estado 4 (el final); si no, la fase empieza (p00:4103 con A = 3)
@@ -608,13 +608,13 @@ fin_de_partida:		; 0xCA02 = 0x60, el sonido 0x4B, borra la pantalla (p01:63EE) y
 	jp siguiente_paso_de_partida		;6396   ; siguiente_paso_de_partida: 0xCA01 + 1
 fin_de_partida_espera:		; con F5 (bit 4 de 0xC90C) se sigue (p01:63AF); si no, al acabar la cuenta de 0xCA02, siguiente paso
 	ld a,(0c90ch)		;6399   ; lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
-	bit 4,a		;639c
+	bit 4,a		;639c   ; F5: se sigue jugando
 	jr nz,sigue_la_partida		;639e
 	ld a,(0ca02h)		;63a0   ; lee la cuenta de cuadros de la partida
 	cp 0d8h		;63a3
 	ld hl,06413h		;63a5
 	jr z,paleta_y_fundido_b		;63a8
-	or a			;63aa
+	or a			;63aa   ; al llegar a 0, se acaba la partida
 	ret nz			;63ab
 	jp siguiente_paso_de_partida		;63ac   ; siguiente_paso_de_partida: 0xCA01 + 1
 sigue_la_partida:		; escribe el texto de p01:6437, sus colores, y prepara seguir (p01:63D5)
@@ -648,11 +648,11 @@ paleta_y_fundido_b:		; igual que p01:6157
 	call 04ce0h		;63e8   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 	jp 04cf5h		;63eb   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 pantalla_limpia:		; los 6 registros del VDP de p01:6405, sin sprites y la VRAM borrada
-	ld hl,06405h		;63ee
+	ld hl,06405h		;63ee   ; los 6 registros del VDP de p01:6405
 	ld b,006h		;63f1
 	call 04a1fh		;63f3
 	call 04760h		;63f6   ; apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
-	xor a			;63f9
+	xor a			;63f9   ; la pagina 0 entera a 0
 	ld h,a			;63fa
 	ld l,a			;63fb
 	ld b,a			;63fc
@@ -727,7 +727,7 @@ a_estado_de_partida:		; 0xCA00 = A y paso 0
 	ld hl,0ca00h		;6496   ; apunta a el estado de la partida
 	ld (hl),a			;6499
 	inc hl			;649a
-	ld (hl),000h		;649b
+	ld (hl),000h		;649b   ; paso 0
 	ret			;649d
 siguiente_estado_de_partida:		; 0xCA00 + 1 y paso 0
 	ld hl,0ca00h		;649e   ; apunta a el estado de la partida
@@ -769,9 +769,9 @@ L_64D9:
 	ld hl,0f0f9h		;64dd   ; apunta a por que paso va la partida (p01:6256)
 	ld (hl),002h		;64e0
 	pop hl			;64e2
-	ld hl,0ca03h		;64e3
+	ld hl,0ca03h		;64e3   ; 0xCA03 = 0: sin trucos
 	ld (hl),000h		;64e6
-	ld a,(04032h)		;64e8
+	ld a,(04032h)		;64e8   ; con el byte 0x4032 a 0xFF no hay depuracion
 	inc a			;64eb
 	ret z			;64ec
 	ld a,(0c90dh)		;64ed   ; lee las teclas F1-F5
@@ -781,9 +781,9 @@ L_64D9:
 	ret			;64f5
 copia_fuente_653C:		; con 0xFAF6 = 1: 16 caracteres de p01:665C (p01:6960) y la fuente de p01:653C a la VRAM (p01:692E)
 	ld a,001h		;64f6
-	ld (0faf6h),a		;64f8
+	ld (0faf6h),a		;64f8   ; 0xFAF6 = 1 mientras se cargan las letras
 	ld de,00000h		;64fb
-	ld bc,01000h		;64fe
+	ld bc,01000h		;64fe   ; 16 letras de p01:665C, una detras de otra
 L_6501:
 	push bc			;6501
 	push de			;6502
@@ -792,25 +792,25 @@ L_6501:
 	pop de			;6509
 	call 049d9h		;650a   ; avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 	pop bc			;650d
-	inc c			;650e
+	inc c			;650e   ; C = el color de la letra siguiente
 	djnz L_6501		;650f
 	ld de,00008h		;6511
-	ld a,020h		;6514
+	ld a,020h		;6514   ; desde el espacio de la fuente de la BIOS
 	call letra_de_la_bios		;6516   ; letra_de_la_bios: HL = la letra A de la fuente de la BIOS (la direccion de 0x0004 + 8 x A)
-	ld bc,0600fh		;6519
+	ld bc,0600fh		;6519   ; 0x60 letras con el color 0x0F
 	call copia_letras		;651c   ; copia_letras: B letras de 1 bit por punto de HL a la VRAM (p01:6960), una detras de otra
-	ld de,08000h		;651f
+	ld de,08000h		;651f   ; y las 0x2B de p01:653C en la pagina 0x8000
 	ld hl,0653ch		;6522
 	ld bc,02b0fh		;6525
 	call copia_letras		;6528   ; copia_letras: B letras de 1 bit por punto de HL a la VRAM (p01:6960), una detras de otra
 	xor a			;652b
-	ld (0faf6h),a		;652c
+	ld (0faf6h),a		;652c   ; se acabo la carga
 	ret			;652f
 letra_de_la_bios:		; HL = la letra A de la fuente de la BIOS (la direccion de 0x0004 + 8 x A)
 	ld l,a			;6530
 	ld h,000h		;6531
-	ld bc,(00004h)		;6533
-	add hl,hl			;6537
+	ld bc,(00004h)		;6533   ; CGTABL: la fuente de la BIOS
+	add hl,hl			;6537   ; 8 bytes por letra
 	add hl,hl			;6538
 	add hl,hl			;6539
 	add hl,bc			;653a
@@ -909,22 +909,22 @@ DATA_leido_66D6:
 
 paso_del_logotipo:		; cada dos cuadros, una linea mas del logotipo (copia de la VRAM, p00:4838) hasta que 0xD701 llega a 0 y 0xD702 = 1
 	ld hl,0d700h		;6707
-	dec (hl)			;670a
+	dec (hl)			;670a   ; cuenta los cuadros
 	ld a,(hl)			;670b
-	and 001h		;670c
+	and 001h		;670c   ; uno de cada dos
 	ret nz			;670e
 	inc hl			;670f
-	dec (hl)			;6710
+	dec (hl)			;6710   ; las lineas que faltan
 	jr nz,L_6719		;6711
-	ld a,001h		;6713
+	ld a,001h		;6713   ; ya esta: 0xD702 = 1
 	ld (0d702h),a		;6715
 	ret			;6718
 L_6719:
-	ld a,031h		;6719
+	ld a,031h		;6719   ; cuantas lineas lleva
 	sub (hl)			;671b
 	ld c,a			;671c
-	ld b,0a8h		;671d
-	ld hl,02840h		;671f
+	ld b,0a8h		;671d   ; 0xA8 puntos de ancho
+	ld hl,02840h		;671f   ; copia el trozo del logotipo de la pagina 1 a la 0, cada vez una linea mas
 	ld de,02840h		;6722
 	ld a,001h		;6725
 	call 04838h		;6727   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
@@ -932,15 +932,15 @@ L_6719:
 texto_por_columnas:		; las letras de HL con p00:49B9 hasta un 0xFF; 0xFE trae cuanto se mueve D y baja E 8 puntos
 	push de			;672d
 L_672E:
-	ld a,(hl)			;672e
+	ld a,(hl)			;672e   ; la letra; 0xFF acaba
 	inc hl			;672f
 	ld c,a			;6730
 	inc a			;6731
 	jr z,L_674B		;6732
-	inc a			;6734
+	inc a			;6734   ; 0xFE: la siguiente fila
 	jr nz,L_6742		;6735
 	pop de			;6737
-	ld a,(hl)			;6738
+	ld a,(hl)			;6738   ; D mas lo que lleva y E 8 lineas mas abajo
 	inc hl			;6739
 	add a,d			;673a
 	ld d,a			;673b
@@ -1012,25 +1012,25 @@ L_693F:
 	push bc			;693f
 	push hl			;6940
 	ex de,hl			;6941
-	ld a,(de)			;6942
+	ld a,(de)			;6942   ; D = una fila del caracter (1 bit por punto)
 	ld d,a			;6943
-	ld b,004h		;6944
+	ld b,004h		;6944   ; 4 bytes de 2 puntos cada uno
 L_6946:
-	ld a,c			;6946
+	ld a,c			;6946   ; el punto: el color C si esta, 0 si no
 	rl d		;6947
 	jr c,L_694C		;6949
 	xor a			;694b
 L_694C:
-	rld		;694c
+	rld		;694c   ; al nibble con rld
 	ld a,c			;694e
 	rl d		;694f
 	jr c,L_6954		;6951
 	xor a			;6953
 L_6954:
-	rld		;6954
+	rld		;6954   ; el segundo punto del byte
 	inc hl			;6956
 	djnz L_6946		;6957
-	ex de,hl			;6959
+	ex de,hl			;6959   ; la fila siguiente
 	pop hl			;695a
 	inc hl			;695b
 	pop bc			;695c
@@ -1043,18 +1043,18 @@ letra_a_vram:		; una letra de HL a 4 bits (p01:693A) y a la VRAM en D, E (p00:49
 	push de			;6963
 	call de_1_a_4_bits		;6964   ; de_1_a_4_bits: pasa 8 filas de un caracter de 1 bit por punto (HL) a 4 bits por punto en 0xD800, con el color C
 	pop de			;6967
-	ld b,d			;6968
+	ld b,d			;6968   ; D, E (columna y fila en puntos) a direccion de VRAM
 	ld d,e			;6969
 	ld e,b			;696a
-	srl d		;696b
+	srl d		;696b   ; / 2: dos puntos por byte
 	rr e		;696d
-	ld a,d			;696f
+	ld a,d			;696f   ; en la pagina de 0x8000 de la VRAM
 	add a,080h		;6970
 	ld d,a			;6972
-	ld hl,0d800h		;6973
+	ld hl,0d800h		;6973   ; los 32 bytes del caracter ya a 4 bits
 	call 0490bh		;6976   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 	pop hl			;6979
-	ld bc,00008h		;697a
+	ld bc,00008h		;697a   ; la letra siguiente
 	add hl,bc			;697d
 	pop de			;697e
 	pop bc			;697f
@@ -1099,19 +1099,19 @@ L_69D4:
 	ld a,(0c914h)		;69d5   ; lee la cuenta de interrupciones del cuadro
 	or a			;69d8
 	jr z,L_69D4		;69d9
-	inc b			;69db
+	inc b			;69db   ; el registro 23 sube 2 lineas por cuadro
 	inc b			;69dc
 	ld a,b			;69dd
-	sub 001h		;69de
+	sub 001h		;69de   ; hasta 0: el titulo sube
 	jp m,L_69C9		;69e0
-	ld hl,06a50h		;69e3
+	ld hl,06a50h		;69e3   ; los colores del titulo, tal cual
 	call 04c94h		;69e6   ; pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
-	ld hl,05840h		;69e9
+	ld hl,05840h		;69e9   ; copia un trozo de la pagina 2
 	ld de,05810h		;69ec
 	ld bc,06040h		;69ef
 	ld a,002h		;69f2
 	call 04838h		;69f4   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
-	ld hl,06a59h		;69f7
+	ld hl,06a59h		;69f7   ; y los textos con sus fundidos
 	call paleta_y_fundido_c		;69fa   ; paleta_y_fundido_c: igual que p01:6157
 	ld hl,06a68h		;69fd
 	ld de,03c28h		;6a00
@@ -1151,15 +1151,15 @@ DATA_leido_6A2C:
 
 gancho_normal:		; H.KEYI a la direccion de p00:410E (p00:4270)
 	di			;6a84
-	ld a,0c3h		;6a85
+	ld a,0c3h		;6a85   ; jp en el gancho H.KEYI
 	ld (0fd9ah),a		;6a87
-	ld hl,(0410eh)		;6a8a
+	ld hl,(0410eh)		;6a8a   ; a la direccion de p00:410E
 	ld (0fd9bh),hl		;6a8d
 	ei			;6a90
 	ret			;6a91
 gancho_saltable_titulo:		; 0xC945 = 2 (el titulo) y H.KEYI a la de p00:410C (p00:4158): con el disparo se salta al titulo
 	di			;6a92
-	ld bc,00002h		;6a93
+	ld bc,00002h		;6a93   ; C = 2 (el titulo), B = 0 (su paso)
 	jr L_6A9C		;6a96
 gancho_saltable_partida:		; 0xC945 = 4 (la partida) y H.KEYI a p00:4158
 	di			;6a98
@@ -1168,7 +1168,7 @@ L_6A9C:
 	ld (0c945h),bc		;6a9c   ; guarda el estado (y paso) al que salta p00:4158 con el disparo y el byte siguiente (16 bits)
 	ld a,0c3h		;6aa0
 	ld (0fd9ah),a		;6aa2
-	ld hl,(0410ch)		;6aa5
+	ld hl,(0410ch)		;6aa5   ; a la direccion de p00:410C: la que salta con el disparo
 	ld (0fd9bh),hl		;6aa8
 	ei			;6aab
 	ret			;6aac
@@ -1178,7 +1178,7 @@ copia_6x6:		; copia 6 filas de 6 bytes a la VRAM (p00:4921)
 copia_caracter:		; copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
 	push de			;6ab3
 	push hl			;6ab4
-	ld bc,00804h		;6ab5
+	ld bc,00804h		;6ab5   ; 8 filas de 4 bytes
 	call 04921h		;6ab8   ; copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 	pop hl			;6abb
 	pop de			;6abc
@@ -1187,14 +1187,14 @@ copia_caracter_coloreado:		; lo mismo con los colores 0x0E y 0x0F cambiados por 
 	push de			;6abe
 	push hl			;6abf
 	call recolorea		;6ac0   ; recolorea: copia el caracter a 0xD700 y cambia sus colores 0x0E y 0x0F (p01:6ADD)
-	ld bc,00804h		;6ac3
+	ld bc,00804h		;6ac3   ; 8 filas de 4 bytes
 	call 04921h		;6ac6   ; copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 	pop hl			;6ac9
 	pop de			;6aca
 	ret			;6acb
 recolorea:		; copia el caracter a 0xD700 y cambia sus colores 0x0E y 0x0F (p01:6ADD)
 	push de			;6acc
-	ld de,0d700h		;6acd
+	ld de,0d700h		;6acd   ; el caracter a 0xD700
 	ld bc,00020h		;6ad0
 	ldir		;6ad3
 	call recolorea_d700		;6ad5   ; recolorea_d700: en los 32 bytes de 0xD700, el color 0x0E por el nibble bajo de 0xC91C y el 0x0F por el alto
@@ -1205,22 +1205,22 @@ recolorea_d700:		; en los 32 bytes de 0xD700, el color 0x0E por el nibble bajo d
 	ld hl,0d700h		;6add
 	ld b,020h		;6ae0
 L_6AE2:
-	push bc			;6ae2
+	push bc			;6ae2   ; cada byte: dos puntos
 	ld a,(hl)			;6ae3
 	ld b,a			;6ae4
 	and 00fh		;6ae5
 	ld c,a			;6ae7
-	xor b			;6ae8
+	xor b			;6ae8   ; el punto de la izquierda
 	rrca			;6ae9
 	rrca			;6aea
 	rrca			;6aeb
 	rrca			;6aec
 	call color_de_c91c		;6aed   ; color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
 	ld b,a			;6af0
-	ld a,c			;6af1
+	ld a,c			;6af1   ; el de la derecha
 	call color_de_c91c		;6af2   ; color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
 	ld c,a			;6af5
-	ld a,b			;6af6
+	ld a,b			;6af6   ; los dos juntos
 	add a,a			;6af7
 	add a,a			;6af8
 	add a,a			;6af9
@@ -1232,13 +1232,13 @@ L_6AE2:
 	djnz L_6AE2		;6aff
 	ret			;6b01
 color_de_c91c:		; A = el color de 0xC91C que toca si A es 0x0E o 0x0F
-	cp 00eh		;6b02
+	cp 00eh		;6b02   ; 0x0E: el color del nibble bajo de 0xC91C
 	jr nz,L_6B0C		;6b04
 	ld a,(0c91ch)		;6b06   ; lee los dos colores con los que p01:6ADD pinta las letras
 	and 00fh		;6b09
 	ret			;6b0b
 L_6B0C:
-	cp 00fh		;6b0c
+	cp 00fh		;6b0c   ; 0x0F: el del alto
 	ret nz			;6b0e
 	ld a,(0c91ch)		;6b0f   ; lee los dos colores con los que p01:6ADD pinta las letras
 	rrca			;6b12
@@ -1252,20 +1252,20 @@ por_36:		; HL = A x 36
 	ld h,000h		;6b1a
 	call por_3		;6b1c   ; por_3: HL = HL x 3
 	call por_3		;6b1f   ; por_3: HL = HL x 3
-	add hl,hl			;6b22
+	add hl,hl			;6b22   ; x 4: A x 36
 	add hl,hl			;6b23
 	ret			;6b24
 por_32:		; HL = A x 32
 	ld l,a			;6b25
 	ld h,000h		;6b26
-	add hl,hl			;6b28
+	add hl,hl			;6b28   ; x 32
 	add hl,hl			;6b29
 	add hl,hl			;6b2a
 	add hl,hl			;6b2b
 	add hl,hl			;6b2c
 	ret			;6b2d
 por_3:		; HL = HL x 3
-	ld d,h			;6b2e
+	ld d,h			;6b2e   ; HL x 2 + HL
 	ld e,l			;6b2f
 	add hl,hl			;6b30
 	add hl,de			;6b31
@@ -1295,16 +1295,16 @@ prepara_marcador:		; 0xC91C = 0xFE, la VRAM de 0xE000-0xEFFF a 0xFF, las tres fi
 fila_del_marcador:		; 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
 	ld b,020h		;6b6d
 L_6B6F:
-	ld a,(hl)			;6b6f
+	ld a,(hl)			;6b6f   ; 32 caracteres de una fila
 	call pinta_caracter_del_marcador		;6b70   ; pinta_caracter_del_marcador: el caracter A de p01:6D09 en DE
-	inc de			;6b73
+	inc de			;6b73   ; 4 bytes (8 puntos) mas alla
 	inc de			;6b74
 	inc de			;6b75
 	inc de			;6b76
 	inc hl			;6b77
 	djnz L_6B6F		;6b78
 	push hl			;6b7a
-	ld hl,00380h		;6b7b
+	ld hl,00380h		;6b7b   ; la fila siguiente de la pantalla: 0x380 mas (8 lineas de 0x80, menos lo andado)
 	add hl,de			;6b7e
 	ex de,hl			;6b7f
 	pop hl			;6b80
@@ -1379,11 +1379,11 @@ marcador_del_cuadro:		; las cifras que han cambiado (p01:6C12) y los iconos de 0
 	ret			;6bdc
 iconos_de_cb08:		; 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
 	ld a,(0cb08h)		;6bdd   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
-	ld hl,0df9eh		;6be0
+	ld hl,0df9eh		;6be0   ; los iconos que hay pintados
 	cp (hl)			;6be3
 	ret z			;6be4
-	jr nc,L_6BF0		;6be5
-	dec (hl)			;6be7
+	jr nc,L_6BF0		;6be5   ; menos que la potencia: se pinta otro
+	dec (hl)			;6be7   ; mas: se borra el ultimo
 	ld a,(hl)			;6be8
 	call sitio_del_icono		;6be9   ; sitio_del_icono: DE = 0xE21C + 6 x A en la VRAM
 	xor a			;6bec
@@ -1398,7 +1398,7 @@ L_6BF0:
 	jp pinta_icono		;6bfa   ; pinta_icono: el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
 clase_de_icono:		; B = 1 hasta el icono 7 y 2 desde el 8
 	ld b,001h		;6bfd
-	cp 008h		;6bff
+	cp 008h		;6bff   ; del 8 en adelante, la otra clase de icono
 	ret c			;6c01
 	ld b,002h		;6c02
 	ret			;6c04
@@ -1419,37 +1419,37 @@ cifras_del_marcador:		; las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el rec
 	ld hl,0e70ch		;6c1b
 	exx			;6c1e
 	call cambia_cifras		;6c1f   ; cambia_cifras: B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
-	ld de,0cb0dh		;6c22
+	ld de,0cb0dh		;6c22   ; el marcador: 3 bytes
 	ld hl,0df90h		;6c25
 	ld b,003h		;6c28
 	exx			;6c2a
 	ld hl,0e734h		;6c2b
 	exx			;6c2e
 	call cambia_cifras		;6c2f   ; cambia_cifras: B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
-	ld de,0c924h		;6c32
+	ld de,0c924h		;6c32   ; el record: 3 bytes
 	ld hl,0dfa2h		;6c35
 	ld b,003h		;6c38
 	exx			;6c3a
 	ld hl,0e760h		;6c3b
 	exx			;6c3e
 cambia_cifras:		; B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
-	ld a,(de)			;6c3f
+	ld a,(de)			;6c3f   ; el byte contra su copia
 	cp (hl)			;6c40
 	call nz,pinta_dos_cifras		;6c41   ; pinta_dos_cifras: las dos cifras del byte A
 	inc hl			;6c44
-	dec de			;6c45
-	exx			;6c46
+	dec de			;6c45   ; el siguiente (de mayor a menor)
+	exx			;6c46   ; la posicion: 8 bytes (16 puntos) mas alla
 	ld de,00008h		;6c47
 	add hl,de			;6c4a
 	exx			;6c4b
 	djnz cambia_cifras		;6c4c
 	ret			;6c4e
 pinta_dos_cifras:		; las dos cifras del byte A
-	ld (hl),a			;6c4f
+	ld (hl),a			;6c4f   ; la copia al dia
 	exx			;6c50
 	push hl			;6c51
 	ex de,hl			;6c52
-	ld c,a			;6c53
+	ld c,a			;6c53   ; las decenas en el nibble alto
 	and 00fh		;6c54
 	ld b,a			;6c56
 	xor c			;6c57

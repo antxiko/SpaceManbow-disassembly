@@ -215,7 +215,7 @@ L_A157:
 	dec a			;a158
 	ret nz			;a159
 	ld a,029h		;a15a
-	jp 04af5h		;a15c   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;a15c   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_A15F: lo leen p06:A143, p06:A145 jugando (tools/cobertura.py)
@@ -294,7 +294,7 @@ L_A1CB:
 	dec b			;a1e0
 	ret nz			;a1e1
 	ld a,028h		;a1e2
-	jp 04af5h		;a1e4   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;a1e4   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_A1E7:
 	ld a,(ix+020h)		;a1e7   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;a1ea
@@ -557,7 +557,7 @@ L_A3CE:
 	dec a			;a3d8
 	ret nz			;a3d9
 	ld a,026h		;a3da
-	jp 04af5h		;a3dc   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;a3dc   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_A3DF:
 	ld a,(ix+020h)		;a3df   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	dec a			;a3e2
@@ -573,7 +573,7 @@ L_A3E9:
 	and a			;a3f2
 	ret nz			;a3f3
 	ld a,027h		;a3f4
-	jp 04af5h		;a3f6   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;a3f6   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_A3F9:
 	call 06ad2h		;a3f9   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 L_A3FC:
@@ -1186,7 +1186,7 @@ L_A91F:
 	push af			;a92a
 	cp 002h		;a92b
 	ld a,02bh		;a92d
-	call z,04af5h		;a92f   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call z,04af5h		;a92f   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_A932:
 	pop af			;a932
 	dec a			;a933
@@ -1204,7 +1204,7 @@ L_A93E:
 	push af			;a949
 	or a			;a94a
 	ld a,02ah		;a94b
-	call z,04af5h		;a94d   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call z,04af5h		;a94d   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_A950:
 	pop af			;a950
 	inc a			;a951
@@ -1456,7 +1456,7 @@ L_AB26:
 	ld a,001h		;ab2d
 	ld (0ce75h),a		;ab2f
 	ld a,051h		;ab32
-	call 04af5h		;ab34   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;ab34   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_AB37:
 	jp 06c1dh		;ab37   ; siguiente_paso: el paso del actor + 1
 L_AB3A:
@@ -2250,10 +2250,10 @@ L_B1B4:
 	and 07fh		;b1c7
 	cp 005h		;b1c9
 	ld a,02dh		;b1cb
-	jp nc,04af5h		;b1cd   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp nc,04af5h		;b1cd   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	bit 0,(ix+002h)		;b1d0   ; mira el bit 0 de un dato propio de cada tipo de actor (ix+2)
 	ret nz			;b1d4
-	jp 04af5h		;b1d5   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;b1d5   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_B1D8:
 	ld a,(de)			;b1d8
 	inc de			;b1d9
@@ -2710,7 +2710,7 @@ L_B57E:
 	push af			;b589
 	or a			;b58a
 	ld a,02eh		;b58b
-	call z,04af5h		;b58d   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call z,04af5h		;b58d   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_B590:
 	pop af			;b590
 	inc a			;b591
@@ -2756,7 +2756,7 @@ L_B5DB:
 	push af			;b5e6
 	cp 002h		;b5e7
 	ld a,02fh		;b5e9
-	call z,04af5h		;b5eb   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call z,04af5h		;b5eb   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_B5EE:
 	pop af			;b5ee
 	dec a			;b5ef
@@ -2821,7 +2821,7 @@ L_B650:
 	ld (ix+008h),a		;b661   ; guarda la Y del actor (en caracteres de 8 puntos)
 	pop ix		;b664
 	ld a,017h		;b666
-	jp 04af5h		;b668   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	jp 04af5h		;b668   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 L_B66B:
 	pop ix		;b66b
 	pop ix		;b66d
@@ -3972,7 +3972,7 @@ L_BF3F:
 	ld a,001h		;bf48
 	ld (0ce4ch),a		;bf4a
 	ld a,034h		;bf4d
-	call 04af5h		;bf4f   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 04af5h		;bf4f   ; pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 	call 07cbeh		;bf52   ; puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
 	ld (ix+017h),005h		;bf55   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 	inc (ix+018h)		;bf59   ; suma 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)

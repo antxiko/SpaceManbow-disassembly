@@ -419,7 +419,7 @@ C 0xAB15 el numero del sonido
 C 0xAB19 puntero_del_guion: HL = ix+2-3
 C 0xAB1D el numero del sonido
 C 0xAB20 guarda_puntero_del_guion: ix+2-3 = HL
-C 0xAB32 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xAB32 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xAB37 D, E: los dos bytes del color
 C 0xAB3B puntero_del_guion: HL = ix+2-3
 C 0xAB3F D, E: los dos bytes del color
