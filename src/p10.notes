@@ -1,4 +1,101 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x8004 A es el numero de la lista (vino de p09:6D0C)
+C 0x8047 0xD700-0xD7FF a 0: el largo de lo descomprimido y los grupos de patrones
+C 0x8052 la lista empieza por la paleta, salvo si el primer byte es 0xFF
+C 0x806C los colores de la lista como destino; HL se queda en su byte final
+C 0x806F IX en el final de la paleta
+C 0x8073 el puerto de datos del VDP (byte 0x0007 de la BIOS)
+C 0x8077 DE = 0: 65536 vueltas
+C 0x807C 0xFF a la VRAM, donde este apuntada
+C 0x8088 0, 1, 2 ... 255 al puerto de C
+C 0x80A6 el ajuste de 0xC0B2, uno menos (de 0 a 3)
+C 0x80AF el ajuste de 0xC0B2, uno mas
+C 0x80B6 el bit 7: hay ajuste nuevo
+C 0x80BD el ajuste en los bits 6 y 7: el registro 23 (el scroll vertical) sube o baja 64 lineas
+C 0x80C4 registro 23
+C 0x80CD fila 8: 0xFF si no se pulsa nada
+C 0x80D6 fila 2 del teclado
+C 0x80DC fila 3
+C 0x80E2 dos bits de la fila 2 por debajo de los de la fila 3
+C 0x80E8 pulsada = 1
+C 0x80EE cuenta los bits a 0 por debajo del primero
+C 0x80FB la direccion de VRAM de la pagina A (p00:4E82)
+C 0x8104 la tabla de colores, 0x2000 mas alla
+C 0x8109 entre 64: el valor del registro 10 (bits 14-16)
+C 0x8118 los 7 bits bajos a 1, como piden los registros de tablas
+C 0x8120 registro 10: la tabla de colores (alta)
+C 0x812A registro 3: la tabla de colores (baja)
+C 0x8134 entre 8 mas: la tabla de patrones
+C 0x8140 los dos bits bajos a 1
+C 0x8145 registro 4: la tabla de patrones
+C 0x8154 TAB: fila 7, bit 3
+C 0x8159 SNSMAT con la fila A
+C 0x8192 los 12 x 20 bytes de los grupos de patrones a 0
+C 0x8198 un byte de la lista: 0xFF acaba la seccion
+C 0x81A0 0: el patron siguiente, sin grupo
+C 0x81A2 N: el patron va al grupo N - 1 (12 bytes por grupo)
+C 0x81AD el primer hueco libre del grupo
+C 0x81B3 C = el numero del patron + 1
+C 0x81BA A x 4
+C 0x81BD A x 16
+C 0x81C0 x 16 - x 4 = x 12
+C 0x81C2 el primer byte de la ficha: 0xFF acaba, 0xFE (acarreo) abre otra seccion
+C 0x81CC los patrones: puntero lineal en +3-4 y la base en +7
+C 0x81D8 +0: si hay que darles la vuelta
+C 0x81DE +2: el primer patron
+C 0x81E1 +1: a que grupos van (un bit por grupo)
+C 0x81E7 los colores: puntero en +5-6, la misma base
+C 0x8202 la ficha siguiente
+C 0x8209 H = 0xDE: la tabla de que es cada caracter
+C 0x820B L = el primer caracter, B = cuantos
+C 0x8214 el valor (0xFF acaba)
+C 0x821A el valor en todos los caracteres del tramo
+C 0x821E la ficha siguiente (3 bytes)
+C 0x8226 el primer byte a 0 y ldir lo copia al resto
+C 0x822F 0x20: la segunda tabla (la de colores)
+C 0x8235 0x00 o 0x20 en 0xC93E: lo que se suma a la direccion
+C 0x8239 B = 8 grupos, C = el numero del grupo
+C 0x823C el bit del grupo: si esta, al grupo
+C 0x824B el grupo C empieza en 0xD710 + 12 x C
+C 0x8255 cada patron apuntado en el grupo hasta un 0
+C 0x8263 HL = el patron x 8
+C 0x826A la direccion del trozo de VRAM del grupo (p00:4E8A)
+C 0x8273 los bytes que se descomprimieron
+C 0x8290 el byte de control
+C 0x8297 B = n; si no tiene el bit 7 es una racha
+C 0x829D 0x80: nada
+C 0x82A0 C = cuantos bytes se copian tal cual
+C 0x82A3 copia un byte
+C 0x82AF el byte que se repite
+C 0x82B4 B veces
+C 0x82BB los 3 bits altos del puntero eligen el banco
+C 0x82C1 desde el banco 12 mas la base
+C 0x82CB H en 0xA0-0xBF: el puntero dentro de la ventana de 0xA000
+C 0x82D3 L ha dado la vuelta: la pagina siguiente
+C 0x82D5 llega a 0xC000: vuelve a 0xA000 con el banco siguiente
+C 0x82EB bit 0: dar la vuelta de arriba abajo
+C 0x82F4 bit 1: de izquierda a derecha
+C 0x8307 los caracteres que hay: el largo / 8
+C 0x8319 con 0 caracteres, aqui se queda para siempre
+C 0x831B HL en la primera fila y DE en la ultima del caracter
+C 0x8329 el caracter siguiente
+C 0x8336 cambia la fila de HL por la de DE y se acercan
+C 0x8348 da la vuelta a los 8 bits del byte: el punto de la izquierda pasa a la derecha
+C 0x8369 el byte vuelto
+C 0x836B todos los bytes descomprimidos
+C 0x838C el tipo de pieza (0 acaba)
+C 0x8391 el puntero (+2-3) y la base (+4)
+C 0x839D los bits de +0 dicen a que paginas va
+C 0x83A0 +1: el primer patron
+C 0x83A9 0xDF00 + la casilla (+5) = el primer patron: lo que suma p04:78E6 al patron de cada dibujo
+C 0x83AF la ficha siguiente (6 bytes)
+C 0x83D5 la tabla de patrones de los sprites en 0xC800
+C 0x83D8 + 8 x el patron
+C 0x83DE tres paginas, 0x800 bytes cada una
+C 0x83E0 el bit de la pagina: si esta, se copia
+# --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x8165 0x8177 listas_8165  9 punteros a listas de graficos, uno por A, detras de la de p10:83FD (p10:803B) (p10:815F y p00:468E); lo leen p10:815F (18 bytes)
 F 0x8165 w9
@@ -156,15 +253,12 @@ C 0x8001 borra_de00_cd: 0xDE00-0xDECD a 0
 C 0x8008 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x800B lista_de_graficos: borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
 C 0x800F borra_de00_cd: 0xDE00-0xDECD a 0
-C 0x8012 lee la fase (0 a 8; 9 el final)
 C 0x8018 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x801B lista_de_graficos: borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
 C 0x801F borra_de00: 0xDE00-0xDEFF a 0
 C 0x8022 listas_fija_y_por_a: la lista de p10:83FD y la A de p10:8165
 C 0x8025 sprites_de_la_fase: salvo en la fase 7: borra 0xDF00-0xDF7F, las piezas de p10:92B8 y las de la fase (p10:83C0): cada ficha de 6 bytes, sus patrones de sprite comprimidos a la VRAM (p10:83D5) y 0xDF00 + su casilla = su primer patron (el que suma p04:78E6)
-C 0x8029 apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores (lo pone p10:8209)
 C 0x802F borra_hl: BC + 1 bytes desde HL a 0
-C 0x8032 apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores (lo pone p10:8209)
 C 0x8038 borra_hl: BC + 1 bytes desde HL a 0
 C 0x803F lista_de_graficos: borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
 C 0x8043 lista_de_8165: HL = la lista A de p10:8165
@@ -181,7 +275,6 @@ C 0x80A2 pon_pagina_c0b4: 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa 
 C 0x80CF lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x80D8 lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x80DE lee_fila: la fila A del teclado (SNSMAT) guardando IX
-C 0x80F4 guarda la pagina pedida (bit 7: hay que ponerla)
 C 0x80FB trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
 C 0x8151 lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x8162 entrada_de_tabla: HL = la palabra A de la tabla de HL
@@ -197,36 +290,24 @@ C 0x8240 a_un_grupo: los patrones apuntados del grupo C
 C 0x824B por_12: A = A x 12
 C 0x825C copia_patron: lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo de la VRAM (p00:4E8A)
 C 0x826A trozo_de_vram: HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
-C 0x8270 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x8277 copia_a_vram: copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
-C 0x827B apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x827E banco_del_puntero: pone en 0xA000 el banco 0x0C + A + los 3 bits altos de H (0xD703) y deja H en 0xA0-0xBF
 C 0x8281 rle: el RLE: 0 acaba, n < 0x80 repite el byte de detras, 0x81-0xFF copian n and 0x7F bytes
-C 0x8287 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x8292 pasa_de_banco: si H llega a 0xC0, el banco siguiente y H - 0x20
 C 0x82A7 pasa_de_banco: si H llega a 0xC0, el banco siguiente y H - 0x20
 C 0x82B1 pasa_de_banco: si H llega a 0xC0, el banco siguiente y H - 0x20
-C 0x82C5 guarda el banco que lee el RLE de p10:8290 en 0xA000
 C 0x82C8 banco_en_A000: pone el banco A en 0xA000
-C 0x82DC lee el banco que lee el RLE de p10:8290 en 0xA000
-C 0x82E0 guarda el banco que lee el RLE de p10:8290 en 0xA000
 C 0x82E3 banco_en_A000: pone el banco A en 0xA000
 C 0x82ED arriba_abajo: invierte el orden de las 8 filas de cada caracter de 0xD800
 C 0x82F6 izquierda_derecha: da la vuelta a los bits de cada byte de 0xD800
 C 0x8301 arriba_abajo: invierte el orden de las 8 filas de cada caracter de 0xD800
-C 0x831B apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x8323 cambia_4_filas: cambia 4 bytes de HL por los de DE hacia atras
-C 0x8345 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
-C 0x8371 lee la fase (0 a 8; 9 el final)
-C 0x8377 apunta a el primer patron de sprite de cada tipo de actor (0xDF00 + tipo)
 C 0x837D borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x8383 piezas_de_hl: la lista de HL (p10:838C)
 C 0x8386 piezas_de_la_fase: HL = la lista de la fase de p10:83C0
 C 0x839A descomprime: descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
 C 0x83A3 a_patrones_de_sprite: lo descomprimido al patron L de la tabla de sprites (0xC800), en las paginas que dicen los bits de A
-C 0x83B6 lee la fase (0 a 8; 9 el final)
 C 0x83BC entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x83E4 copia_a_c800: 0xD700 bytes de 0xD800 a la VRAM en DE
-C 0x83F2 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x83F9 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 # --- fin de las anotaciones de anota.py ---

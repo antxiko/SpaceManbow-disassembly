@@ -131,6 +131,11 @@ RAM = {
 
 RAM16 = {}
 
+# Tramos (banco, desde, hasta) en los que la RAM de 0xD700-0xD8FF es otra cosa:
+# el bufer de lo que se descomprime (p10:827B a 0xD800, el largo en 0xD700) y el
+# de las letras de p01:693A. Ahi los nombres de RAM no valen.
+RAM_PRESTADA = ((10, 0x8000, 0xA000), (1, 0x692E, 0x6981))
+
 # Los actores: 20 fichas de 0x40 bytes en 0xCE80 (p04:6056, p04:62CB), 18 de
 # 0x20 en 0xD460 (p04:6485), la nave en 0xCA40, sus dos opciones en 0xCAC0 y
 # 0xCAE0 (p02:82B4) y sus 8 disparos de 0x20 en 0xCC40 (p02:878A); las mueve p04:64A2 por el

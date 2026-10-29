@@ -1007,7 +1007,7 @@ copia_letras:		; B letras de 1 bit por punto de HL a la VRAM (p01:6960), una det
 	ret			;6939
 de_1_a_4_bits:		; pasa 8 filas de un caracter de 1 bit por punto (HL) a 4 bits por punto en 0xD800, con el color C
 	ld b,008h		;693a
-	ld de,0d800h		;693c   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld de,0d800h		;693c
 L_693F:
 	push bc			;693f
 	push hl			;6940
@@ -1051,7 +1051,7 @@ letra_a_vram:		; una letra de HL a 4 bits (p01:693A) y a la VRAM en D, E (p00:49
 	ld a,d			;696f
 	add a,080h		;6970
 	ld d,a			;6972
-	ld hl,0d800h		;6973   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld hl,0d800h		;6973
 	call 0490bh		;6976   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 	pop hl			;6979
 	ld bc,00008h		;697a

@@ -390,9 +390,7 @@ C 0x6746 avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 C 0x692E espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0x6931 letra_a_vram: una letra de HL a 4 bits (p01:693A) y a la VRAM en D, E (p00:490B)
 C 0x6934 avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
-C 0x693C apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x6964 de_1_a_4_bits: pasa 8 filas de un caracter de 1 bit por punto (HL) a 4 bits por punto en 0xD800, con el color C
-C 0x6973 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 C 0x6976 copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 C 0x6981 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0x6984 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)

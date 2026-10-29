@@ -18,7 +18,7 @@ graficos_por_a:		; borra 0xDE00-0xDECD y la lista de graficos A de p10:8189 (p10
 	push af			;8000
 	call borra_de00_cd		;8001   ; borra_de00_cd: 0xDE00-0xDECD a 0
 L_8004:
-	pop af			;8004
+	pop af			;8004   ; A es el numero de la lista (vino de p09:6D0C)
 	ld hl,08189h		;8005
 	call 0468eh		;8008   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 L_800B:
@@ -27,7 +27,7 @@ L_800E:
 	ret			;800e
 graficos_de_la_fase:		; borra 0xDE00-0xDECD y la lista de la fase de p10:8177
 	call borra_de00_cd		;800f   ; borra_de00_cd: 0xDE00-0xDECD a 0
-	ld a,(0ca10h)		;8012   ; lee la fase (0 a 8; 9 el final)
+	ld a,(0ca10h)		;8012
 	ld hl,08177h		;8015
 	call 0468eh		;8018   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	call lista_de_graficos		;801b   ; lista_de_graficos: borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
@@ -38,11 +38,11 @@ graficos_de_fase_completos:		; borra 0xDE00-0xDEFF, las listas de p10:83FD y la 
 	call sprites_de_la_fase		;8025   ; sprites_de_la_fase: salvo en la fase 7: borra 0xDF00-0xDF7F, las piezas de p10:92B8 y las de la fase (p10:83C0): cada ficha de 6 bytes, sus patrones de sprite comprimidos a la VRAM (p10:83D5) y 0xDF00 + su casilla = su primer patron (el que suma p04:78E6)
 	ret			;8028
 borra_de00:		; 0xDE00-0xDEFF a 0
-	ld hl,0de00h		;8029   ; apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores (lo pone p10:8209)
+	ld hl,0de00h		;8029
 	ld bc,000ffh		;802c
 	jp borra_hl		;802f   ; borra_hl: BC + 1 bytes desde HL a 0
 borra_de00_cd:		; 0xDE00-0xDECD a 0
-	ld hl,0de00h		;8032   ; apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores (lo pone p10:8209)
+	ld hl,0de00h		;8032
 	ld bc,000cdh		;8035
 	jp borra_hl		;8038   ; borra_hl: BC + 1 bytes desde HL a 0
 listas_fija_y_por_a:		; la lista de p10:83FD y la A de p10:8165
@@ -53,11 +53,11 @@ listas_fija_y_por_a:		; la lista de p10:83FD y la A de p10:8165
 	call lista_de_8165		;8043   ; lista_de_8165: HL = la lista A de p10:8165
 lista_de_graficos:		; borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
 	push hl			;8046
-	ld hl,0d700h		;8047
+	ld hl,0d700h		;8047   ; 0xD700-0xD7FF a 0: el largo de lo descomprimido y los grupos de patrones
 	ld bc,000ffh		;804a
 	call borra_hl		;804d   ; borra_hl: BC + 1 bytes desde HL a 0
 	pop ix		;8050
-	ld a,(ix+000h)		;8052
+	ld a,(ix+000h)		;8052   ; la lista empieza por la paleta, salvo si el primer byte es 0xFF
 	inc a			;8055
 	call nz,paleta_de_la_lista		;8056   ; paleta_de_la_lista: los colores de IX como destino (p00:4CE0) e IX detras
 L_8059:
@@ -72,16 +72,16 @@ paleta_de_la_lista:		; los colores de IX como destino (p00:4CE0) e IX detras
 	push ix		;8069
 	pop hl			;806b
 	call 04ce0h		;806c   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
-	push hl			;806f
+	push hl			;806f   ; IX en el final de la paleta
 	pop ix		;8070
 	ret			;8072
 llena_vram_ff:		; escribe 0xFF 65536 veces en el puerto del VDP
-	ld a,(00007h)		;8073
+	ld a,(00007h)		;8073   ; el puerto de datos del VDP (byte 0x0007 de la BIOS)
 	ld c,a			;8076
-	ld de,00000h		;8077
+	ld de,00000h		;8077   ; DE = 0: 65536 vueltas
 	ld a,0ffh		;807a
 L_807C:
-	out (c),a		;807c
+	out (c),a		;807c   ; 0xFF a la VRAM, donde este apuntada
 	dec e			;807e
 	jr nz,L_807C		;807f
 	dec d			;8081
@@ -91,7 +91,7 @@ escribe_0_a_255:		; escribe 0, 1 ... 255 en el puerto del VDP
 	xor a			;8085
 	ld b,000h		;8086
 L_8088:
-	out (c),a		;8088
+	out (c),a		;8088   ; 0, 1, 2 ... 255 al puerto de C
 	inc a			;808a
 	djnz L_8088		;808b
 	ret			;808d
@@ -108,61 +108,61 @@ visor_de_paginas:		; con las teclas: los cursores de la fila 8 suben o bajan la 
 	call pon_pagina_c0b4		;80a2   ; pon_pagina_c0b4: 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa pagina
 	ret			;80a5
 L_80A6:
-	ld a,(0c0b2h)		;80a6
+	ld a,(0c0b2h)		;80a6   ; el ajuste de 0xC0B2, uno menos (de 0 a 3)
 	dec a			;80a9
 	and 003h		;80aa
 	ret z			;80ac
 	jr L_80B6		;80ad
 L_80AF:
-	ld a,(0c0b2h)		;80af
+	ld a,(0c0b2h)		;80af   ; el ajuste de 0xC0B2, uno mas
 	and 003h		;80b2
 	ret z			;80b4
 	inc a			;80b5
 L_80B6:
-	set 7,a		;80b6
+	set 7,a		;80b6   ; el bit 7: hay ajuste nuevo
 	ld (0c0b2h),a		;80b8
 	and 003h		;80bb
-	rrca			;80bd
+	rrca			;80bd   ; el ajuste en los bits 6 y 7: el registro 23 (el scroll vertical) sube o baja 64 lineas
 	rrca			;80be
 	push ix		;80bf
 	push bc			;80c1
 	push af			;80c2
 	ld b,a			;80c3
-	ld c,017h		;80c4
+	ld c,017h		;80c4   ; registro 23
 	call 00047h		;80c6   ; BIOS WRTVDP - Writes data in the VDP-register
 	pop af			;80c9
 	pop bc			;80ca
 	pop ix		;80cb
 espera_tecla_suelta:		; espera a que no se pulse nada en la fila 8
-	ld a,008h		;80cd
+	ld a,008h		;80cd   ; fila 8: 0xFF si no se pulsa nada
 	call lee_fila		;80cf   ; lee_fila: la fila A del teclado (SNSMAT) guardando IX
 	inc a			;80d2
 	ret z			;80d3
 	jr espera_tecla_suelta		;80d4
 teclas_de_pagina:		; las filas 2 y 3 del teclado en 7 bits
-	ld a,002h		;80d6
+	ld a,002h		;80d6   ; fila 2 del teclado
 	call lee_fila		;80d8   ; lee_fila: la fila A del teclado (SNSMAT) guardando IX
 	push af			;80db
-	ld a,003h		;80dc
+	ld a,003h		;80dc   ; fila 3
 	call lee_fila		;80de   ; lee_fila: la fila A del teclado (SNSMAT) guardando IX
 	pop bc			;80e1
-	rl b		;80e2
+	rl b		;80e2   ; dos bits de la fila 2 por debajo de los de la fila 3
 	rla			;80e4
 	rl b		;80e5
 	rla			;80e7
-	cpl			;80e8
+	cpl			;80e8   ; pulsada = 1
 	and 07fh		;80e9
 	ret			;80eb
 primer_bit:		; el numero del primer bit puesto de A
 	ld c,0ffh		;80ec
 L_80EE:
-	rrca			;80ee
+	rrca			;80ee   ; cuenta los bits a 0 por debajo del primero
 	inc c			;80ef
 	jr nc,L_80EE		;80f0
 	ld a,c			;80f2
 	ret			;80f3
 pide_pagina_c0b5:		; 0xC0B5 = A
-	ld (0c0b5h),a		;80f4   ; guarda la pagina pedida (bit 7: hay que ponerla)
+	ld (0c0b5h),a		;80f4
 	ret			;80f7
 pon_pagina_c0b4:		; 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa pagina
 	ld (0c0b4h),a		;80f8
@@ -171,10 +171,10 @@ pon_pagina_c0b4:		; 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa pagina
 	and 001h		;8100
 	push hl			;8102
 	push af			;8103
-	ld de,02000h		;8104
+	ld de,02000h		;8104   ; la tabla de colores, 0x2000 mas alla
 	add hl,de			;8107
 	push bc			;8108
-	ld b,006h		;8109
+	ld b,006h		;8109   ; entre 64: el valor del registro 10 (bits 14-16)
 L_810B:
 	sra a		;810b
 	rr h		;810d
@@ -184,28 +184,28 @@ L_810B:
 	ld a,000h		;8114
 	or h			;8116
 	ld h,a			;8117
-	ld a,07fh		;8118
+	ld a,07fh		;8118   ; los 7 bits bajos a 1, como piden los registros de tablas
 	or l			;811a
 	ld l,a			;811b
 	or h			;811c
 	push bc			;811d
 	push af			;811e
 	ld b,h			;811f
-	ld c,00ah		;8120
+	ld c,00ah		;8120   ; registro 10: la tabla de colores (alta)
 	call 00047h		;8122   ; BIOS WRTVDP - Writes data in the VDP-register
 	pop af			;8125
 	pop bc			;8126
 	push bc			;8127
 	push af			;8128
 	ld b,l			;8129
-	ld c,003h		;812a
+	ld c,003h		;812a   ; registro 3: la tabla de colores (baja)
 	call 00047h		;812c   ; BIOS WRTVDP - Writes data in the VDP-register
 	pop af			;812f
 	pop bc			;8130
 	pop af			;8131
 	pop hl			;8132
 	push bc			;8133
-	ld b,003h		;8134
+	ld b,003h		;8134   ; entre 8 mas: la tabla de patrones
 L_8136:
 	sra a		;8136
 	rr h		;8138
@@ -213,11 +213,11 @@ L_8136:
 	djnz L_8136		;813c
 	pop bc			;813e
 	ld a,h			;813f
-	or 003h		;8140
+	or 003h		;8140   ; los dos bits bajos a 1
 	push bc			;8142
 	push af			;8143
 	ld b,a			;8144
-	ld c,004h		;8145
+	ld c,004h		;8145   ; registro 4: la tabla de patrones
 	call 00047h		;8147   ; BIOS WRTVDP - Writes data in the VDP-register
 	pop af			;814a
 	pop bc			;814b
@@ -226,11 +226,11 @@ L_8136:
 tab_pulsado:		; NZ si TAB (fila 7, bit 3)
 	ld a,007h		;814f
 	call lee_fila		;8151   ; lee_fila: la fila A del teclado (SNSMAT) guardando IX
-	bit 3,a		;8154
+	bit 3,a		;8154   ; TAB: fila 7, bit 3
 	ret			;8156
 lee_fila:		; la fila A del teclado (SNSMAT) guardando IX
 	push ix		;8157
-	call 00141h		;8159   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
+	call 00141h		;8159   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix | SNSMAT con la fila A
 	pop ix		;815c
 	ret			;815e
 lista_de_8165:		; HL = la lista A de p10:8165
@@ -265,60 +265,60 @@ DATA_listas_8189:
 
 grupos_de_patrones:		; borra 0xD710-0xD7FF y lee los grupos (p10:8198)
 	ld hl,0d710h		;818f
-	ld bc,000efh		;8192
+	ld bc,000efh		;8192   ; los 12 x 20 bytes de los grupos de patrones a 0
 	call borra_hl		;8195   ; borra_hl: BC + 1 bytes desde HL a 0
 grupos:		; los bytes de la lista hasta un 0xFF: 0 pasa al patron siguiente; N apunta el patron en el grupo N - 1 (12 por grupo, 0xD710)
-	ld a,(ix+000h)		;8198
+	ld a,(ix+000h)		;8198   ; un byte de la lista: 0xFF acaba la seccion
 	inc a			;819b
 	inc ix		;819c
 	ret z			;819e
 	dec a			;819f
-	jr z,L_81B7		;81a0
-	dec a			;81a2
+	jr z,L_81B7		;81a0   ; 0: el patron siguiente, sin grupo
+	dec a			;81a2   ; N: el patron va al grupo N - 1 (12 bytes por grupo)
 	call por_12		;81a3   ; por_12: A = A x 12
 	ld l,a			;81a6
 	ld h,000h		;81a7
 	ld de,0d710h		;81a9
 	add hl,de			;81ac
 L_81AD:
-	ld a,(hl)			;81ad
+	ld a,(hl)			;81ad   ; el primer hueco libre del grupo
 	or a			;81ae
 	inc hl			;81af
 	jr nz,L_81AD		;81b0
 	dec hl			;81b2
-	inc c			;81b3
+	inc c			;81b3   ; C = el numero del patron + 1
 	ld (hl),c			;81b4
 	jr grupos		;81b5
 L_81B7:
 	inc c			;81b7
 	jr grupos		;81b8
 por_12:		; A = A x 12
-	add a,a			;81ba
+	add a,a			;81ba   ; A x 4
 	add a,a			;81bb
 	ld b,a			;81bc
-	add a,a			;81bd
+	add a,a			;81bd   ; A x 16
 	add a,a			;81be
 	add a,a			;81bf
-	sub b			;81c0
+	sub b			;81c0   ; x 16 - x 4 = x 12
 	ret			;81c1
 fichas_de_graficos:		; cada ficha de 8 bytes hasta 0xFE u 0xFF: los patrones comprimidos (p10:827B), dados la vuelta si toca (p10:82E8) y a sus grupos de la VRAM (p10:8233); luego los colores igual (p10:82FC, p10:822E)
-	ld a,(ix+000h)		;81c2
+	ld a,(ix+000h)		;81c2   ; el primer byte de la ficha: 0xFF acaba, 0xFE (acarreo) abre otra seccion
 	inc a			;81c5
 	or a			;81c6
 	ret z			;81c7
 	cp 0ffh		;81c8
 	scf			;81ca
 	ret z			;81cb
-	ld l,(ix+003h)		;81cc
+	ld l,(ix+003h)		;81cc   ; los patrones: puntero lineal en +3-4 y la base en +7
 	ld h,(ix+004h)		;81cf
 	ld a,(ix+007h)		;81d2
 	call descomprime		;81d5   ; descomprime: descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
-	ld a,(ix+000h)		;81d8
+	ld a,(ix+000h)		;81d8   ; +0: si hay que darles la vuelta
 	call da_la_vuelta		;81db   ; da_la_vuelta: con el bit 0 de A, de arriba abajo (p10:8307); con el bit 1, de izquierda a derecha (p10:8341)
-	ld d,(ix+002h)		;81de
-	ld a,(ix+001h)		;81e1
+	ld d,(ix+002h)		;81de   ; +2: el primer patron
+	ld a,(ix+001h)		;81e1   ; +1: a que grupos van (un bit por grupo)
 	call a_grupos_baja		;81e4   ; a_grupos_baja: p10:8235 con 0xC93E = 0
-	ld a,(ix+007h)		;81e7
+	ld a,(ix+007h)		;81e7   ; los colores: puntero en +5-6, la misma base
 	ld l,(ix+005h)		;81ea
 	ld h,(ix+006h)		;81ed
 	call descomprime		;81f0   ; descomprime: descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
@@ -327,29 +327,29 @@ fichas_de_graficos:		; cada ficha de 8 bytes hasta 0xFE u 0xFF: los patrones com
 	ld d,(ix+002h)		;81f9
 	ld a,(ix+001h)		;81fc
 	call a_grupos_alta		;81ff   ; a_grupos_alta: p10:8235 con 0xC93E = 0x20
-	ld bc,00008h		;8202
+	ld bc,00008h		;8202   ; la ficha siguiente
 	add ix,bc		;8205
 	jr fichas_de_graficos		;8207
 que_es_cada_caracter:		; fichas de 3 bytes [valor][desde][hasta] hasta 0xFF: pone el valor en 0xDE00 + caracter, del primero al ultimo
-	ld h,0deh		;8209
-	ld l,(ix+001h)		;820b
+	ld h,0deh		;8209   ; H = 0xDE: la tabla de que es cada caracter
+	ld l,(ix+001h)		;820b   ; L = el primer caracter, B = cuantos
 	ld a,(ix+002h)		;820e
 	sub l			;8211
 	inc a			;8212
 	ld b,a			;8213
-	ld a,(ix+000h)		;8214
+	ld a,(ix+000h)		;8214   ; el valor (0xFF acaba)
 	cp 0ffh		;8217
 	ret z			;8219
 L_821A:
-	ld (hl),a			;821a
+	ld (hl),a			;821a   ; el valor en todos los caracteres del tramo
 	inc hl			;821b
 	djnz L_821A		;821c
-	inc ix		;821e
+	inc ix		;821e   ; la ficha siguiente (3 bytes)
 	inc ix		;8220
 	inc ix		;8222
 	jr que_es_cada_caracter		;8224
 borra_hl:		; BC + 1 bytes desde HL a 0
-	ld (hl),000h		;8226
+	ld (hl),000h		;8226   ; el primer byte a 0 y ldir lo copia al resto
 	ld d,h			;8228
 	ld e,l			;8229
 	inc de			;822a
@@ -357,17 +357,17 @@ borra_hl:		; BC + 1 bytes desde HL a 0
 	ret			;822d
 a_grupos_alta:		; p10:8235 con 0xC93E = 0x20
 	push af			;822e
-	ld a,020h		;822f
+	ld a,020h		;822f   ; 0x20: la segunda tabla (la de colores)
 	jr a_grupos		;8231
 a_grupos_baja:		; p10:8235 con 0xC93E = 0
 	push af			;8233
 	xor a			;8234
 a_grupos:		; por cada bit puesto de A (8 grupos), copia lo descomprimido a los patrones de ese grupo (p10:824A)
-	ld (0c93eh),a		;8235
+	ld (0c93eh),a		;8235   ; 0x00 o 0x20 en 0xC93E: lo que se suma a la direccion
 	pop af			;8238
-	ld bc,00800h		;8239
+	ld bc,00800h		;8239   ; B = 8 grupos, C = el numero del grupo
 L_823C:
-	add a,a			;823c
+	add a,a			;823c   ; el bit del grupo: si esta, al grupo
 	push af			;823d
 	push bc			;823e
 	push de			;823f
@@ -386,7 +386,7 @@ a_un_grupo:		; los patrones apuntados del grupo C
 	ld hl,0d710h		;8251
 	add hl,bc			;8254
 L_8255:
-	ld a,(hl)			;8255
+	ld a,(hl)			;8255   ; cada patron apuntado en el grupo hasta un 0
 	inc hl			;8256
 	or a			;8257
 	ret z			;8258
@@ -398,7 +398,7 @@ L_8255:
 	pop hl			;8260
 	jr L_8255		;8261
 copia_patron:		; lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo de la VRAM (p00:4E8A)
-	ld l,d			;8263
+	ld l,d			;8263   ; HL = el patron x 8
 	ld h,000h		;8264
 	add hl,hl			;8266
 	add hl,hl			;8267
@@ -408,37 +408,37 @@ copia_patron:		; lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo
 	pop de			;826d
 	add hl,de			;826e
 	ex de,hl			;826f
-	ld hl,0d800h		;8270   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
-	ld bc,(0d700h)		;8273
+	ld hl,0d800h		;8270
+	ld bc,(0d700h)		;8273   ; los bytes que se descomprimieron
 	call 046adh		;8277   ; copia_a_vram: copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
 	ret			;827a
 descomprime:		; descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
-	ld de,0d800h		;827b   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld de,0d800h		;827b
 	call banco_del_puntero		;827e   ; banco_del_puntero: pone en 0xA000 el banco 0x0C + A + los 3 bits altos de H (0xD703) y deja H en 0xA0-0xBF
 	call rle		;8281   ; rle: el RLE: 0 acaba, n < 0x80 repite el byte de detras, 0x81-0xFF copian n and 0x7F bytes
 	ld h,d			;8284
 	ld l,e			;8285
 	or a			;8286
-	ld bc,0d800h		;8287   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld bc,0d800h		;8287
 	sbc hl,bc		;828a
 	ld (0d700h),hl		;828c
 	ret			;828f
 rle:		; el RLE: 0 acaba, n < 0x80 repite el byte de detras, 0x81-0xFF copian n and 0x7F bytes
-	ld a,(hl)			;8290
+	ld a,(hl)			;8290   ; el byte de control
 	inc l			;8291
 	call z,pasa_de_banco		;8292   ; pasa_de_banco: si H llega a 0xC0, el banco siguiente y H - 0x20
 	or a			;8295
 	ret z			;8296
-	ld b,a			;8297
+	ld b,a			;8297   ; B = n; si no tiene el bit 7 es una racha
 	and 07fh		;8298
 	cp b			;829a
 	jr z,L_82AF		;829b
-	or a			;829d
+	or a			;829d   ; 0x80: nada
 	jr z,rle		;829e
-	ld c,a			;82a0
+	ld c,a			;82a0   ; C = cuantos bytes se copian tal cual
 	ld b,000h		;82a1
 L_82A3:
-	ld a,(hl)			;82a3
+	ld a,(hl)			;82a3   ; copia un byte
 	ld (de),a			;82a4
 	inc de			;82a5
 	inc l			;82a6
@@ -447,42 +447,42 @@ L_82A3:
 	jr nz,L_82A3		;82ab
 	jr rle		;82ad
 L_82AF:
-	ld a,(hl)			;82af
+	ld a,(hl)			;82af   ; el byte que se repite
 	inc l			;82b0
 	call z,pasa_de_banco		;82b1   ; pasa_de_banco: si H llega a 0xC0, el banco siguiente y H - 0x20
 L_82B4:
-	ld (de),a			;82b4
+	ld (de),a			;82b4   ; B veces
 	inc de			;82b5
 	djnz L_82B4		;82b6
 	jr rle		;82b8
 banco_del_puntero:		; pone en 0xA000 el banco 0x0C + A + los 3 bits altos de H (0xD703) y deja H en 0xA0-0xBF
 	push af			;82ba
-	ld a,h			;82bb
+	ld a,h			;82bb   ; los 3 bits altos del puntero eligen el banco
 	and 0e0h		;82bc
 	rlca			;82be
 	rlca			;82bf
 	rlca			;82c0
-	add a,00ch		;82c1
+	add a,00ch		;82c1   ; desde el banco 12 mas la base
 	pop bc			;82c3
 	add a,b			;82c4
-	ld (0d703h),a		;82c5   ; guarda el banco que lee el RLE de p10:8290 en 0xA000
+	ld (0d703h),a		;82c5
 	call 04c23h		;82c8   ; banco_en_A000: pone el banco A en 0xA000
-	ld a,h			;82cb
+	ld a,h			;82cb   ; H en 0xA0-0xBF: el puntero dentro de la ventana de 0xA000
 	and 01fh		;82cc
 	add a,0a0h		;82ce
 	ld h,a			;82d0
 	ret			;82d1
 pasa_de_banco:		; si H llega a 0xC0, el banco siguiente y H - 0x20
 	push af			;82d2
-	inc h			;82d3
+	inc h			;82d3   ; L ha dado la vuelta: la pagina siguiente
 	ld a,h			;82d4
-	cp 0c0h		;82d5
+	cp 0c0h		;82d5   ; llega a 0xC000: vuelve a 0xA000 con el banco siguiente
 	jr c,L_82E6		;82d7
 	sub 020h		;82d9
 	ld h,a			;82db
-	ld a,(0d703h)		;82dc   ; lee el banco que lee el RLE de p10:8290 en 0xA000
+	ld a,(0d703h)		;82dc
 	inc a			;82df
-	ld (0d703h),a		;82e0   ; guarda el banco que lee el RLE de p10:8290 en 0xA000
+	ld (0d703h),a		;82e0
 	call 04c23h		;82e3   ; banco_en_A000: pone el banco A en 0xA000
 L_82E6:
 	pop af			;82e6
@@ -491,13 +491,13 @@ da_la_vuelta:		; con el bit 0 de A, de arriba abajo (p10:8307); con el bit 1, de
 	push de			;82e8
 	push af			;82e9
 	ex de,hl			;82ea
-	bit 0,a		;82eb
+	bit 0,a		;82eb   ; bit 0: dar la vuelta de arriba abajo
 	call nz,arriba_abajo		;82ed   ; arriba_abajo: invierte el orden de las 8 filas de cada caracter de 0xD800
 	pop af			;82f0
 	pop de			;82f1
 	push de			;82f2
 	push af			;82f3
-	bit 1,a		;82f4
+	bit 1,a		;82f4   ; bit 1: de izquierda a derecha
 	call nz,izquierda_derecha		;82f6   ; izquierda_derecha: da la vuelta a los bits de cada byte de 0xD800
 	pop af			;82f9
 	pop de			;82fa
@@ -512,7 +512,7 @@ da_la_vuelta_b:		; solo de arriba abajo
 	pop de			;8305
 	ret			;8306
 arriba_abajo:		; invierte el orden de las 8 filas de cada caracter de 0xD800
-	ld bc,(0d700h)		;8307
+	ld bc,(0d700h)		;8307   ; los caracteres que hay: el largo / 8
 	srl b		;830b
 	rr c		;830d
 	srl b		;830f
@@ -522,8 +522,8 @@ arriba_abajo:		; invierte el orden de las 8 filas de cada caracter de 0xD800
 	ld a,b			;8317
 	or c			;8318
 L_8319:
-	jr z,L_8319		;8319
-	ld hl,0d800h		;831b   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	jr z,L_8319		;8319   ; con 0 caracteres, aqui se queda para siempre
+	ld hl,0d800h		;831b   ; HL en la primera fila y DE en la ultima del caracter
 	ld de,0d807h		;831e
 L_8321:
 	push de			;8321
@@ -532,7 +532,7 @@ L_8321:
 	pop bc			;8326
 	pop de			;8327
 	inc de			;8328
-	ld hl,00007h		;8329
+	ld hl,00007h		;8329   ; el caracter siguiente
 	add hl,de			;832c
 	ex de,hl			;832d
 	dec bc			;832e
@@ -543,7 +543,7 @@ L_8321:
 cambia_4_filas:		; cambia 4 bytes de HL por los de DE hacia atras
 	ld b,004h		;8334
 L_8336:
-	ld c,(hl)			;8336
+	ld c,(hl)			;8336   ; cambia la fila de HL por la de DE y se acercan
 	ld a,(de)			;8337
 	ex de,hl			;8338
 	ld (hl),c			;8339
@@ -555,9 +555,9 @@ L_8336:
 	ret			;8340
 izquierda_derecha:		; da la vuelta a los bits de cada byte de 0xD800
 	ld de,(0d700h)		;8341
-	ld hl,0d800h		;8345   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld hl,0d800h		;8345
 L_8348:
-	ld a,(hl)			;8348
+	ld a,(hl)			;8348   ; da la vuelta a los 8 bits del byte: el punto de la izquierda pasa a la derecha
 	rr a		;8349
 	rl c		;834b
 	rr a		;834d
@@ -574,18 +574,18 @@ L_8348:
 	rl c		;8363
 	rr a		;8365
 	rl c		;8367
-	ld (hl),c			;8369
+	ld (hl),c			;8369   ; el byte vuelto
 	inc hl			;836a
-	dec de			;836b
+	dec de			;836b   ; todos los bytes descomprimidos
 	ld a,d			;836c
 	or e			;836d
 	jr nz,L_8348		;836e
 	ret			;8370
 sprites_de_la_fase:		; salvo en la fase 7: borra 0xDF00-0xDF7F, las piezas de p10:92B8 y las de la fase (p10:83C0): cada ficha de 6 bytes, sus patrones de sprite comprimidos a la VRAM (p10:83D5) y 0xDF00 + su casilla = su primer patron (el que suma p04:78E6)
-	ld a,(0ca10h)		;8371   ; lee la fase (0 a 8; 9 el final)
+	ld a,(0ca10h)		;8371
 	cp 007h		;8374
 	ret z			;8376
-	ld hl,0df00h		;8377   ; apunta a el primer patron de sprite de cada tipo de actor (0xDF00 + tipo)
+	ld hl,0df00h		;8377
 	ld bc,0007fh		;837a
 	call 04648h		;837d   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,092b8h		;8380
@@ -595,25 +595,25 @@ piezas_de_hl:		; la lista de HL (p10:838C)
 	push hl			;8389
 	pop ix		;838a
 piezas:		; fichas de 6 bytes [que][primer patron][puntero][base][casilla] hasta un 0
-	ld a,(ix+000h)		;838c
+	ld a,(ix+000h)		;838c   ; el tipo de pieza (0 acaba)
 	or a			;838f
 	ret z			;8390
-	ld h,(ix+003h)		;8391
+	ld h,(ix+003h)		;8391   ; el puntero (+2-3) y la base (+4)
 	ld l,(ix+002h)		;8394
 	ld a,(ix+004h)		;8397
 	call descomprime		;839a   ; descomprime: descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
-	ld a,(ix+000h)		;839d
-	ld l,(ix+001h)		;83a0
+	ld a,(ix+000h)		;839d   ; los bits de +0 dicen a que paginas va
+	ld l,(ix+001h)		;83a0   ; +1: el primer patron
 	call a_patrones_de_sprite		;83a3   ; a_patrones_de_sprite: lo descomprimido al patron L de la tabla de sprites (0xC800), en las paginas que dicen los bits de A
 	ld a,(ix+001h)		;83a6
-	ld l,(ix+005h)		;83a9
+	ld l,(ix+005h)		;83a9   ; 0xDF00 + la casilla (+5) = el primer patron: lo que suma p04:78E6 al patron de cada dibujo
 	ld h,0dfh		;83ac
 	ld (hl),a			;83ae
-	ld bc,00006h		;83af
+	ld bc,00006h		;83af   ; la ficha siguiente (6 bytes)
 	add ix,bc		;83b2
 	jr piezas		;83b4
 piezas_de_la_fase:		; HL = la lista de la fase de p10:83C0
-	ld a,(0ca10h)		;83b6   ; lee la fase (0 a 8; 9 el final)
+	ld a,(0ca10h)		;83b6
 	ld hl,083c0h		;83b9
 	call 0468eh		;83bc   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	ret			;83bf
@@ -639,15 +639,15 @@ DATA_sin_leer_83D2:
 
 
 a_patrones_de_sprite:		; lo descomprimido al patron L de la tabla de sprites (0xC800), en las paginas que dicen los bits de A
-	ld de,0c800h		;83d5
-	ld h,000h		;83d8
+	ld de,0c800h		;83d5   ; la tabla de patrones de los sprites en 0xC800
+	ld h,000h		;83d8   ; + 8 x el patron
 	add hl,hl			;83da
 	add hl,hl			;83db
 	add hl,hl			;83dc
 	add hl,de			;83dd
-	ld b,003h		;83de
+	ld b,003h		;83de   ; tres paginas, 0x800 bytes cada una
 L_83E0:
-	rrca			;83e0
+	rrca			;83e0   ; el bit de la pagina: si esta, se copia
 	push hl			;83e1
 	push af			;83e2
 	push bc			;83e3
@@ -661,7 +661,7 @@ L_83E0:
 	ret			;83f0
 copia_a_c800:		; 0xD700 bytes de 0xD800 a la VRAM en DE
 	ex de,hl			;83f1
-	ld hl,0d800h		;83f2   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	ld hl,0d800h		;83f2
 	ld bc,(0d700h)		;83f5
 	call 046ach		;83f9   ; copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 	ret			;83fc
