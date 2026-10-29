@@ -50,7 +50,11 @@ C 0x42AA y a que acabe
 C 0x42B1 los registros, todos en la misma linea
 C 0x42B3 deja el estado 0 para la BIOS
 C 0x42BF la lista de la segunda linea
+C 0x42C4 0: fin
+C 0x42C9 R#15 = 2: se leera el estado 2
 C 0x42DE una espera mas antes de mandarlos
+C 0x42E7 R#15 = 0: vuelve al estado 0
+C 0x42EF lee el estado 0
 C 0x4322 espera 7 interrupciones con el estado 2
 C 0x4327 el gancho con lineas
 C 0x433A al empezar no hay fase que guardar
@@ -245,6 +249,11 @@ C 0x4DCE al VDP
 C 0x4E0E 4 pasos mas claro
 C 0x4E11 sin pasar de 7
 C 0x4E19 a cada componente le suma su paso (bits 0-4, con signo)
+C 0x4E1C de -0x10 a 0x0F
+C 0x4E20 la primera componente
+C 0x4E29 la segunda
+C 0x4E32 la tercera
+C 0x4E34 B colores
 C 0x4E3A la columna mas la del scroll (64 columnas)
 C 0x4E41 la fila mas la del scroll (32 filas)
 C 0x4E4E la columna (0-63)
@@ -263,7 +272,11 @@ C 0x4EAE desde el 12, en los 64 KB altos
 C 0x4F12 0xDF0D a 0
 C 0x4F16 velocidad en Y hacia arriba: -0x80
 C 0x4FD3 ix+6 = el dibujo + 1
+C 0x4FD6 el dibujo siguiente
+C 0x4FDD el nivel de verdad, guardado
 C 0x4FDF el nivel a la mitad mientras dispara tres veces
+C 0x4FE2 tres disparos
+C 0x4FEB el nivel vuelve
 C 0x4FEC y vuelve a ser el de antes
 C 0x5039 si la nave esta cerca, nada
 C 0x5041 hacia la nave con la rapidez 0x12
@@ -272,18 +285,181 @@ C 0x5073 cada 14 cuadros
 C 0x507B un actor nuevo de tipo 0x21
 C 0x5095 tras ix+0x22 veces, desaparece
 C 0x50B9 HL - DE x 3
+C 0x50BA BC = HL
+C 0x50BC HL x 3
+C 0x50BF HL x 3 - DE
 C 0x50C3 los signos de H y D en los bits 6 y 7: el cuadrante
+C 0x50C4 el signo de H al bit 6
+C 0x50C8 el de D al bit 7
+C 0x50D3 paso 0: mira el fondo
 C 0x50D6 mira el fondo en las cuatro esquinas (D, E y H, L de 0 y 1)
+C 0x50D7 las cuatro esquinas: (0, 0)
+C 0x50DE (1, 0)
+C 0x50E2 (1, 1)
+C 0x50E6 (0, 1)
 C 0x50EA siguiente paso
 C 0x50F3 hay fondo ahi?
+C 0x50F6 Z: no hay fondo
+C 0x50F9 sin fondo, sigue
 C 0x50FA si lo hay, desaparece y no sigue
+C 0x5115 por el paso
 C 0x5135 segun el nivel, mas o menos rapido
+C 0x5138 segun el nivel, mas deprisa
+C 0x513F con el nivel 4 o mas
+C 0x517B arriba
+C 0x517E sin ficha: el paso 3
+C 0x5180 abajo, 6
 C 0x5182 la cuenta a 0
 C 0x51CC B veces o hasta que no haya ficha
+C 0x51CD un hijo
+C 0x51D0 sin ficha: se acaba
+C 0x51D3 B veces
 C 0x5254 con signo
 C 0x5259 HL = H x ix+0x21 / 8
+C 0x525F HL / 8
 C 0x526C el valor absoluto, y el signo despues
+C 0x528B por el paso
+C 0x5294 la Y al azar con la cuenta de cuadros (tabla p00:52EC)
+C 0x52A1 entra por la derecha (columna 0x1F)
+C 0x52AC hacia la nave: abajo...
+C 0x52B1 ...o arriba
 C 0x52B7 segun el nivel, 0x18 o 0x20
+C 0x52BA segun el nivel, 0x18 o 0x20
+C 0x52F4 3 dibujos
+C 0x52FC por el paso
+C 0x5321 segun el nivel
+C 0x5351 por el paso
+C 0x5360 segun el lado
+C 0x5361 hacia abajo y a la izquierda
+C 0x5369 o hacia arriba
+C 0x5381 al llegar a la columna 3
+C 0x5389 entre las filas 1 y 0x12 rebota
+C 0x5393 cambia de lado
+C 0x53A9 segun el lado
+C 0x53AA arriba y a la derecha
+C 0x53B2 o abajo
+C 0x53C7 por el paso
+C 0x542F por el paso
+C 0x543B segun el lado, -4 o 4
+C 0x5467 segun el nivel, 0x10 o 0x14
+C 0x548D la distancia en Y a la nave
+C 0x5490 hacia ella
+C 0x549A muy cerca en Y: solo en X
+C 0x549E sin movimiento en X
+C 0x54A4 la distancia en X
+C 0x54A7 hacia la nave
+C 0x54C4 por el paso
+C 0x54D0 los bits 0-1: la clase
+C 0x54D2 x 6 en la tabla p00:550D
+C 0x54DD la aceleracion en Y
+C 0x54E5 la velocidad en X
+C 0x554E con el bit 6...
+C 0x5552 ...el bit 7 dice por donde se va
+C 0x5559 a la izquierda de la columna 3
+C 0x55B9 el fondo delante
+C 0x55BC sin fondo, gira
+C 0x55C6 el paso 3 al acabar la cuenta
+C 0x55CA mira hacia la nave
+C 0x55DA 16 cuadros
+C 0x55DF el paso 2
+C 0x55F9 el octante girado
+C 0x5602 contra el lado
+C 0x5605 el dibujo 5 o 4
+C 0x562D segun el nivel, 0x20 o 0x10
+C 0x5646 mira el fondo debajo
+C 0x5652 3: sigue
+C 0x569F hacia arriba y a un lado
+C 0x56A8 segun el lado
+C 0x56B6 lo mismo mas deprisa
+C 0x56DB segun el lado, dos puntos delante
+C 0x56FB cambia de lado
+C 0x5703 Z
+C 0x5705 las dos velocidades, cambiadas segun el lado
+C 0x5726 el dibujo segun el lado: 0 o 2
+C 0x5742 el lado
+C 0x5748 la entrada del lado en la tabla de DE
+C 0x5751 E = la Y mas la de la tabla
+C 0x5757 D = la X mas la de la tabla
+C 0x5766 por el paso
+C 0x5770 el dibujo segun el lado
+C 0x578A cada cuadro
+C 0x579C cada 10 cuadros
+C 0x57A3 el fondo de debajo
+C 0x57AC 4 bytes por direccion en p00:58AC
+C 0x57EB la distancia en X a la nave
+C 0x57F2 entre 4 y 10 columnas
+C 0x57F8 la de Y
+C 0x57FF entre 4 y 10 filas
+C 0x5809 una cuenta comun
+C 0x580E solo una de cada dos veces
+C 0x5810 la rapidez segun el nivel
+C 0x5856 el caracter de debajo
+C 0x5859 de 0xB6 a 0xC2: acarreo
+C 0x5869 la X con el scroll, en multiplos de 4
+C 0x5877 la Y + 1 en multiplos de 4
+C 0x588F la lista del actor: la palabra ix+0x21 de la tabla p05:8400
+C 0x5896 la lista
+C 0x589F el siguiente; 0xFF acaba
+C 0x58A3 la direccion: 2 bits
+C 0x58BF solo por encima de la fila 0x0B
+C 0x58C5 cuenta hasta 0
+C 0x58F9 las piezas de p00:5A19
+C 0x598A cuanto le falta a la Y de ix+0x22
+C 0x5991 la tabla de p00:599A
+C 0x59AA hasta 5 piezas
+C 0x59B3 lo que le falta
+C 0x59BE un cuadro de cada dos
+C 0x59C3 menos 3
+C 0x5A8D segun el bit 7 del sitio, hacia abajo o arriba
+C 0x5AAB B = el byte de la lista
+C 0x5AB0 0: 0xFC
+C 0x5AB5 el bit 7 en C
+C 0x5ABF el segundo byte de la lista: la X
+C 0x5AC5 su bit 7: 2 mas
+C 0x5AF6 negativo: nada
+C 0x5AF9 se sale por abajo: desaparece
+C 0x5AFF la entrada A de la tabla p00:5B11
+C 0x5B35 si no esta 0xCE4C, desaparece
+C 0x5B3F cuenta en 0xCE4D
+C 0x5BEC vaiven con topes de 0xA0
+C 0x5BF8 sin cuenta: hacia la nave despacio
+C 0x5C01 con cuenta, mas deprisa
+C 0x5C0C la Y hacia la nave
+C 0x5C1C la distancia en X / 2
+C 0x5C20 ya esta
+C 0x5C24 a la izquierda
+C 0x5C3D la distancia en Y / 2
+C 0x5C41 ya esta
+C 0x5C45 hacia arriba
+C 0x5C87 cada 16 posiciones del scroll
+C 0x5C93 un actor de tipo 0x1B
+C 0x5C9E sin ficha: nada
+C 0x5CB7 la posicion del scroll / 16
+C 0x5CBE en la 8 se acaba
+C 0x5CC3 la tabla p00:5CCF
+C 0x5D0F una columna mas
+C 0x5D13 segun el lado, dos filas mas
+C 0x5D1D lo que es el caracter (0xDE00)
+C 0x5D23 de fila en fila, hacia abajo o hacia arriba
+C 0x5D2C el 3 para
+C 0x5D30 pone los caracteres 0xCC y 0xCD
+C 0x5D35 la fila siguiente
+C 0x5D37 hasta salirse del mapa
+C 0x5DAC sin movimiento en X: nada
+C 0x5DB3 lo que se ha movido, al reves
+C 0x5DB9 en 0xCA3A, de 0 a 7
+C 0x5DBF a partir de la posicion 0x10C0 del scroll
+C 0x5DCB en la pagina 6
+C 0x5DD8 0xCA3A + 1
+C 0x5DE4 mas 0xCA1D
+C 0x5DF3 cuanto se ha movido (- 0xCA1B), menos de 3
+C 0x5DFC x 48: la fila del mapa
+C 0x5E06 desde 0xDD78
+C 0x5E0E una fila
+C 0x5E13 16 bytes mas en el origen
+C 0x5E18 la fila siguiente del mapa (0x30)
+C 0x5E26 hasta el final del mapa
+C 0x5E2B 8 caracteres
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x4090 0x4100 relleno_ff  112 bytes a 0xFF entre dos bloques, que no lee nadie: relleno; lo leen nadie (112 bytes)

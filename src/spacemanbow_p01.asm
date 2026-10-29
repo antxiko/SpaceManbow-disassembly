@@ -1497,22 +1497,22 @@ L_6C8D:
 	ret			;6c8f
 signo_de_ascii:		; Z y C = el caracter de los signos '@' '<' '>' '.' '-' y espacio
 	cp 040h		;6c90
-	ld c,02eh		;6c92
+	ld c,02eh		;6c92   ; '@': 0x2E
 	ret z			;6c94
 	inc c			;6c95
-	cp 03ch		;6c96
+	cp 03ch		;6c96   ; '<': 0x2F
 	ret z			;6c98
 	inc c			;6c99
-	cp 03eh		;6c9a
+	cp 03eh		;6c9a   ; '>': 0x30
 	ret z			;6c9c
 	inc c			;6c9d
-	cp 02eh		;6c9e
+	cp 02eh		;6c9e   ; '.': 0x31
 	ret z			;6ca0
 	inc c			;6ca1
-	cp 02dh		;6ca2
+	cp 02dh		;6ca2   ; '-': 0x32
 	ret z			;6ca4
 	inc c			;6ca5
-	cp 020h		;6ca6
+	cp 020h		;6ca6   ; ' ': 0x33, con Z
 	ret			;6ca8
 
 ; ----------------------------------------------------------------------

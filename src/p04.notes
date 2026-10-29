@@ -511,6 +511,61 @@ C 0x776E los bits 0 y 1: como se dibuja
 C 0x7770 0: sin dibujo (suelta los sprites si toca)
 C 0x7772 3: las dos cosas
 C 0x7775 1: sprites; 2: pieza de caracteres
+C 0x7826 el tipo 1 aparte
+C 0x782A los tipos 0x1F, 0x43, 0x50 y 0x48 tienen sprite
+C 0x7834 los demas: vuelve 5 bytes mas alla, dos niveles mas arriba
+C 0x7840 IX - 0xD460
+C 0x784A una bala (0xD460-0xD69F)
+C 0x784C IX - 0xCE80
+C 0x7856 ni bala ni ficha grande: nada
+C 0x785A acarreo: quitado
+C 0x78A7 salta 3 bytes
+C 0x7903 la marca sin el bit 7
+C 0x7907 en las tablas de 0xC000, 0xC100, 0xC200 y 0xC300: E, D, A y C
+C 0x796B la marca sin el bit 7
+C 0x796F en las tablas de 0xC000, 0xC100, 0xC200 y 0xC300: E, D, A y C
+C 0x79D3 la marca sin el bit 7
+C 0x79D7 en las tablas de 0xC000 a 0xC400: E, D, A, C y B
+C 0x7A23 no hay: nada
+C 0x7A25 ocupado (0x8F), aqui y tres paginas mas alla
+C 0x7A36 es A?
+C 0x7A3C acarreo: no esta
+C 0x7AF8 la fila siguiente (0x30)
+C 0x7AFF hasta 0xDE00
+C 0x7B03 B filas
+C 0x7B3A x 3
+C 0x7B41 x 48: la fila
+C 0x7B4A mas la columna
+C 0x7B5A la columna + 0x0F
+C 0x7B5E desde 0x2F, fuera
+C 0x7B7E 2 bytes por tipo en p07:8596
+C 0x7B85 las piezas del tipo
+C 0x7BAF 2 bytes por pieza
+C 0x7BBE 0xCA29 mas el primer byte
+C 0x7BC4 0xCA2A mas el segundo
+C 0x7BC9 B, C = los dos siguientes
+C 0x7BDB 2 bytes por pieza
+C 0x7BEA 0xCA29 mas el primer byte
+C 0x7BF0 0xCA2A mas el segundo
+C 0x7BF5 B, C = los dos siguientes
+C 0x7C01 C = el largo
+C 0x7C09 el resto a 0xD700
+C 0x7C17 IX e IY cambiadas
+C 0x7C21 como estaban
+C 0x7CE6 2 bytes por tipo en p04:7CF6
+C 0x7CED 0xFF: sin puntos
+C 0x7DDE x 3
+C 0x7DDF 3 bytes por tipo en p04:7E74
+C 0x7E08 los dos digitos bajos
+C 0x7E0D los del medio
+C 0x7E13 los altos
+C 0x7E1A 999990 en el marcador y en el record
+C 0x7E38 el tope de la vida extra, 0x50 mas (BCD)
+C 0x7E46 una vida mas
+C 0x7E49 99: no pasa
+C 0x7E50 el marcador, de arriba abajo
+C 0x7E53 contra el record
+C 0x7E58 menor: record nuevo
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x60E3 0x60E9 tabla_60E3  3 destinos del despachador p00:461A (call en p04:60E0, el indice en A): 60E9, 60E9, 60F4; lo leen p04:60E0 (6 bytes)

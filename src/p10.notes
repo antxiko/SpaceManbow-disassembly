@@ -2,44 +2,97 @@
 
 # --- A MANO: comentarios escritos leyendo el codigo ---
 C 0x8004 A es el numero de la lista (vino de p09:6D0C)
+C 0x803B guarda el numero
+C 0x803C la lista fija de p10:83FD
+C 0x8042 el numero
 C 0x8047 0xD700-0xD7FF a 0: el largo de lo descomprimido y los grupos de patrones
 C 0x8052 la lista empieza por la paleta, salvo si el primer byte es 0xFF
+C 0x8059 un byte mas
+C 0x8061 con acarreo, otra ficha
+C 0x8063 un byte mas
+C 0x8069 HL = la lista
 C 0x806C los colores de la lista como destino; HL se queda en su byte final
 C 0x806F IX en el final de la paleta
+C 0x8070 IX detras de la paleta
 C 0x8073 el puerto de datos del VDP (byte 0x0007 de la BIOS)
 C 0x8077 DE = 0: 65536 vueltas
 C 0x807C 0xFF a la VRAM, donde este apuntada
+C 0x807E E bytes...
+C 0x8081 ...D veces
 C 0x8088 0, 1, 2 ... 255 al puerto de C
+C 0x808A el registro siguiente
+C 0x808B B registros
+C 0x808E la fila 8 del teclado
+C 0x8093 el bit 5
+C 0x8095 a 0: la pagina siguiente
+C 0x8097 el bit 6
+C 0x8099 a 0: la anterior
+C 0x809E sin tecla: nada
 C 0x80A6 el ajuste de 0xC0B2, uno menos (de 0 a 3)
+C 0x80A9 la anterior
+C 0x80AA de 0 a 3
+C 0x80AC la 0: nada
 C 0x80AF el ajuste de 0xC0B2, uno mas
+C 0x80B5 la siguiente
 C 0x80B6 el bit 7: hay ajuste nuevo
+C 0x80B8 la pagina, con el bit 7
+C 0x80BB de 0 a 3
 C 0x80BD el ajuste en los bits 6 y 7: el registro 23 (el scroll vertical) sube o baja 64 lineas
+C 0x80BE en los bits 6 y 7: la pagina x 0x40
+C 0x80C3 al registro 23 (el desplazamiento vertical)
 C 0x80C4 registro 23
 C 0x80CD fila 8: 0xFF si no se pulsa nada
+C 0x80D2 0xFF: ninguna pulsada
+C 0x80D3 todas sueltas: vuelve
+C 0x80D4 si no, espera
 C 0x80D6 fila 2 del teclado
 C 0x80DC fila 3
 C 0x80E2 dos bits de la fila 2 por debajo de los de la fila 3
 C 0x80E8 pulsada = 1
 C 0x80EE cuenta los bits a 0 por debajo del primero
+C 0x80EF cuenta los bits
+C 0x80F0 hasta el primero a 1
+C 0x80F2 A = su numero
+C 0x80F8 la pagina que se ve
 C 0x80FB la direccion de VRAM de la pagina A (p00:4E82)
+C 0x8100 el bit 0
 C 0x8104 la tabla de colores, 0x2000 mas alla
+C 0x8107 mas 0x2000
 C 0x8109 entre 64: el valor del registro 10 (bits 14-16)
+C 0x810B A:HL / 2...
+C 0x8111 ...6 veces: / 64
 C 0x8118 los 7 bits bajos a 1, como piden los registros de tablas
+C 0x811F B = la parte alta: al registro 10 (tabla de colores)
 C 0x8120 registro 10: la tabla de colores (alta)
+C 0x8129 B = la baja: al registro 3
 C 0x812A registro 3: la tabla de colores (baja)
 C 0x8134 entre 8 mas: la tabla de patrones
+C 0x8136 A:HL / 2...
+C 0x813C ...3 veces mas: / 8
 C 0x8140 los dos bits bajos a 1
+C 0x8144 al registro 4 (tabla de patrones)
 C 0x8145 registro 4: la tabla de patrones
 C 0x8154 TAB: fila 7, bit 3
+C 0x8157 SNSMAT no guarda IX
 C 0x8159 SNSMAT con la fila A
 C 0x8192 los 12 x 20 bytes de los grupos de patrones a 0
 C 0x8198 un byte de la lista: 0xFF acaba la seccion
+C 0x819B 0xFF?
+C 0x819E 0xFF: fin
 C 0x81A0 0: el patron siguiente, sin grupo
 C 0x81A2 N: el patron va al grupo N - 1 (12 bytes por grupo)
+C 0x81A9 los grupos en 0xD710, 12 bytes cada uno
 C 0x81AD el primer hueco libre del grupo
+C 0x81AE busca el primer 0 del grupo
+C 0x81B2 sobre el 0
 C 0x81B3 C = el numero del patron + 1
+C 0x81B4 apunta el numero
+C 0x81B5 la entrada siguiente
 C 0x81BA A x 4
+C 0x81BB x 4
+C 0x81BC B = x 4
 C 0x81BD A x 16
+C 0x81BF x 16
 C 0x81C0 x 16 - x 4 = x 12
 C 0x81C2 el primer byte de la ficha: 0xFF acaba, 0xFE (acarreo) abre otra seccion
 C 0x81CC los patrones: puntero lineal en +3-4 y la base en +7
@@ -50,41 +103,90 @@ C 0x81E7 los colores: puntero en +5-6, la misma base
 C 0x8202 la ficha siguiente
 C 0x8209 H = 0xDE: la tabla de que es cada caracter
 C 0x820B L = el primer caracter, B = cuantos
+C 0x820E el ultimo caracter
+C 0x8211 menos el primero
+C 0x8212 + 1: cuantos
 C 0x8214 el valor (0xFF acaba)
+C 0x8217 0xFF: fin
 C 0x821A el valor en todos los caracteres del tramo
+C 0x821B el caracter siguiente
+C 0x821C B caracteres
 C 0x821E la ficha siguiente (3 bytes)
+C 0x8220 la entrada siguiente (3 bytes)
 C 0x8226 el primer byte a 0 y ldir lo copia al resto
+C 0x8228 DE = HL + 1
+C 0x822B BC bytes a 0
 C 0x822F 0x20: la segunda tabla (la de colores)
 C 0x8235 0x00 o 0x20 en 0xC93E: lo que se suma a la direccion
 C 0x8239 B = 8 grupos, C = el numero del grupo
 C 0x823C el bit del grupo: si esta, al grupo
+C 0x8246 el grupo siguiente
+C 0x8247 B grupos
+C 0x824A el grupo
 C 0x824B el grupo C empieza en 0xD710 + 12 x C
+C 0x8251 su lista en 0xD710
 C 0x8255 cada patron apuntado en el grupo hasta un 0
+C 0x8257 0: fin
+C 0x8259 el numero - 1
 C 0x8263 HL = el patron x 8
+C 0x8266 x 8
 C 0x826A la direccion del trozo de VRAM del grupo (p00:4E8A)
+C 0x8270 desde lo descomprimido
 C 0x8273 los bytes que se descomprimieron
+C 0x827B a 0xD800
+C 0x8284 HL = hasta donde llego
+C 0x828A menos el principio: el largo
+C 0x828C en 0xD700
 C 0x8290 el byte de control
+C 0x8291 el byte siguiente
+C 0x8295 0: fin
 C 0x8297 B = n; si no tiene el bit 7 es una racha
+C 0x8298 sin el bit 7
+C 0x829B bit 7 a 0: una repeticion de B
 C 0x829D 0x80: nada
 C 0x82A0 C = cuantos bytes se copian tal cual
+C 0x82A1 bit 7 a 1: C bytes tal cual
 C 0x82A3 copia un byte
+C 0x82A4 copia el byte
+C 0x82AA C veces
 C 0x82AF el byte que se repite
 C 0x82B4 B veces
+C 0x82B5 B veces el mismo
 C 0x82BB los 3 bits altos del puntero eligen el banco
+C 0x82BC los 3 bits altos de H...
+C 0x82C0 ...a los bits 0-2
 C 0x82C1 desde el banco 12 mas la base
+C 0x82C4 mas el banco base
+C 0x82C5 el banco
 C 0x82CB H en 0xA0-0xBF: el puntero dentro de la ventana de 0xA000
+C 0x82CC los 5 bits bajos
+C 0x82CE en la ventana de 0xA000
 C 0x82D3 L ha dado la vuelta: la pagina siguiente
 C 0x82D5 llega a 0xC000: vuelve a 0xA000 con el banco siguiente
+C 0x82D7 aun dentro de la ventana
+C 0x82D9 vuelve a 0xA000
+C 0x82DF el banco siguiente
 C 0x82EB bit 0: dar la vuelta de arriba abajo
 C 0x82F4 bit 1: de izquierda a derecha
 C 0x8307 los caracteres que hay: el largo / 8
+C 0x830B el largo / 8...
+C 0x8313 ...cuantos patrones
+C 0x8318 0: nada
 C 0x8319 con 0 caracteres, aqui se queda para siempre
 C 0x831B HL en la primera fila y DE en la ultima del caracter
 C 0x8329 el caracter siguiente
+C 0x832C el ultimo byte del patron
+C 0x832E un patron menos
 C 0x8336 cambia la fila de HL por la de DE y se acercan
+C 0x8337 el de abajo
+C 0x833A cambia el de arriba con el de abajo
+C 0x833C hacia el centro
+C 0x833E B veces
 C 0x8348 da la vuelta a los 8 bits del byte: el punto de la izquierda pasa a la derecha
+C 0x8349 los 8 bits de A al reves en C
 C 0x8369 el byte vuelto
 C 0x836B todos los bytes descomprimidos
+C 0x836C DE bytes
 C 0x838C el tipo de pieza (0 acaba)
 C 0x8391 el puntero (+2-3) y la base (+4)
 C 0x839D los bits de +0 dicen a que paginas va

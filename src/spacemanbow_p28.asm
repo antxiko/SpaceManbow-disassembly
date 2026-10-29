@@ -232,21 +232,21 @@ L_616B:
 L_617D:
 	inc de			;617d
 	inc hl			;617e
-	ld a,(de)			;617f
+	ld a,(de)			;617f   ; el alto
 	res 3,(ix+000h)		;6180
 	cp (hl)			;6184
 	jr z,L_618D		;6185
-	set 3,(ix+000h)		;6187
+	set 3,(ix+000h)		;6187   ; ha cambiado: se manda
 	ld a,(hl)			;618b
 	ld (de),a			;618c
 L_618D:
 	inc de			;618d
 	inc hl			;618e
 	res 3,(ix+001h)		;618f
-	ld a,(bc)			;6193
+	ld a,(bc)			;6193   ; el volumen
 	cp (hl)			;6194
 	jr z,L_619D		;6195
-	set 3,(ix+001h)		;6197
+	set 3,(ix+001h)		;6197   ; ha cambiado: se manda
 	ld a,(hl)			;619b
 	ld (bc),a			;619c
 L_619D:
@@ -262,21 +262,21 @@ L_619D:
 L_61AF:
 	inc de			;61af
 	inc hl			;61b0
-	ld a,(de)			;61b1
+	ld a,(de)			;61b1   ; el alto
 	res 5,(ix+000h)		;61b2
 	cp (hl)			;61b6
 	jr z,L_61BF		;61b7
-	set 5,(ix+000h)		;61b9
+	set 5,(ix+000h)		;61b9   ; ha cambiado: se manda
 	ld a,(hl)			;61bd
 	ld (de),a			;61be
 L_61BF:
 	inc de			;61bf
 	inc hl			;61c0
 	res 4,(ix+001h)		;61c1
-	ld a,(bc)			;61c5
+	ld a,(bc)			;61c5   ; el volumen
 	cp (hl)			;61c6
 	jr z,L_61CF		;61c7
-	set 4,(ix+001h)		;61c9
+	set 4,(ix+001h)		;61c9   ; ha cambiado: se manda
 	ld a,(hl)			;61cd
 	ld (bc),a			;61ce
 L_61CF:
@@ -292,21 +292,21 @@ L_61CF:
 L_61E1:
 	inc de			;61e1
 	inc hl			;61e2
-	ld a,(de)			;61e3
+	ld a,(de)			;61e3   ; el alto
 	res 7,(ix+000h)		;61e4
 	cp (hl)			;61e8
 	jr z,L_61F1		;61e9
-	set 7,(ix+000h)		;61eb
+	set 7,(ix+000h)		;61eb   ; ha cambiado: se manda
 	ld a,(hl)			;61ef
 	ld (de),a			;61f0
 L_61F1:
 	inc de			;61f1
 	inc hl			;61f2
 	res 5,(ix+001h)		;61f3
-	ld a,(bc)			;61f7
+	ld a,(bc)			;61f7   ; el volumen
 	cp (hl)			;61f8
 	jr z,L_6201		;61f9
-	set 5,(ix+001h)		;61fb
+	set 5,(ix+001h)		;61fb   ; ha cambiado: se manda
 	ld a,(hl)			;61ff
 	ld (bc),a			;6200
 L_6201:
@@ -322,21 +322,21 @@ L_6201:
 L_6213:
 	inc de			;6213
 	inc hl			;6214
-	ld a,(de)			;6215
+	ld a,(de)			;6215   ; el alto
 	res 1,(ix+001h)		;6216
 	cp (hl)			;621a
 	jr z,L_6223		;621b
-	set 1,(ix+001h)		;621d
+	set 1,(ix+001h)		;621d   ; ha cambiado: se manda
 	ld a,(hl)			;6221
 	ld (de),a			;6222
 L_6223:
 	inc de			;6223
 	inc hl			;6224
 	res 6,(ix+001h)		;6225
-	ld a,(bc)			;6229
+	ld a,(bc)			;6229   ; el volumen
 	cp (hl)			;622a
 	jr z,L_6233		;622b
-	set 6,(ix+001h)		;622d
+	set 6,(ix+001h)		;622d   ; ha cambiado: se manda
 	ld a,(hl)			;6231
 	ld (bc),a			;6232
 L_6233:
@@ -353,7 +353,7 @@ canales_encendidos_scc:		; los bits de los canales con volumen en 0xC870 y, si c
 L_6241:
 	or e			;6241
 	ld e,a			;6242
-	ld hl,0c70dh		;6243
+	ld hl,0c70dh		;6243   ; el SCC 2: bit 1
 	sla c		;6246
 	ld a,(hl)			;6248
 	or a			;6249
@@ -362,7 +362,7 @@ L_6241:
 L_624D:
 	or e			;624d
 	ld e,a			;624e
-	ld hl,0c74dh		;624f
+	ld hl,0c74dh		;624f   ; el SCC 3: bit 2
 	sla c		;6252
 	ld a,(hl)			;6254
 	or a			;6255
@@ -371,7 +371,7 @@ L_624D:
 L_6259:
 	or e			;6259
 	ld e,a			;625a
-	ld hl,0c78dh		;625b
+	ld hl,0c78dh		;625b   ; el SCC 4: bit 3
 	sla c		;625e
 	ld a,(hl)			;6260
 	or a			;6261
@@ -380,7 +380,7 @@ L_6259:
 L_6265:
 	or e			;6265
 	ld e,a			;6266
-	ld hl,0c7cdh		;6267
+	ld hl,0c7cdh		;6267   ; el SCC 5: bit 4
 	sla c		;626a
 	ld a,(hl)			;626c
 	or a			;626d
@@ -1117,24 +1117,24 @@ L_6BD2:
 L_6BD4:
 	ld (ix+004h),a		;6bd4   ; guarda lo que le queda a la nota del canal
 	ld a,(hl)			;6bd7   ; el nibble alto: la nota (0-11; 12 o mas, silencio)
-	and 0f0h		;6bd8
+	and 0f0h		;6bd8   ; el nibble alto: la nota
 	rrca			;6bda
 	rrca			;6bdb
 	rrca			;6bdc
 	rrca			;6bdd
 	call avanza_partitura		;6bde   ; avanza_partitura: ix+2-3 = HL + 1
 	bit 7,(ix+009h)		;6be1   ; mira el bit 7 de la clase del canal (orden 0xFE)
-	ret nz			;6be5
-	cp 00ch		;6be6
+	ret nz			;6be5   ; con el bit 7 (una lista) no hay periodo
+	cp 00ch		;6be6   ; la nota 12 o mas: silencio
 	jr nc,nota_silencio		;6be8
 	ld hl,06c2bh		;6bea   ; el periodo de la nota en la tabla p28:6C2B
-	ld e,a			;6bed
+	ld e,a			;6bed   ; la nota en la tabla
 	ld d,000h		;6bee
 	add hl,de			;6bf0
 	ld l,(hl)			;6bf1
-	ld h,000h		;6bf2
+	ld h,000h		;6bf2   ; HL = el periodo de la octava mas alta
 	ld a,(ix+016h)		;6bf4   ; multiplicado por 2 por cada octava
-	or a			;6bf7
+	or a			;6bf7   ; la octava 0: tal cual
 	jr z,L_6BFE		;6bf8
 	ld b,a			;6bfa
 L_6BFB:
@@ -1182,23 +1182,23 @@ DATA_sin_leer_6C37:
 nota_de_ruido:		; la nota del canal de ruido o de periodo directo: segun ix+0x0E, el periodo y el volumen de la partitura (ix+0x10-0x12); luego la duracion (ix+0x13)
 	ld a,(ix+00dh)		;6c38   ; lee la clase de la nota y sus banderas (orden 0xE0)
 	and 003h		;6c3b   ; la clase de la nota: 0 nada, 1 solo volumen, otra periodo y volumen
-	jr z,L_6CA2		;6c3d
-	cp 001h		;6c3f
+	jr z,L_6CA2		;6c3d   ; 0: sin nada
+	cp 001h		;6c3f   ; 1: solo el volumen
 	jr z,L_6C79		;6c41
-	ld a,(hl)			;6c43
+	ld a,(hl)			;6c43   ; el byte de la nota
 	bit 6,(ix+00eh)		;6c44   ; mira el bit 6 de las banderas de los efectos del canal
 	jr nz,L_6C65		;6c48
 	bit 5,(ix+00eh)		;6c4a   ; mira el bit 5 de las banderas de los efectos del canal
 	jr nz,L_6C6A		;6c4e
-	and 0f0h		;6c50
+	and 0f0h		;6c50   ; el nibble alto: el volumen; el bajo y el byte siguiente, el periodo
 	ld b,a			;6c52
 	xor (hl)			;6c53
 	ld d,a			;6c54
-	inc hl			;6c55
+	inc hl			;6c55   ; el periodo bajo
 	ld a,(hl)			;6c56
 	ld (ix+010h),a		;6c57   ; guarda el periodo de la nota (bajo)
 	ld (ix+011h),d		;6c5a   ; guarda el periodo de la nota (alto)
-	ld a,b			;6c5d
+	ld a,b			;6c5d   ; B = el volumen
 	rrca			;6c5e
 	rrca			;6c5f
 	rrca			;6c60
@@ -1209,13 +1209,13 @@ L_6C65:
 	ld (ix+010h),a		;6c65   ; guarda el periodo de la nota (bajo)
 	jr L_6C91		;6c68
 L_6C6A:
-	and 0f0h		;6c6a
+	and 0f0h		;6c6a   ; el volumen en el nibble alto
 	rrca			;6c6c
 	rrca			;6c6d
 	rrca			;6c6e
 	rrca			;6c6f
 	ld b,a			;6c70
-	ld a,(hl)			;6c71
+	ld a,(hl)			;6c71   ; y en el bajo el periodo alto
 	and 00fh		;6c72
 	ld (ix+011h),a		;6c74   ; guarda el periodo de la nota (alto)
 	jr L_6C7D		;6c77
@@ -1225,11 +1225,11 @@ L_6C79:
 	ld b,a			;6c7c
 L_6C7D:
 	ld a,(0c858h)		;6c7d   ; lee el bit del canal que se esta tocando
-	cp 008h		;6c80
+	cp 008h		;6c80   ; en el PSG, con envolvente...
 	jr nc,L_6C8C		;6c82
 	bit 2,(ix+00dh)		;6c84   ; mira el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
 	jr z,L_6C8C		;6c88
-	ld b,010h		;6c8a
+	ld b,010h		;6c8a   ; ...el volumen 0x10: el de la envolvente
 L_6C8C:
 	inc b			;6c8c
 	inc b			;6c8d
@@ -1251,9 +1251,9 @@ L_6CA2:
 nota_con_tabla:		; la nota (p28:6BC2) y su lista de la tabla del instrumento (p28:6CE8): la toca como una partitura corta (p28:6CC7)
 	set 7,(ix+009h)		;6cb1   ; pone a uno el bit 7 de la clase del canal (orden 0xFE)
 	call nota_psg		;6cb5   ; nota_psg: la duracion (nibble bajo x el tempo ix+0x14) y la nota (nibble alto, p28:6D3C) de un canal del PSG; su periodo de la tabla p28:6C2B por la octava (ix+0x16)
-	ld b,a			;6cb8
+	ld b,a			;6cb8   ; B = la nota
 	call tabla_del_instrumento		;6cb9   ; tabla_del_instrumento: HL = 0x9B00 o 0x9BF3 segun la clase del canal (ix+9) y ix+0x29
-	ld a,b			;6cbc
+	ld a,b			;6cbc   ; su lista: 2 bytes por nota
 	add a,a			;6cbd
 	ld e,a			;6cbe
 	ld d,000h		;6cbf
@@ -1261,8 +1261,8 @@ nota_con_tabla:		; la nota (p28:6BC2) y su lista de la tabla del instrumento (p2
 	ld e,(hl)			;6cc2
 	inc hl			;6cc3
 	ld d,(hl)			;6cc4
-	ex de,hl			;6cc5
-	ld a,(hl)			;6cc6
+	ex de,hl			;6cc5   ; HL = la lista
+	ld a,(hl)			;6cc6   ; su primer byte
 toca_lista:		; la lista de HL como partitura, guardando por donde va (ix+0x17-0x18) y su duracion (ix+0x19)
 	set 1,(ix+009h)		;6cc7   ; pone a uno el bit 1 de la clase del canal (orden 0xFE)
 	call L_6B9A		;6ccb   ; el byte de la partitura
@@ -1284,9 +1284,9 @@ tabla_del_instrumento:		; HL = 0x9B00 o 0x9BF3 segun la clase del canal (ix+9) y
 	jp nz,L_6D27		;6cfa
 L_6CFD:
 	ld a,(ix+029h)		;6cfd   ; lee la octava (copia)
-	cp 000h		;6d00
+	cp 000h		;6d00   ; la octava 0
 	jp z,L_6D0A		;6d02
-	cp 001h		;6d05
+	cp 001h		;6d05   ; la 1
 	jp z,L_6D0E		;6d07
 L_6D0A:
 	ld hl,09b00h		;6d0a
@@ -1296,9 +1296,9 @@ L_6D0E:
 	ret			;6d11
 L_6D12:
 	ld a,(ix+029h)		;6d12   ; lee la octava (copia)
-	cp 000h		;6d15
+	cp 000h		;6d15   ; la octava 0
 	jp z,L_6D1F		;6d17
-	cp 001h		;6d1a
+	cp 001h		;6d1a   ; la 1
 	jp z,L_6D23		;6d1c
 L_6D1F:
 	ld hl,09bf3h		;6d1f
@@ -1308,9 +1308,9 @@ L_6D23:
 	ret			;6d26
 L_6D27:
 	ld a,(ix+029h)		;6d27   ; lee la octava (copia)
-	cp 000h		;6d2a
+	cp 000h		;6d2a   ; la octava 0
 	jp z,L_6D34		;6d2c
-	cp 001h		;6d2f
+	cp 001h		;6d2f   ; la 1
 	jp z,L_6D38		;6d31
 L_6D34:
 	ld hl,09bf3h		;6d34
@@ -1362,7 +1362,7 @@ L_6D9D:
 	bit 2,(ix+00dh)		;6dab   ; mira el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
 	ret nz			;6daf
 L_6DB0:
-	bit 0,(ix+030h)		;6db0
+	bit 0,(ix+030h)		;6db0   ; el bit 0 de ix+0x30: sin ataque
 	jr z,L_6DC3		;6db4
 	res 2,(ix+030h)		;6db6
 	res 1,(ix+030h)		;6dba
@@ -1446,18 +1446,18 @@ L_6E66:
 	ld d,(ix+00bh)		;6e69   ; lee el periodo que suena (alto)
 	ld b,(ix+01ch)		;6e6c   ; lee la amplitud del vibrato (orden 0xF1)
 	ld a,(ix+01dh)		;6e6f   ; lee hacia donde va el vibrato
-	cpl			;6e72
+	cpl			;6e72   ; el vibrato va y viene
 	ld (ix+01dh),a		;6e73   ; guarda hacia donde va el vibrato
 	and a			;6e76
-	ld a,e			;6e77
+	ld a,e			;6e77   ; sube o baja el periodo
 	jr nz,L_6E81		;6e78
-	add a,b			;6e7a
+	add a,b			;6e7a   ; sube
 	ld e,a			;6e7b
 	jr nc,L_6E86		;6e7c
 	inc d			;6e7e
 	jr L_6E86		;6e7f
 L_6E81:
-	sub b			;6e81
+	sub b			;6e81   ; baja
 	ld e,a			;6e82
 	jr nc,L_6E86		;6e83
 	dec d			;6e85
@@ -1468,10 +1468,10 @@ L_6E86:
 	ret			;6e90
 envolvente:		; el volumen del cuadro (p28:6EA4) en ix+0x0C (en el PSG, salvo con el bit 2 de ix+0x0D)
 	ld a,(0c858h)		;6e91   ; lee el bit del canal que se esta tocando
-	cp 008h		;6e94
+	cp 008h		;6e94   ; los canales del SCC siempre
 	jr nc,L_6E9D		;6e96
 	bit 2,(ix+00dh)		;6e98   ; mira el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
-	ret nz			;6e9c
+	ret nz			;6e9c   ; los del PSG, si no llevan envolvente
 L_6E9D:
 	call volumen_del_cuadro		;6e9d   ; volumen_del_cuadro: los tramos de la envolvente de volumen (ataque, caida, sosten y final, ix+0x21-0x25 y ix+0x34-0x36) segun las banderas de ix+0x0F e ix+0x30
 	ld (ix+00ch),e		;6ea0   ; guarda el volumen que suena
@@ -1493,11 +1493,11 @@ L_6EBC:
 	jr nz,L_6F41		;6ec7
 	bit 2,(ix+00fh)		;6ec9   ; mira el bit 2 de las banderas de la envolvente de volumen
 	jr nz,L_6F21		;6ecd
-	bit 1,(ix+030h)		;6ecf
+	bit 1,(ix+030h)		;6ecf   ; el ataque
 	jr nz,L_6F0E		;6ed3
-	bit 2,(ix+030h)		;6ed5
+	bit 2,(ix+030h)		;6ed5   ; la caida
 	jr nz,L_6EF8		;6ed9
-	ld a,(ix+035h)		;6edb
+	ld a,(ix+035h)		;6edb   ; el volumen menos ix+0x35, sin bajar del minimo
 	ld d,a			;6ede
 	ld a,e			;6edf
 	sub d			;6ee0
@@ -1507,24 +1507,24 @@ L_6EBC:
 L_6EEA:
 	ld a,(ix+034h)		;6eea   ; lee el volumen minimo (orden 0xDB)
 L_6EED:
-	ld e,a			;6eed
-	ld a,b			;6eee
+	ld e,a			;6eed   ; E = el volumen
+	ld a,b			;6eee   ; al llegar a ix+0x25 cuadros, la caida
 	cp (ix+025h)		;6eef
 	ret nz			;6ef2
 	set 2,(ix+030h)		;6ef3
 	ret			;6ef7
 L_6EF8:
 	ld a,(ix+012h)		;6ef8   ; lee el volumen de la nota
-	sub (ix+036h)		;6efb
+	sub (ix+036h)		;6efb   ; el volumen de la nota menos ix+0x36: hasta donde sube
 	ld c,a			;6efe
 	ld a,e			;6eff
-	inc a			;6f00
+	inc a			;6f00   ; sube uno
 	ld e,a			;6f01
 	cp c			;6f02
-	ret c			;6f03
+	ret c			;6f03   ; aun no ha llegado
 	set 2,(ix+00fh)		;6f04   ; pone a uno el bit 2 de las banderas de la envolvente de volumen
 	ld (ix+01fh),000h		;6f08   ; la cuenta de la envolvente de volumen = 0x00
-	ld e,c			;6f0c
+	ld e,c			;6f0c   ; llega: el volumen de destino
 	ret			;6f0d
 L_6F0E:
 	ld a,e			;6f0e
@@ -1537,12 +1537,12 @@ L_6F0E:
 	ld (ix+01fh),000h		;6f1c   ; la cuenta de la envolvente de volumen = 0x00
 	ret			;6f20
 L_6F21:
-	ld a,e			;6f21
+	ld a,e			;6f21   ; baja uno, sin pasar del minimo
 	dec a			;6f22
 	jp m,L_6F2F		;6f23
 	cp (ix+034h)		;6f26   ; compara con el volumen minimo (orden 0xDB)
 	jp c,L_6F2F		;6f29
-	ld e,a			;6f2c
+	ld e,a			;6f2c   ; E = el volumen
 	jr L_6F33		;6f2d
 L_6F2F:
 	ld a,(ix+034h)		;6f2f   ; lee el volumen minimo (orden 0xDB)
@@ -1557,16 +1557,16 @@ L_6F33:
 L_6F41:
 	bit 4,(ix+00fh)		;6f41   ; mira el bit 4 de las banderas de la envolvente de volumen
 	jp nz,L_6F70		;6f45
-	ld a,b			;6f48
+	ld a,b			;6f48   ; la cuenta del tramo
 	cp (ix+022h)		;6f49   ; compara con la caida de la envolvente (orden 0xEB)
 	ret nz			;6f4c
-	ld a,e			;6f4d
+	ld a,e			;6f4d   ; baja uno
 	dec a			;6f4e
 	jp m,L_6F6B		;6f4f
 	cp (ix+034h)		;6f52   ; compara con el volumen minimo (orden 0xDB)
 	jr c,L_6F6B		;6f55
-	ld e,a			;6f57
-	inc (ix+020h)		;6f58
+	ld e,a			;6f57   ; E = el volumen
+	inc (ix+020h)		;6f58   ; una vez mas
 	ld a,(ix+020h)		;6f5b
 	cp (ix+023h)		;6f5e   ; compara con el sosten de la envolvente (orden 0xEB)
 	ld (ix+01fh),000h		;6f61   ; la cuenta de la envolvente de volumen = 0x00
@@ -1579,17 +1579,17 @@ L_6F6B:
 	ret			;6f6f
 L_6F70:
 	ld a,(ix+022h)		;6f70   ; lee la caida de la envolvente (orden 0xEB)
-	ld d,a			;6f73
+	ld d,a			;6f73   ; D = lo que baja
 	ld a,e			;6f74
-	sub d			;6f75
+	sub d			;6f75   ; el volumen menos D, sin pasar del minimo
 	jp c,L_6F7F		;6f76
 	cp (ix+034h)		;6f79   ; compara con el volumen minimo (orden 0xDB)
 	jp nc,L_6F82		;6f7c
 L_6F7F:
 	ld a,(ix+034h)		;6f7f   ; lee el volumen minimo (orden 0xDB)
 L_6F82:
-	ld e,a			;6f82
-	ld a,b			;6f83
+	ld e,a			;6f82   ; E = el volumen
+	ld a,b			;6f83   ; al acabar los cuadros, el ultimo tramo
 	cp (ix+023h)		;6f84   ; compara con el sosten de la envolvente (orden 0xEB)
 	ret nz			;6f87
 	set 5,(ix+00fh)		;6f88   ; pone a uno el bit 5 de las banderas de la envolvente de volumen
@@ -1600,7 +1600,7 @@ L_6F8D:
 	jr nc,L_6F96		;6f93
 	ret			;6f95
 L_6F96:
-	ld a,e			;6f96
+	ld a,e			;6f96   ; baja uno, sin pasar del minimo
 	dec a			;6f97
 	jp m,L_6FA2		;6f98
 	cp (ix+034h)		;6f9b   ; compara con el volumen minimo (orden 0xDB)
@@ -1625,10 +1625,10 @@ deslizamiento:		; el periodo que se desliza hacia la nota (ix+0x39, ix+0x3A) seg
 	ld h,(ix+011h)		;6fc2   ; lee el periodo de la nota (alto)
 	ld b,(ix+03ah)		;6fc5   ; lee los pasos que le quedan al deslizamiento
 L_6FC8:
-	ld d,000h		;6fc8
+	ld d,000h		;6fc8   ; el periodo mas el paso, B veces
 	ld e,(ix+039h)		;6fca   ; lee el paso del deslizamiento (ordenes 0xD6 y 0xD7)
 	add hl,de			;6fcd
-	jp nc,L_6FD3		;6fce
+	jp nc,L_6FD3		;6fce   ; si da la vuelta, se deshace
 	sbc hl,de		;6fd1
 L_6FD3:
 	djnz L_6FC8		;6fd3
@@ -1637,9 +1637,9 @@ L_6FD8:
 	ld a,(ix+00ah)		;6fd8   ; lee el periodo que suena (bajo)
 	ld d,(ix+00bh)		;6fdb   ; lee el periodo que suena (alto)
 	sbc a,(ix+039h)		;6fde   ; le resta el paso del deslizamiento (ordenes 0xD6 y 0xD7)
-	ld e,a			;6fe1
+	ld e,a			;6fe1   ; el periodo menos el paso
 	jp nc,L_6FEF		;6fe2
-	ld a,d			;6fe5
+	ld a,d			;6fe5   ; sin bajar de 1
 	or a			;6fe6
 	jr nz,L_6FEE		;6fe7
 	ld de,00001h		;6fe9
@@ -1661,10 +1661,10 @@ desliza_hacia_abajo:		; el periodo baja ix+0x39 por paso hasta la nota
 	ld h,(ix+011h)		;700a   ; lee el periodo de la nota (alto)
 	ld b,(ix+03ah)		;700d   ; lee los pasos que le quedan al deslizamiento
 L_7010:
-	ld d,000h		;7010
+	ld d,000h		;7010   ; el periodo menos el paso, B veces
 	ld e,(ix+039h)		;7012   ; lee el paso del deslizamiento (ordenes 0xD6 y 0xD7)
 	sbc hl,de		;7015
-	jp nc,L_701B		;7017
+	jp nc,L_701B		;7017   ; si se pasa, se deshace
 	add hl,de			;701a
 L_701B:
 	djnz L_7010		;701b
@@ -1696,7 +1696,7 @@ fin_del_deslizamiento:		; el periodo de la nota y la cuenta de pasos de nuevo
 	ret			;7058
 envolvente_calculada:		; el volumen del cuadro con la envolvente de la orden 0xDD (p28:706C)
 	ld a,(0c858h)		;7059   ; lee el bit del canal que se esta tocando
-	cp 008h		;705c
+	cp 008h		;705c   ; los canales del SCC siempre
 	jr nc,L_7065		;705e
 	bit 2,(ix+00dh)		;7060   ; mira el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
 	ret nz			;7064
@@ -1714,42 +1714,42 @@ volumen_calculado:		; los tramos de la envolvente de 0xDD (ix+0x20-0x24, ix+0x37
 	jp nz,L_6F21		;707f
 	jp L_6F0E		;7082
 L_7085:
-	bit 3,(ix+030h)		;7085
+	bit 3,(ix+030h)		;7085   ; el bit 3 de ix+0x30: ya acabo
 	ret nz			;7089
 	bit 5,(ix+00fh)		;708a   ; mira el bit 5 de las banderas de la envolvente de volumen
 	jp nz,L_7106		;708e
 	ld a,(ix+023h)		;7091   ; lee el sosten de la envolvente (orden 0xEB)
-	ld d,a			;7094
-	bit 5,(ix+030h)		;7095
+	ld d,a			;7094   ; D = el sosten
+	bit 5,(ix+030h)		;7095   ; la primera vez
 	ld a,(ix+037h)		;7099
 	jr nz,L_70B8		;709c
 	set 5,(ix+030h)		;709e
 	ld a,e			;70a2
-	sub (ix+038h)		;70a3
+	sub (ix+038h)		;70a3   ; el volumen menos ix+0x38, sin pasar del minimo
 	jr c,L_70AD		;70a6
 	cp (ix+034h)		;70a8   ; compara con el volumen minimo (orden 0xDB)
 	jr nc,L_70B0		;70ab
 L_70AD:
 	ld a,(ix+034h)		;70ad   ; lee el volumen minimo (orden 0xDB)
 L_70B0:
-	ld (ix+020h),a		;70b0
-	ld a,e			;70b3
+	ld (ix+020h),a		;70b0   ; el volumen del tramo
+	ld a,e			;70b3   ; a 4 bits de fraccion
 	rlca			;70b4
 	rlca			;70b5
 	rlca			;70b6
 	rlca			;70b7
 L_70B8:
-	sub d			;70b8
+	sub d			;70b8   ; menos el paso
 	jp c,L_70F6		;70b9
-	ld (ix+037h),a		;70bc
+	ld (ix+037h),a		;70bc   ; el volumen con fraccion
 	rrca			;70bf
 	rrca			;70c0
 	rrca			;70c1
 	rrca			;70c2
-	and 00fh		;70c3
+	and 00fh		;70c3   ; la parte entera, contra el minimo
 	cp (ix+034h)		;70c5   ; compara con el volumen minimo (orden 0xDB)
 	jp c,L_70F6		;70c8
-	ld a,(ix+037h)		;70cb
+	ld a,(ix+037h)		;70cb   ; redondeado
 	bit 3,a		;70ce
 	jr z,L_70D4		;70d0
 	add a,010h		;70d2
@@ -1758,7 +1758,7 @@ L_70D4:
 	rrca			;70d5
 	rrca			;70d6
 	rrca			;70d7
-	and 00fh		;70d8
+	and 00fh		;70d8   ; E = el volumen
 	ld e,a			;70da
 	cp (ix+034h)		;70db   ; compara con el volumen minimo (orden 0xDB)
 	jr nz,L_70E4		;70de
@@ -1774,7 +1774,7 @@ L_70E4:
 	ret			;70f5
 L_70F6:
 	ld a,(ix+034h)		;70f6   ; lee el volumen minimo (orden 0xDB)
-	rlca			;70f9
+	rlca			;70f9   ; el minimo con fraccion
 	rlca			;70fa
 	rlca			;70fb
 	rlca			;70fc
@@ -1784,37 +1784,37 @@ L_70F6:
 	jr L_70E0		;7104
 L_7106:
 	ld a,(ix+024h)		;7106   ; lee el final de la envolvente (orden 0xEB)
-	ld d,a			;7109
-	bit 5,(ix+030h)		;710a
+	ld d,a			;7109   ; D = el paso del final
+	bit 5,(ix+030h)		;710a   ; la primera vez
 	ld a,(ix+037h)		;710e
 	jr nz,L_7127		;7111
 	set 5,(ix+030h)		;7113
-	ld a,e			;7117
+	ld a,e			;7117   ; E = el volumen
 	bit 4,(ix+030h)		;7118
 	jr z,L_7123		;711c
 	cp (ix+020h)		;711e
 	jr nc,L_7162		;7121
 L_7123:
-	rlca			;7123
+	rlca			;7123   ; a 4 bits de fraccion
 	rlca			;7124
 	rlca			;7125
 	rlca			;7126
 L_7127:
-	add a,d			;7127
+	add a,d			;7127   ; mas el paso
 	ld (ix+037h),a		;7128
-	jp c,L_715A		;712b
+	jp c,L_715A		;712b   ; si se pasa, el maximo
 	bit 3,a		;712e
 	jr z,L_7136		;7130
 	add a,010h		;7132
 	jr c,L_715A		;7134
 L_7136:
-	rrca			;7136
+	rrca			;7136   ; la parte entera
 	rrca			;7137
 	rrca			;7138
 	rrca			;7139
 	and 00fh		;713a
 L_713C:
-	ld e,a			;713c
+	ld e,a			;713c   ; E = el volumen
 	bit 4,(ix+030h)		;713d
 	jr z,L_7148		;7141
 	cp (ix+020h)		;7143
@@ -1836,30 +1836,30 @@ L_7162:
 	set 3,(ix+030h)		;7162
 	jr L_714D		;7166
 onda_que_cambia:		; avanza el desplazamiento de la forma de onda (ix+0x31-0x33) con el paso de ix+0x32
-	bit 7,(ix+030h)		;7168
+	bit 7,(ix+030h)		;7168   ; con el bit 7 de ix+0x30 no cambia
 	ret nz			;716c
 	bit 7,(ix+00dh)		;716d   ; mira el bit 7 de la clase de la nota y sus banderas (orden 0xE0)
 	jr nz,L_717F		;7171
-	ld (ix+033h),010h		;7173
+	ld (ix+033h),010h		;7173   ; la primera vez, desde 0x10
 	res 6,(ix+030h)		;7177
 	set 7,(ix+00dh)		;717b   ; pone a uno el bit 7 de la clase de la nota y sus banderas (orden 0xE0)
 L_717F:
 	ld a,(ix+00dh)		;717f   ; lee la clase de la nota y sus banderas (orden 0xE0)
-	and 030h		;7182
+	and 030h		;7182   ; los bits 4 y 5 de ix+0x0D
 	jr z,L_718E		;7184
 	cp 010h		;7186
 	jr z,L_718E		;7188
 	cp 020h		;718a
 	jr z,L_718E		;718c
 L_718E:
-	ld e,(ix+032h)		;718e
+	ld e,(ix+032h)		;718e   ; el paso de la onda
 	ld a,(ix+033h)		;7191
-	add a,e			;7194
+	add a,e			;7194   ; la cuenta mas el paso
 	jr nc,L_719B		;7195
-	set 6,(ix+030h)		;7197
+	set 6,(ix+030h)		;7197   ; al dar la vuelta, el bit 6
 L_719B:
-	ld (ix+033h),a		;719b
-	and 0f0h		;719e
+	ld (ix+033h),a		;719b   ; la cuenta
+	and 0f0h		;719e   ; su nibble alto: cuanto se salta en la onda
 	rrca			;71a0
 	rrca			;71a1
 	rrca			;71a2
@@ -1874,7 +1874,7 @@ L_719B:
 L_71B8:
 	add a,010h		;71b8
 L_71BA:
-	ld (ix+031h),a		;71ba
+	ld (ix+031h),a		;71ba   ; el salto, hasta 0x1F
 	cp 020h		;71bd
 	ret c			;71bf
 	and 01fh		;71c0
@@ -1882,35 +1882,35 @@ L_71BA:
 	ret			;71c5
 paso_del_fundido:		; cuenta 0xC856 hasta 0xC854 y 0xC857 hasta 0xC855; al acabar, el fundido termina y se callan todos los canales (p28:724A)
 	ld de,0c854h		;71c6   ; apunta a los cuadros por paso del fundido (y 0xC855, los pasos)
-	ld a,(de)			;71c9
+	ld a,(de)			;71c9   ; B = cuadros por paso
 	ld b,a			;71ca
 	inc de			;71cb
 	ld a,(de)			;71cc
-	ld c,a			;71cd
+	ld c,a			;71cd   ; C = pasos
 	ld hl,0c856h		;71ce   ; apunta a la cuenta del fundido (y 0xC857, los pasos dados)
-	inc (hl)			;71d1
+	inc (hl)			;71d1   ; un cuadro mas
 	ld a,(hl)			;71d2
 	cp b			;71d3
 	ret nz			;71d4
-	ld (hl),000h		;71d5
+	ld (hl),000h		;71d5   ; un paso mas
 	inc hl			;71d7
 	inc (hl)			;71d8
 	ld a,(hl)			;71d9
 	cp c			;71da
-	ret nz			;71db
+	ret nz			;71db   ; todos los pasos: se acaba
 	ld hl,0c840h		;71dc   ; apunta a el estado del sonido: bit 0 fundido, bit 1 pausa, bit 2 fundido parado por la pausa
 	res 0,(hl)		;71df
-	xor a			;71e1
+	xor a			;71e1   ; la cuenta a 0
 	ld hl,0c856h		;71e2   ; apunta a la cuenta del fundido (y 0xC857, los pasos dados)
 	ld (hl),a			;71e5
 	inc hl			;71e6
 	ld (hl),a			;71e7
-	ld a,(0c640h)		;71e8
+	ld a,(0c640h)		;71e8   ; si el PSG B y el C tocan lo mismo...
 	ld e,a			;71eb
 	ld a,(0c680h)		;71ec
 	cp e			;71ef
 	jr nz,L_7200		;71f0
-	ld ix,0c680h		;71f2
+	ld ix,0c680h		;71f2   ; ...se callan el PSG C y el SCC 1
 	call calla_canal		;71f6   ; calla_canal: la ficha del canal a 0 (fin de su partitura) y, en el PSG, el ruido y la envolvente que usaba
 	ld ix,0c6c0h		;71f9
 	call calla_canal		;71fd   ; calla_canal: la ficha del canal a 0 (fin de su partitura) y, en el PSG, el ruido y la envolvente que usaba
@@ -1930,23 +1930,23 @@ L_7200:
 	call calla_canal		;7222   ; calla_canal: la ficha del canal a 0 (fin de su partitura) y, en el PSG, el ruido y la envolvente que usaba
 	ret			;7225
 volumen_con_fundido:		; E = el volumen menos el del fundido (0xC857), sin bajar de 0
-	ld a,(0c640h)		;7226
+	ld a,(0c640h)		;7226   ; si el PSG B y el C tocan lo mismo...
 	ld b,a			;7229
 	ld a,(0c680h)		;722a
 	cp b			;722d
 	jr z,L_7236		;722e
 	ld a,(0c858h)		;7230   ; lee el bit del canal que se esta tocando
-	and 0f3h		;7233
+	and 0f3h		;7233   ; ...los efectos (canales 3 y 4) no bajan con el fundido
 	ret z			;7235
 L_7236:
 	bit 2,(ix+00dh)		;7236   ; mira el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
-	jr nz,L_7247		;723a
-	ld a,(0c857h)		;723c
+	jr nz,L_7247		;723a   ; con envolvente, el volumen a 0
+	ld a,(0c857h)		;723c   ; el volumen menos el del fundido
 	ld b,a			;723f
 	ld a,e			;7240
 	sub b			;7241
 	ld e,000h		;7242
-	ret m			;7244
+	ret m			;7244   ; si no llega, 0
 	ld e,a			;7245
 	ret			;7246
 L_7247:
@@ -1985,11 +1985,11 @@ L_7286:
 	res 3,(hl)		;7288
 	ret			;728a
 orden_de_partitura:		; las ordenes de las partituras: 0xE0-0xFE por la tabla p28:72A0 y 0xD0-0xDF por la de p28:758C
-	cp 0e0h		;728b
+	cp 0e0h		;728b   ; 0xE0-0xFE
 	jp c,orden_D		;728d
-	and 01fh		;7290
+	and 01fh		;7290   ; la orden menos 0xE0
 	push hl			;7292
-	ld hl,072a0h		;7293
+	ld hl,072a0h		;7293   ; su manejador en la tabla
 	add a,a			;7296
 	ld e,a			;7297
 	ld d,000h		;7298
@@ -1998,7 +1998,7 @@ orden_de_partitura:		; las ordenes de las partituras: 0xE0-0xFE por la tabla p28
 	inc hl			;729c
 	ld d,(hl)			;729d
 	ex de,hl			;729e
-	jp (hl)			;729f
+	jp (hl)			;729f   ; la orden; vuelve con HL en su ultimo byte
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_72A0: lo leen p28:729B, p28:729D jugando (tools/cobertura.py)
@@ -2019,46 +2019,46 @@ orden_E0:		; ordenes 0xE0 y 0xE2: la clase del canal (ix+0x0D, bits 0-1) y la du
 	pop hl			;72de
 clase_y_duracion:		; la clase del canal y la duracion de los bytes de HL
 	res 6,(ix+00eh)		;72df   ; pone a cero el bit 6 de las banderas de los efectos del canal
-	ld a,(hl)			;72e3
+	ld a,(hl)			;72e3   ; la clase: bits 0-1
 	and 003h		;72e4
 	ld (ix+00dh),a		;72e6   ; guarda la clase de la nota y sus banderas (orden 0xE0)
 	ld b,a			;72e9
-	inc hl			;72ea
+	inc hl			;72ea   ; la duracion fija
 	ld a,(hl)			;72eb
 	ld (ix+013h),a		;72ec   ; guarda la duracion fija (orden 0xE0)
-	ld a,b			;72ef
+	ld a,b			;72ef   ; con clase 0, la duracion es de la nota
 	or a			;72f0
 	ret nz			;72f1
 	dec hl			;72f2
 	ret			;72f3
 orden_E1:		; ordenes 0xE1 y 0xE3: el ruido encendido en este canal del PSG y lo de 0xE0
-	pop hl			;72f4
+	pop hl			;72f4   ; HL en la orden
 	ld a,(0c858h)		;72f5   ; lee el bit del canal que se esta tocando
-	cp 004h		;72f8
+	cp 004h		;72f8   ; el canal C (el de los efectos)?
 	ld a,(0c85bh)		;72fa   ; lee que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
 	jr nz,L_7308		;72fd
-	set 0,a		;72ff
+	set 0,a		;72ff   ; el ruido de los efectos
 	res 1,a		;7301
 	ld (0c85bh),a		;7303   ; guarda que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
 	jr clase_y_duracion		;7306
 L_7308:
-	set 2,a		;7308
+	set 2,a		;7308   ; el ruido de la musica
 	res 3,a		;730a
 	ld (0c85bh),a		;730c   ; guarda que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
 	jr clase_y_duracion		;730f
 orden_E4:		; orden 0xE4: el periodo del ruido (0xC859 o 0xC85A)
-	pop hl			;7311
+	pop hl			;7311   ; el periodo del ruido
 	inc hl			;7312
 	ld a,(hl)			;7313
 	and 01fh		;7314
 	ld b,a			;7316
 	ld a,(0c858h)		;7317   ; lee el bit del canal que se esta tocando
-	cp 004h		;731a
+	cp 004h		;731a   ; el canal C: el de los efectos
 	ld a,b			;731c
 	jr nz,L_732D		;731d
 	ld (0c859h),a		;731f   ; guarda el periodo del ruido de los efectos
 	ld a,(0c85bh)		;7322   ; lee que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
-	set 0,a		;7325
+	set 0,a		;7325   ; se manda
 	res 1,a		;7327
 	ld (0c85bh),a		;7329   ; guarda que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
 	ret			;732c
@@ -2071,12 +2071,12 @@ L_732D:
 	ret			;733a
 orden_E5:		; orden 0xE5: la forma de la envolvente del PSG (0xC85C, registro 13) y sigue con 0xE6
 	pop hl			;733b
-	inc hl			;733c
+	inc hl			;733c   ; el byte siguiente
 	res 3,(ix+00dh)		;733d   ; pone a cero el bit 3 de la clase de la nota y sus banderas (orden 0xE0)
 	ld a,(hl)			;7341
 	ld (0c85ch),a		;7342   ; guarda la forma de la envolvente del PSG (registro 13)
 	ld de,0c85bh		;7345   ; apunta a que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
-	ld a,(de)			;7348
+	ld a,(de)			;7348   ; se manda la forma
 	set 5,a		;7349
 	ld (de),a			;734b
 	jp L_7350		;734c
@@ -2084,10 +2084,10 @@ orden_E6:		; orden 0xE6: el periodo de la envolvente, byte alto (0xC85E, registr
 	pop hl			;734f
 L_7350:
 	inc hl			;7350
-	ld a,(hl)			;7351
+	ld a,(hl)			;7351   ; el byte siguiente
 	ld (0c85eh),a		;7352   ; guarda el periodo de la envolvente del PSG, alto (registro 12)
 	ld de,0c85bh		;7355   ; apunta a que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
-	ld a,(de)			;7358
+	ld a,(de)			;7358   ; se manda el periodo alto
 	set 6,a		;7359
 	ld (de),a			;735b
 	jp L_7360		;735c
@@ -2095,10 +2095,10 @@ orden_E7:		; orden 0xE7: el byte bajo (0xC85D, registro 11) y el volumen del can
 	pop hl			;735f
 L_7360:
 	inc hl			;7360
-	ld a,(hl)			;7361
+	ld a,(hl)			;7361   ; el byte siguiente
 	ld (0c85dh),a		;7362   ; guarda el periodo de la envolvente del PSG, bajo (registro 11)
 	ld de,0c85bh		;7365   ; apunta a que hay que mandar al PSG: bits 0-3 el ruido, 5-7 la envolvente
-	ld a,(de)			;7368
+	ld a,(de)			;7368   ; se manda el periodo bajo
 	set 7,a		;7369
 	ld (de),a			;736b
 	set 2,(ix+00dh)		;736c   ; pone a uno el bit 2 de la clase de la nota y sus banderas (orden 0xE0)
@@ -2115,66 +2115,66 @@ sin_envolvente_psg:		; 0xC85B = 0 y el canal sin envolvente
 	ret			;737f
 orden_E9:		; orden 0xE9: el tempo (ix+0x14)
 	pop hl			;7380
-	inc hl			;7381
+	inc hl			;7381   ; el tempo
 	ld a,(hl)			;7382
 	ld (ix+014h),a		;7383   ; guarda el tempo del canal (orden 0xE9)
-	xor a			;7386
+	xor a			;7386   ; la parte alta de la duracion a 0
 	ld (ix+02ch),a		;7387   ; guarda lo que le queda a la nota (alta)
 	ret			;738a
 orden_EA:		; orden 0xEA: el nibble alto a ix+0x36 (con el bit 0 de ix+0x30) y el bajo a ix+0x15
 	pop hl			;738b
 	inc hl			;738c
-	ld a,(hl)			;738d
+	ld a,(hl)			;738d   ; el nibble alto: con el, ataque
 	and 0f0h		;738e
 	jr z,L_739F		;7390
 	rrca			;7392
 	rrca			;7393
 	rrca			;7394
 	rrca			;7395
-	ld (ix+036h),a		;7396
+	ld (ix+036h),a		;7396   ; lo que sube en el ataque
 	set 0,(ix+030h)		;7399
 	jr L_73A3		;739d
 L_739F:
 	res 0,(ix+030h)		;739f
 L_73A3:
-	ld a,(hl)			;73a3
+	ld a,(hl)			;73a3   ; el nibble bajo: el volumen
 	and 00fh		;73a4
 	ld (ix+015h),a		;73a6   ; guarda el volumen del canal (orden 0xEA)
 	ret			;73a9
 orden_EB:		; orden 0xEB: la envolvente de volumen: ataque y caida (ix+0x21, ix+0x22) y sosten y final (ix+0x23, ix+0x24)
 	pop hl			;73aa
-	inc hl			;73ab
+	inc hl			;73ab   ; el byte siguiente
 	ld a,(ix+00fh)		;73ac   ; lee las banderas de la envolvente de volumen
 	and 080h		;73af
 	ld (ix+00fh),a		;73b1   ; guarda las banderas de la envolvente de volumen
-	ld a,(hl)			;73b4
+	ld a,(hl)			;73b4   ; el ataque, nibble alto
 	and 0f0h		;73b5
 	rrca			;73b7
 	rrca			;73b8
 	rrca			;73b9
 	rrca			;73ba
-	cp 008h		;73bb
+	cp 008h		;73bb   ; 8 o mas: subiendo
 	jp nc,L_73C4		;73bd
 	set 2,(ix+00fh)		;73c0   ; pone a uno el bit 2 de las banderas de la envolvente de volumen
 L_73C4:
-	res 3,a		;73c4
+	res 3,a		;73c4   ; los 3 bits + 1
 	inc a			;73c6
 	bit 2,(ix+00fh)		;73c7   ; mira el bit 2 de las banderas de la envolvente de volumen
 	jp nz,L_73D2		;73cb
 	set 1,(ix+00fh)		;73ce   ; pone a uno el bit 1 de las banderas de la envolvente de volumen
 L_73D2:
 	ld (ix+021h),a		;73d2   ; guarda el ataque de la envolvente (orden 0xEB)
-	ld a,(hl)			;73d5
+	ld a,(hl)			;73d5   ; la caida, nibble bajo
 	and 00fh		;73d6
 	cp 008h		;73d8
 	jp c,L_73E1		;73da
 	set 4,(ix+00fh)		;73dd   ; pone a uno el bit 4 de las banderas de la envolvente de volumen
 L_73E1:
-	res 3,a		;73e1
+	res 3,a		;73e1   ; los 3 bits + 1
 	inc a			;73e3
 	ld (ix+022h),a		;73e4   ; guarda la caida de la envolvente (orden 0xEB)
 	inc hl			;73e7
-	ld a,(hl)			;73e8
+	ld a,(hl)			;73e8   ; el sosten y el final
 	and 0f0h		;73e9
 	rrca			;73eb
 	rrca			;73ec
@@ -2195,28 +2195,28 @@ orden_EC:		; orden 0xEC: sin envolvente de volumen
 orden_ED:		; orden 0xED: ix+0x35 y ix+0x25
 	pop hl			;7407
 	inc hl			;7408
-	ld a,(hl)			;7409
+	ld a,(hl)			;7409   ; el nibble alto: ix+0x35
 	and 0f0h		;740a
 	rrca			;740c
 	rrca			;740d
 	rrca			;740e
 	rrca			;740f
 	jp z,L_7421		;7410
-	ld (ix+035h),a		;7413
-	ld a,(hl)			;7416
+	ld (ix+035h),a		;7413   ; con el, el bit 0 de ix+0x30
+	ld a,(hl)			;7416   ; el bajo: ix+0x25
 	and 00fh		;7417
 	ld (ix+025h),a		;7419
 	set 0,(ix+030h)		;741c
 	ret			;7420
 L_7421:
-	res 0,(ix+030h)		;7421
+	res 0,(ix+030h)		;7421   ; sin nibble alto
 	ld a,(hl)			;7425
 	ld (ix+025h),a		;7426
 	ret			;7429
 orden_EE:		; orden 0xEE: el ajuste del periodo (ix+0x26)
 	pop hl			;742a
 	inc hl			;742b
-	ld a,(hl)			;742c
+	ld a,(hl)			;742c   ; el ajuste
 	ld (ix+026h),a		;742d   ; guarda el ajuste del periodo (orden 0xEE)
 	set 1,(ix+00eh)		;7430   ; pone a uno el bit 1 de las banderas de los efectos del canal
 	ret			;7434
@@ -2236,10 +2236,10 @@ orden_F1:		; orden 0xF1: el vibrato, su amplitud (ix+0x1C) y su velocidad (ix+0x
 	ld a,(ix+00eh)		;7447   ; lee las banderas de los efectos del canal
 	or 014h		;744a
 	ld (ix+00eh),a		;744c   ; guarda las banderas de los efectos del canal
-	ld a,(hl)			;744f
+	ld a,(hl)			;744f   ; la amplitud, nibble bajo
 	and 00fh		;7450
 	ld (ix+01ch),a		;7452   ; guarda la amplitud del vibrato (orden 0xF1)
-	ld a,(hl)			;7455
+	ld a,(hl)			;7455   ; la velocidad, nibble alto
 	and 0f0h		;7456
 	rrca			;7458
 	rrca			;7459
@@ -2250,7 +2250,7 @@ orden_F1:		; orden 0xF1: el vibrato, su amplitud (ix+0x1C) y su velocidad (ix+0x
 orden_F2:		; orden 0xF2: el retardo del vibrato (ix+0x1A)
 	pop hl			;7460
 	inc hl			;7461
-	ld a,(hl)			;7462
+	ld a,(hl)			;7462   ; el retardo
 	ld (ix+01ah),a		;7463   ; guarda el retardo del vibrato (orden 0xF2)
 	ld a,(ix+00eh)		;7466   ; lee las banderas de los efectos del canal
 	or 00ch		;7469
@@ -2267,7 +2267,7 @@ orden_F4:		; orden 0xF4: el bit 6 de ix+0x0E (las notas traen el periodo)
 orden_F5:		; orden 0xF5: la marca de repeticion aqui (ix+0x2D-0x2E)
 	pop hl			;747b
 pon_marca:		; ix+0x2D-0x2E = HL
-	ld a,l			;747c
+	ld a,l			;747c   ; la marca: por donde va la partitura
 	ld (ix+02dh),a		;747d   ; guarda la marca de repeticion (baja, orden 0xF5)
 	ld a,h			;7480
 	ld (ix+02eh),a		;7481   ; guarda la marca de repeticion (alta)
@@ -2281,7 +2281,7 @@ orden_F6:		; orden 0xF6: los bits 5 y 6 de ix+0x0E a 0
 orden_F7:		; orden 0xF7: la bajada de volumen al empezar la nota (ix+0x2F)
 	pop hl			;748f
 	set 7,(ix+00eh)		;7490   ; pone a uno el bit 7 de las banderas de los efectos del canal
-	inc hl			;7494
+	inc hl			;7494   ; el byte siguiente
 	ld a,(hl)			;7495
 	ld (ix+02fh),a		;7496   ; guarda la bajada de volumen al empezar la nota (orden 0xF7)
 	ret			;7499
@@ -2296,14 +2296,14 @@ orden_F8:		; orden 0xF8: la forma de onda del SCC (tabla p28:6442) y, con el bit
 	res 6,(ix+00dh)		;74a9   ; pone a cero el bit 6 de la clase de la nota y sus banderas (orden 0xE0)
 	res 3,(ix+03ch)		;74ad   ; pone a cero el bit 3 de las banderas del deslizamiento
 forma_de_onda:		; ix+0x27-0x28 = la palabra A de p28:6442
-	ld de,06442h		;74b1
-	add a,a			;74b4
+	ld de,06442h		;74b1   ; la tabla de formas de onda
+	add a,a			;74b4   ; 2 bytes por forma
 	add a,e			;74b5
 	ld e,a			;74b6
 	jr nc,L_74BA		;74b7
 	inc d			;74b9
 L_74BA:
-	ld a,(de)			;74ba
+	ld a,(de)			;74ba   ; la direccion de la forma de onda
 	ld (ix+027h),a		;74bb   ; guarda la forma de onda del SCC (baja, orden 0xF8)
 	inc de			;74be
 	ld a,(de)			;74bf
@@ -2326,7 +2326,7 @@ L_74C4:
 L_74E6:
 	set 4,(ix+00dh)		;74e6   ; pone a uno el bit 4 de la clase de la nota y sus banderas (orden 0xE0)
 L_74EA:
-	bit 6,a		;74ea
+	bit 6,a		;74ea   ; el bit 6: el bit 5 de ix+0x0D
 	jr nz,L_74F4		;74ec
 	res 5,(ix+00dh)		;74ee   ; pone a cero el bit 5 de la clase de la nota y sus banderas (orden 0xE0)
 	jr L_74F8		;74f2
@@ -2349,11 +2349,11 @@ orden_FA:		; orden 0xFA: vuelve de la llamada
 	ret			;7510
 orden_FB:		; orden 0xFB: repite desde la marca N veces (ix+5)
 	pop hl			;7511
-	inc hl			;7512
+	inc hl			;7512   ; el byte siguiente: cuantas vueltas
 	ld a,(ix+005h)		;7513   ; lee las vueltas de la orden 0xFB
-	inc a			;7516
+	inc a			;7516   ; una vuelta mas
 	cp (hl)			;7517
-	jr z,L_7524		;7518
+	jr z,L_7524		;7518   ; ya estan todas: sigue
 	ld (ix+005h),a		;751a   ; guarda las vueltas de la orden 0xFB
 	ld l,(ix+02dh)		;751d   ; lee la marca de repeticion (baja, orden 0xF5)
 	ld h,(ix+02eh)		;7520   ; lee la marca de repeticion (alta)
@@ -2365,20 +2365,20 @@ orden_FC:		; orden 0xFC: salta N veces (ix+6) a la direccion que lleva
 	pop hl			;7529
 	inc hl			;752a
 	ld a,(ix+006h)		;752b   ; lee las vueltas de la orden 0xFC
-	inc a			;752e
+	inc a			;752e   ; una vuelta mas
 	cp (hl)			;752f
-	jr z,L_753C		;7530
+	jr z,L_753C		;7530   ; ya estan todas: sigue detras
 	ld (ix+006h),a		;7532   ; guarda las vueltas de la orden 0xFC
 salta_partitura:		; HL = la direccion de detras - 1
-	inc hl			;7535
+	inc hl			;7535   ; la direccion del salto
 	ld e,(hl)			;7536
 	inc hl			;7537
 	ld d,(hl)			;7538
 	ex de,hl			;7539
-	dec hl			;753a
+	dec hl			;753a   ; HL - 1: el que llama suma 1
 	ret			;753b
 L_753C:
-	inc hl			;753c
+	inc hl			;753c   ; sigue detras de la direccion
 	inc hl			;753d
 	ld (ix+006h),000h		;753e   ; las vueltas de la orden 0xFC = 0x00
 	ret			;7542
@@ -2387,20 +2387,20 @@ orden_FD:		; orden 0xFD: salta a la direccion que lleva
 	jr salta_partitura		;7544
 orden_FE:		; orden 0xFE: la clase del canal (ix+9), guardando o devolviendo las banderas al pasar por la 1
 	pop hl			;7546
-	inc hl			;7547
+	inc hl			;7547   ; el byte siguiente: la clase
 	ld b,(ix+009h)		;7548   ; lee la clase del canal (orden 0xFE)
 	ld a,(hl)			;754b
 	ld (ix+009h),a		;754c   ; guarda la clase del canal (orden 0xFE)
-	cp 001h		;754f
+	cp 001h		;754f   ; a la clase 1: se guardan las banderas
 	ld a,b			;7551
 	jp z,L_756C		;7552
-	cp 001h		;7555
+	cp 001h		;7555   ; de la clase 1: se devuelven
 	ret nz			;7557
 	ld a,(ix+00eh)		;7558   ; lee las banderas de los efectos del canal
 	ld (ix+02ah),a		;755b
 	ld a,(ix+00fh)		;755e   ; lee las banderas de la envolvente de volumen
 	ld (ix+02bh),a		;7561
-	xor a			;7564
+	xor a			;7564   ; los efectos a 0
 	ld (ix+00eh),a		;7565   ; guarda las banderas de los efectos del canal
 	ld (ix+00fh),a		;7568   ; guarda las banderas de la envolvente de volumen
 	ret			;756b
@@ -2413,9 +2413,9 @@ L_756C:
 	ld (ix+00fh),a		;7578   ; guarda las banderas de la envolvente de volumen
 	ret			;757b
 orden_D:		; las ordenes 0xD0-0xDF por la tabla p28:758C
-	and 00fh		;757c
+	and 00fh		;757c   ; las ordenes 0xD0-0xDF
 	push hl			;757e
-	ld hl,0758ch		;757f
+	ld hl,0758ch		;757f   ; su manejador
 	add a,a			;7582
 	ld e,a			;7583
 	ld d,000h		;7584
@@ -2424,7 +2424,7 @@ orden_D:		; las ordenes 0xD0-0xDF por la tabla p28:758C
 	inc hl			;7588
 	ld d,(hl)			;7589
 	ex de,hl			;758a
-	jp (hl)			;758b
+	jp (hl)			;758b   ; la orden
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_758C: lo leen p28:7587, p28:7589 jugando (tools/cobertura.py)
@@ -2441,7 +2441,7 @@ DATA_leido_758C:
 
 orden_D0:		; ordenes 0xD0-0xD5: la octava (ix+0x16 e ix+0x29)
 	pop hl			;75ac
-	ld a,(hl)			;75ad
+	ld a,(hl)			;75ad   ; el nibble bajo de la orden: la octava
 	and 00fh		;75ae
 	ld (ix+016h),a		;75b0   ; guarda la octava del canal (ordenes 0xD0-0xD5)
 	ld (ix+029h),a		;75b3   ; guarda la octava (copia)
@@ -2461,22 +2461,22 @@ orden_D6:		; orden 0xD6: deslizamiento hacia arriba (paso ix+0x39, pasos ix+0x3A
 	ld (ix+03bh),a		;75ce   ; guarda los pasos del deslizamiento
 	ret			;75d1
 orden_D7:		; orden 0xD7: deslizamiento hacia abajo
-	pop hl			;75d2
+	pop hl			;75d2   ; HL en la orden
 	ld a,(ix+03ch)		;75d3   ; lee las banderas del deslizamiento
 	or 0d0h		;75d6
 	ld (ix+03ch),a		;75d8   ; guarda las banderas del deslizamiento
-	inc hl			;75db
+	inc hl			;75db   ; el paso del deslizamiento
 	ld a,(hl)			;75dc
 	ld (ix+039h),a		;75dd   ; guarda el paso del deslizamiento (ordenes 0xD6 y 0xD7)
 	inc hl			;75e0
-	ld a,(hl)			;75e1
+	ld a,(hl)			;75e1   ; cuantos pasos
 	ld (ix+03ah),a		;75e2   ; guarda los pasos que le quedan al deslizamiento
 	ld (ix+03bh),a		;75e5   ; guarda los pasos del deslizamiento
 	ret			;75e8
 orden_D8:		; orden 0xD8: sin deslizamiento
 	pop hl			;75e9
 	ld a,(ix+03ch)		;75ea   ; lee las banderas del deslizamiento
-	and 00fh		;75ed
+	and 00fh		;75ed   ; sin las banderas de deslizamiento
 	ld (ix+03ch),a		;75ef   ; guarda las banderas del deslizamiento
 	ret			;75f2
 orden_D9:		; orden 0xD9: no hace nada
@@ -2488,7 +2488,7 @@ orden_DA:		; orden 0xDA: no hace nada
 orden_DB:		; orden 0xDB: el volumen minimo (ix+0x34)
 	pop hl			;75f7
 	inc hl			;75f8
-	ld a,(hl)			;75f9
+	ld a,(hl)			;75f9   ; el volumen minimo
 	ld (ix+034h),a		;75fa   ; guarda el volumen minimo (orden 0xDB)
 	ret			;75fd
 orden_DC:		; orden 0xDC: el volumen minimo a 0
@@ -2498,32 +2498,32 @@ orden_DC:		; orden 0xDC: el volumen minimo a 0
 	ret			;7603
 orden_DD:		; orden 0xDD: una envolvente de volumen con los pasos calculados
 	pop hl			;7604
-	inc hl			;7605
+	inc hl			;7605   ; el byte siguiente
 	ld a,(ix+00fh)		;7606   ; lee las banderas de la envolvente de volumen
 	and 080h		;7609
 	ld (ix+00fh),a		;760b   ; guarda las banderas de la envolvente de volumen
-	ld a,(hl)			;760e
+	ld a,(hl)			;760e   ; el ataque
 	and 0f0h		;760f
 	rrca			;7611
 	rrca			;7612
 	rrca			;7613
 	rrca			;7614
-	cp 008h		;7615
+	cp 008h		;7615   ; 8 o mas: subiendo
 	jp nc,L_761E		;7617
 	set 2,(ix+00fh)		;761a   ; pone a uno el bit 2 de las banderas de la envolvente de volumen
 L_761E:
-	res 3,a		;761e
+	res 3,a		;761e   ; los 3 bits + 1
 	inc a			;7620
 	bit 2,(ix+00fh)		;7621   ; mira el bit 2 de las banderas de la envolvente de volumen
 	jp nz,L_762C		;7625
 	set 1,(ix+00fh)		;7628   ; pone a uno el bit 1 de las banderas de la envolvente de volumen
 L_762C:
 	ld (ix+021h),a		;762c   ; guarda el ataque de la envolvente (orden 0xEB)
-	ld a,(hl)			;762f
+	ld a,(hl)			;762f   ; la caida
 	and 00fh		;7630
 	ld (ix+022h),a		;7632   ; guarda la caida de la envolvente (orden 0xEB)
 	inc hl			;7635
-	ld a,(hl)			;7636
+	ld a,(hl)			;7636   ; el sosten y el final
 	and 0f0h		;7637
 	rrca			;7639
 	rrca			;763a
@@ -2535,14 +2535,14 @@ L_762C:
 	ld (ix+024h),a		;7643   ; guarda el final de la envolvente (orden 0xEB)
 	ld b,a			;7646
 	ld a,(ix+023h)		;7647   ; lee el sosten de la envolvente (orden 0xEB)
-	sub b			;764a
+	sub b			;764a   ; lo que baja entre el sosten y el final
 	ld (ix+038h),a		;764b
-	ld e,000h		;764e
+	ld e,000h		;764e   ; D:E = el sosten / la caida, con fraccion
 	ld d,000h		;7650
 	ld b,(ix+022h)		;7652   ; lee la caida de la envolvente (orden 0xEB)
 	ld a,(ix+023h)		;7655   ; lee el sosten de la envolvente (orden 0xEB)
 L_7658:
-	sub b			;7658
+	sub b			;7658   ; la parte entera
 	jr c,L_7664		;7659
 	inc d			;765b
 	ld (ix+023h),a		;765c   ; guarda el sosten de la envolvente (orden 0xEB)
@@ -2550,7 +2550,7 @@ L_7658:
 	jr z,L_7681		;7660
 	jr L_7658		;7662
 L_7664:
-	ld a,b			;7664
+	ld a,b			;7664   ; la fraccion, de 16 en 16
 	ld b,(ix+023h)		;7665   ; lee el sosten de la envolvente (orden 0xEB)
 	sub b			;7668
 	rlca			;7669
@@ -2569,14 +2569,14 @@ L_7675:
 	jr z,L_7681		;767d
 	jr L_7675		;767f
 L_7681:
-	ld a,e			;7681
+	ld a,e			;7681   ; la fraccion (complemento)
 	or a			;7682
 	jr z,L_7688		;7683
 	cpl			;7685
 	and 00fh		;7686
 L_7688:
 	ld (ix+023h),a		;7688   ; guarda el sosten de la envolvente (orden 0xEB)
-	ld a,d			;768b
+	ld a,d			;768b   ; la parte entera en el nibble alto
 	rlca			;768c
 	rlca			;768d
 	rlca			;768e
@@ -2584,12 +2584,12 @@ L_7688:
 	and 0f0h		;7690
 	or (ix+023h)		;7692   ; OR con el sosten de la envolvente (orden 0xEB)
 	ld (ix+023h),a		;7695   ; guarda el sosten de la envolvente (orden 0xEB)
-	ld e,000h		;7698
+	ld e,000h		;7698   ; lo mismo con el final
 	ld d,000h		;769a
 	ld b,(ix+022h)		;769c   ; lee la caida de la envolvente (orden 0xEB)
 	ld a,(ix+024h)		;769f   ; lee el final de la envolvente (orden 0xEB)
 L_76A2:
-	sub b			;76a2
+	sub b			;76a2   ; la parte entera
 	jr c,L_76AE		;76a3
 	inc d			;76a5
 	ld (ix+024h),a		;76a6   ; guarda el final de la envolvente (orden 0xEB)
@@ -2597,7 +2597,7 @@ L_76A2:
 	jr z,L_76CB		;76aa
 	jr L_76A2		;76ac
 L_76AE:
-	ld a,b			;76ae
+	ld a,b			;76ae   ; la fraccion
 	ld b,(ix+024h)		;76af   ; lee el final de la envolvente (orden 0xEB)
 	sub b			;76b2
 	rlca			;76b3
@@ -2616,14 +2616,14 @@ L_76BF:
 	jr z,L_76CB		;76c7
 	jr L_76BF		;76c9
 L_76CB:
-	ld a,e			;76cb
+	ld a,e			;76cb   ; la fraccion (complemento)
 	or a			;76cc
 	jr z,L_76D2		;76cd
 	cpl			;76cf
 	and 00fh		;76d0
 L_76D2:
 	ld (ix+024h),a		;76d2   ; guarda el final de la envolvente (orden 0xEB)
-	ld a,d			;76d5
+	ld a,d			;76d5   ; la parte entera en el nibble alto
 	rlca			;76d6
 	rlca			;76d7
 	rlca			;76d8

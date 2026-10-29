@@ -3338,16 +3338,16 @@ sin_sprite_tipo_1:		; 0xC0EC = 1 y acarreo
 sin_sprite:		; no queda sprite para el actor: el tipo 1 lo apunta en 0xC0EC; los tipos 0x1F, 0x43, 0x48 y 0x50 siguen sin el; a los demas se les deja de dibujar y se les quita (de las 20 fichas) o se libera la ficha (de las pequenas)
 	ld a,(ix+000h)		;7821   ; lee el tipo del actor (0 = libre)
 	cp 001h		;7824
-	jr z,sin_sprite_tipo_1		;7826
+	jr z,sin_sprite_tipo_1		;7826   ; el tipo 1 aparte
 	cp 01fh		;7828
-	ret z			;782a
+	ret z			;782a   ; los tipos 0x1F, 0x43, 0x50 y 0x48 tienen sprite
 	cp 043h		;782b
 	ret z			;782d
 	cp 050h		;782e
 	ret z			;7830
 	cp 048h		;7831
 	ret z			;7833
-	pop hl			;7834
+	pop hl			;7834   ; los demas: vuelve 5 bytes mas alla, dos niveles mas arriba
 	pop bc			;7835
 	pop bc			;7836
 	inc hl			;7837
@@ -3358,20 +3358,20 @@ sin_sprite:		; no queda sprite para el actor: el tipo 1 lo apunta en 0xC0EC; los
 	push hl			;783c
 	push ix		;783d
 	pop de			;783f
-	ld hl,02ba0h		;7840
+	ld hl,02ba0h		;7840   ; IX - 0xD460
 	add hl,de			;7843
 	ld bc,00240h		;7844
 	or a			;7847
 	sbc hl,bc		;7848
-	jr c,L_785C		;784a
-	ld hl,03180h		;784c
+	jr c,L_785C		;784a   ; una bala (0xD460-0xD69F)
+	ld hl,03180h		;784c   ; IX - 0xCE80
 	add hl,de			;784f
 	ld bc,00500h		;7850
 	or a			;7853
 	sbc hl,bc		;7854
-	ret nc			;7856
+	ret nc			;7856   ; ni bala ni ficha grande: nada
 	call quita_actor		;7857   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	scf			;785a
+	scf			;785a   ; acarreo: quitado
 	ret			;785b
 L_785C:
 	call libera_ficha		;785c   ; libera_ficha: el tipo y las banderas del actor a 0
@@ -3429,7 +3429,7 @@ salta_trozo:		; pasa el trozo y deja el sprite fuera (E = 0xE8)
 	inc hl			;78a5
 	inc hl			;78a6
 salta_trozo_b:		; lo mismo desde el tercer byte
-	inc hl			;78a7
+	inc hl			;78a7   ; salta 3 bytes
 	inc hl			;78a8
 	inc hl			;78a9
 	ld bc,00101h		;78aa
@@ -3490,9 +3490,9 @@ L_78FE:
 	ld l,a			;78fe
 	ld a,(0c0aah)		;78ff   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7902
-	res 7,(hl)		;7903
+	res 7,(hl)		;7903   ; la marca sin el bit 7
 	res 0,l		;7905
-	ld h,0c0h		;7907
+	ld h,0c0h		;7907   ; en las tablas de 0xC000, 0xC100, 0xC200 y 0xC300: E, D, A y C
 	ld (hl),e			;7909
 	inc h			;790a
 	ld (hl),d			;790b
@@ -3557,9 +3557,9 @@ L_7966:
 	ld l,a			;7966
 	ld a,(0c0aah)		;7967   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;796a
-	res 7,(hl)		;796b
+	res 7,(hl)		;796b   ; la marca sin el bit 7
 	res 0,l		;796d
-	ld h,0c0h		;796f
+	ld h,0c0h		;796f   ; en las tablas de 0xC000, 0xC100, 0xC200 y 0xC300: E, D, A y C
 	ld (hl),e			;7971
 	inc h			;7972
 	ld (hl),d			;7973
@@ -3624,9 +3624,9 @@ L_79CE:
 	ld l,a			;79ce
 	ld a,(0c0aah)		;79cf   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;79d2
-	res 7,(hl)		;79d3
+	res 7,(hl)		;79d3   ; la marca sin el bit 7
 	res 0,l		;79d5
-	ld h,0c0h		;79d7
+	ld h,0c0h		;79d7   ; en las tablas de 0xC000 a 0xC400: E, D, A, C y B
 	ld (hl),e			;79d9
 	inc h			;79da
 	ld (hl),d			;79db
@@ -3678,8 +3678,8 @@ sprite_del_grupo_c03b:		; un sprite libre del grupo de 0xC03B
 	jp 0469fh		;7a1d   ; vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 sprite_libre:		; el primero libre de los B del grupo de HL (de 2 en 2), marcado con 0x8F; acarreo si no hay
 	call busca_libre		;7a20   ; busca_libre: el primer 0 de HL de 2 en 2, B veces; acarreo si no hay
-	jr nz,L_7A31		;7a23
-	ld (hl),08fh		;7a25
+	jr nz,L_7A31		;7a23   ; no hay: nada
+	ld (hl),08fh		;7a25   ; ocupado (0x8F), aqui y tres paginas mas alla
 	inc h			;7a27
 	inc h			;7a28
 	inc h			;7a29
@@ -3696,12 +3696,12 @@ L_7A31:
 busca_libre:		; el primer 0 de HL de 2 en 2, B veces; acarreo si no hay
 	xor a			;7a35
 L_7A36:
-	cp (hl)			;7a36
+	cp (hl)			;7a36   ; es A?
 	ret z			;7a37
 	inc l			;7a38
 	inc l			;7a39
 	djnz L_7A36		;7a3a
-	scf			;7a3c
+	scf			;7a3c   ; acarreo: no esta
 	ret			;7a3d
 pinta_pieza_del_actor:		; la pieza de caracteres del actor (p04:7A5F) en el mapa de 0xD800 (p04:7ABA)
 	call pieza_del_actor		;7a3e   ; pieza_del_actor: la pieza ix+6 del tipo (tabla p07:8596 + 2 x (tipo - 1)) en su sitio (p04:7A70)
@@ -3834,15 +3834,15 @@ L_7AEE:
 	jp nz,L_7AC2		;7af4
 L_7AF7:
 	pop de			;7af7
-	ld bc,00030h		;7af8
+	ld bc,00030h		;7af8   ; la fila siguiente (0x30)
 	ex de,hl			;7afb
 	add hl,bc			;7afc
 	ex de,hl			;7afd
 	ld a,d			;7afe
-	cp 0deh		;7aff
+	cp 0deh		;7aff   ; hasta 0xDE00
 	pop bc			;7b01
 	ret nc			;7b02
-	djnz copia_filas		;7b03
+	djnz copia_filas		;7b03   ; B filas
 	ret			;7b05
 casilla_bajo_el_actor:		; la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
 	ld a,(0ca1ah)		;7b06   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
@@ -3878,19 +3878,19 @@ casilla_con_margen:		; lo mismo dejando 8 casillas de margen por cada lado
 L_7B38:
 	ld e,a			;7b38
 	add a,a			;7b39
-	add a,e			;7b3a
+	add a,e			;7b3a   ; x 3
 	ld l,a			;7b3b
 	ld h,000h		;7b3c
 	add hl,hl			;7b3e
 	add hl,hl			;7b3f
 	add hl,hl			;7b40
-	add hl,hl			;7b41
+	add hl,hl			;7b41   ; x 48: la fila
 	ld de,0d800h		;7b42   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	add hl,de			;7b45
 	pop af			;7b46
 	ld e,a			;7b47
 	ld d,000h		;7b48
-	add hl,de			;7b4a
+	add hl,de			;7b4a   ; mas la columna
 	ex de,hl			;7b4b
 	scf			;7b4c
 	ret			;7b4d
@@ -3905,9 +3905,9 @@ fila_d950:		; HL = 0xD950 + D + 0x0F si cabe (acarreo)
 	ld hl,0d950h		;7b56
 L_7B59:
 	ld a,d			;7b59
-	add a,00fh		;7b5a
+	add a,00fh		;7b5a   ; la columna + 0x0F
 	cp 02fh		;7b5c
-	ret nc			;7b5e
+	ret nc			;7b5e   ; desde 0x2F, fuera
 	ld e,a			;7b5f
 	ld d,000h		;7b60
 	add hl,de			;7b62
@@ -3930,12 +3930,12 @@ L_7B76:
 	dec l			;7b7a
 	ld h,000h		;7b7b
 	add hl,hl			;7b7d
-	ld de,08596h		;7b7e
+	ld de,08596h		;7b7e   ; 2 bytes por tipo en p07:8596
 	add hl,de			;7b81
 	ld e,(hl)			;7b82
 	inc hl			;7b83
 	ld d,(hl)			;7b84
-	ld (0ca27h),de		;7b85
+	ld (0ca27h),de		;7b85   ; las piezas del tipo
 	exx			;7b89
 L_7B8A:
 	ld a,(hl)			;7b8a
@@ -3964,7 +3964,7 @@ L_7BAA:
 	push hl			;7bab
 	ld l,(hl)			;7bac
 	ld h,000h		;7bad
-	add hl,hl			;7baf
+	add hl,hl			;7baf   ; 2 bytes por pieza
 	ld de,(0ca27h)		;7bb0
 	add hl,de			;7bb4
 	ld e,(hl)			;7bb5
@@ -3974,18 +3974,18 @@ L_7BAA:
 	ld bc,0ca29h		;7bb9
 	ld a,(bc)			;7bbc
 	ld e,a			;7bbd
-	add a,(hl)			;7bbe
+	add a,(hl)			;7bbe   ; 0xCA29 mas el primer byte
 	ld (bc),a			;7bbf
 	inc bc			;7bc0
 	inc hl			;7bc1
 	ld a,(bc)			;7bc2
 	ld d,a			;7bc3
-	add a,(hl)			;7bc4
+	add a,(hl)			;7bc4   ; 0xCA2A mas el segundo
 	ld (bc),a			;7bc5
 	inc hl			;7bc6
 	ld b,(hl)			;7bc7
 	inc hl			;7bc8
-	ld c,(hl)			;7bc9
+	ld c,(hl)			;7bc9   ; B, C = los dos siguientes
 	inc hl			;7bca
 	call pinta_pieza_con_scroll		;7bcb   ; pinta_pieza_con_scroll: la pieza con el scroll fino de 0xCA1A y 0xCA1C
 L_7BCE:
@@ -4001,7 +4001,7 @@ L_7BD6:
 	push bc			;7bd7
 	ld l,(hl)			;7bd8
 	ld h,000h		;7bd9
-	add hl,hl			;7bdb
+	add hl,hl			;7bdb   ; 2 bytes por pieza
 	ld de,(0ca27h)		;7bdc
 	add hl,de			;7be0
 	ld e,(hl)			;7be1
@@ -4011,18 +4011,18 @@ L_7BD6:
 	ld bc,0ca29h		;7be5
 	ld a,(bc)			;7be8
 	ld e,a			;7be9
-	add a,(hl)			;7bea
+	add a,(hl)			;7bea   ; 0xCA29 mas el primer byte
 	ld (bc),a			;7beb
 	inc bc			;7bec
 	inc hl			;7bed
 	ld a,(bc)			;7bee
 	ld d,a			;7bef
-	add a,(hl)			;7bf0
+	add a,(hl)			;7bf0   ; 0xCA2A mas el segundo
 	ld (bc),a			;7bf1
 	inc hl			;7bf2
 	ld b,(hl)			;7bf3
 	inc hl			;7bf4
-	ld c,(hl)			;7bf5
+	ld c,(hl)			;7bf5   ; B, C = los dos siguientes
 	inc hl			;7bf6
 	call pinta_pieza_con_scroll		;7bf7   ; pinta_pieza_con_scroll: la pieza con el scroll fino de 0xCA1A y 0xCA1C
 L_7BFA:
@@ -4032,12 +4032,12 @@ L_7BFA:
 	inc hl			;7bfe
 	jr L_7B9B		;7bff
 copia_a_d700:		; copia a 0xD700 la lista de HL (su largo en el primer byte)
-	ld c,(hl)			;7c01
+	ld c,(hl)			;7c01   ; C = el largo
 	ld b,000h		;7c02
 	inc hl			;7c04
 	dec c			;7c05
 	ld de,0d700h		;7c06
-	ldir		;7c09
+	ldir		;7c09   ; el resto a 0xD700
 	ld hl,0d700h		;7c0b
 	ret			;7c0e
 con_iy_como_ix:		; con IX e IY cambiados, p04:7C26
@@ -4045,11 +4045,11 @@ con_iy_como_ix:		; con IX e IY cambiados, p04:7C26
 	push iy		;7c11
 	push iy		;7c13
 	push ix		;7c15
-	pop iy		;7c17
+	pop iy		;7c17   ; IX e IY cambiadas
 	pop ix		;7c19
 	ld a,(ix+000h)		;7c1b
 	call nada_7C26		;7c1e
-	pop iy		;7c21
+	pop iy		;7c21   ; como estaban
 	pop ix		;7c23
 	ret			;7c25
 nada_7C26:		; ret
@@ -4170,11 +4170,11 @@ suma_puntos_del_tipo:		; los puntos numero (HL) de la tabla p04:7CF6 (p04:7E03)
 	dec l			;7ce2
 	ld h,000h		;7ce3
 	add hl,hl			;7ce5
-	ld de,07cf6h		;7ce6
+	ld de,07cf6h		;7ce6   ; 2 bytes por tipo en p04:7CF6
 	add hl,de			;7ce9
 	ld a,(hl)			;7cea
 	add a,001h		;7ceb
-	ret c			;7ced
+	ret c			;7ced   ; 0xFF: sin puntos
 	ld e,(hl)			;7cee
 	inc hl			;7cef
 	ld d,(hl)			;7cf0
@@ -4321,8 +4321,8 @@ datos_del_tipo_a:		; HL = p04:7E74 + 3 x A
 	ld e,a			;7ddb
 	ld d,h			;7ddc
 	add hl,hl			;7ddd
-	add hl,de			;7dde
-	ld de,07e74h		;7ddf
+	add hl,de			;7dde   ; x 3
+	ld de,07e74h		;7ddf   ; 3 bytes por tipo en p04:7E74
 	add hl,de			;7de2
 	ret			;7de3
 borra_marcadores:		; el marcador y el record a 0 (p04:7DF1)
@@ -4343,21 +4343,21 @@ suma_puntos:		; suma DE (BCD) al marcador de 0xCB0B; si pasa de 999.990 se queda
 	ld hl,0cb0bh		;7e03   ; apunta a el marcador, en BCD (3 bytes)
 	ld a,(hl)			;7e06
 	add a,e			;7e07
-	daa			;7e08
+	daa			;7e08   ; los dos digitos bajos
 	ld (hl),a			;7e09
 	inc l			;7e0a
 	ld a,(hl)			;7e0b
 	adc a,d			;7e0c
-	daa			;7e0d
+	daa			;7e0d   ; los del medio
 	ld (hl),a			;7e0e
 	inc hl			;7e0f
 	ld a,(hl)			;7e10
 	adc a,000h		;7e11
-	daa			;7e13
+	daa			;7e13   ; los altos
 	ld (hl),a			;7e14
 	jr nc,vida_extra		;7e15
 	ld de,0c924h		;7e17
-	ld a,099h		;7e1a
+	ld a,099h		;7e1a   ; 999990 en el marcador y en el record
 	ld (hl),a			;7e1c
 	ld (de),a			;7e1d
 	dec l			;7e1e
@@ -4382,7 +4382,7 @@ vida_extra:		; si el marcador llega a 0xCB10-0xCB11, los sube 50.000 y una vida 
 	cp (hl)			;7e34
 	jr c,record		;7e35
 	ld a,(hl)			;7e37
-	add a,050h		;7e38
+	add a,050h		;7e38   ; el tope de la vida extra, 0x50 mas (BCD)
 	daa			;7e3a
 	ld (hl),a			;7e3b
 	inc l			;7e3c
@@ -4392,18 +4392,18 @@ vida_extra:		; si el marcador llega a 0xCB10-0xCB11, los sube 50.000 y una vida 
 	ld (hl),a			;7e41
 	ld hl,0cb0fh		;7e42   ; apunta a las vidas, en BCD
 	ld a,(hl)			;7e45
-	add a,001h		;7e46
+	add a,001h		;7e46   ; una vida mas
 	daa			;7e48
-	ret c			;7e49
+	ret c			;7e49   ; 99: no pasa
 	ld (hl),a			;7e4a
 	ld a,00fh		;7e4b
 	call 04af0h		;7e4d   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 record:		; si el marcador pasa del record de 0xC922, lo copia
-	ld hl,0cb0dh		;7e50
-	ld de,0c924h		;7e53
+	ld hl,0cb0dh		;7e50   ; el marcador, de arriba abajo
+	ld de,0c924h		;7e53   ; contra el record
 	ld a,(de)			;7e56
 	sub (hl)			;7e57
-	jr c,L_7E67		;7e58
+	jr c,L_7E67		;7e58   ; menor: record nuevo
 	ret nz			;7e5a
 	dec l			;7e5b
 	dec e			;7e5c

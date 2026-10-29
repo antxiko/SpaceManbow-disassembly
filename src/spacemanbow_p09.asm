@@ -1266,7 +1266,7 @@ L_726C:
 	inc l			;726d
 	inc l			;726e
 	inc l			;726f
-	inc l			;7270
+	inc l			;7270   ; 4 bytes por plano
 	ld (hl),e			;7271
 	inc l			;7272
 	inc l			;7273
@@ -1286,11 +1286,11 @@ L_726C:
 	ld hl,0c581h		;7282   ; los de la segunda franja
 	ld b,008h		;7285
 L_7287:
-	ld (hl),e			;7287
+	ld (hl),e			;7287   ; la Y de cuatro planos de la segunda franja
 	inc l			;7288
 	inc l			;7289
 	inc l			;728a
-	inc l			;728b
+	inc l			;728b   ; 4 bytes por plano
 	ld (hl),e			;728c
 	inc l			;728d
 	inc l			;728e
@@ -1306,7 +1306,7 @@ L_7287:
 	inc l			;7298
 	inc l			;7299
 	inc l			;729a
-	djnz L_7287		;729b
+	djnz L_7287		;729b   ; B veces
 	ret			;729d
 L_729E:
 	ld hl,0c181h		;729e   ; la otra tabla
@@ -1316,7 +1316,7 @@ L_72A3:
 	inc l			;72a4
 	inc l			;72a5
 	inc l			;72a6
-	inc l			;72a7
+	inc l			;72a7   ; 4 bytes por plano
 	ld (hl),e			;72a8
 	inc l			;72a9
 	inc l			;72aa
@@ -1332,15 +1332,15 @@ L_72A3:
 	inc l			;72b4
 	inc l			;72b5
 	inc l			;72b6
-	djnz L_72A3		;72b7
+	djnz L_72A3		;72b7   ; B veces
 	ld hl,0c281h		;72b9   ; los de la segunda franja
 	ld b,008h		;72bc
 L_72BE:
-	ld (hl),e			;72be
+	ld (hl),e			;72be   ; los de la segunda franja de la otra tabla
 	inc l			;72bf
 	inc l			;72c0
 	inc l			;72c1
-	inc l			;72c2
+	inc l			;72c2   ; 4 bytes por plano
 	ld (hl),e			;72c3
 	inc l			;72c4
 	inc l			;72c5
@@ -1356,7 +1356,7 @@ L_72BE:
 	inc l			;72cf
 	inc l			;72d0
 	inc l			;72d1
-	djnz L_72BE		;72d2
+	djnz L_72BE		;72d2   ; B veces
 	ret			;72d4
 reparte_grupo_c009:		; los 25 sprites del grupo de 0xC009: cada uno en su franja (p09:72ED)
 	ld hl,0c009h		;72d5
@@ -2240,7 +2240,7 @@ copia_32:		; copia 32 bytes de HL a DE (31 ldi y uno mas): se entra a mitad para
 	ldi		;77d2
 	ldi		;77d4
 	ldi		;77d6
-	ldi		;77d8
+	ldi		;77d8   ; la mitad
 	ldi		;77da
 	ldi		;77dc
 	ldi		;77de
@@ -2256,9 +2256,9 @@ copia_32:		; copia 32 bytes de HL a DE (31 ldi y uno mas): se entra a mitad para
 	ldi		;77f2
 	ldi		;77f4
 	ldi		;77f6
-	ld a,(hl)			;77f8
+	ld a,(hl)			;77f8   ; y uno mas, sin contarlo en BC
 	ld (de),a			;77f9
-	inc de			;77fa
+	inc de			;77fa   ; DE detras
 	ret			;77fb
 prepara_mapa_de_fase:		; los bloques de la fase (0xC0C8, tabla p09:7D76), el mapa y la posicion del punto de salida 0xCA1E (0xC0CA y 0xCA34, tabla p09:7C8C), el scroll a 0 y adelanta el mapa hasta llenar la pantalla (p09:7848)
 	xor a			;77fc

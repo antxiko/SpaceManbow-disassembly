@@ -108,6 +108,29 @@ C 0xAC9A el color sube y baja de 0 a 8
 C 0xACA3 el color 5 de la paleta
 C 0xACAF el color 9, tres pasos mas alla
 C 0xACBA la entrada de la tabla p06:ACC8 por A
+C 0xAEE8 4 bytes por entrada en p06:AF37
+C 0xAEF5 HL = la primera palabra, DE la segunda
+C 0xB1DC con su signo
+C 0xB1E2 x 32
+C 0xB2E2 acarreo: se pasa
+C 0xB356 0xFF: aparte
+C 0xB448 A x 2 + 8
+C 0xB450 y el siguiente
+C 0xB7C2 acarreo: encontrado
+C 0xB889 x 14
+C 0xB88E x 224
+C 0xB894 x 448 / 256: A x 1,75
+C 0xB8C6 DE + 0x8000
+C 0xB944 la palabra de +2
+C 0xB947 en HL
+C 0xB94B 0: nada
+C 0xB94E BC = la primera palabra
+C 0xB953 BC = la segunda; la primera, en la pila
+C 0xBB2D menos B + 1
+C 0xBB34 con C a 0, al reves
+C 0xBB37 negativo: nada
+C 0xBB3B entre 4 y 0x10
+C 0xBF7C 2 bytes por entrada en p06:BFB8
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA187 0xA191 tabla_A187  5 destinos del despachador p00:461A (call en p06:A184, el indice en A): A191, A19A, A1BB, A1E7, A205; lo leen p06:A184 (10 bytes)

@@ -31,10 +31,30 @@ C 0x6145 si: se marca y se copia
 C 0x614D el alto
 C 0x615D el volumen
 C 0x616C el canal 2
+C 0x617F el alto
+C 0x6187 ha cambiado: se manda
+C 0x6193 el volumen
+C 0x6197 ha cambiado: se manda
 C 0x619E el canal 3
+C 0x61B1 el alto
+C 0x61B9 ha cambiado: se manda
+C 0x61C5 el volumen
+C 0x61C9 ha cambiado: se manda
 C 0x61D0 el canal 4
+C 0x61E3 el alto
+C 0x61EB ha cambiado: se manda
+C 0x61F7 el volumen
+C 0x61FB ha cambiado: se manda
 C 0x6202 el canal 5
+C 0x6215 el alto
+C 0x621D ha cambiado: se manda
+C 0x6229 el volumen
+C 0x622D ha cambiado: se manda
 C 0x6235 los canales del SCC con volumen distinto de 0, uno por bit
+C 0x6243 el SCC 2: bit 1
+C 0x624F el SCC 3: bit 2
+C 0x625B el SCC 4: bit 3
+C 0x6267 el SCC 5: bit 4
 C 0x6273 los encendidos han cambiado?
 C 0x627E si: el registro 0x988F (encendido) se manda
 C 0x6281 no
@@ -84,9 +104,195 @@ C 0x6BA0 0xD0 o mas: una orden, y el byte siguiente
 C 0x6BC2 el nibble bajo: la duracion en unidades del tempo
 C 0x6BCB duracion x tempo, con el acarreo al byte alto
 C 0x6BD7 el nibble alto: la nota (0-11; 12 o mas, silencio)
+C 0x6BD8 el nibble alto: la nota
+C 0x6BE5 con el bit 7 (una lista) no hay periodo
+C 0x6BE6 la nota 12 o mas: silencio
 C 0x6BEA el periodo de la nota en la tabla p28:6C2B
+C 0x6BED la nota en la tabla
+C 0x6BF2 HL = el periodo de la octava mas alta
 C 0x6BF4 multiplicado por 2 por cada octava
+C 0x6BF7 la octava 0: tal cual
 C 0x6C3B la clase de la nota: 0 nada, 1 solo volumen, otra periodo y volumen
+C 0x6C3D 0: sin nada
+C 0x6C3F 1: solo el volumen
+C 0x6C43 el byte de la nota
+C 0x6C50 el nibble alto: el volumen; el bajo y el byte siguiente, el periodo
+C 0x6C55 el periodo bajo
+C 0x6C5D B = el volumen
+C 0x6C6A el volumen en el nibble alto
+C 0x6C71 y en el bajo el periodo alto
+C 0x6C80 en el PSG, con envolvente...
+C 0x6C8A ...el volumen 0x10: el de la envolvente
+C 0x6CB8 B = la nota
+C 0x6CBC su lista: 2 bytes por nota
+C 0x6CC5 HL = la lista
+C 0x6CC6 su primer byte
+C 0x6D00 la octava 0
+C 0x6D05 la 1
+C 0x6D15 la octava 0
+C 0x6D1A la 1
+C 0x6D2A la octava 0
+C 0x6D2F la 1
+C 0x6DB0 el bit 0 de ix+0x30: sin ataque
+C 0x6E72 el vibrato va y viene
+C 0x6E77 sube o baja el periodo
+C 0x6E7A sube
+C 0x6E81 baja
+C 0x6E94 los canales del SCC siempre
+C 0x6E9C los del PSG, si no llevan envolvente
+C 0x6ECF el ataque
+C 0x6ED5 la caida
+C 0x6EDB el volumen menos ix+0x35, sin bajar del minimo
+C 0x6EED E = el volumen
+C 0x6EEE al llegar a ix+0x25 cuadros, la caida
+C 0x6EFB el volumen de la nota menos ix+0x36: hasta donde sube
+C 0x6F00 sube uno
+C 0x6F03 aun no ha llegado
+C 0x6F0C llega: el volumen de destino
+C 0x6F21 baja uno, sin pasar del minimo
+C 0x6F2C E = el volumen
+C 0x6F48 la cuenta del tramo
+C 0x6F4D baja uno
+C 0x6F57 E = el volumen
+C 0x6F58 una vez mas
+C 0x6F73 D = lo que baja
+C 0x6F75 el volumen menos D, sin pasar del minimo
+C 0x6F82 E = el volumen
+C 0x6F83 al acabar los cuadros, el ultimo tramo
+C 0x6F96 baja uno, sin pasar del minimo
+C 0x6FC8 el periodo mas el paso, B veces
+C 0x6FCE si da la vuelta, se deshace
+C 0x6FE1 el periodo menos el paso
+C 0x6FE5 sin bajar de 1
+C 0x7010 el periodo menos el paso, B veces
+C 0x7017 si se pasa, se deshace
+C 0x705C los canales del SCC siempre
+C 0x7085 el bit 3 de ix+0x30: ya acabo
+C 0x7094 D = el sosten
+C 0x7095 la primera vez
+C 0x70A3 el volumen menos ix+0x38, sin pasar del minimo
+C 0x70B0 el volumen del tramo
+C 0x70B3 a 4 bits de fraccion
+C 0x70B8 menos el paso
+C 0x70BC el volumen con fraccion
+C 0x70C3 la parte entera, contra el minimo
+C 0x70CB redondeado
+C 0x70D8 E = el volumen
+C 0x70F9 el minimo con fraccion
+C 0x7109 D = el paso del final
+C 0x710A la primera vez
+C 0x7117 E = el volumen
+C 0x7123 a 4 bits de fraccion
+C 0x7127 mas el paso
+C 0x712B si se pasa, el maximo
+C 0x7136 la parte entera
+C 0x713C E = el volumen
+C 0x7168 con el bit 7 de ix+0x30 no cambia
+C 0x7173 la primera vez, desde 0x10
+C 0x7182 los bits 4 y 5 de ix+0x0D
+C 0x718E el paso de la onda
+C 0x7194 la cuenta mas el paso
+C 0x7197 al dar la vuelta, el bit 6
+C 0x719B la cuenta
+C 0x719E su nibble alto: cuanto se salta en la onda
+C 0x71BA el salto, hasta 0x1F
+C 0x71C9 B = cuadros por paso
+C 0x71CD C = pasos
+C 0x71D1 un cuadro mas
+C 0x71D5 un paso mas
+C 0x71DB todos los pasos: se acaba
+C 0x71E1 la cuenta a 0
+C 0x71E8 si el PSG B y el C tocan lo mismo...
+C 0x71F2 ...se callan el PSG C y el SCC 1
+C 0x7226 si el PSG B y el C tocan lo mismo...
+C 0x7233 ...los efectos (canales 3 y 4) no bajan con el fundido
+C 0x723A con envolvente, el volumen a 0
+C 0x723C el volumen menos el del fundido
+C 0x7244 si no llega, 0
+C 0x728B 0xE0-0xFE
+C 0x7290 la orden menos 0xE0
+C 0x7293 su manejador en la tabla
+C 0x729F la orden; vuelve con HL en su ultimo byte
+C 0x72E3 la clase: bits 0-1
+C 0x72EA la duracion fija
+C 0x72EF con clase 0, la duracion es de la nota
+C 0x72F4 HL en la orden
+C 0x72F8 el canal C (el de los efectos)?
+C 0x72FF el ruido de los efectos
+C 0x7308 el ruido de la musica
+C 0x7311 el periodo del ruido
+C 0x731A el canal C: el de los efectos
+C 0x7325 se manda
+C 0x733C el byte siguiente
+C 0x7348 se manda la forma
+C 0x7351 el byte siguiente
+C 0x7358 se manda el periodo alto
+C 0x7361 el byte siguiente
+C 0x7368 se manda el periodo bajo
+C 0x7381 el tempo
+C 0x7386 la parte alta de la duracion a 0
+C 0x738D el nibble alto: con el, ataque
+C 0x7396 lo que sube en el ataque
+C 0x73A3 el nibble bajo: el volumen
+C 0x73AB el byte siguiente
+C 0x73B4 el ataque, nibble alto
+C 0x73BB 8 o mas: subiendo
+C 0x73C4 los 3 bits + 1
+C 0x73D5 la caida, nibble bajo
+C 0x73E1 los 3 bits + 1
+C 0x73E8 el sosten y el final
+C 0x7409 el nibble alto: ix+0x35
+C 0x7413 con el, el bit 0 de ix+0x30
+C 0x7416 el bajo: ix+0x25
+C 0x7421 sin nibble alto
+C 0x742C el ajuste
+C 0x744F la amplitud, nibble bajo
+C 0x7455 la velocidad, nibble alto
+C 0x7462 el retardo
+C 0x747C la marca: por donde va la partitura
+C 0x7494 el byte siguiente
+C 0x74B1 la tabla de formas de onda
+C 0x74B4 2 bytes por forma
+C 0x74BA la direccion de la forma de onda
+C 0x74EA el bit 6: el bit 5 de ix+0x0D
+C 0x7512 el byte siguiente: cuantas vueltas
+C 0x7516 una vuelta mas
+C 0x7518 ya estan todas: sigue
+C 0x752E una vuelta mas
+C 0x7530 ya estan todas: sigue detras
+C 0x7535 la direccion del salto
+C 0x753A HL - 1: el que llama suma 1
+C 0x753C sigue detras de la direccion
+C 0x7547 el byte siguiente: la clase
+C 0x754F a la clase 1: se guardan las banderas
+C 0x7555 de la clase 1: se devuelven
+C 0x7564 los efectos a 0
+C 0x757C las ordenes 0xD0-0xDF
+C 0x757F su manejador
+C 0x758B la orden
+C 0x75AD el nibble bajo de la orden: la octava
+C 0x75D2 HL en la orden
+C 0x75DB el paso del deslizamiento
+C 0x75E1 cuantos pasos
+C 0x75ED sin las banderas de deslizamiento
+C 0x75F9 el volumen minimo
+C 0x7605 el byte siguiente
+C 0x760E el ataque
+C 0x7615 8 o mas: subiendo
+C 0x761E los 3 bits + 1
+C 0x762F la caida
+C 0x7636 el sosten y el final
+C 0x764A lo que baja entre el sosten y el final
+C 0x764E D:E = el sosten / la caida, con fraccion
+C 0x7658 la parte entera
+C 0x7664 la fraccion, de 16 en 16
+C 0x7681 la fraccion (complemento)
+C 0x768B la parte entera en el nibble alto
+C 0x7698 lo mismo con el final
+C 0x76A2 la parte entera
+C 0x76AE la fraccion
+C 0x76CB la fraccion (complemento)
+C 0x76D5 la parte entera en el nibble alto
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 # --- fin de los bloques de bloques.py ---

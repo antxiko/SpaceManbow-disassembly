@@ -855,7 +855,7 @@ L_8650:
 L_8663:
 	push ix		;8663
 	push af			;8665
-	call L_866D		;8666
+	call L_866D		;8666   ; sin tocar IX ni A
 	pop af			;8669
 	pop ix		;866a
 	ret			;866c
@@ -2315,15 +2315,15 @@ L_90F0:
 L_910F:
 	ld a,(hl)			;910f
 	exx			;9110
-	ld h,0deh		;9111
+	ld h,0deh		;9111   ; lo que es el caracter (0xDE00)
 	ld l,a			;9113
 	ld a,(hl)			;9114
 	exx			;9115
 	cp 003h		;9116
-	ret z			;9118
-	ld (hl),d			;9119
+	ret z			;9118   ; 3: para
+	ld (hl),d			;9119   ; pone D
 	dec hl			;911a
-	djnz L_910F		;911b
+	djnz L_910F		;911b   ; B veces, hacia atras
 	ret			;911d
 L_911E:
 	ld a,(0c0d4h)		;911e   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
@@ -2354,8 +2354,8 @@ L_913A:
 L_914A:
 	ld a,(hl)			;914a
 	cp 003h		;914b
-	ret z			;914d
-	ld (hl),d			;914e
+	ret z			;914d   ; 3: para
+	ld (hl),d			;914e   ; D y E alternados, hacia atras
 	dec hl			;914f
 	dec b			;9150
 	ret z			;9151
@@ -2409,9 +2409,9 @@ L_91A2:
 	pop bc			;91a4
 	pop hl			;91a5
 	pop af			;91a6
-	inc e			;91a7
+	inc e			;91a7   ; E + 1, H + 1
 	inc h			;91a8
-	djnz L_9161		;91a9
+	djnz L_9161		;91a9   ; B veces
 	ret			;91ab
 mueve_tipo_48:		; lo que hace en cada cuadro el actor del tipo 0x48 (tabla p04:64D1, desde p04:64B9)
 	ld a,(ix+008h)		;91ac   ; lee la Y del actor (en caracteres de 8 puntos)
@@ -2488,10 +2488,10 @@ L_9226:
 L_922D:
 	push bc			;922d
 	call L_923A		;922e
-	jr c,L_9238		;9231
+	jr c,L_9238		;9231   ; acarreo: encontrado
 	pop bc			;9233
 	djnz L_922D		;9234
-	or a			;9236
+	or a			;9236   ; sin acarreo: ninguno
 	ret			;9237
 L_9238:
 	pop bc			;9238
@@ -2798,17 +2798,17 @@ arranca_tipo_4C:		; la puesta en marcha del actor del tipo 0x4C (tabla p04:6360,
 	call 04678h		;9480   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 L_9483:
 	ld b,a			;9483
-	and 007h		;9484
+	and 007h		;9484   ; los bits 0-2
 	ld l,a			;9486
 	ld h,000h		;9487
 	add hl,hl			;9489
-	ld de,094ach		;948a
+	ld de,094ach		;948a   ; 2 bytes en p05:94AC
 	add hl,de			;948d
 	ld a,(hl)			;948e
 	ld (ix+008h),a		;948f   ; guarda la Y del actor (en caracteres de 8 puntos)
 	inc hl			;9492
 	ld a,b			;9493
-	rrca			;9494
+	rrca			;9494   ; el bit 0
 	ld a,(hl)			;9495
 	jr c,L_9499		;9496
 	inc a			;9498
@@ -2941,7 +2941,7 @@ L_959E:
 	jp 06a9ah		;95a1   ; acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
 L_95A4:
 	or a			;95a4
-	sbc hl,de		;95a5
+	sbc hl,de		;95a5   ; HL - DE
 	sra h		;95a7
 	rr l		;95a9
 	sra h		;95ab
@@ -2951,7 +2951,7 @@ L_95A4:
 	sra h		;95b3
 	rr l		;95b5
 	sra h		;95b7
-	rr l		;95b9
+	rr l		;95b9   ; / 32 con signo
 	ret			;95bb
 L_95BC:
 	ld h,(ix+00eh)		;95bc   ; lee la velocidad en X del actor (alta)
@@ -2980,12 +2980,12 @@ L_95DD:
 L_95EF:
 	ld a,(iy+012h)		;95ef   ; lee la aceleracion en X del actor (alta)
 	cp 004h		;95f2
-	ret nc			;95f4
+	ret nc			;95f4   ; 4 o mas: nada
 	add a,a			;95f5
 	add a,a			;95f6
 	ld e,a			;95f7
 	ld d,000h		;95f8
-	ld hl,09637h		;95fa
+	ld hl,09637h		;95fa   ; 4 bytes en p05:9637
 	add hl,de			;95fd
 	ld e,(hl)			;95fe
 	inc hl			;95ff
@@ -2993,7 +2993,7 @@ L_95EF:
 	inc hl			;9601
 	ld c,(hl)			;9602
 	inc hl			;9603
-	ld b,(hl)			;9604
+	ld b,(hl)			;9604   ; DE y BC
 	call L_961D		;9605
 	ret			;9608
 L_9609:
@@ -3697,14 +3697,14 @@ L_9B70:
 	ld de,09ba2h		;9b70
 	ld a,(ix+03eh)		;9b73
 	and a			;9b76
-	jr z,L_9B87		;9b77
+	jr z,L_9B87		;9b77   ; 0: la de p05:9BA2
 	dec a			;9b79
 	dec a			;9b7a
 	dec a			;9b7b
 	ld l,a			;9b7c
 	ld h,000h		;9b7d
 	add hl,hl			;9b7f
-	ld de,09b8ah		;9b80
+	ld de,09b8ah		;9b80   ; si no, ix+0x3E - 3 en la tabla p05:9B8A
 	add hl,de			;9b83
 	ld e,(hl)			;9b84
 	inc hl			;9b85
@@ -3740,12 +3740,12 @@ DATA_leido_9B8E:
 
 arranca_tipo_61:		; la puesta en marcha del actor del tipo 0x61 (tabla p04:6360, desde p04:6344)
 	push de			;9bfa
-	ld bc,0ffa0h		;9bfb
+	ld bc,0ffa0h		;9bfb   ; -0x60
 	call L_9C07		;9bfe
 	pop de			;9c01
 	ret z			;9c02
 	ld e,d			;9c03
-	ld bc,00060h		;9c04
+	ld bc,00060h		;9c04   ; +0x60
 L_9C07:
 	ld d,061h		;9c07
 	call 07207h		;9c09   ; ficha_pequena_libre: HL = la primera de las 18 fichas de 0xD460 que esta libre; NZ si no hay
@@ -4018,7 +4018,7 @@ L_9DA9:
 	ld d,a			;9dbc
 	ex af,af'			;9dbd
 L_9DBE:
-	ld b,0c0h		;9dbe
+	ld b,0c0h		;9dbe   ; 0: 0xC0; 1: 0; 2: 0x80; 3: 0x40
 	jr z,L_9DCE		;9dc0
 	dec a			;9dc2
 	ld b,000h		;9dc3
@@ -4048,19 +4048,19 @@ L_9DE3:
 	ret			;9de7
 L_9DE8:
 	ld d,a			;9de8
-	ld bc,00001h		;9de9
+	ld bc,00001h		;9de9   ; de 0x40 en 0x40, el cuadrante: 0: B=0, C=1
 	sub 040h		;9dec
 	jr c,L_9E04		;9dee
 	ld d,a			;9df0
-	inc b			;9df1
+	inc b			;9df1   ; 1: B=1, C=1
 	sub 040h		;9df2
 	jr c,L_9DFE		;9df4
 	ld d,a			;9df6
-	dec c			;9df7
+	dec c			;9df7   ; 2: B=1, C=0
 	sub 040h		;9df8
 	jr c,L_9E04		;9dfa
 	ld d,a			;9dfc
-	dec b			;9dfd
+	dec b			;9dfd   ; 3: B=0, C=0
 L_9DFE:
 	ld a,d			;9dfe
 	neg		;9dff

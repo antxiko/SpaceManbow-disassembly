@@ -1,98 +1,240 @@
 
 
 # --- A MANO: comentarios escritos leyendo el codigo ---
+C 0xA603 un rectangulo de 256 x 128 puntos de la pagina 2 a 0
+C 0xA613 los graficos del titulo
+C 0xA61D el mapa del banco 21
+C 0xA685 la VRAM desde la linea 0xC0 a 0
+C 0xA68F guarda el guion, el banco y el mapa
+C 0xA6A8 A = el fin de la secuencia
+C 0xA6B1 los registros de las secuencias
+C 0xA74F 0xE0FF: la secuencia ha acabado
 C 0xA75E el objeto siguiente (0x20 bytes)
+C 0xA761 el siguiente objeto
 C 0xA76D de la prioridad 16 a la 1
+C 0xA76E la prioridad siguiente
 C 0xA771 C = la prioridad que se pinta ahora
 C 0xA773 los 0x30 objetos
+C 0xA77D la que toca
 C 0xA785 el siguiente
+C 0xA788 el siguiente objeto
+C 0xA81B sin espera: la orden
+C 0xA81E un cuadro menos de espera
 C 0xA877 el numero del objeto nuevo
+C 0xA878 el numero del objeto nuevo
 C 0xA879 BC = su guion
+C 0xA87B el guion
 C 0xA87D D, E = su sitio respecto al que lo crea
+C 0xA87F la X y la Y respecto a este
 C 0xA881 la prioridad en A'
+C 0xA882 la prioridad
 C 0xA884 HL detras de los datos: la orden siguiente
+C 0xA88E L = la prioridad, A = el objeto
+C 0xA89B IY = el que lo crea
+C 0xA8A9 la Y respecto al que lo crea, x 32
+C 0xA8AE mas la Y de el
+C 0xA8BB la X
+C 0xA8BF mas la X de el
 C 0xA8DD BC = el origen del rectangulo
+C 0xA8DE B = el final del rectangulo
 C 0xA8E1 D, E = su desplazamiento
+C 0xA8E2 E = la Y del desplazamiento
+C 0xA8EF HL = el origen
+C 0xA8F5 H, L = el principio; B, C = el final
+C 0xA8FA el ancho
+C 0xA900 el alto
+C 0xA906 la Y de origen en la pagina 1 (0x40 mas abajo)
 C 0xA917 D, E y luego B, C, en ese orden
+C 0xA918 E = el segundo byte
 C 0xA920 la orden se usa tambien desde codigo: sus datos van detras del call y se vuelve detras de ellos
 C 0xA932 el dato y HL detras de el
+C 0xA933 el dato y la orden siguiente
 C 0xA955 el dato
+C 0xA956 los cuadros
 C 0xA976 el numero de la senal
+C 0xA977 el numero de la senal
 C 0xA982 las 16 senales de 0xE0F0
+C 0xA985 la senal A
+C 0xA98B puesta: sin acarreo
 C 0xA98C acarreo: no esta
 C 0xA9A0 el numero de la senal
+C 0xA9A1 el numero de la senal
 C 0xA9AC la senal puesta
+C 0xA9AF la senal A
+C 0xA9BE la orden ocupa un byte
+C 0xA9C5 la orden siguiente en el mismo cuadro
+C 0xA9CB sin tocar HL ni IX
+C 0xA9D2 un rectangulo de la pantalla a 0
+C 0xA9E0 las 16 senales a 0
+C 0xA9F2 la orden ocupa un byte
+C 0xA9F6 se queda en ella
 C 0xAA1B la direccion de los colores
+C 0xAA1C la direccion
 C 0xAA40 la direccion de los colores
+C 0xAA41 la direccion
 C 0xAA68 la direccion a la que se llama
+C 0xAA69 la direccion
 C 0xAA88 D = la velocidad en X y E la de Y
+C 0xAA89 E = la velocidad en Y
+C 0xAA96 la X con su signo
+C 0xAA9F la Y con su signo
 C 0xAABB D, E: el desplazamiento
+C 0xAABC E = el desplazamiento en Y
 C 0xAAE2 la direccion a la que salta el guion
+C 0xAAE3 la direccion nueva
+C 0xAAF6 la orden ocupa un byte
+C 0xAAFA el objeto se ha borrado: no sigue
 C 0xAB09 los 0x20 bytes del objeto a 0: deja de estar en marcha
 C 0xAB12 acarreo: el guion no sigue
 C 0xAB26 el numero del sonido
+C 0xAB27 el sonido
 C 0xAB48 D, E: los dos bytes del color
+C 0xAB49 D = el primer byte del color
 C 0xAB56 el numero del color, en el nibble alto de E
+C 0xAB57 el numero del color
 C 0xAB64 no hay objeto con ese numero
+C 0xAB65 IX en la ficha
+C 0xAB68 0x20 bytes a 0
 C 0xAB6E en marcha
 C 0xAB72 sus limites por defecto
+C 0xAB76 los limites por defecto
 C 0xAB83 solo hay 0x30 objetos
+C 0xAB85 acarreo si pasa de 0x2F
+C 0xAB88 x 32
 C 0xAB8D x 32
 C 0xABA6 A con signo a 16 bits
+C 0xABA7 el signo
 C 0xABAA x 32: el desplazamiento en las unidades de la posicion
+C 0xABAB x 32
 C 0xABB0 los 3 bits que salen por arriba van a A
+C 0xABB1 los 3 bits que se salen, a A
+C 0xAC2F IY = el objeto de verdad, IX su copia
+C 0xAC36 la parte de arriba: hasta el borde
+C 0xAC47 la de abajo: lo que queda
+C 0xAC4E su origen, mas abajo
+C 0xAC5B arriba del todo
+C 0xAC69 IX vuelve a ser el objeto
+C 0xAC6E IY = el objeto, IX su copia
+C 0xAC75 la parte izquierda: hasta el borde
+C 0xAC86 la derecha: lo que queda
+C 0xAC8D su origen, mas a la derecha
+C 0xAC9A a la izquierda del todo
+C 0xACAD IY = el objeto, IX su copia
+C 0xACB4 arriba a la izquierda
+C 0xACD0 abajo a la izquierda
+C 0xAD00 arriba a la derecha
+C 0xAD30 abajo a la derecha
 C 0xAD76 la ficha de IY a 0xE0C0
+C 0xAD78 HL = el objeto
 C 0xAD79 IX en la copia: se puede cambiar sin tocar la de verdad
+C 0xAD7D la copia
 C 0xAD86 de caracteres a puntos: el ancho y el alto x 8
+C 0xAD88 el ancho x 8
+C 0xAD8D el alto x 8
 C 0xAD92 la X de origen x 8 y la pagina en sus bits 5 y 6
+C 0xAD93 la X de origen
+C 0xAD99 su pagina
 C 0xAD9D la Y de origen x 8
+C 0xAD9E la Y de origen x 8
 C 0xADA4 el bit 6 de D elige la copia
-C 0xADA8 la operacion logica en el nibble alto
+C 0xADA8 la operacion logica
+C 0xADB2 el VDP los toca
 C 0xADBE la copia rapida: la pagina
+C 0xADBF la pagina
 C 0xADD0 la entrada de la lista de graficos: +3 los bits altos del puntero
+C 0xADD3 los bits altos del puntero
 C 0xADD6 +4: la direccion de destino
+C 0xADD9 la columna de destino
+C 0xADE1 la direccion de los graficos en el banco: x 8 x 4
 C 0xADE7 los graficos en 0x6000, con su banco
 C 0xADEC +1 y +2: el puntero en el banco
+C 0xADEF el puntero bajo
 C 0xADF2 +0: el banco base
+C 0xADF5 el banco base
 C 0xADFA los dos bancos seguidos en 0x6000 y 0x8000
 C 0xADFE +5 - +4: cuantos caracteres
+C 0xAE01 cuantos caracteres
 C 0xAE07 C = el banco
-C 0xAE0C mientras el puntero pase de 0x8000, un banco mas
+C 0xAE09 el puntero 0x2000 mas alla
+C 0xAE0C mientras pase de 0x8000, un banco mas
 C 0xAE18 0 acaba la lista
 C 0xAE20 la entrada siguiente (6 bytes)
+C 0xAE27 los bits 0-2: la clase
+C 0xAE2D 2: 2 bits por punto
+C 0xAE31 3: 4 bits con paleta
+C 0xAE35 4 o mas: ya a 4 bits
+C 0xAE38 1: 1 bit por punto, un byte de colores
+C 0xAE3D la entrada sigue 2 bytes mas alla
+C 0xAE45 el bit 7: a la pagina alta, volteados
 C 0xAE8F los colores van detras del primer byte
 C 0xAE90 a 0xCA00, un color por byte
 C 0xAE93 el nibble alto
+C 0xAE94 el byte
+C 0xAE99 el color del nibble alto
 C 0xAE9E el bajo
+C 0xAE9F el del bajo
 C 0xAEA9 el mapa empieza 0x2000 mas alla
 C 0xAEAD D = la columna (0-31) y E = la fila
 C 0xAEB0 una palabra por casilla
+C 0xAEB1 la palabra de la casilla
 C 0xAEB4 0xFFFF acaba
+C 0xAEB5 0xFFFF: fin
 C 0xAEB8 0xFFFE se salta la casilla
+C 0xAEB9 0xFFFE: casilla vacia
 C 0xAEC2 la columna siguiente; tras la 31, la fila siguiente
+C 0xAEC3 la columna siguiente
+C 0xAEC5 al llegar a la 32...
+C 0xAEC9 ...la fila siguiente
 C 0xAED7 la palabra: los 5 bits bajos son la columna del caracter en la pagina de graficos
+C 0xAED8 H = la palabra baja
 C 0xAED9 y los altos (de B y C) la fila, desde la 0x18
+C 0xAEDB los 3 bits de B y los de C: la fila
+C 0xAEE8 desde la fila 0x18 de la pagina de graficos
+C 0xAEEB la columna: los 5 bits bajos
 C 0xAEF1 la fila de destino x 8 y la pagina
+C 0xAEF2 la fila de destino x 8
+C 0xAEF8 la pagina
 C 0xAF00 la columna de destino x 8
+C 0xAF01 la columna de destino x 8
 C 0xAF07 un caracter de 1 x 1
+C 0xAF10 los registros de detras
 C 0xAF11 el caracter pasado a 4 bits va a 0xCB00
+C 0xAF19 el siguiente
+C 0xAF1D a la VRAM
 C 0xAF1E y de ahi a la VRAM
+C 0xAF2B B caracteres
 C 0xAF37 a la pagina alta, volteados
 C 0xAF3C un byte por fila
+C 0xAF3D la fila del caracter (8 puntos)
 C 0xAF48 cada punto: su color en 0xCA00 (0 o 1)
+C 0xAF4D el punto: el bit al color de 0xCA00
 C 0xAF51 el primer punto en el nibble alto
+C 0xAF55 el primero en el nibble alto
+C 0xAF57 el segundo
 C 0xAF5F el segundo en el bajo
+C 0xAF61 los dos puntos
+C 0xAF6E B caracteres
 C 0xAF9D dos bytes por fila
 C 0xAFA3 cada punto: dos bits, uno de cada byte
 C 0xAFAE su color en 0xCA00 (0 a 3)
+C 0xAFB3 C = el color del primer punto, en el nibble alto
+C 0xAFC1 el del segundo en el bajo
+C 0xAFC5 B parejas
 C 0xAFFE tres bytes por fila
 C 0xB006 cada punto: tres bits, uno de cada byte (8 colores)
+C 0xB019 C = el color del primero, en el nibble alto
+C 0xB02A el del segundo en el bajo
+C 0xB02B los dos puntos
+C 0xB02E B parejas
 C 0xB031 el puerto de datos del VDP
 C 0xB036 8 filas
 C 0xB03A apunta la VRAM a la fila
 C 0xB041 los 4 bytes de la fila de derecha a izquierda, con los dos puntos de cada byte cambiados
 C 0xB04B el final de la fila siguiente
 C 0xB04F la fila siguiente de la VRAM (0x80)
+C 0xBDDE 0: fin
+C 0xBDDF con 0xFE
+C 0xBDE5 el siguiente
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA835 0xA857 tabla_A835  17 destinos del despachador p00:461A (call en p03:A832, el indice en A): A86A, A8D2, A925, A94A, A96A, A993, A9BB, A9EF, AA0E, AA33, AA5B, AA7D, AAAE, AAD5, AAF3, AB19, AB3B; lo leen p03:A832 (34 bytes)

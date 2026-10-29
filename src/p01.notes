@@ -102,6 +102,12 @@ C 0x6C45 el siguiente (de mayor a menor)
 C 0x6C46 la posicion: 8 bytes (16 puntos) mas alla
 C 0x6C4F la copia al dia
 C 0x6C53 las decenas en el nibble alto
+C 0x6C92 '@': 0x2E
+C 0x6C96 '<': 0x2F
+C 0x6C9A '>': 0x30
+C 0x6C9E '.': 0x31
+C 0x6CA2 '-': 0x32
+C 0x6CA6 ' ': 0x33, con Z
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x6032 0x603E tabla_6032  6 destinos del despachador p00:461A (call en p01:602F, el indice en A): 603E, 6050, 609D, 60DB, 61B0, 61E2; lo leen p01:602F (12 bytes)

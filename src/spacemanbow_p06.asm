@@ -1858,7 +1858,7 @@ L_AEE2:
 L_AEE5:
 	ld h,000h		;aee5
 	add hl,hl			;aee7
-	add hl,hl			;aee8
+	add hl,hl			;aee8   ; 4 bytes por entrada en p06:AF37
 	ld de,0af37h		;aee9
 	add hl,de			;aeec
 	ld e,(hl)			;aeed
@@ -1869,7 +1869,7 @@ L_AEE5:
 	inc hl			;aef2
 	ld h,(hl)			;aef3
 	ld l,a			;aef4
-	ex de,hl			;aef5
+	ex de,hl			;aef5   ; HL = la primera palabra, DE la segunda
 	jp 06c6dh		;aef6   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_AEF9:
 	ld a,(ix+008h)		;aef9   ; lee la Y del actor (en caracteres de 8 puntos)
@@ -2259,13 +2259,13 @@ L_B1D8:
 	inc de			;b1d9
 	ld l,a			;b1da
 	rlca			;b1db
-	sbc a,a			;b1dc
+	sbc a,a			;b1dc   ; con su signo
 	ld h,a			;b1dd
 	add hl,hl			;b1de
 	add hl,hl			;b1df
 	add hl,hl			;b1e0
 	add hl,hl			;b1e1
-	add hl,hl			;b1e2
+	add hl,hl			;b1e2   ; x 32
 	ret			;b1e3
 L_B1E4:
 	ld a,(iy+002h)		;b1e4   ; lee un dato propio de cada tipo de actor (ix+2)
@@ -2386,7 +2386,7 @@ L_B2D9:
 	ret			;b2e0
 L_B2E1:
 	add hl,hl			;b2e1
-	jr c,L_B2E9		;b2e2
+	jr c,L_B2E9		;b2e2   ; acarreo: se pasa
 	add hl,hl			;b2e4
 	jr c,L_B2E9		;b2e5
 	add hl,hl			;b2e7
@@ -2457,7 +2457,7 @@ L_B34E:
 	ret			;b354
 L_B355:
 	inc a			;b355
-	jr z,L_B361		;b356
+	jr z,L_B361		;b356   ; 0xFF: aparte
 	call L_B341		;b358
 	push hl			;b35b
 	call L_B4B6		;b35c
@@ -2565,12 +2565,12 @@ L_B43F:
 	jp 06e98h		;b444   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 L_B447:
 	add a,a			;b447
-	add a,008h		;b448
+	add a,008h		;b448   ; A x 2 + 8
 	push af			;b44a
 	call L_B399		;b44b
 	pop bc			;b44e
 	ld a,b			;b44f
-	inc a			;b450
+	inc a			;b450   ; y el siguiente
 	call L_B399		;b451
 	ret			;b454
 
@@ -2974,7 +2974,7 @@ L_B7BC:
 L_B7BE:
 	push bc			;b7be
 	call L_B7CA		;b7bf
-	jr c,L_B7C8		;b7c2
+	jr c,L_B7C8		;b7c2   ; acarreo: encontrado
 	pop bc			;b7c4
 	djnz L_B7BE		;b7c5
 	ret			;b7c7
@@ -3078,15 +3078,15 @@ L_B880:
 	add hl,hl			;b886
 	add hl,hl			;b887
 	or a			;b888
-	sbc hl,de		;b889
+	sbc hl,de		;b889   ; x 14
 	add hl,hl			;b88b
 	add hl,hl			;b88c
 	add hl,hl			;b88d
-	add hl,hl			;b88e
+	add hl,hl			;b88e   ; x 224
 	rl l		;b88f
 	rl h		;b891
 	sbc a,a			;b893
-	ld l,h			;b894
+	ld l,h			;b894   ; x 448 / 256: A x 1,75
 	and 001h		;b895
 	ld h,a			;b897
 	ret			;b898
@@ -3111,7 +3111,7 @@ L_B8C1:
 	push hl			;b8c1
 	push af			;b8c2
 	ld hl,08000h		;b8c3
-	add hl,de			;b8c6
+	add hl,de			;b8c6   ; DE + 0x8000
 	ex de,hl			;b8c7
 	pop af			;b8c8
 	pop hl			;b8c9
@@ -3175,23 +3175,23 @@ L_B928:
 L_B942:
 	inc hl			;b942
 	inc hl			;b943
-	ld e,(hl)			;b944
+	ld e,(hl)			;b944   ; la palabra de +2
 	inc hl			;b945
 	ld d,(hl)			;b946
-	ex de,hl			;b947
+	ex de,hl			;b947   ; en HL
 	ret			;b948
 L_B949:
 	ld a,h			;b949
 	or l			;b94a
-	ret z			;b94b
+	ret z			;b94b   ; 0: nada
 	ld c,(hl)			;b94c
 	inc hl			;b94d
-	ld b,(hl)			;b94e
+	ld b,(hl)			;b94e   ; BC = la primera palabra
 	inc hl			;b94f
 	push bc			;b950
 	ld c,(hl)			;b951
 	inc hl			;b952
-	ld b,(hl)			;b953
+	ld b,(hl)			;b953   ; BC = la segunda; la primera, en la pila
 	inc hl			;b954
 	ex (sp),hl			;b955
 	call L_B95B		;b956
@@ -3400,19 +3400,19 @@ L_BB27:
 	inc a			;bb2a
 	ld d,a			;bb2b
 	inc b			;bb2c
-	sub b			;bb2d
+	sub b			;bb2d   ; menos B + 1
 	ld b,a			;bb2e
 	ld a,c			;bb2f
 	and a			;bb30
 	ld a,b			;bb31
 	jr nz,L_BB36		;bb32
-	neg		;bb34
+	neg		;bb34   ; con C a 0, al reves
 L_BB36:
 	rla			;bb36
-	ret c			;bb37
+	ret c			;bb37   ; negativo: nada
 	ld a,004h		;bb38
 	cp d			;bb3a
-	jr nc,L_BB43		;bb3b
+	jr nc,L_BB43		;bb3b   ; entre 4 y 0x10
 	ld a,010h		;bb3d
 	cp d			;bb3f
 	jr c,L_BB43		;bb40
@@ -3992,7 +3992,7 @@ L_BF77:
 	ld l,a			;bf78
 	ld h,000h		;bf79
 	add hl,hl			;bf7b
-	ld de,0bfb8h		;bf7c
+	ld de,0bfb8h		;bf7c   ; 2 bytes por entrada en p06:BFB8
 	add hl,de			;bf7f
 	ld e,(hl)			;bf80
 	inc hl			;bf81

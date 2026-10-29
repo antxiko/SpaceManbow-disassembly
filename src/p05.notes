@@ -33,6 +33,7 @@ C 0x84D6 segun el signo, 0xFF o 5
 C 0x84DC la tabla de un lado o del otro
 C 0x8581 la entrada ix+0x20 de la tabla p05:858F
 C 0x8650 un hijo arriba (0xFFA0) y otro abajo (0x0060)
+C 0x8666 sin tocar IX ni A
 C 0x86B1 la distancia a la nave en Y, sin signo
 C 0x86BB muy cerca: siguiente paso
 C 0x86C0 lejos: nada
@@ -75,6 +76,33 @@ C 0x8CDF la espera y las veces segun el nivel (tabla p05:8D0B)
 C 0x8D32 por el paso
 C 0x8D7A 8 dibujos
 C 0x8D84 en el dibujo 4, la espera de la tabla p05:8DAC
+C 0x9111 lo que es el caracter (0xDE00)
+C 0x9118 3: para
+C 0x9119 pone D
+C 0x911B B veces, hacia atras
+C 0x914D 3: para
+C 0x914E D y E alternados, hacia atras
+C 0x91A7 E + 1, H + 1
+C 0x91A9 B veces
+C 0x9231 acarreo: encontrado
+C 0x9236 sin acarreo: ninguno
+C 0x9484 los bits 0-2
+C 0x948A 2 bytes en p05:94AC
+C 0x9494 el bit 0
+C 0x95A5 HL - DE
+C 0x95B9 / 32 con signo
+C 0x95F4 4 o mas: nada
+C 0x95FA 4 bytes en p05:9637
+C 0x9604 DE y BC
+C 0x9B77 0: la de p05:9BA2
+C 0x9B80 si no, ix+0x3E - 3 en la tabla p05:9B8A
+C 0x9BFB -0x60
+C 0x9C04 +0x60
+C 0x9DBE 0: 0xC0; 1: 0; 2: 0x80; 3: 0x40
+C 0x9DE9 de 0x40 en 0x40, el cuadrante: 0: B=0, C=1
+C 0x9DF1 1: B=1, C=1
+C 0x9DF7 2: B=1, C=0
+C 0x9DFD 3: B=0, C=0
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x8085 0x808F tabla_8085  5 destinos del despachador p00:461A (call en p05:8082, el indice en A): 808F, 809F, 80CD, 80F1, 80FD; lo leen p05:8082 (10 bytes)

@@ -1,61 +1,136 @@
 
 
 # --- A MANO: comentarios escritos leyendo el codigo ---
+C 0x8068 con 0xCE75 puesta, nada
+C 0x806D 1: explota
+C 0x8070 2: muerta
+C 0x807F con el bit 0 de 0xCA03, nada mas
+C 0x808E ix+0x18 a 0: puede chocar
+C 0x8090 si no, un cuadro menos sin choques
 C 0x80DA los dibujos de la explosion: del 6 al 9
+C 0x80DF el dibujo siguiente
+C 0x80E3 del 9 vuelve al 6
 C 0x80F4 0xCB02 baja hasta 0
+C 0x80F8 0: nada
+C 0x80F9 un cuadro menos
 C 0x80FE la nave no se mueve
+C 0x8101 la velocidad en Y a 0
+C 0x8104 y la de X
 C 0x8117 la direccion de los mandos (bits 0-3)
+C 0x8119 la direccion
 C 0x811C sin direccion, quieta
 C 0x811E 9 bytes por direccion en p02:817D
+C 0x8123 x 9
+C 0x8126 9 bytes por direccion en p02:817D
 C 0x812A el dibujo de la nave para esa direccion
+C 0x812B el primer byte
 C 0x812F DE = la velocidad en Y de la velocidad 0
+C 0x8131 DE = la velocidad en Y de partida
 C 0x8133 BC = lo que se suma por cada punto de velocidad
+C 0x8135 BC = lo que suma cada velocidad
+C 0x813A 0xCB01: cuantas velocidades
 C 0x813E la velocidad en Y con la velocidad de la nave
+C 0x8141 la velocidad en Y
 C 0x8148 la Y nueva, solo si no se sale (0x14 filas)
+C 0x814A la Y nueva por debajo de 0x14...
+C 0x814C ...si no, no se mueve
 C 0x8152 lo mismo en X
+C 0x8154 DE = la de X
+C 0x8158 BC = lo que suma
+C 0x815F la velocidad en X
+C 0x8166 mas la X
 C 0x8168 la X nueva, solo entre 0x80 y 0x1D80
+C 0x816B - 0x80
+C 0x816D por debajo de 0x1D...
+C 0x816F ...si no, no se mueve
+C 0x8177 una vez por velocidad
 C 0x8212 arriba o abajo
+C 0x8214 sin bits 0-1: 0
 C 0x8216 1: arriba; 2: abajo
+C 0x8218 el bit 0: 1
+C 0x821A el bit 1: 2
 C 0x821B el dibujo de inclinacion de la nave
 C 0x82A6 las dos opciones a 0
 C 0x82AC la X de las opciones respecto a la nave
 C 0x82C9 el paso de animacion de las dos opciones
+C 0x82CB la opcion 1
+C 0x82CE la opcion 2
 C 0x834F si hay otra opcion, la nueva va al otro lado...
 C 0x8356 ...cambiando el signo de su desplazamiento
 C 0x8392 la opcion existe
 C 0x8397 y esta enganchada (paso distinto de 0)
 C 0x83A4 el tipo de la capsula
+C 0x83A7 la capsula recogida
+C 0x83B8 la capsula
 C 0x83BB 0x0A: p02:871A y sigue mirando como 0x0A
 C 0x83C0 2: mas velocidad
 C 0x83C5 0x0C: p02:8716 y sigue como 1
+C 0x83CA la 3
+C 0x83CF la 0x0B
+C 0x83D4 la 0x0D
+C 0x83DE la 0x0E
 C 0x83E3 los demas: el nivel de las armas
 C 0x83EF las 5 casillas de armas
+C 0x83F3 libre: la siguiente
 C 0x83F5 su nivel - 1, hasta 0x0A
+C 0x83FB ix+1 de 1 a 10 cuenta
 C 0x83FD el peso de ese nivel en p02:842D
+C 0x8404 suma lo de la tabla
+C 0x8406 la casilla siguiente (8 bytes)
 C 0x840D la suma / 16
+C 0x8410 el nibble alto...
+C 0x8414 ...a C
 C 0x8415 mas 4 por cada vuelta al juego
+C 0x8419 x 4
+C 0x841A mas lo de las casillas
 C 0x841C mas el tramo de la potencia del disparo
+C 0x8422 mas el tramo de la potencia
 C 0x8423 hasta 15
+C 0x8427 como mucho 15
+C 0x847C una velocidad mas
+C 0x847D hasta 4
 C 0x8488 B = la potencia de antes
+C 0x8489 la fraccion a 0xFF
 C 0x848B una mas, hasta 0x10
+C 0x848E hasta 0x10
+C 0x84A1 si no cambia, nada
 C 0x84A9 el arma 0 con nivel 1
 C 0x84B1 el arma 0 cuenta como 1
+C 0x84B5 al menos 1
 C 0x84C1 el arma 0: la principal
 C 0x84C7 B - 5: acarreo con 2, 3 y 4
 C 0x84D0 acarreo con 6, 7 y 8
 C 0x84D8 1, 5 y de 9 en adelante
 C 0x84E4 las armas menores de 9 toman el nivel C
+C 0x84E9 las de 9 o mas, no
+C 0x84EB el nivel
 C 0x84EE la casilla siguiente (8 bytes)
+C 0x84F3 B casillas
 C 0x8511 cada casilla con arma
+C 0x8516 vacia: la siguiente
 C 0x8518 el arma cambia por la de la tabla
-C 0x851E la siguiente
+C 0x851B el arma nueva
+C 0x851E la casilla siguiente (8 bytes)
+C 0x852A con 0xCB50 basta
 C 0x8530 con 0xCB02 por debajo de 0x2E no baja
+C 0x8535 con 0xCB02 a 0x2E o mas, nada
 C 0x8539 cada 16 cuadros, o cada 32 desde la fase 5
+C 0x853E 0x0F
+C 0x8542 0x1F
+C 0x8544 con la cuenta de 0xCA02
 C 0x8546 la potencia (con su parte baja) - 3...
 C 0x854D ...sin bajar de la potencia entera de antes
+C 0x854E menos 3
+C 0x8550 sin bajar de 0
+C 0x8555 ni de la parte alta
 C 0x855B si cambia de tramo, otros patrones de disparo
+C 0x8565 si no cambia, nada
 C 0x856C la formacion siguiente: 0, 1, 2
+C 0x8571 vuelta a 0
 C 0x8575 0: las opciones encima de la nave; 1: delante; 2: detras
+C 0x8576 la 1: 0
+C 0x857B la 2: 0x0080
+C 0x8580 la 0 (Z del xor): 0xFF80
 C 0x8588 la tabla de cambio de armas
 C 0x859C con la nave explotando no dispara
 C 0x859F aun no hay disparo por el suelo en este cuadro
@@ -65,10 +140,19 @@ C 0x85D0 las 2 a 4, hasta 2
 C 0x85E1 las 1, 5 y 9 en adelante, 1
 C 0x85E7 0x80 cuenta como el arma 1
 C 0x85ED el arma 5 dispara como la 1 y vuelve a ser la 5
+C 0x85EF si no es 5, tal cual
+C 0x85F1 como si fuera 1
+C 0x85F8 vuelve el 5
 C 0x861F la entrada del arma: 6 bytes por entrada
+C 0x8621 el nivel - 1
+C 0x8625 x 6
+C 0x8629 en la tabla de BC
 C 0x862A DE = la velocidad en Y
+C 0x862C DE
 C 0x862E BC = la velocidad en X
+C 0x8630 BC
 C 0x8632 HL = el desplazamiento de salida
+C 0x8634 HL
 C 0x863C el arma sin el nibble alto; 0 cuenta como 1
 C 0x8645 BC, DE = la posicion de quien dispara
 C 0x8648 mas L x 32 en Y, con signo
@@ -109,6 +193,22 @@ C 0x8953 desde el dibujo 4 no cambia
 C 0x895C 64 bytes por dibujo en p02:8B30
 C 0x896D a los patrones de sprite de 0xCA20
 C 0x8979 cada color dos pasos mas oscuro
+C 0x8E15 fuera del mapa: NZ
+C 0x8E18 lo que es cada caracter, en 0xDE00
+C 0x8E1D con fondo: NZ
+C 0x8E28 la fila siguiente (0x30 - 2)
+C 0x8E3A la tercera fila
+C 0x8E4C Z: nada de fondo en las 3 x 3
+C 0x8F38 0xC000 con 0x4000, 4 KB
+C 0x8F44 el puntero de antes en 0x70F0
+C 0x8F48 y el nuevo
+C 0x8F59 cambia un byte de HL...
+C 0x8F5B ...con el de DE
+C 0x8F61 BC bytes
+C 0x8F67 H.PHYD a 0xC9: sin disco
+C 0x8F69 sin disco, nada
+C 0x8F75 H.KEYI anulado mientras tanto
+C 0x8F7E H.KEYI como estaba
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x8608 0x861E tabla_8608  11 destinos del despachador p00:461A (call en p02:8605, el indice en A): 861E, 8C9C, 861E, 8E50, 861E, 861E, 861E, 861E, 861E, 861E, 8BF1; lo leen p02:8605 (22 bytes)

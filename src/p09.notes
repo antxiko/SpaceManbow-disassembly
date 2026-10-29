@@ -166,10 +166,19 @@ C 0x7265 la tabla de este cuadro
 C 0x7267 la Y en los 32 planos de las dos franjas, de 4 en 4 bytes
 C 0x726A los 32 planos de la primera franja
 C 0x726C la Y de cuatro planos (4 bytes cada uno)
+C 0x7270 4 bytes por plano
 C 0x7282 los de la segunda franja
+C 0x7287 la Y de cuatro planos de la segunda franja
+C 0x728B 4 bytes por plano
+C 0x729B B veces
 C 0x729E la otra tabla
 C 0x72A3 los 32 planos de la primera franja de la otra tabla
+C 0x72A7 4 bytes por plano
+C 0x72B7 B veces
 C 0x72B9 los de la segunda franja
+C 0x72BE los de la segunda franja de la otra tabla
+C 0x72C2 4 bytes por plano
+C 0x72D2 B veces
 C 0x72DA los 25 sprites del grupo de 0xC009
 C 0x72DB sin sprite: el siguiente
 C 0x72E7 el sprite siguiente (2 bytes)
@@ -378,6 +387,9 @@ C 0x77A7 la fila siguiente de 0xD988
 C 0x77AC y la del mapa
 C 0x77BA 32 ldi seguidos: se entra mas abajo para copiar menos
 C 0x77BC 32 ldi: copia_32 entra mas abajo para copiar menos
+C 0x77D8 la mitad
+C 0x77F8 y uno mas, sin contarlo en BC
+C 0x77FA DE detras
 C 0x7858 el mapa de la fase en el banco 27
 C 0x7860 el byte siguiente al 0xFF
 C 0x7866 menos de 0x10: un tramo de scroll

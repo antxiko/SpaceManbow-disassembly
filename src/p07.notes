@@ -3,87 +3,146 @@
 # --- A MANO: comentarios escritos leyendo el codigo ---
 C 0x8003 la nave explotando (0xCA41): no hay choques, solo una espera
 C 0x8009 con 0xCE76 o 0xCE75 tampoco
+C 0x8020 una vuelta menos
+C 0x8023 BC vueltas
 C 0x803D la ficha esta libre: nada
 C 0x8042 la caja del de IY en los registros de detras: L = Y - 1, H = alto
 C 0x8049 E = X - 1, D = ancho
 C 0x8055 los 20 actores
 C 0x805B el tipo 0x5F no choca
+C 0x805D el tipo 0x5F no choca
 C 0x805F ni los que llevan el bit 7 en el tipo (dec: el 0 tambien queda fuera)
+C 0x8062 libre o con el bit 7: nada
 C 0x8067 solo los que tienen los bits 7, 5 y 4 de las banderas
+C 0x8069 las banderas 4, 5 y 7 de ix+0x15, las tres?
+C 0x806B si no, nada
 C 0x8074 sin el bit 7, el ancho
 C 0x8076 los dos anchos sumados: lo mas que pueden distar las X
+C 0x8077 los dos anchos
 C 0x8079 la distancia de las X mas el ancho del de IY
+C 0x807A la distancia en X
+C 0x807C dentro de los anchos?
 C 0x807D no se tocan en X
+C 0x807F ahora la Y
 C 0x8086 lo mismo en Y
+C 0x8087 los dos altos
+C 0x808A la distancia en Y
+C 0x808C dentro de los altos?
 C 0x808E no se tocan en Y
 C 0x8090 se tocan las cajas: pieza a pieza
 C 0x809C el siguiente actor (0x40 bytes)
+C 0x809D la ficha siguiente (0x40)
+C 0x80A2 B fichas
 C 0x80A5 HL llega en ix+0x15 del disparo: 0x15 - 0x0D = 8, su Y
+C 0x80A8 HL - 0x0D
 C 0x80A9 C = la Y del disparo
 C 0x80AC E = su X (+0x0A)
 C 0x80AD salta a +0x13, el alto de su caja
 C 0x80B4 B = el alto de la caja del disparo
+C 0x80B6 el byte siguiente
+C 0x80B7 sin el bit 7
 C 0x80B9 D = el ancho (sin el bit 7, que dice si se le puede dar)
 C 0x80BA pasa la caja del disparo a los registros de detras
 C 0x80BE la Y y el alto del actor de IY
 C 0x80C5 la X y el ancho del actor de IY
+C 0x80CB el ancho sin el bit 7
 C 0x80D0 suma de los dos altos: lo que pueden distar las Y
+C 0x80D1 los dos tamanos
 C 0x80D3 la diferencia de las Y mas el alto de IY: dentro si es menor que la suma
+C 0x80D4 la distancia
+C 0x80D6 dentro?
 C 0x80D7 sin acarreo: no se tocan en Y
 C 0x80D8 lo mismo en X con los registros de detras
+C 0x80D9 lo mismo en el otro eje
+C 0x80E1 acarreo si se tocan
+C 0x80E3 HL - 0x14: el principio de la ficha
+C 0x80E7 IX = el disparo
+C 0x80F4 no quedan parejas
+C 0x80F9 se tocan
 C 0x80FB la siguiente pieza del actor de IX
 C 0x80FF ninguna pieza de IX toca a esta de IY: la siguiente pieza de IY (6 bytes cada una)
 C 0x8109 todas las piezas de IY
 C 0x810B sin acarreo: no se han tocado
+C 0x8119 IX e IY cambiadas: el golpe al otro
 C 0x8127 si el que choca es un disparo (tipo 4)
+C 0x812A el tipo 4?
+C 0x812C si no, nada mas
 C 0x812E su primer sprite fuera de la pantalla (Y = 0xE8)
 C 0x8135 y el disparo se quita
 C 0x8139 acarreo: ha habido choque
+C 0x813D acarreo: ha chocado
 C 0x8142 1 de golpe por defecto
+C 0x8144 el tipo 4: 1
 C 0x8148 los tipos 2 a 9 dan 2
+C 0x814A los tipos 2-9...
+C 0x814E ...2
 C 0x8154 el tipo 4 (un disparo) da su potencia, ix+6
 C 0x8178 A = tipo - 1
 C 0x817C el primer byte de p07:8496 + tipo - 1: cuantas piezas tiene el tipo
 C 0x8184 y la palabra del tipo en la tabla de dibujos
+C 0x8187 2 bytes por dibujo
 C 0x818C mas 2 x el dibujo B
+C 0x818F 2 bytes por pieza
 C 0x8191 HL = la lista de piezas de ese dibujo
 C 0x8195 B = cuantas piezas
 C 0x819B la pieza de IY no tiene caja
 C 0x81A1 la de IX no tiene caja: se salta
 C 0x81A4 las dos cajas a sus registros: la de IX en los de detras
+C 0x81AE sin acarreo: hay pareja
 C 0x81BC la pieza actual del actor de IY
 C 0x81C4 la pieza siguiente
 C 0x81D5 la pieza actual del actor de IX
 C 0x81DC la pieza siguiente
 C 0x81E0 la Y en puntos: Y:fraccion x 8, el byte alto
+C 0x81E2 x 8
 C 0x81E4 lo mismo con la X
+C 0x81E7 la otra x 8
 C 0x81EB HL = la pieza
 C 0x81EE C = la Y del actor mas la de la pieza
 C 0x81F2 B = la X del actor mas la de la pieza
 C 0x81F8 la clase de caja de la pieza (0: no choca)
 C 0x81FF la tabla de cajas: 4 bytes por clase [Y][alto][X][ancho]
+C 0x8205 4 bytes por caja (tabla p07:8219)
 C 0x8208 C = la Y de la caja
+C 0x8209 mas el primer byte de la caja
 C 0x820D B = el alto de la caja
 C 0x820F E = la X de la caja
 C 0x8212 D = su ancho
+C 0x8214 sin acarreo: hay caja
+C 0x8284 las 18 balas
+C 0x8295 el ancho sin el bit 7
 C 0x8299 las 18 fichas pequenas de 0xD460
+C 0x829E libre: la siguiente
 C 0x82A0 solo las que se pueden tocar (bit 4 de las banderas)
+C 0x82A4 sin el bit 4 de ix+0x15, no choca
 C 0x82AD sin el bit 7, el ancho
+C 0x82B0 los dos anchos
+C 0x82B3 la distancia en X
+C 0x82B5 dentro de los anchos?
 C 0x82B6 no se tocan en X
+C 0x82B8 ahora la Y
+C 0x82C0 los dos altos
+C 0x82C3 la distancia en Y
+C 0x82C5 dentro de los altos?
 C 0x82C7 no se tocan en Y
 C 0x82C9 se tocan las cajas: pieza a pieza
 C 0x82D5 la siguiente ficha pequena (0x20 bytes)
+C 0x82D6 la bala siguiente (0x20)
+C 0x82DB B balas
 C 0x82E5 la rejilla: una pagina de 256 casillas de 16 x 16 puntos
 C 0x82EB los 8 disparos de la nave, de 0x20 bytes
 C 0x82F3 D = 0xD7: la pagina de la rejilla
 C 0x82F5 los 8 disparos de 0xCC40
 C 0x82F6 el tipo del disparo (0: libre)
+C 0x82F8 libre: la siguiente
 C 0x82FA +8: la Y del disparo
 C 0x82FD fuera por arriba: casilla sin fila
 C 0x8301 la fila de la casilla: la Y en el nibble alto (16 puntos por casilla)
 C 0x8307 +0x0A: la X
 C 0x830E la columna: X / 2, en el nibble bajo
 C 0x8315 marca la casilla en la rejilla de 0xD700
+C 0x831A la ficha siguiente
+C 0x831D A fichas
 C 0x8327 los 20 actores de 0xCE80
 C 0x8329 el tipo 0x5F no choca
 C 0x8331 +0x15: las banderas; tienen que tener los bits 7, 5 y 4 para chocar con los disparos
@@ -102,6 +161,8 @@ C 0x83A3 el disparo esta libre
 C 0x83A7 HL en su +0x15, como quiere p07:80A5
 C 0x83B6 el siguiente disparo (0x20 bytes)
 C 0x83BF 8 bytes a 0 por vuelta, hasta dar la vuelta la pagina
+C 0x83C7 la mitad
+C 0x83CF hasta que L da la vuelta
 # --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0x83D3 0x8400 relleno_ff  45 bytes a 0xFF entre dos bloques, que no lee nadie: relleno; lo leen nadie (45 bytes)
