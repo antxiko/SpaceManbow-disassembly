@@ -610,11 +610,11 @@ L_6427:
 	ret			;642d
 L_642E:
 	ld a,03fh		;642e
-	call 04c15h		;6430
+	call 04c15h		;6430   ; banco_en_8000: pone el banco A en 0x8000
 	ret			;6433
 L_6434:
 	ld a,01dh		;6434
-	call 04c15h		;6436
+	call 04c15h		;6436   ; banco_en_8000: pone el banco A en 0x8000
 	ret			;6439
 L_643A:
 	out (0a0h),a		;643a
@@ -1008,7 +1008,7 @@ L_6A81:
 	ret			;6ad5
 L_6AD6:
 	ld a,(0c8c8h)		;6ad6
-	call 04c23h		;6ad9
+	call 04c23h		;6ad9   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,(0c880h)		;6adc
 	call L_6106		;6adf
 	ld hl,0c840h		;6ae2

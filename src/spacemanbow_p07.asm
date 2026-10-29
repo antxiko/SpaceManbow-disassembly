@@ -39,7 +39,7 @@ L_8020:
 	jr nz,L_8020		;8023
 	ret			;8025
 L_8026:
-	ld iy,0ca40h		;8026
+	ld iy,0ca40h		;8026   ; apunta a la nave: su ficha de actor (0 = muerta)
 	call L_8039		;802a
 	ret			;802d
 L_802E:
@@ -64,18 +64,18 @@ L_8039:
 	ld b,014h		;8055
 L_8057:
 	push bc			;8057
-	ld a,(ix+000h)		;8058
+	ld a,(ix+000h)		;8058   ; lee el tipo del actor (0 = libre)
 	cp 05fh		;805b
 	jr z,L_809C		;805d
 	dec a			;805f
 	cp 07fh		;8060
 	jr nc,L_809C		;8062
-	ld a,(ix+015h)		;8064
+	ld a,(ix+015h)		;8064   ; lee las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	and 0b0h		;8067
 	cp 0b0h		;8069
 	jr nz,L_809C		;806b
 	exx			;806d
-	ld c,(ix+00ah)		;806e
+	ld c,(ix+00ah)		;806e   ; lee la X del actor (en caracteres de 8 puntos)
 	ld b,(ix+014h)		;8071
 	res 7,b		;8074
 	ld a,b			;8076
@@ -87,7 +87,7 @@ L_8057:
 	cp b			;807c
 	jr nc,L_809B		;807d
 	ex de,hl			;807f
-	ld c,(ix+008h)		;8080
+	ld c,(ix+008h)		;8080   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld b,(ix+013h)		;8083
 	ld a,b			;8086
 	add a,d			;8087
@@ -209,7 +209,7 @@ L_810D:
 	jr nz,L_8139		;812c
 	ld e,0e8h		;812e
 	ld b,001h		;8130
-	call 078e6h		;8132
+	call 078e6h		;8132   ; pon_sprite: el patron A mas el del tipo (0xDF00 + tipo) en el siguiente sprite del actor (hasta 6; los busca en el grupo de 0xC023): Y, X, patron y color en las paginas 0xC0-0xC3
 	ld (ix+000h),000h		;8135
 L_8139:
 	pop iy		;8139
@@ -233,7 +233,7 @@ L_8154:
 	ld c,a			;8157
 	jr L_8150		;8158
 L_815A:
-	call 0600ch		;815a
+	call 0600ch		;815a   ; vector_6459: jp p04:6459
 	ret			;815d
 L_815E:
 	ld a,(iy+000h)		;815e
@@ -279,7 +279,7 @@ L_8198:
 	push bc			;819c
 	push de			;819d
 	call L_81C9		;819e
-	jp c,0469dh		;81a1
+	jp c,0469dh		;81a1   ; vuelve_quitando_2: quita 2 palabras de la pila y vuelve
 	push bc			;81a4
 	push de			;81a5
 	exx			;81a6
@@ -428,7 +428,7 @@ DATA_sin_leer_8269:
 
 
 L_826D:
-	ld iy,0ca40h		;826d
+	ld iy,0ca40h		;826d   ; apunta a la nave: su ficha de actor (0 = muerta)
 	call L_8280		;8271
 	ret			;8274
 L_8275:
@@ -450,13 +450,13 @@ L_8280:
 	exx			;8298
 L_8299:
 	push bc			;8299
-	ld a,(ix+000h)		;829a
+	ld a,(ix+000h)		;829a   ; lee el tipo del actor (0 = libre)
 	or a			;829d
 	jr z,L_82D5		;829e
-	bit 4,(ix+015h)		;82a0
+	bit 4,(ix+015h)		;82a0   ; mira el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	jr z,L_82D5		;82a4
 	exx			;82a6
-	ld c,(ix+00ah)		;82a7
+	ld c,(ix+00ah)		;82a7   ; lee la X del actor (en caracteres de 8 puntos)
 	ld b,(ix+014h)		;82aa
 	res 7,b		;82ad
 	ld a,b			;82af
@@ -468,7 +468,7 @@ L_8299:
 	cp b			;82b5
 	jr nc,L_82D4		;82b6
 	ex de,hl			;82b8
-	ld c,(ix+008h)		;82b9
+	ld c,(ix+008h)		;82b9   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld b,(ix+013h)		;82bc
 	ld a,b			;82bf
 	add a,d			;82c0

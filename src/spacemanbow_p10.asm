@@ -20,16 +20,16 @@ L_8000:
 L_8004:
 	pop af			;8004
 	ld hl,08189h		;8005
-	call 0468eh		;8008
+	call 0468eh		;8008   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 L_800B:
 	call L_8046		;800b
 L_800E:
 	ret			;800e
 L_800F:
 	call L_8032		;800f
-	ld a,(0ca10h)		;8012
+	ld a,(0ca10h)		;8012   ; lee la fase (0 a 8; 9 el final)
 	ld hl,08177h		;8015
-	call 0468eh		;8018
+	call 0468eh		;8018   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	call L_8046		;801b
 	ret			;801e
 L_801F:
@@ -38,11 +38,11 @@ L_801F:
 	call L_8371		;8025
 	ret			;8028
 L_8029:
-	ld hl,0de00h		;8029
+	ld hl,0de00h		;8029   ; apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores
 	ld bc,000ffh		;802c
 	jp L_8226		;802f
 L_8032:
-	ld hl,0de00h		;8032
+	ld hl,0de00h		;8032   ; apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores
 	ld bc,000cdh		;8035
 	jp L_8226		;8038
 L_803B:
@@ -71,7 +71,7 @@ L_8059:
 L_8069:
 	push ix		;8069
 	pop hl			;806b
-	call 04ce0h		;806c
+	call 04ce0h		;806c   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 	push hl			;806f
 	pop ix		;8070
 	ret			;8072
@@ -166,7 +166,7 @@ L_80F4:
 	ret			;80f7
 L_80F8:
 	ld (0c0b4h),a		;80f8
-	call 04e82h		;80fb
+	call 04e82h		;80fb   ; trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
 	push ix		;80fe
 	and 001h		;8100
 	push hl			;8102
@@ -235,7 +235,7 @@ L_8157:
 	ret			;815e
 L_815F:
 	ld hl,08165h		;815f
-	jp 0468eh		;8162
+	jp 0468eh		;8162   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 
 ; ----------------------------------------------------------------------
 ; DATOS listas_8165: 9 punteros a listas de graficos, uno por A, detras de la
@@ -404,22 +404,22 @@ L_8263:
 	add hl,hl			;8267
 	add hl,hl			;8268
 	push hl			;8269
-	call 04e8ah		;826a
+	call 04e8ah		;826a   ; trozo_de_vram: HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
 	pop de			;826d
 	add hl,de			;826e
 	ex de,hl			;826f
-	ld hl,0d800h		;8270
+	ld hl,0d800h		;8270   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	ld bc,(0d700h)		;8273
-	call 046adh		;8277
+	call 046adh		;8277   ; copia_a_vram: copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
 	ret			;827a
 L_827B:
-	ld de,0d800h		;827b
+	ld de,0d800h		;827b   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	call L_82BA		;827e
 	call L_8290		;8281
 	ld h,d			;8284
 	ld l,e			;8285
 	or a			;8286
-	ld bc,0d800h		;8287
+	ld bc,0d800h		;8287   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	sbc hl,bc		;828a
 	ld (0d700h),hl		;828c
 	ret			;828f
@@ -465,8 +465,8 @@ L_82BA:
 	add a,00ch		;82c1
 	pop bc			;82c3
 	add a,b			;82c4
-	ld (0d703h),a		;82c5
-	call 04c23h		;82c8
+	ld (0d703h),a		;82c5   ; guarda el banco que lee el RLE de p10:8290 en 0xA000
+	call 04c23h		;82c8   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,h			;82cb
 	and 01fh		;82cc
 	add a,0a0h		;82ce
@@ -480,10 +480,10 @@ L_82D2:
 	jr c,L_82E6		;82d7
 	sub 020h		;82d9
 	ld h,a			;82db
-	ld a,(0d703h)		;82dc
+	ld a,(0d703h)		;82dc   ; lee el banco que lee el RLE de p10:8290 en 0xA000
 	inc a			;82df
-	ld (0d703h),a		;82e0
-	call 04c23h		;82e3
+	ld (0d703h),a		;82e0   ; guarda el banco que lee el RLE de p10:8290 en 0xA000
+	call 04c23h		;82e3   ; banco_en_A000: pone el banco A en 0xA000
 L_82E6:
 	pop af			;82e6
 	ret			;82e7
@@ -523,7 +523,7 @@ L_8307:
 	or c			;8318
 L_8319:
 	jr z,L_8319		;8319
-	ld hl,0d800h		;831b
+	ld hl,0d800h		;831b   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	ld de,0d807h		;831e
 L_8321:
 	push de			;8321
@@ -555,7 +555,7 @@ L_8336:
 	ret			;8340
 L_8341:
 	ld de,(0d700h)		;8341
-	ld hl,0d800h		;8345
+	ld hl,0d800h		;8345   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 L_8348:
 	ld a,(hl)			;8348
 	rr a		;8349
@@ -582,12 +582,12 @@ L_8348:
 	jr nz,L_8348		;836e
 	ret			;8370
 L_8371:
-	ld a,(0ca10h)		;8371
+	ld a,(0ca10h)		;8371   ; lee la fase (0 a 8; 9 el final)
 	cp 007h		;8374
 	ret z			;8376
 	ld hl,0df00h		;8377
 	ld bc,0007fh		;837a
-	call 04648h		;837d
+	call 04648h		;837d   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,092b8h		;8380
 	call L_8389		;8383
 	call L_83B6		;8386
@@ -613,9 +613,9 @@ L_838C:
 	add ix,bc		;83b2
 	jr L_838C		;83b4
 L_83B6:
-	ld a,(0ca10h)		;83b6
+	ld a,(0ca10h)		;83b6   ; lee la fase (0 a 8; 9 el final)
 	ld hl,083c0h		;83b9
-	call 0468eh		;83bc
+	call 0468eh		;83bc   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	ret			;83bf
 
 ; ----------------------------------------------------------------------
@@ -661,9 +661,9 @@ L_83E0:
 	ret			;83f0
 L_83F1:
 	ex de,hl			;83f1
-	ld hl,0d800h		;83f2
+	ld hl,0d800h		;83f2   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	ld bc,(0d700h)		;83f5
-	call 046ach		;83f9
+	call 046ach		;83f9   ; copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 	ret			;83fc
 
 ; ----------------------------------------------------------------------

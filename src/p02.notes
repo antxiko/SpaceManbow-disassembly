@@ -40,3 +40,119 @@ D 0x920C 0x9338 leido_920C  lo leen p04:6707, p04:6709, p04:670B, p04:670D jugan
 D 0x9338 0x934C sin_leer_9338  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (20 bytes)
 D 0x934C 0xA000 leido_934C  lo leen p04:622C, p04:622E, p04:6236, p04:6707, p04:6709, p04:670B, p04:670D jugando (tools/cobertura.py) (3252 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x8021 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x8038 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x803B dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
+C 0x8043 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8060 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8069 lee el paso del actor
+C 0x808A lee otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x8091 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x80CD pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x80E8 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
+C 0x8108 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x810F lee copia de los mandos de 0xC909
+C 0x8114 lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
+C 0x820D lee copia de los mandos de 0xC909
+C 0x8242 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8248 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x8254 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8258 el tipo del actor (0 = libre) = 0x01
+C 0x825C la Y del actor (en caracteres de 8 puntos) = 0x08
+C 0x8260 la X del actor (en caracteres de 8 puntos) = 0x05
+C 0x8264 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x39
+C 0x8270 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0F
+C 0x827F borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x82A9 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x82DF sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x82EE centro_del_actor: la posicion del actor mas la mitad de su ancho (ix+0x14) y de su alto
+C 0x82F2 distancia_a_la_nave: HL = la Y de la nave - la del actor y DE = lo mismo en X, con fraccion
+C 0x82F5 niega_hl: HL = -HL
+C 0x830E suma_a_hl: HL = HL + A
+C 0x836C entrada_de_tabla_de: HL = la palabra A de la tabla de DE
+C 0x8370 niega_hl: HL = -HL
+C 0x8400 suma_a_hl: HL = HL + A
+C 0x841F tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x844D pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8453 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8462 ficha_en_cac0: en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
+C 0x8465 vuelve_quitando_1: quita 1 palabra de la pila y vuelve
+C 0x8475 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8498 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x849D tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x84F9 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x8505 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8539 lee la fase (0 a 8; 9 el final)
+C 0x855C tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8561 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x858B suma_a_hl: HL = HL + A
+C 0x8602 nada_4AE0: ret
+C 0x8605 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x86AF fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
+C 0x86BE fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
+C 0x86CB casilla_en_pantalla: si D < 0x20 y E < 0x18, la casilla del mapa (p00:4E3A) en DE y acarreo
+C 0x86DC pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x86E6 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8711 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x8724 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8740 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8746 apunta a el estado de la partida
+C 0x875F fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
+C 0x876F apunta a la nave: su ficha de actor (0 = muerta)
+C 0x877C apunta a la nave: su ficha de actor (0 = muerta)
+C 0x87A6 nada_4AE0: ret
+C 0x87A9 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x87D3 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+C 0x87D8 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8810 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+C 0x8862 pon_velocidad_x: la velocidad en X = DE
+C 0x8872 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x887A mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
+C 0x8881 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x888A nada_4AE0: ret
+C 0x888D despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x88AA pon_velocidad_x: la velocidad en X = DE
+C 0x88BE pon_velocidad_x: la velocidad en X = DE
+C 0x88DE pon_velocidad_x: la velocidad en X = DE
+C 0x88F3 fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
+C 0x8917 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8926 pon_c0d8_4: 0xC0D8 = 4
+C 0x8929 manda_paleta_clara: los 16 colores con cada componente mas claro (p00:4E0E)
+C 0x892C borra_fichas_pequenas: borra 0xD440-0xD69F; detras, 16 nop
+C 0x892F marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
+C 0x893B marca_tipos_70D2: al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
+C 0x8940 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8943 borra_fichas_pequenas: borra 0xD440-0xD69F; detras, 16 nop
+C 0x8946 marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
+C 0x89A1 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x8C42 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x8C4E tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8C93 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8CB0 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8CC8 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x8D1F tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8D3E tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8D4E mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
+C 0x8D5F sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8D9D sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8DA4 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8DD8 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8E12 casilla_bajo_el_actor: la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
+C 0x8E8E pon_velocidad: la velocidad en Y = HL y en X = DE
+C 0x8EB7 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+C 0x8EBB lee la fase (0 a 8; 9 el final)
+C 0x8EC0 mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
+C 0x8EC3 scroll_y: la Y del actor mas 0xCA12
+C 0x8EFF pon_velocidad: la velocidad en Y = HL y en X = DE
+C 0x8F02 mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
+C 0x8F06 fondo_en_b: lo mismo devolviendo tambien el bit 2
+C 0x8F16 slot_del_cartucho: el slot de la pagina 1 (RSLREG, EXPTBL y SLTTBL) en el formato de ENASLT
+C 0x8FA4 banco_en_6000: pone el banco A en 0x6000
+C 0x8FAA vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
+C 0x8FAD enciende_lineas: 0xC940 = 1
+C 0x8FB7 apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+C 0x8FD2 vector_prepara_guion: jp p04:6214
+C 0x8FD7 banco_en_6000: pone el banco A en 0x6000
+# --- fin de las anotaciones de anota.py ---

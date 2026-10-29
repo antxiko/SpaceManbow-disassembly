@@ -54,3 +54,152 @@ D 0x7877 0x787B sin_leer_7877  ninguna partida de la campana lo lee (tools/cober
 D 0x787B 0x787F leido_787B  lo leen p01:7850, p01:7855, p01:785A, p01:785C jugando (tools/cobertura.py) (4 bytes)
 D 0x787F 0x7883 sin_leer_787F  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (4 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x6025 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida) y el byte siguiente (16 bits)
+C 0x602C nada_4AE0: ret
+C 0x602F despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x6045 prepara_vdp: esconde los sprites, apaga la pantalla, borra la VRAM con una orden del VDP (p00:47FC), el registro 23 a 0 y enciende la pantalla
+C 0x6059 nada_4AE0: ret
+C 0x605C despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x606B borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x60A0 nada_4AE0: ret
+C 0x60A3 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x60DE nada_4AE0: ret
+C 0x60E1 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x60F5 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x610A guarda la cuenta de interrupciones del cuadro
+C 0x610D lee la cuenta de interrupciones del cuadro
+C 0x6126 guarda la cuenta de interrupciones del cuadro
+C 0x6129 lee la cuenta de interrupciones del cuadro
+C 0x6137 guarda la cuenta de interrupciones del cuadro
+C 0x613A lee la cuenta de interrupciones del cuadro
+C 0x6147 orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x614A espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6157 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x615A empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0x61B3 nada_4AE0: ret
+C 0x61B6 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x61E5 nada_4AE0: ret
+C 0x61E8 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x6223 apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x622D apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x623D lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x624A lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
+C 0x6250 recien_pulsadas: guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
+C 0x625A lee el estado de la partida y el byte siguiente (16 bits)
+C 0x6261 nada_4AE0: ret
+C 0x6264 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x6274 nada_4AE0: ret
+C 0x6277 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x6295 nada_4AE0: ret
+C 0x6298 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x62C4 nada_4AE0: ret
+C 0x62C7 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x62D0 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x62DB vector_empieza_fase: jp p00:4492
+C 0x62F0 vector_cuadro_de_partida: jp p00:438E
+C 0x6308 apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+C 0x630B paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x630F guarda distinto de 0: la fase esta acabada
+C 0x6312 lee la fase (0 a 8; 9 el final)
+C 0x6318 guarda la fase (0 a 8; 9 el final)
+C 0x6320 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x6325 vector_empieza_fase: jp p00:4492
+C 0x6330 nada_4AE0: ret
+C 0x6333 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x6347 apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+C 0x634A paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x634D lee las vidas, en BCD
+C 0x6353 guarda las vidas, en BCD
+C 0x6359 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x635E vector_empieza_fase: jp p00:4492
+C 0x636E pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x6399 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x63CE prepara_arranque: el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+C 0x63DA paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x63DF vector_empieza_fase: jp p00:4492
+C 0x63E8 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x63EB empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0x63F6 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
+C 0x63FF orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x6402 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6440 apunta a el estado de la partida
+C 0x644E apunta a el estado de la partida
+C 0x6454 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x6457 apunta a el estado de la partida
+C 0x6463 guarda la fase (0 a 8; 9 el final)
+C 0x6471 vector_empieza_fase: jp p00:4492
+C 0x6477 guarda el estado de la partida y el byte siguiente (16 bits)
+C 0x6489 guarda 1: hay que mandar la cola de sonidos
+C 0x648E paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x6492 guarda el estado de la partida y el byte siguiente (16 bits)
+C 0x6496 apunta a el estado de la partida
+C 0x649E apunta a el estado de la partida
+C 0x64B3 apunta a el estado de la partida
+C 0x64B9 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x64C7 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x64D0 lee la fase con la que empieza la partida
+C 0x64D5 guarda la fase con la que empieza la partida
+C 0x64D9 guarda la fase (0 a 8; 9 el final)
+C 0x64ED lee las teclas F1-F5
+C 0x650A avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
+C 0x6664 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6667 prepara_arranque: el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+C 0x666A apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x666D paleta_inicial: los 16 colores de la tabla p00:47A4
+C 0x6673 lista_de_colores: pone los colores de HL: [color][D][E] hasta un 0xFF
+C 0x668E orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x66AC apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+C 0x66BE enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0x66C7 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x6727 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x672A espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6743 pinta_letra_c: la letra A con p00:4838 y A = 5
+C 0x6746 avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
+C 0x692E espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6934 avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
+C 0x693C apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+C 0x6973 apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+C 0x6976 copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
+C 0x6981 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6984 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x6987 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x6994 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x699A espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x69A3 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x69B8 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x69CA guarda la cuenta de interrupciones del cuadro
+C 0x69D5 lee la cuenta de interrupciones del cuadro
+C 0x69E6 pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
+C 0x69F4 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x6A26 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x6A29 empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0x6AB0 copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
+C 0x6AB8 copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
+C 0x6AC6 copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
+C 0x6B40 llena_vram_baja: pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
+C 0x6B58 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x6B63 llena_memoria: pone A en BC + 1 bytes desde HL
+C 0x6C12 apunta a las vidas, en BCD
+C 0x77C1 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x77C4 apunta a el estado de la partida
+C 0x77CA borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x77D4 guarda el numero al azar: B y C de p00:4678 y el byte siguiente (16 bits)
+C 0x7824 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x7827 fundido_a_negro: los 16 colores con destino 0 y empieza el fundido
+C 0x7837 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x783A apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+C 0x7840 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x7845 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7852 guarda la fase (0 a 8; 9 el final)
+C 0x7874 suma_a_hl: HL = HL + A
+C 0x78CA guarda copia de los mandos de 0xC909
+C 0x78D0 guarda lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x78DD banco_en_A000: pone el banco A en 0xA000
+C 0x78E4 banco_en_A000: pone el banco A en 0xA000
+C 0x790E lee copia de los mandos de 0xC909
+C 0x7917 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x793C lee copia de los mandos de 0xC909
+C 0x7942 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+# --- fin de las anotaciones de anota.py ---

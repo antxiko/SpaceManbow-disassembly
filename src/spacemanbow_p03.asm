@@ -116,18 +116,18 @@ DATA_leido_A000:
 
 
 L_A600:
-	call 0474bh		;a600
+	call 0474bh		;a600   ; apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
 	ld a,000h		;a603
 	ld h,000h		;a605
 	ld l,h			;a607
 	ld b,h			;a608
 	ld c,080h		;a609
 	ld d,002h		;a60b
-	call 047fch		;a60d
-	call 047d2h		;a610
+	call 047fch		;a60d   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+	call 047d2h		;a610   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	ld ix,0b40ah		;a613
 	call L_AE15		;a617
-	call 04b95h		;a61a
+	call 04b95h		;a61a   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	ld a,015h		;a61d
 	ld hl,05a02h		;a61f
 	ld de,0b9a3h		;a622
@@ -136,48 +136,48 @@ L_A600:
 L_A62A:
 	ld ix,0b37eh		;a62a
 	call L_AE15		;a62e
-	call 04b95h		;a631
+	call 04b95h		;a631   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	ld a,015h		;a634
 	ld hl,05000h		;a636
 	ld de,0ba7bh		;a639
 	call L_A68F		;a63c
 	call L_A67F		;a63f
-	call 047d2h		;a642
+	call 047d2h		;a642   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	call L_BDC8		;a645
 	ld bc,00017h		;a648
 	call 00047h		;a64b   ; BIOS WRTVDP - Writes data in the VDP-register
-	jp 0473eh		;a64e
+	jp 0473eh		;a64e   ; enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
 L_A651:
 	ld ix,0b260h		;a651
 	call L_AE15		;a655
-	jp 04b95h		;a658
+	jp 04b95h		;a658   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 L_A65B:
 	ld a,00ah		;a65b
 	ld hl,05500h		;a65d
 	ld de,0b520h		;a660
 	call L_A68F		;a663
-	call 047d2h		;a666
+	call 047d2h		;a666   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	call L_A67F		;a669
 	call L_BDC3		;a66c
-	call 047d2h		;a66f
-	call 0473eh		;a672
+	call 047d2h		;a66f   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+	call 0473eh		;a672   ; enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
 	xor a			;a675
 	ld h,a			;a676
 	ld l,a			;a677
 	ld b,a			;a678
 	ld c,a			;a679
 	ld d,001h		;a67a
-	jp 047fch		;a67c
+	jp 047fch		;a67c   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 L_A67F:
-	call 04b95h		;a67f
-	call 047d2h		;a682
+	call 04b95h		;a67f   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+	call 047d2h		;a682   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	xor a			;a685
 	ld h,a			;a686
 	ld l,a			;a687
 	ld b,a			;a688
 	ld c,0c0h		;a689
 	ld d,a			;a68b
-	jp 047fch		;a68c
+	jp 047fch		;a68c   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 L_A68F:
 	push de			;a68f
 	push af			;a690
@@ -190,20 +190,20 @@ L_A68F:
 	call L_A713		;a69b
 	ret			;a69e
 L_A69F:
-	call 04a7ah		;a69f
-	call 04a58h		;a6a2
+	call 04a7ah		;a69f   ; copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+	call 04a58h		;a6a2   ; teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
 L_A6A5:
 	call L_A749		;a6a5
 	push af			;a6a8
-	call 04b95h		;a6a9
+	call 04b95h		;a6a9   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	pop af			;a6ac
 	ret			;a6ad
 L_A6AE:
-	call 047d2h		;a6ae
+	call 047d2h		;a6ae   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	ld hl,0a6bdh		;a6b1
 	ld b,008h		;a6b4
 	call 04a1fh		;a6b6
-	call 04760h		;a6b9
+	call 04760h		;a6b9   ; apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
 	ret			;a6bc
 
 ; ----------------------------------------------------------------------
@@ -227,7 +227,7 @@ L_A713:
 	push hl			;a713
 	ld hl,0e000h		;a714
 	ld bc,006ffh		;a717
-	call 04648h		;a71a
+	call 04648h		;a71a   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld ix,0e100h		;a71d
 	pop hl			;a721
 	ld (ix+002h),l		;a722
@@ -358,8 +358,8 @@ L_A823:
 	ret z			;a82b
 	ld a,(hl)			;a82c
 	cp 011h		;a82d
-	jp nc,04ae0h		;a82f
-	call 0461ah		;a832
+	jp nc,04ae0h		;a82f   ; nada_4AE0: ret
+	call 0461ah		;a832   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_A835: 17 destinos del despachador p00:461A (call en p03:A832, el
@@ -422,7 +422,7 @@ L_A88E:
 	push bc			;a892
 	push ix		;a893
 	call L_AB61		;a895
-	jp c,04699h		;a898
+	jp c,04699h		;a898   ; vuelve_quitando_4: quita 4 palabras de la pila y vuelve: no vuelve a quien llama sino mas atras
 	pop iy		;a89b
 	pop bc			;a89d
 	pop de			;a89e
@@ -627,11 +627,11 @@ L_A9D2:
 	ld hl,02820h		;a9d3
 	ld bc,0d090h		;a9d6
 	ld d,a			;a9d9
-	call 047fch		;a9da
+	call 047fch		;a9da   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 	call L_AB9D		;a9dd
 	ld hl,0e0f0h		;a9e0
 	ld bc,0000fh		;a9e3
-	call 04648h		;a9e6
+	call 04648h		;a9e6   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ret			;a9e9
 L_A9EA:
 	pop hl			;a9ea
@@ -677,7 +677,7 @@ L_AA1B:
 	ret			;aa28
 L_AA29:
 	ex de,hl			;aa29
-	call 04c94h		;aa2a
+	call 04c94h		;aa2a   ; pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
 	ret			;aa2d
 L_AA2E:
 	pop hl			;aa2e
@@ -702,8 +702,8 @@ L_AA40:
 	ret			;aa4d
 L_AA4E:
 	ex de,hl			;aa4e
-	call 04ce0h		;aa4f
-	call 04cf5h		;aa52
+	call 04ce0h		;aa4f   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+	call 04cf5h		;aa52   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 	ret			;aa55
 L_AA56:
 	pop hl			;aa56
@@ -828,7 +828,7 @@ L_AB09:
 	push ix		;ab09
 	pop hl			;ab0b
 	ld bc,0001fh		;ab0c
-	call 04648h		;ab0f
+	call 04648h		;ab0f   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	scf			;ab12
 	ret			;ab13
 L_AB14:
@@ -851,7 +851,7 @@ L_AB26:
 	pop hl			;ab30
 	ret			;ab31
 L_AB32:
-	call 04af5h		;ab32
+	call 04af5h		;ab32   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	ret			;ab35
 L_AB36:
 	pop hl			;ab36
@@ -881,7 +881,7 @@ L_AB56:
 	rrca			;ab5a
 	rrca			;ab5b
 	rrca			;ab5c
-	call 04776h		;ab5d
+	call 04776h		;ab5d   ; pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 	ret			;ab60
 L_AB61:
 	call L_AB83		;ab61
@@ -889,7 +889,7 @@ L_AB61:
 	push hl			;ab65
 	pop ix		;ab66
 	ld bc,0001fh		;ab68
-	call 04648h		;ab6b
+	call 04648h		;ab6b   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld (ix+000h),001h		;ab6e
 	ld (ix+015h),028h		;ab72
 	ld (ix+014h),00ah		;ab76
@@ -913,11 +913,11 @@ L_AB83:
 L_AB94:
 	ld hl,0e100h		;ab94
 	ld bc,005ffh		;ab97
-	jp 04648h		;ab9a
+	jp 04648h		;ab9a   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 L_AB9D:
 	ld hl,0e120h		;ab9d
 	ld bc,005dfh		;aba0
-	jp 04648h		;aba3
+	jp 04648h		;aba3   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 L_ABA6:
 	ld l,a			;aba6
 	rlca			;aba7
@@ -1173,7 +1173,7 @@ L_AD86:
 	pop de			;adb1
 	push ix		;adb2
 	push iy		;adb4
-	call 0487ch		;adb6
+	call 0487ch		;adb6   ; orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
 	pop iy		;adb9
 	pop ix		;adbb
 	ret			;adbd
@@ -1185,7 +1185,7 @@ L_ADBE:
 	pop de			;adc3
 	push ix		;adc4
 	push iy		;adc6
-	call 04838h		;adc8
+	call 04838h		;adc8   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 	pop iy		;adcb
 	pop ix		;adcd
 	ret			;adcf
@@ -1215,7 +1215,7 @@ L_ADD0:
 	and 01fh		;adf5
 	call L_AE07		;adf7
 	ld a,c			;adfa
-	call 04c0eh		;adfb
+	call 04c0eh		;adfb   ; bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
 	ld a,(ix+005h)		;adfe
 	sub (ix+004h)		;ae01
 	inc a			;ae04
@@ -1234,7 +1234,7 @@ L_AE0C:
 	inc c			;ae12
 	jr L_AE0C		;ae13
 L_AE15:
-	call 047d2h		;ae15
+	call 047d2h		;ae15   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 L_AE18:
 	ld a,(ix+000h)		;ae18
 	or a			;ae1b
@@ -1284,12 +1284,12 @@ L_AE7D:
 	call L_ADD0		;ae7f
 	bit 7,(ix+000h)		;ae82
 	jp nz,L_B058		;ae86
-	jp 0493dh		;ae89
+	jp 0493dh		;ae89   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 L_AE8C:
 	push ix		;ae8c
 	pop hl			;ae8e
 	inc hl			;ae8f
-	ld de,0ca00h		;ae90
+	ld de,0ca00h		;ae90   ; apunta a el estado de la partida
 L_AE93:
 	ld a,(hl)			;ae93
 	ld c,a			;ae94
@@ -1308,7 +1308,7 @@ L_AE93:
 	djnz L_AE93		;aea3
 	ret			;aea5
 L_AEA6:
-	call 04c0eh		;aea6
+	call 04c0eh		;aea6   ; bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
 	ld de,02000h		;aea9
 	add hl,de			;aeac
 	ld de,00040h		;aead
@@ -1401,7 +1401,7 @@ L_AF15:
 	pop de			;af1c
 	pop bc			;af1d
 	ld hl,0cb00h		;af1e
-	jp 0493dh		;af21
+	jp 0493dh		;af21   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 L_AF24:
 	push bc			;af24
 	push de			;af25
@@ -1470,7 +1470,7 @@ L_AF6E:
 	pop de			;af75
 	pop bc			;af76
 	ld hl,0cb00h		;af77
-	jp 0493dh		;af7a
+	jp 0493dh		;af7a   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 L_AF7D:
 	push bc			;af7d
 	push de			;af7e
@@ -1545,7 +1545,7 @@ L_AFCF:
 	pop de			;afd6
 	pop bc			;afd7
 	ld hl,0cb00h		;afd8
-	jp 0493dh		;afdb
+	jp 0493dh		;afdb   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 L_AFDE:
 	push bc			;afde
 	push de			;afdf
@@ -1621,7 +1621,7 @@ L_B038:
 	push bc			;b038
 	ex de,hl			;b039
 	xor a			;b03a
-	call 046f0h		;b03b
+	call 046f0h		;b03b   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	ex de,hl			;b03e
 	ld b,004h		;b03f
 L_B041:

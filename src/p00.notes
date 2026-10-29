@@ -57,3 +57,801 @@ D 0x5CD6 0x5CDF sin_leer_5CD6  ninguna partida de la campana lo lee (tools/cober
 D 0x5E4B 0x5E8A leido_5E4B  lo leen p00:5E2B, p00:5E2D, p00:5E2F, p00:5E31, p00:5E33, p00:5E35, p00:5E37, p00:5E39 jugando (tools/cobertura.py) (63 bytes)
 D 0x5E8A 0x5E8B sin_leer_5E8A  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (1 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x4033 arranque INIT del cartucho: pone el cartucho en la pagina 2 (ENASLT), borra la RAM 0xC000-0xF0EF y 0xD500-0xDCFF, la pila en 0xF0F0, el gancho H.KEYI a p00:4110 y salta a p00:42F2
+L 0x4083 gancho_de_partida pone el gancho H.KEYI en p00:4270 (la interrupcion con lineas)
+L 0x4100 vector_cuadro_de_partida jp p00:438E
+L 0x4103 vector_empieza_fase jp p00:4492
+L 0x4106 vector_vacio jp p00:4452, que es un ret
+L 0x4109 vector_4109 jp p00:458B
+L 0x4110 interrupcion el gancho H.KEYI: cuenta 0xC914, cada dos cuadros p00:4A6A, el fundido de p00:4D6E y, si no hay otro cuadro a medias (0xC906), guarda los bancos, llama a p00:4B4A con interrupciones y los devuelve
+L 0x414E lee_estado_vdp lee el registro de estado del VDP (el puerto de 0x0006 + 1): asi se da por atendida la interrupcion
+L 0x4158 interrupcion_y_reinicio la interrupcion de p00:4270 y, si el bit 4 de 0xC90A esta puesto y no hay cuadro a medias, vuelve al estado de 0xC945 con la pila de nuevo en 0xF0F0
+L 0x4189 lineas_del_vdp en el borde: manda la lista de registros de 0xC0AE (cuantos y los bytes, con otir) y la primera vez cambia de tablas (p00:41C2) y enciende la interrupcion de linea (bit 4 del registro 0)
+L 0x4197 manda_registros la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
+L 0x41C2 tablas_actuales las tablas de registros que tocan con 0xC09B
+L 0x41C7 cambia_tablas cambia de pagina (p00:41FA si 0xC0B5), sube 0xC09B y, segun su bit 0, apunta 0xC0A4, 0xC0AC y 0xC0AE a un juego de tablas o al otro
+L 0x41FA pon_pagina_vdp con 0xC0B4 escribe los registros 10, 3 y 4 del VDP (las tablas de colores y de patrones)
+L 0x4255 interrupcion_del_borde la interrupcion no era de linea: si el estado 0 dice que es el borde, p00:4189 y p00:4110
+L 0x4270 interrupcion_de_lineas el gancho en partida: si el estado 1 del VDP no dice linea, p00:4255; si dice, espera el borrado horizontal (estado 2, bit 5) y manda la lista de registros de 0xC0AC (la primera) o la de 0xC0A4 (la segunda)
+L 0x42F2 inicio borra fase, vidas y estado; pasa por los estados 1 y 2 al ritmo de 0xC914; pone el gancho de lineas, guarda la fase - 1 en 0xF0FC y las vidas en 0xF0FD, borra la RAM y sigue en p00:4357
+L 0x4357 bucle_principal cada vuelta: mandos (p00:4A7A, p00:4A58), reinicio con el bit 7 de 0xC90C, bancos 1-2-3 y p01:6000; luego espera a que 0xC914 pase de 0 (o de 2 desde el estado 2) contando las vueltas en 0xC915
+L 0x438E cuadro_de_partida la pausa y luego, apuntando en 0xF0FA por que paso va, las partes de la partida en los bancos 1, 9, 4, 2 y 7; acaba con p00:440F
+L 0x440F como_va_la_fase A = 2 si la fase esta acabada (0xCA0F), 1 si 0xCA40 es 0, 0 si sigue; si el byte 0x4032 no es 0xFF, el bit 3 de 0xC90C tambien acaba la fase
+L 0x4432 depuracion_vida con el bit 2 de 0xC90C sube 0xCA1E (0 a 5) y una vida
+L 0x4452 nada ret
+L 0x4453 pausa con el bit 0 de 0xC90C (y no en el estado 5 ni con 0xCA41): el sonido 0x82, espera a que se vuelva a pulsar y el sonido 0x81
+L 0x448B sube_ca02_y_cuadro sube 0xCA02 y sigue en el cuadro de partida (p00:4391)
+L 0x4492 empieza_fase segun A: 0 partida nueva, 1, 2 (resta 2 a 0xCB08) y 3 o mas; prepara la fase con p00:44E9 y lo que toque de los bancos 2 y 4
+L 0x44D9 vidas_al_empezar las vidas de 0xF0FD (o 2 si es 0) a 0xCB0F
+L 0x44E9 prepara_fase sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+L 0x453D prepara_banco_2 p02:8003 con los bancos 4-2-3
+L 0x4555 prepara_banco_2_b p02:8012 con los bancos 4-2-3
+L 0x456D llama_8018 p02:8018 con los bancos 4-2-3
+L 0x4577 llama_6018 p04:6018 con los bancos 4-2-3
+L 0x4581 llama_601B p04:601B con los bancos 4-2-3
+L 0x458B llama_6000_6012 p04:6000 y p04:6012 con los bancos 4-5-6 y luego los 9-10
+L 0x4598 borra_ca1e fuera del estado 5, 0xCA1E a 0
+L 0x4600 suma_a_hl HL = HL + A
+L 0x4605 suma_a_de DE = DE + A
+L 0x460A niega_de DE = -DE
+L 0x4612 niega_hl HL = -HL
+L 0x461A despachador salta a la entrada A de la tabla de direcciones que va detras del call
+L 0x4624 entrada_de_tabla_de HL = la palabra A de la tabla de DE
+L 0x462E entrada_de_tabla_hl HL = la palabra A de la tabla de HL (pasando por DE)
+L 0x4639 dos_palabras_de_tabla de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
+L 0x4648 borra_memoria pone a 0 BC + 1 bytes desde HL
+L 0x4649 llena_memoria pone A en BC + 1 bytes desde HL
+L 0x4650 compara_hl_de Z si HL = DE
+L 0x4656 cambia_ix_iy cambia IX por IY
+L 0x465F slot_del_cartucho el slot de la pagina 1 (RSLREG, EXPTBL y SLTTBL) en el formato de ENASLT
+L 0x4678 numero_al_azar A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+L 0x468E entrada_de_tabla HL = la palabra A de la tabla de HL
+L 0x4694 lee_palabra HL = la palabra que apunta HL
+L 0x4699 vuelve_quitando_4 quita 4 palabras de la pila y vuelve: no vuelve a quien llama sino mas atras
+L 0x469B vuelve_quitando_3 quita 3 palabras de la pila y vuelve
+L 0x469D vuelve_quitando_2 quita 2 palabras de la pila y vuelve
+L 0x469F vuelve_quitando_1 quita 1 palabra de la pila y vuelve
+L 0x46A2 vuelve ret
+L 0x46A3 vueltas_de_otir de BC a las vueltas de otir: B = C (bytes de la primera) y A = B, mas 1 si C no es 0
+L 0x46AB copia_a_vram_alta copia BC bytes de HL a la VRAM en DE, en los 64 KB altos
+L 0x46AC copia_a_vram_baja copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+L 0x46AD copia_a_vram copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
+L 0x46C0 llena_vram_alta pone A en BC bytes de la VRAM desde HL, en los 64 KB altos
+L 0x46C5 llena_vram_baja pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
+L 0x46E1 escribe_byte_vram pone A en la direccion HL de la VRAM (64 KB bajos)
+L 0x46F0 direccion_vram apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+L 0x4713 escribe_registro_vdp pone B en el registro C del VDP
+L 0x4725 prepara_vdp esconde los sprites, apaga la pantalla, borra la VRAM con una orden del VDP (p00:47FC), el registro 23 a 0 y enciende la pantalla
+L 0x473E enciende_pantalla el bit 6 del registro 1 (copia en 0xF3E0)
+L 0x474A nada_474A ret
+L 0x474B apaga_pantalla quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+L 0x4758 esconde_sprites pone 0xD8 (la Y que acaba la lista) en el primer sprite, en 0xF600 de la VRAM
+L 0x4760 apaga_sprites el bit 1 del registro 8 (copia en 0xFFE7)
+L 0x476B enciende_sprites quita el bit 1 del registro 8
+L 0x4776 pon_color el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+L 0x4790 paleta_inicial los 16 colores de la tabla p00:47A4
+L 0x47C4 lista_de_colores pone los colores de HL: [color][D][E] hasta un 0xFF
+L 0x47D2 espera_orden_vdp espera a que el VDP acabe su orden (estado 2, bit 0)
+L 0x47DC lee_estado_vdp_a lee el registro de estado A del VDP y deja el 0 puesto
+L 0x47FC orden_rellena orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+L 0x4838 orden_copia orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+L 0x487C orden_copia_logica orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
+L 0x48C8 pon_tablas_vdp guarda A en 0xFAF5 y escribe los registros 2, 10, 4, 11 y 6 del VDP mezclando A con las copias de 0xF3E1-0xF3E5
+L 0x490B copia_caracter copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
+L 0x4921 copia_rectangulo copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
+L 0x4933 copia_a_vram_segun_pagina copia BC bytes a la VRAM, en los 64 KB bajos si 0xC91B es 0 y en los altos si no
+L 0x493D copia_caracteres B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+L 0x4952 copia_bloque_16 copia 16 filas de 8 bytes de HL a la VRAM en DE (16 x 16 puntos)
+L 0x4967 escribe_texto el texto de HL: posicion D, E, letras (p00:4983) y 0xFE con otra posicion; 0xFF acaba
+L 0x496B borra_texto el mismo recorrido con cada letra a 0
+L 0x4983 pinta_letra copia la letra A de la fuente de la VRAM (p00:49CB) a D, E: orden HMMM de 8 x 8
+L 0x4995 pinta_letra_b igual que p00:4983
+L 0x49A7 pinta_letra_transparente la letra A con una copia logica (p00:487C, A = 0x48)
+L 0x49B9 pinta_letra_c la letra A con p00:4838 y A = 5
+L 0x49CB sitio_de_la_letra de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+L 0x49D9 avanza_8_puntos D + 8 y, si da la vuelta, E + 8
+L 0x49E3 prepara_arranque el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+L 0x4A1D lista_de_registros B parejas [registro][valor] de HL al VDP con WRTVDP
+L 0x4A58 teclas_de_funcion F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+L 0x4A63 recien_pulsadas guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
+L 0x4A6A mandos_del_cuadro lee los mandos (p00:4A8C) en 0xC909, lo recien pulsado en 0xC90A y lo junta en 0xC90B
+L 0x4A7A copia_mandos 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+L 0x4A8C lee_mandos el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
+L 0x4AC8 lee_teclas_de_funcion F1-F5 (filas 6 y 7 del teclado) en los bits 0-4
+L 0x4AE0 nada_4AE0 ret
+L 0x4AEB pide_sonido mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+L 0x4AF0 pide_sonido_b lo mismo con hasta 0x17 en la cola
+L 0x4AF5 pide_musica lo mismo con hasta 0x17 en la cola
+L 0x4B31 sonido_ahora con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
+L 0x4B4A sonido_del_cuadro bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso del sonido (p28:6006)
+L 0x4B5B manda_cola_de_sonidos cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+L 0x4B78 apaga_lineas borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+L 0x4B8F enciende_lineas 0xC940 = 1
+L 0x4B95 bancos_1_2_3 pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+L 0x4B99 bancos_4_5_6 pone el 4, el 5 y el 6
+L 0x4BB0 bancos_4_7_8 pone el 4, el 7 y el 8
+L 0x4BC8 bancos_28_29_30 pone el 28, el 29 y el 30 (el sonido)
+L 0x4BDF bancos_9_10 pone el 9 en 0x6000 y el 10 en 0x8000
+L 0x4BEF bancos_4_2_3 pone el 4, el 2 y el 3
+L 0x4C07 banco_en_6000 pone el banco A en 0x6000
+L 0x4C0E bancos_en_6000_8000 pone el banco A en 0x6000 y el A + 1 en 0x8000
+L 0x4C15 banco_en_8000 pone el banco A en 0x8000
+L 0x4C1C bancos_en_8000_A000 pone el banco A en 0x8000 y el A + 1 en 0xA000
+L 0x4C23 banco_en_A000 pone el banco A en 0xA000
+L 0x4C2A llamada_lejana lee detras del call los tres bancos y la direccion (5 bytes), los pone, llama y vuelve por p00:4C61 detras de los 5 bytes
+L 0x4C61 vuelta_de_llamada_lejana devuelve los bancos de antes de la llamada lejana
+L 0x4C7A paleta_a_negro apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+L 0x4C94 pon_colores_ya espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
+L 0x4CAF pon_color_ya un color de la lista: [rojo, azul][numero, verde] (cuatro nibbles) a su sitio en 0xEF00
+L 0x4CD0 componente_ya un componente (0-7) en el formato de 0xEF00, en las dos casillas
+L 0x4CDC prepara_paleta_ya 0xEF60 a 0 y p00:4CE0
+L 0x4CE0 prepara_paleta espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+L 0x4CF5 empieza_fundido 0xEF60 = 0x20: 32 pasos de fundido
+L 0x4D01 color_de_destino un color de la lista como destino del fundido (p00:4D46 con cada componente)
+L 0x4D27 fundido_a_negro los 16 colores con destino 0 y empieza el fundido
+L 0x4D2B fundido_a_blanco los 16 colores con destino 7 y empieza el fundido
+L 0x4D46 componente_de_destino apunta en 0xEF00 un componente de destino y lo que le falta
+L 0x4D5F dos_nibbles B = el nibble alto de (HL) y C el bajo; HL + 1
+L 0x4D6E paso_de_fundido desde la interrupcion: si 0xEF60 cuenta, un paso de todos los colores (p00:4E14), los manda y al acabar los fija (p00:4D84)
+L 0x4D84 fija_paleta copia los 48 componentes de destino a los actuales
+L 0x4D99 limpia_destinos marca los 48 componentes como sin cambio
+L 0x4DA9 manda_paleta los 16 colores de 0xEF00 al VDP (p00:4776)
+L 0x4DD7 manda_paleta_clara los 16 colores con cada componente mas claro (p00:4E0E)
+L 0x4E0E aclara el componente A + 4, sin pasar de 7
+L 0x4E14 paso_de_colores suma a cada componente de 0xEF00 su paso
+L 0x4E37 casilla_del_borde la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+L 0x4E3A casilla_mas_scroll la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+L 0x4E4A casilla_del_scroll la casilla de 0xC0CD, 0xC0CC
+L 0x4E4E sitio_en_el_mapa HL = 0xE000 + 64 x (E and 0x1F) + (D and 0x3F): la casilla D, E del mapa de 64 x 32 de la RAM
+L 0x4E65 pon_c0d8_4 0xC0D8 = 4
+L 0x4E6B registro_6 el registro 6 del VDP (patrones de los sprites) = A + 0x19
+L 0x4E73 pon_c0d4_1 0xC0D4 = 1
+L 0x4E79 tramo_de_a A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+L 0x4E82 trozo_de_vram_4 la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
+L 0x4E8A trozo_de_vram HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
+L 0x4EA9 pagina_del_trozo si A >= 12, A - 12 y C = 0xFF; si no, C = 0
+L 0x4F00 arranca_tipo_0F la puesta en marcha del actor del tipo 0x0F (tabla p04:6360, desde p04:6344)
+L 0x4F0D arranca_tipo_0D la puesta en marcha del actor del tipo 0x0D (tabla p04:6360, desde p04:6344)
+L 0x4F1C arranca_tipo_0E la puesta en marcha del actor del tipo 0x0E (tabla p04:6360, desde p04:6344)
+L 0x4F33 mueve_tipo_0E lo que hace en cada cuadro el actor del tipo 0x0E (tabla p04:64D1, desde p04:64B9)
+L 0x4FF1 mueve_tipo_21 lo que hace en cada cuadro el actor del tipo 0x21 (tabla p04:64D1, desde p04:64B9)
+L 0x500A arranca_tipo_21 la puesta en marcha del actor del tipo 0x21 (tabla p04:6360, desde p04:6344)
+L 0x50CD arranca_tipo_03 la puesta en marcha del actor del tipo 0x03 (tabla p04:6360, desde p04:6344)
+L 0x50D0 mueve_tipo_03 lo que hace en cada cuadro el actor del tipo 0x03 (tabla p04:64D1, desde p04:64B9)
+L 0x5104 arranca_tipo_01 la puesta en marcha del actor de 11 tipos, entre el 0x01 y el 0x0C (tabla p04:6360, desde p04:6344)
+L 0x5111 mueve_tipo_01 lo que hace en cada cuadro el actor de 11 tipos, entre el 0x01 y el 0x0C (tabla p04:64D1, desde p04:64B9)
+L 0x5112 mueve_tipo_68 lo que hace en cada cuadro el actor del tipo 0x68 (tabla p04:64D1, desde p04:64B9)
+L 0x511E arranca_tipo_68 la puesta en marcha del actor del tipo 0x68 (tabla p04:6360, desde p04:6344)
+L 0x514C mueve_tipo_37 lo que hace en cada cuadro el actor del tipo 0x37 (tabla p04:64D1, desde p04:64B9)
+L 0x5161 arranca_tipo_37 la puesta en marcha del actor del tipo 0x37 (tabla p04:6360, desde p04:6344)
+L 0x5288 mueve_tipo_10 lo que hace en cada cuadro el actor del tipo 0x10 (tabla p04:64D1, desde p04:64B9)
+L 0x5291 arranca_tipo_10 la puesta en marcha del actor del tipo 0x10 (tabla p04:6360, desde p04:6344)
+L 0x52F4 mueve_tipo_11 lo que hace en cada cuadro el actor del tipo 0x11 (tabla p04:64D1, desde p04:64B9)
+L 0x5305 arranca_tipo_11 la puesta en marcha del actor del tipo 0x11 (tabla p04:6360, desde p04:6344)
+L 0x534E mueve_tipo_12 lo que hace en cada cuadro el actor del tipo 0x12 (tabla p04:64D1, desde p04:64B9)
+L 0x535A arranca_tipo_12 la puesta en marcha del actor del tipo 0x12 (tabla p04:6360, desde p04:6344)
+L 0x53BB arranca_tipo_13 la puesta en marcha del actor del tipo 0x13 (tabla p04:6360, desde p04:6344)
+L 0x53C4 mueve_tipo_13 lo que hace en cada cuadro el actor del tipo 0x13 (tabla p04:64D1, desde p04:64B9)
+L 0x542C mueve_tipo_16 lo que hace en cada cuadro el actor del tipo 0x16 (tabla p04:64D1, desde p04:64B9)
+L 0x5438 arranca_tipo_16 la puesta en marcha del actor del tipo 0x16 (tabla p04:6360, desde p04:6344)
+L 0x54C1 mueve_tipo_18 lo que hace en cada cuadro el actor del tipo 0x18 (tabla p04:64D1, desde p04:64B9)
+L 0x54C9 arranca_tipo_18 la puesta en marcha del actor del tipo 0x18 (tabla p04:6360, desde p04:6344)
+L 0x557C mueve_tipo_19 lo que hace en cada cuadro el actor del tipo 0x19 (tabla p04:64D1, desde p04:64B9)
+L 0x5592 arranca_tipo_19 la puesta en marcha del actor del tipo 0x19 (tabla p04:6360, desde p04:6344)
+L 0x5763 mueve_tipo_1A lo que hace en cada cuadro el actor del tipo 0x1A (tabla p04:64D1, desde p04:64B9)
+L 0x576C arranca_tipo_1A la puesta en marcha del actor del tipo 0x1A (tabla p04:6360, desde p04:6344)
+L 0x58F0 mueve_tipo_55 lo que hace en cada cuadro el actor del tipo 0x55 (tabla p04:64D1, desde p04:64B9)
+L 0x5911 arranca_tipo_55 la puesta en marcha del actor del tipo 0x55 (tabla p04:6360, desde p04:6344)
+L 0x5A84 mueve_tipo_42 lo que hace en cada cuadro el actor del tipo 0x42 (tabla p04:64D1, desde p04:64B9)
+L 0x5A8A arranca_tipo_42 la puesta en marcha del actor del tipo 0x42 (tabla p04:6360, desde p04:6344)
+L 0x5AA2 mueve_tipo_50 lo que hace en cada cuadro el actor del tipo 0x50 (tabla p04:64D1, desde p04:64B9)
+L 0x5AA8 arranca_tipo_50 la puesta en marcha del actor del tipo 0x50 (tabla p04:6360, desde p04:6344)
+L 0x5B19 mueve_tipo_60 lo que hace en cada cuadro el actor del tipo 0x60 (tabla p04:64D1, desde p04:64B9)
+L 0x5B2A arranca_tipo_60 la puesta en marcha del actor del tipo 0x60 (tabla p04:6360, desde p04:6344)
+L 0x5B2B mueve_tipo_47 lo que hace en cada cuadro el actor del tipo 0x47 (tabla p04:64D1, desde p04:64B9)
+L 0x5B31 arranca_tipo_47 la puesta en marcha del actor del tipo 0x47 (tabla p04:6360, desde p04:6344)
+L 0x5BB5 arranca_tipo_1B la puesta en marcha del actor del tipo 0x1B (tabla p04:6360, desde p04:6344)
+L 0x5BC2 mueve_tipo_1B lo que hace en cada cuadro el actor del tipo 0x1B (tabla p04:64D1, desde p04:64B9)
+L 0x5CDF arranca_tipo_31 la puesta en marcha del actor del tipo 0x31 (tabla p04:6360, desde p04:6344)
+L 0x5CF3 mueve_tipo_31 lo que hace en cada cuadro el actor del tipo 0x31 (tabla p04:64D1, desde p04:64B9)
+L 0x5D8A arranca_tipo_65 la puesta en marcha del actor del tipo 0x65 (tabla p04:6360, desde p04:6344)
+L 0x5DA0 mueve_tipo_65 lo que hace en cada cuadro el actor del tipo 0x65 (tabla p04:64D1, desde p04:64B9)
+C 0x4070 el banco de 0x4000 (no se cambia)
+C 0x4080 inicio: borra fase, vidas y estado; pasa por los estados 1 y 2 al ritmo de 0xC914; pone el gancho de lineas, guarda la fase - 1 en 0xF0FC y las vidas en 0xF0FD, borra la RAM y sigue en p00:4357
+C 0x4100 cuadro_de_partida: la pausa y luego, apuntando en 0xF0FA por que paso va, las partes de la partida en los bancos 1, 9, 4, 2 y 7; acaba con p00:440F
+C 0x4103 empieza_fase: segun A: 0 partida nueva, 1, 2 (resta 2 a 0xCB08) y 3 o mas; prepara la fase con p00:44E9 y lo que toque de los bancos 2 y 4
+C 0x4106 nada: ret
+C 0x4109 llama_6000_6012: p04:6000 y p04:6012 con los bancos 4-5-6 y luego los 9-10
+C 0x4110 apunta a la cuenta de interrupciones del cuadro
+C 0x4116 mandos_del_cuadro: lee los mandos (p00:4A8C) en 0xC909, lo recien pulsado en 0xC90A y lo junta en 0xC90B
+C 0x4119 paso_de_fundido: desde la interrupcion: si 0xEF60 cuenta, un paso de todos los colores (p00:4E14), los manda y al acabar los fija (p00:4D84)
+C 0x411C apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x4123 lee_estado_vdp: lee el registro de estado del VDP (el puerto de 0x0006 + 1): asi se da por atendida la interrupcion
+C 0x4126 lee el banco de 0x4000 (no se cambia) y el byte siguiente (16 bits)
+C 0x412A lee la copia del banco de 0x8000 y el byte siguiente (16 bits)
+C 0x4131 sonido_del_cuadro: bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso del sonido (p28:6006)
+C 0x4136 guarda la copia del banco de 0x8000 y el byte siguiente (16 bits)
+C 0x413A guarda el banco de 0x4000 (no se cambia) y el byte siguiente (16 bits)
+C 0x413F el mapper: pone en 0x6000 el banco de A
+C 0x4143 el mapper: pone en 0x8000 el banco de A
+C 0x4147 el mapper: pone en 0xA000 el banco de A
+C 0x414B guarda 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x4158 interrupcion_de_lineas: el gancho en partida: si el estado 1 del VDP no dice linea, p00:4255; si dice, espera el borrado horizontal (estado 2, bit 5) y manda la lista de registros de 0xC0AC (la primera) o la de 0xC0A4 (la segunda)
+C 0x415B lee los mandos recien pulsados
+C 0x4162 lee 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x416B guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida) y el byte siguiente (16 bits)
+C 0x416F gancho_de_partida: pone el gancho H.KEYI en p00:4270 (la interrupcion con lineas)
+C 0x4172 el banco de 0x4000 (no se cambia)
+C 0x4175 paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+C 0x4178 apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+C 0x417B apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x4180 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x4183 sonido_ahora: con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
+C 0x4186 bucle_principal: cada vuelta: mandos (p00:4A7A, p00:4A58), reinicio con el bit 7 de 0xC90C, bancos 1-2-3 y p01:6000; luego espera a que 0xC914 pase de 0 (o de 2 desde el estado 2) contando las vueltas en 0xC915
+C 0x4189 lee el estado de las interrupciones de linea (0 apagadas)
+C 0x4194 cambia_tablas: cambia de pagina (p00:41FA si 0xC0B5), sube 0xC09B y, segun su bit 0, apunta 0xC0A4, 0xC0AC y 0xC0AE a un juego de tablas o al otro
+C 0x41A7 tablas_actuales: las tablas de registros que tocan con 0xC09B
+C 0x41AA manda_registros: la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
+C 0x41BD apunta a el estado de las interrupciones de linea (0 apagadas)
+C 0x41CB pon_pagina_vdp: con 0xC0B4 escribe los registros 10, 3 y 4 del VDP (las tablas de colores y de patrones)
+C 0x4200 trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
+C 0x4262 lineas_del_vdp: en el borde: manda la lista de registros de 0xC0AE (cuantos y los bytes, con otir) y la primera vez cambia de tablas (p00:41C2) y enciende la interrupcion de linea (bit 4 del registro 0)
+C 0x426D interrupcion: el gancho H.KEYI: cuenta 0xC914, cada dos cuadros p00:4A6A, el fundido de p00:4D6E y, si no hay otro cuadro a medias (0xC906), guarda los bancos, llama a p00:4B4A con interrupciones y los devuelve
+C 0x42F4 guarda la fase con la que empieza la partida
+C 0x42F7 guarda las vidas con las que se sigue
+C 0x42FA guarda la fase (0 a 8; 9 el final)
+C 0x42FD guarda la cuenta de interrupciones del cuadro
+C 0x4300 guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x4303 guarda las vidas, en BCD
+C 0x4307 lee la cuenta de interrupciones del cuadro
+C 0x4310 guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x4313 lee la cuenta de interrupciones del cuadro
+C 0x431C guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x431F lee la cuenta de interrupciones del cuadro
+C 0x4333 guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x4336 lee la fase (0 a 8; 9 el final)
+C 0x433D guarda la fase con la que empieza la partida
+C 0x4340 lee las vidas, en BCD
+C 0x4343 guarda las vidas con las que se sigue
+C 0x4353 prepara_arranque: el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+C 0x4358 guarda la cuenta de interrupciones del cuadro
+C 0x435B copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+C 0x435E teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+C 0x4361 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x4368 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4370 guarda 1: hay que mandar la cola de sonidos
+C 0x4373 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x437E apunta a la cuenta de interrupciones del cuadro
+C 0x4388 guarda las vueltas de espera del bucle principal y el byte siguiente (16 bits)
+C 0x438E pausa: con el bit 0 de 0xC90C (y no en el estado 5 ni con 0xCA41): el sonido 0x82, espera a que se vuelva a pulsar y el sonido 0x81
+C 0x4392 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x4398 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x439F apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43A5 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
+C 0x43AC apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43B2 bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x43B6 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43BC bancos_4_5_6: pone el 4, el 5 y el 6
+C 0x43BF vector_actores_del_cuadro: jp p04:601E
+C 0x43C3 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43C9 vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
+C 0x43CC bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x43D0 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43E1 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43E7 bancos_4_7_8: pone el 4, el 7 y el 8
+C 0x43EE apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x43F4 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
+C 0x43FB apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x4401 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4405 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x440B como_va_la_fase: A = 2 si la fase esta acabada (0xCA0F), 1 si 0xCA40 es 0, 0 si sigue; si el byte 0x4032 no es 0xFF, el bit 3 de 0xC90C tambien acaba la fase
+C 0x440F lee distinto de 0: la fase esta acabada
+C 0x4416 lee la nave: su ficha de actor (0 = muerta)
+C 0x4423 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x4432 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x4444 lee las vidas, en BCD
+C 0x444A guarda las vidas, en BCD
+C 0x444F vuelve_quitando_1: quita 1 palabra de la pila y vuelve
+C 0x4453 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x445E lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x4466 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x4469 sonido_ahora: con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
+C 0x446C copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+C 0x446F teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+C 0x447A lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x4487 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x449C borra_ca1e: fuera del estado 5, 0xCA1E a 0
+C 0x449F prepara_fase: sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+C 0x44A2 prepara_banco_2: p02:8003 con los bancos 4-2-3
+C 0x44A5 vidas_al_empezar: las vidas de 0xF0FD (o 2 si es 0) a 0xCB0F
+C 0x44A8 llama_6018: p04:6018 con los bancos 4-2-3
+C 0x44AC prepara_fase: sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+C 0x44AF llama_8018: p02:8018 con los bancos 4-2-3
+C 0x44C2 prepara_fase: sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+C 0x44C5 prepara_banco_2: p02:8003 con los bancos 4-2-3
+C 0x44C8 vidas_al_empezar: las vidas de 0xF0FD (o 2 si es 0) a 0xCB0F
+C 0x44CF borra_ca1e: fuera del estado 5, 0xCA1E a 0
+C 0x44D2 prepara_fase: sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+C 0x44D5 prepara_banco_2_b: p02:8012 con los bancos 4-2-3
+C 0x44D9 lee las vidas con las que se sigue
+C 0x44E1 guarda las vidas, en BCD
+C 0x44E5 guarda las vidas con las que se sigue
+C 0x44F4 vector_vacio: jp p00:4452, que es un ret
+C 0x44F8 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x44FE bancos_4_5_6: pone el 4, el 5 y el 6
+C 0x4501 vector_borra_actores: jp p04:60B4
+C 0x4505 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x450B bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x450E vector_prepara_guion: jp p04:6214
+C 0x4512 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x4518 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
+C 0x451E bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4526 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x4529 sonido_ahora: con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
+C 0x452C bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x452F lee la fase (0 a 8; 9 el final)
+C 0x4535 suma_a_hl: HL = HL + A
+C 0x4539 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x453E apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x4544 bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x454A bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x454E apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x4556 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x455C bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x4562 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4566 apunta a por que paso va el cuadro de partida (p00:438E)
+C 0x456D bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x4573 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4577 bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x457A vector_7DE4: jp p04:7DE4
+C 0x457D bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4581 bancos_4_2_3: pone el 4, el 2 y el 3
+C 0x4584 vector_7DF1: jp p04:7DF1
+C 0x4587 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x458B bancos_4_5_6: pone el 4, el 5 y el 6
+C 0x458E vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
+C 0x4591 vector_actores_con_el_scroll: jp p04:62CB
+C 0x4594 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
+C 0x4598 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
+C 0x461C suma_a_hl: HL = HL + A
+C 0x467A lee el numero al azar: B y C de p00:4678 y el byte siguiente (16 bits)
+C 0x4687 guarda el numero al azar: B y C de p00:4678 y el byte siguiente (16 bits)
+C 0x46AE direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x46B1 vueltas_de_otir: de BC a las vueltas de otir: B = C (bytes de la primera) y A = B, mas 1 si C no es 0
+C 0x46CA direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x46E4 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x4725 esconde_sprites: pone 0xD8 (la Y que acaba la lista) en el primer sprite, en 0xF600 de la VRAM
+C 0x4728 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x4734 orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x475D escribe_byte_vram: pone A en la direccion HL de la VRAM (64 KB bajos)
+C 0x479C pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x47CD pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x47D4 lee_estado_vdp_a: lee el registro de estado A del VDP y deja el 0 puesto
+C 0x47D8 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x47FD espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x4839 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x487D espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x4913 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+C 0x4925 copia_a_vram_segun_pagina: copia BC bytes a la VRAM, en los 64 KB bajos si 0xC91B es 0 y en los altos si no
+C 0x4937 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+C 0x493A copia_a_vram_alta: copia BC bytes de HL a la VRAM en DE, en los 64 KB altos
+C 0x493E copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
+C 0x4959 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+C 0x497A pinta_letra: copia la letra A de la fuente de la VRAM (p00:49CB) a D, E: orden HMMM de 8 x 8
+C 0x4986 sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+C 0x498E orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x4998 sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+C 0x49A0 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x49AA sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+C 0x49B2 orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
+C 0x49BC sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+C 0x49C4 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0x49E3 bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
+C 0x49EB bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x49F0 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x49FB lista_de_registros: B parejas [registro][valor] de HL al VDP con WRTVDP
+C 0x49FE paleta_inicial: los 16 colores de la tabla p00:47A4
+C 0x4A01 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
+C 0x4A0A orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x4A14 orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0x4A17 enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0x4A1A apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
+C 0x4A1F espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0x4A58 lee_teclas_de_funcion: F1-F5 (filas 6 y 7 del teclado) en los bits 0-4
+C 0x4A5B apunta a las teclas F1-F5
+C 0x4A6A lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
+C 0x4A6D apunta a los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
+C 0x4A7B lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
+C 0x4A7E guarda copia de los mandos de 0xC909
+C 0x4A81 apunta a los mandos pulsados desde la ultima copia
+C 0x4A87 guarda lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x4B04 apunta a cuantos sonidos hay en la cola (detras, los numeros)
+C 0x4B27 apunta a cuantos sonidos hay en la cola (detras, los numeros)
+C 0x4B31 apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x4B36 bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
+C 0x4B39 apunta a 1: hay que mandar la cola de sonidos
+C 0x4B3E manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+C 0x4B44 apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x4B4A bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
+C 0x4B4D apunta a 1: hay que mandar la cola de sonidos
+C 0x4B54 manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+C 0x4B5B apunta a cuantos sonidos hay en la cola (detras, los numeros)
+C 0x4B6F apunta a cuantos sonidos hay en la cola (detras, los numeros)
+C 0x4B75 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x4B79 apunta a el estado de las interrupciones de linea (0 apagadas)
+C 0x4B7F borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x4B91 guarda el estado de las interrupciones de linea (0 apagadas)
+C 0x4B9B guarda la copia del banco de 0x6000
+C 0x4B9E el mapper: pone en 0x6000 el banco de A
+C 0x4BA2 guarda la copia del banco de 0x8000
+C 0x4BA5 el mapper: pone en 0x8000 el banco de A
+C 0x4BA9 guarda la copia del banco de 0xA000
+C 0x4BAC el mapper: pone en 0xA000 el banco de A
+C 0x4BB2 guarda la copia del banco de 0x6000
+C 0x4BB5 el mapper: pone en 0x6000 el banco de A
+C 0x4BBA guarda la copia del banco de 0x8000
+C 0x4BBD el mapper: pone en 0x8000 el banco de A
+C 0x4BC1 guarda la copia del banco de 0xA000
+C 0x4BC4 el mapper: pone en 0xA000 el banco de A
+C 0x4BCA guarda la copia del banco de 0x6000
+C 0x4BCD el mapper: pone en 0x6000 el banco de A
+C 0x4BD1 guarda la copia del banco de 0x8000
+C 0x4BD4 el mapper: pone en 0x8000 el banco de A
+C 0x4BD8 guarda la copia del banco de 0xA000
+C 0x4BDB el mapper: pone en 0xA000 el banco de A
+C 0x4BE1 guarda la copia del banco de 0x6000
+C 0x4BE4 el mapper: pone en 0x6000 el banco de A
+C 0x4BE8 guarda la copia del banco de 0x8000
+C 0x4BEB el mapper: pone en 0x8000 el banco de A
+C 0x4BF1 guarda la copia del banco de 0x6000
+C 0x4BF4 el mapper: pone en 0x6000 el banco de A
+C 0x4BF9 guarda la copia del banco de 0x8000
+C 0x4BFC el mapper: pone en 0x8000 el banco de A
+C 0x4C00 guarda la copia del banco de 0xA000
+C 0x4C03 el mapper: pone en 0xA000 el banco de A
+C 0x4C07 guarda la copia del banco de 0x6000
+C 0x4C0A el mapper: pone en 0x6000 el banco de A
+C 0x4C0E guarda la copia del banco de 0x6000
+C 0x4C11 el mapper: pone en 0x6000 el banco de A
+C 0x4C15 guarda la copia del banco de 0x8000
+C 0x4C18 el mapper: pone en 0x8000 el banco de A
+C 0x4C1C guarda la copia del banco de 0x8000
+C 0x4C1F el mapper: pone en 0x8000 el banco de A
+C 0x4C23 guarda la copia del banco de 0xA000
+C 0x4C26 el mapper: pone en 0xA000 el banco de A
+C 0x4C32 lee la copia del banco de 0x6000
+C 0x4C36 lee la copia del banco de 0x8000 y el byte siguiente (16 bits)
+C 0x4C3F guarda la copia del banco de 0x6000
+C 0x4C46 guarda la copia del banco de 0x8000 y el byte siguiente (16 bits)
+C 0x4C4E el mapper: pone en 0x6000 el banco de A
+C 0x4C52 el mapper: pone en 0x8000 el banco de A
+C 0x4C56 el mapper: pone en 0xA000 el banco de A
+C 0x4C64 guarda la copia del banco de 0x8000 y el byte siguiente (16 bits)
+C 0x4C69 el mapper: pone en 0x8000 el banco de A
+C 0x4C6D el mapper: pone en 0xA000 el banco de A
+C 0x4C71 guarda la copia del banco de 0x6000
+C 0x4C74 el mapper: pone en 0x6000 el banco de A
+C 0x4C7A apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0x4C7E apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4C81 apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4C89 llena_memoria: pone A en BC + 1 bytes desde HL
+C 0x4C8C manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
+C 0x4C8F enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0x4C94 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CA1 pon_color_ya: un color de la lista: [rojo, azul][numero, verde] (cuatro nibbles) a su sitio en 0xEF00
+C 0x4CA7 manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
+C 0x4CAB guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CAF dos_nibbles: B = el nibble alto de (HL) y C el bajo; HL + 1
+C 0x4CB3 dos_nibbles: B = el nibble alto de (HL) y C el bajo; HL + 1
+C 0x4CBC apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4CBF suma_a_hl: HL = HL + A
+C 0x4CC3 componente_ya: un componente (0-7) en el formato de 0xEF00, en las dos casillas
+C 0x4CC7 componente_ya: un componente (0-7) en el formato de 0xEF00, en las dos casillas
+C 0x4CCB componente_ya: un componente (0-7) en el formato de 0xEF00, en las dos casillas
+C 0x4CDD guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CE0 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CF1 guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CF7 guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4CFB color_de_destino: un color de la lista como destino del fundido (p00:4D46 con cada componente)
+C 0x4CFE prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x4D02 limpia_destinos: marca los 48 componentes como sin cambio
+C 0x4D06 dos_nibbles: B = el nibble alto de (HL) y C el bajo; HL + 1
+C 0x4D0A dos_nibbles: B = el nibble alto de (HL) y C el bajo; HL + 1
+C 0x4D13 apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4D16 suma_a_hl: HL = HL + A
+C 0x4D1A componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D1E componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D22 componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D2F apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4D36 componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D3A componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D3E componente_de_destino: apunta en 0xEF00 un componente de destino y lo que le falta
+C 0x4D6E lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4D76 paso_de_colores: suma a cada componente de 0xEF00 su paso
+C 0x4D79 manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
+C 0x4D7D guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x4D80 fija_paleta: copia los 48 componentes de destino a los actuales
+C 0x4D87 apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4DCE pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x4DE0 aclara: el componente A + 4, sin pasar de 7
+C 0x4DEA aclara: el componente A + 4, sin pasar de 7
+C 0x4DF6 aclara: el componente A + 4, sin pasar de 7
+C 0x4E05 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x4E16 apunta a la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)
+C 0x4E8A pagina_del_trozo: si A >= 12, A - 12 y C = 0xFF; si no, C = 0
+C 0x4F00 lee el paso del actor
+C 0x4F04 guarda el paso del actor
+C 0x4F0D lee el paso del actor
+C 0x4F24 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x32
+C 0x4F28 lee la Y del actor (en caracteres de 8 puntos)
+C 0x4F3C pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4F46 guarda el dibujo del actor (p04:7791)
+C 0x4F51 el paso del actor = 0x04
+C 0x4F58 lee el paso del actor
+C 0x4F60 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x4F71 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4F78 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
+C 0x4F7E pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4F81 suma 1 a el paso del actor
+C 0x4F85 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4F8C una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
+C 0x4F92 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4FA4 lee la Y del actor (en caracteres de 8 puntos)
+C 0x4FAA guarda la Y del actor (en caracteres de 8 puntos)
+C 0x4FB1 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x4FB5 lee la X del actor (en caracteres de 8 puntos)
+C 0x4FBB guarda la X del actor (en caracteres de 8 puntos)
+C 0x4FBE apunta a la nave: su ficha de actor (0 = muerta)
+C 0x4FC2 dispara_cerca_de_la_nave: una bala hacia la nave (p04:714A) con la Y y la X de la nave movidas al azar hasta 4 puntos
+C 0x4FC6 guarda la X del actor (en caracteres de 8 puntos)
+C 0x4FCA pone a cero el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x4FD3 lee el dibujo del actor (p04:7791)
+C 0x4FF1 lee el paso del actor
+C 0x4FF9 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5010 el paso del actor = 0x05
+C 0x5015 guarda las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5019 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5026 lee la X del actor (en caracteres de 8 puntos)
+C 0x502C pone a uno el bit 1 de el dibujo del actor (p04:7791)
+C 0x503D apunta a la nave: su ficha de actor (0 = muerta)
+C 0x505A suma_a_hl: HL = HL + A
+C 0x5067 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0A
+C 0x506B suma 1 a el paso del actor
+C 0x506F resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x5073 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0E
+C 0x5088 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x508B la X del actor (en caracteres de 8 puntos) = 0x1F
+C 0x508F una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
+C 0x50AA niega_de: DE = -DE
+C 0x50B1 niega_hl: HL = -HL
+C 0x50D0 lee el paso del actor
+C 0x50EA suma 1 a el paso del actor
+C 0x50ED mira_cc01: el siguiente valor de 0xCC01 (p04:7024), ix+3 y el ix+6 de la tabla p04:7049
+C 0x50FD vuelve_quitando_1: quita 1 palabra de la pila y vuelve
+C 0x5104 apunta a cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)
+C 0x5108 el tipo del actor (0 = libre) = 0x00
+C 0x510C las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x00
+C 0x5112 lee el paso del actor
+C 0x5121 pon_aceleracion_y: la aceleracion en Y = HL
+C 0x5124 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x04
+C 0x512B acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
+C 0x514C lee el paso del actor
+C 0x5154 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5161 lee las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5166 guarda las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x516C guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5172 guarda la X del actor (en caracteres de 8 puntos)
+C 0x5177 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x00
+C 0x5182 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x00
+C 0x518B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
+C 0x518F otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x00
+C 0x5193 el paso del actor = 0x02
+C 0x519B el paso del actor = 0x03
+C 0x51A8 el paso del actor = 0x04
+C 0x51BA otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x03
+C 0x51C8 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x02
+C 0x51E0 lee una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x51E3 le suma otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x51E6 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x51FA resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x520E lee una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5214 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5224 guarda la Y del actor (fraccion: 32 por punto)
+C 0x5227 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x522A lee una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x523A guarda la X del actor (fraccion: 32 por punto)
+C 0x523D guarda la X del actor (en caracteres de 8 puntos)
+C 0x5240 lee el dibujo del actor (p04:7791)
+C 0x5246 guarda el dibujo del actor (p04:7791)
+C 0x5249 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5273 niega_hl: HL = -HL
+C 0x5288 lee el paso del actor
+C 0x529E guarda la Y del actor (en caracteres de 8 puntos)
+C 0x52A3 guarda la X del actor (en caracteres de 8 puntos)
+C 0x52A6 lee la Y de la nave
+C 0x52A9 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x52C2 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x52D4 lee la X de la nave
+C 0x52DC le resta la X del actor (en caracteres de 8 puntos)
+C 0x52E6 suma 1 a el paso del actor
+C 0x52F9 lee el paso del actor
+C 0x5305 lee la Y del actor (en caracteres de 8 puntos)
+C 0x530A guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5313 pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5329 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x5330 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x533A le resta la Y del actor (en caracteres de 8 puntos)
+C 0x5346 el paso del actor = 0x01
+C 0x534A suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x534E lee el paso del actor
+C 0x536F una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
+C 0x537E lee la X del actor (en caracteres de 8 puntos)
+C 0x5386 lee la Y del actor (en caracteres de 8 puntos)
+C 0x53BB la X del actor (en caracteres de 8 puntos) = 0x14
+C 0x53BF la Y del actor (en caracteres de 8 puntos) = 0x10
+C 0x53C4 lee el paso del actor
+C 0x53D9 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x0A
+C 0x53E3 suma 1 a el paso del actor
+C 0x53EF suma 1 a el paso del actor
+C 0x53F2 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x53FE niega_hl: HL = -HL
+C 0x5410 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x16
+C 0x5419 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x541D el paso del actor = 0x00
+C 0x542C lee el paso del actor
+C 0x5447 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
+C 0x544B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0xC0
+C 0x544F pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5460 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x5472 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x18
+C 0x5486 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x54BE dispara_a_la_nave: si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
+C 0x54C1 lee el paso del actor
+C 0x54FB una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x17
+C 0x5502 dibujo_por_fase: el dibujo del actor (ix+5) de la tabla de DE por la fase
+C 0x5531 compara_velocidad_y: Z si el valor absoluto de la velocidad en Y es DE
+C 0x5540 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x17
+C 0x5554 lee la X del actor (en caracteres de 8 puntos)
+C 0x5561 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x557C lee el paso del actor
+C 0x557F despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5598 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x559E guarda la X del actor (en caracteres de 8 puntos)
+C 0x55B2 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
+C 0x55DC guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x560A una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
+C 0x5612 guarda el paso del actor
+C 0x5638 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x5663 lee la aceleracion en Y del actor (baja)
+C 0x5666 lee la aceleracion en Y del actor (alta)
+C 0x5669 lee la velocidad en Y del actor (baja)
+C 0x566C lee la velocidad en Y del actor (alta)
+C 0x5678 compara_hl_de: Z si HL = DE
+C 0x5681 guarda la velocidad en Y del actor (baja)
+C 0x5684 guarda la velocidad en Y del actor (alta)
+C 0x5688 lee la X del actor (en caracteres de 8 puntos)
+C 0x568C lee la Y del actor (en caracteres de 8 puntos)
+C 0x5697 guarda la Y del actor (fraccion: 32 por punto)
+C 0x569B suma 1 a la Y del actor (en caracteres de 8 puntos)
+C 0x56D0 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x56F0 el dibujo del actor (p04:7791) = 0x04
+C 0x571A lee el dibujo del actor (p04:7791)
+C 0x571F guarda el dibujo del actor (p04:7791)
+C 0x572B guarda el dibujo del actor (p04:7791)
+C 0x574E le suma la Y del actor (en caracteres de 8 puntos)
+C 0x5754 le suma la X del actor (en caracteres de 8 puntos)
+C 0x5763 lee el paso del actor
+C 0x577C suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x57B5 guarda la velocidad en Y del actor (baja)
+C 0x57BA guarda la velocidad en Y del actor (alta)
+C 0x57BF guarda la velocidad en X del actor (baja)
+C 0x57C4 guarda la velocidad en X del actor (alta)
+C 0x57DC pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x5805 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x10
+C 0x5833 guarda el dibujo del actor (p04:7791)
+C 0x5840 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5843 lee la X del actor (en caracteres de 8 puntos)
+C 0x5866 lee la X del actor (fraccion: 32 por punto)
+C 0x586A lee la X del actor (en caracteres de 8 puntos)
+C 0x5874 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5883 bancos_4_7_8: pone el 4, el 7 y el 8
+C 0x5889 bancos_4_5_6: pone el 4, el 5 y el 6
+C 0x58BC lee la Y del actor (en caracteres de 8 puntos)
+C 0x58E2 lee la Y del actor (en caracteres de 8 puntos)
+C 0x58E5 lee la X del actor (en caracteres de 8 puntos)
+C 0x58FF lee el paso del actor
+C 0x5902 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5927 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x5935 lee la X del actor (en caracteres de 8 puntos)
+C 0x593C suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5941 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x5951 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5954 resta 1 a la Y del actor (en caracteres de 8 puntos)
+C 0x595F compara con la Y del actor (en caracteres de 8 puntos)
+C 0x5966 lee la X del actor (en caracteres de 8 puntos)
+C 0x5973 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
+C 0x5977 suma 1 a la Y del actor (en caracteres de 8 puntos)
+C 0x597A lee la Y del actor (en caracteres de 8 puntos)
+C 0x5987 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x5996 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x59B0 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x59CC guarda el dibujo del actor (p04:7791)
+C 0x59E9 lee la Y del actor (en caracteres de 8 puntos)
+C 0x59EC lee la X del actor (en caracteres de 8 puntos)
+C 0x59F4 lee la Y del actor (fraccion: 32 por punto)
+C 0x59F7 lee la Y del actor (en caracteres de 8 puntos)
+C 0x59FA lee la X del actor (fraccion: 32 por punto)
+C 0x59FD lee la X del actor (en caracteres de 8 puntos)
+C 0x5A0A guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5A0D guarda la X del actor (en caracteres de 8 puntos)
+C 0x5A84 lee el paso del actor
+C 0x5AA2 lee el paso del actor
+C 0x5AC2 guarda la X del actor (en caracteres de 8 puntos)
+C 0x5AE5 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5AF0 guarda el dibujo del actor (p04:7791)
+C 0x5B19 lee el paso del actor
+C 0x5B1F resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5B23 pone a uno el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5B27 suma 1 a el paso del actor
+C 0x5B2B lee el paso del actor
+C 0x5B31 la Y del actor (en caracteres de 8 puntos) = 0x0D
+C 0x5B5E pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x5B62 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x02
+C 0x5BB5 el paso del actor = 0x02
+C 0x5BB9 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x00
+C 0x5BC2 lee el paso del actor
+C 0x5BCB otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
+C 0x5BCF suma 1 a el paso del actor
+C 0x5BD5 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x5BDC niega_hl: HL = -HL
+C 0x5BF5 lee otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x5C02 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x5C10 lee la X del actor (en caracteres de 8 puntos)
+C 0x5C13 lee la X del actor (fraccion: 32 por punto)
+C 0x5C16 lee la X de la nave
+C 0x5C19 le resta la X del actor (en caracteres de 8 puntos)
+C 0x5C2A guarda la X del actor (en caracteres de 8 puntos)
+C 0x5C2D guarda la X del actor (fraccion: 32 por punto)
+C 0x5C31 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5C34 lee la Y del actor (fraccion: 32 por punto)
+C 0x5C37 lee la Y de la nave
+C 0x5C3A le resta la Y del actor (en caracteres de 8 puntos)
+C 0x5C4B guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5C4E guarda la Y del actor (fraccion: 32 por punto)
+C 0x5C55 XOR con la Y del actor (fraccion: 32 por punto)
+C 0x5C5D lee la X de la nave
+C 0x5C60 le resta la X del actor (en caracteres de 8 puntos)
+C 0x5C68 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5C6B lee la Y del actor (fraccion: 32 por punto)
+C 0x5C6F guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5C72 guarda la Y del actor (fraccion: 32 por punto)
+C 0x5C76 lee la X del actor (en caracteres de 8 puntos)
+C 0x5C79 lee la X del actor (fraccion: 32 por punto)
+C 0x5C7D guarda la X del actor (en caracteres de 8 puntos)
+C 0x5C80 guarda la X del actor (fraccion: 32 por punto)
+C 0x5CA5 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x5CAA guarda la Y del actor (en caracteres de 8 puntos)
+C 0x5CAD la X del actor (en caracteres de 8 puntos) = 0x1F
+C 0x5CC7 suma_a_hl: HL = HL + A
+C 0x5CEA guarda el dibujo del actor (p04:7791)
+C 0x5CF6 lee la X del actor (en caracteres de 8 puntos)
+C 0x5CFA lee la Y del actor (en caracteres de 8 puntos)
+C 0x5D00 le suma la Y del actor (fraccion: 32 por punto)
+C 0x5D09 le suma la X del actor (fraccion: 32 por punto)
+C 0x5D3D lee el paso del actor
+C 0x5D45 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5D50 suma 1 a el paso del actor
+C 0x5D60 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x5D67 el paso del actor = 0x00
+C 0x5D78 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x5D99 guarda la aceleracion en X del actor (baja)
+C 0x5D9C guarda la aceleracion en X del actor (alta)
+C 0x5DA9 lee la X del actor (en caracteres de 8 puntos)
+C 0x5DAF la X del actor (en caracteres de 8 puntos) = 0x00
+C 0x5DEA lee la aceleracion en X del actor (alta)
+C 0x5DED lee la aceleracion en X del actor (baja)
+C 0x5DF0 suma_a_hl: HL = HL + A
+C 0x5E48 llamada_lejana_b: guarda IX e IY y hace la llamada lejana que va detras
+# --- fin de las anotaciones de anota.py ---

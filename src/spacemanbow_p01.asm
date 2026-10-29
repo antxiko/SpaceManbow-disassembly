@@ -39,11 +39,11 @@ L_601E:
 L_6021:
 	ld hl,0c903h		;6021
 	inc (hl)			;6024
-	ld bc,(0c900h)		;6025
+	ld bc,(0c900h)		;6025   ; lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida) y el byte siguiente (16 bits)
 	ld a,c			;6029
 	cp 006h		;602a
-	jp nc,04ae0h		;602c
-	call 0461ah		;602f
+	jp nc,04ae0h		;602c   ; nada_4AE0: ret
+	call 0461ah		;602f   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_6032: 6 destinos del despachador p00:461A (call en p01:602F, el
@@ -63,7 +63,7 @@ L_603E:
 	ld hl,0f0f8h		;603f
 	ld (hl),000h		;6042
 	pop hl			;6044
-	call 04725h		;6045
+	call 04725h		;6045   ; prepara_vdp: esconde los sprites, apaga la pantalla, borra la VRAM con una orden del VDP (p00:47FC), el registro 23 a 0 y enciende la pantalla
 	jp L_621F		;6048
 L_604B:
 	ld a,005h		;604b
@@ -75,8 +75,8 @@ L_6050:
 	ret c			;6055
 	ld a,b			;6056
 	cp 003h		;6057
-	jp nc,04ae0h		;6059
-	call 0461ah		;605c
+	jp nc,04ae0h		;6059   ; nada_4AE0: ret
+	call 0461ah		;605c   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_605F: 3 destinos del despachador p00:461A (call en p01:605C, el
@@ -93,7 +93,7 @@ DATA_tabla_605F:
 L_6065:
 	ld hl,0d700h		;6065
 	ld bc,0000fh		;6068
-	call 04648h		;606b
+	call 04648h		;606b   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	push hl			;606e
 	ld hl,0f0f8h		;606f
 	ld (hl),001h		;6072
@@ -122,8 +122,8 @@ L_6096:
 L_609D:
 	ld a,b			;609d
 	cp 002h		;609e
-	jp nc,04ae0h		;60a0
-	call 0461ah		;60a3
+	jp nc,04ae0h		;60a0   ; nada_4AE0: ret
+	call 0461ah		;60a3   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_60A6: 2 destinos del despachador p00:461A (call en p01:60A3, el
@@ -170,8 +170,8 @@ L_60C9:
 L_60DB:
 	ld a,b			;60db
 	cp 002h		;60dc
-	jp nc,04ae0h		;60de
-	call 0461ah		;60e1
+	jp nc,04ae0h		;60de   ; nada_4AE0: ret
+	call 0461ah		;60e1   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_60E4: 2 destinos del despachador p00:461A (call en p01:60E1, el
@@ -192,7 +192,7 @@ L_60E8:
 	pop hl			;60ee
 	call L_6A92		;60ef
 	call L_600C		;60f2
-	call 04c7ah		;60f5
+	call 04c7ah		;60f5   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ld hl,0615dh		;60f8
 	ld de,02824h		;60fb
 	ld a,0f1h		;60fe
@@ -200,9 +200,9 @@ L_60E8:
 	ld hl,0618ah		;6103
 	call L_6157		;6106
 	xor a			;6109
-	ld (0c914h),a		;610a
+	ld (0c914h),a		;610a   ; guarda la cuenta de interrupciones del cuadro
 L_610D:
-	ld a,(0c914h)		;610d
+	ld a,(0c914h)		;610d   ; lee la cuenta de interrupciones del cuadro
 	cp 0f0h		;6110
 	jr c,L_610D		;6112
 	ld hl,0616ch		;6114
@@ -212,17 +212,17 @@ L_610D:
 	ld hl,0618fh		;611f
 	call L_6157		;6122
 	xor a			;6125
-	ld (0c914h),a		;6126
+	ld (0c914h),a		;6126   ; guarda la cuenta de interrupciones del cuadro
 L_6129:
-	ld a,(0c914h)		;6129
+	ld a,(0c914h)		;6129   ; lee la cuenta de interrupciones del cuadro
 	cp 0f0h		;612c
 	jr c,L_6129		;612e
 	ld hl,06194h		;6130
 	call L_6157		;6133
 	xor a			;6136
-	ld (0c914h),a		;6137
+	ld (0c914h),a		;6137   ; guarda la cuenta de interrupciones del cuadro
 L_613A:
-	ld a,(0c914h)		;613a
+	ld a,(0c914h)		;613a   ; lee la cuenta de interrupciones del cuadro
 	cp 03ch		;613d
 	jr c,L_613A		;613f
 	xor a			;6141
@@ -231,16 +231,16 @@ L_613A:
 	ld b,a			;6144
 	ld c,a			;6145
 	ld d,a			;6146
-	call 047fch		;6147
-	call 047d2h		;614a
+	call 047fch		;6147   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+	call 047d2h		;614a   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	push hl			;614d
 	ld hl,0f0f8h		;614e
 	ld (hl),021h		;6151
 	pop hl			;6153
 	jp L_621A		;6154
 L_6157:
-	call 04ce0h		;6157
-	jp 04cf5h		;615a
+	call 04ce0h		;6157   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+	jp 04cf5h		;615a   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_615D: lo leen p00:4CE8, p00:4D5F, p01:6C6F jugando
@@ -273,8 +273,8 @@ L_6199:
 L_61B0:
 	ld a,b			;61b0
 	cp 002h		;61b1
-	jp nc,04ae0h		;61b3
-	call 0461ah		;61b6
+	jp nc,04ae0h		;61b3   ; nada_4AE0: ret
+	call 0461ah		;61b6   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_61B9: 2 destinos del despachador p00:461A (call en p01:61B6, el
@@ -313,8 +313,8 @@ L_61D0:
 L_61E2:
 	ld a,b			;61e2
 	cp 002h		;61e3
-	jp nc,04ae0h		;61e5
-	call 0461ah		;61e8
+	jp nc,04ae0h		;61e5   ; nada_4AE0: ret
+	call 0461ah		;61e8   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_61EB: 2 destinos del despachador p00:461A (call en p01:61E8, el
@@ -362,7 +362,7 @@ L_621A:
 L_621F:
 	xor a			;621f
 	ld (0c904h),a		;6220
-	ld hl,0c900h		;6223
+	ld hl,0c900h		;6223   ; apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	inc (hl)			;6226
 	xor a			;6227
 	ld (0c901h),a		;6228
@@ -370,7 +370,7 @@ L_621F:
 L_622C:
 	xor a			;622c
 L_622D:
-	ld hl,0c900h		;622d
+	ld hl,0c900h		;622d   ; apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	ld (hl),a			;6230
 	inc hl			;6231
 	xor a			;6232
@@ -382,7 +382,7 @@ L_6238:
 	dec (hl)			;623b
 	ret			;623c
 L_623D:
-	ld a,(0c907h)		;623d
+	ld a,(0c907h)		;623d   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	or a			;6240
 	ret z			;6241
 	ld a,002h		;6242
@@ -391,20 +391,20 @@ L_623D:
 	ret			;6248
 L_6249:
 	exx			;6249
-	call 04a8ch		;624a
+	call 04a8ch		;624a   ; lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
 	ld hl,0c921h		;624d
-	call 04a63h		;6250
+	call 04a63h		;6250   ; recien_pulsadas: guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
 	or a			;6253
 	exx			;6254
 	ret			;6255
 L_6256:
 	ld hl,0ca02h		;6256
 	inc (hl)			;6259
-	ld bc,(0ca00h)		;625a
+	ld bc,(0ca00h)		;625a   ; lee el estado de la partida y el byte siguiente (16 bits)
 	ld a,c			;625e
 	cp 005h		;625f
-	jp nc,04ae0h		;6261
-	call 0461ah		;6264
+	jp nc,04ae0h		;6261   ; nada_4AE0: ret
+	call 0461ah		;6264   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_6267: 5 destinos del despachador p00:461A (call en p01:6264, el
@@ -421,8 +421,8 @@ DATA_tabla_6267:
 L_6271:
 	ld a,b			;6271
 	cp 002h		;6272
-	jp nc,04ae0h		;6274
-	call 0461ah		;6277
+	jp nc,04ae0h		;6274   ; nada_4AE0: ret
+	call 0461ah		;6277   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_627A: 2 destinos del despachador p00:461A (call en p01:6277, el
@@ -451,8 +451,8 @@ L_6288:
 L_6292:
 	ld a,b			;6292
 	cp 002h		;6293
-	jp nc,04ae0h		;6295
-	call 0461ah		;6298
+	jp nc,04ae0h		;6295   ; nada_4AE0: ret
+	call 0461ah		;6298   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_629B: 2 destinos del despachador p00:461A (call en p01:6298, el
@@ -489,8 +489,8 @@ L_62B0:
 L_62C1:
 	ld a,b			;62c1
 	cp 003h		;62c2
-	jp nc,04ae0h		;62c4
-	call 0461ah		;62c7
+	jp nc,04ae0h		;62c4   ; nada_4AE0: ret
+	call 0461ah		;62c7   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_62CA: 3 destinos del despachador p00:461A (call en p01:62C7, el
@@ -505,13 +505,13 @@ DATA_tabla_62CA:
 
 
 L_62D0:
-	call 04c7ah		;62d0
+	call 04c7ah		;62d0   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	push hl			;62d3
 	ld hl,0f0f9h		;62d4
 	ld (hl),020h		;62d7
 	pop hl			;62d9
 	xor a			;62da
-	call 04103h		;62db
+	call 04103h		;62db   ; vector_empieza_fase: jp p00:4492
 	push hl			;62de
 	ld hl,0f0f9h		;62df
 	ld (hl),021h		;62e2
@@ -523,7 +523,7 @@ L_62E8:
 	ld (hl),028h		;62ec
 	pop hl			;62ee
 	xor a			;62ef
-	call 04100h		;62f0
+	call 04100h		;62f0   ; vector_cuadro_de_partida: jp p00:438E
 	dec a			;62f3
 	ret m			;62f4
 	call L_6300		;62f5
@@ -537,26 +537,26 @@ L_6300:
 	pop af			;6306
 	ret			;6307
 L_6308:
-	call 04b78h		;6308
-	call 04c7ah		;630b
+	call 04b78h		;6308   ; apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+	call 04c7ah		;630b   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	xor a			;630e
-	ld (0ca0fh),a		;630f
-	ld a,(0ca10h)		;6312
+	ld (0ca0fh),a		;630f   ; guarda distinto de 0: la fase esta acabada
+	ld a,(0ca10h)		;6312   ; lee la fase (0 a 8; 9 el final)
 	inc a			;6315
 	cp 009h		;6316
-	ld (0ca10h),a		;6318
+	ld (0ca10h),a		;6318   ; guarda la fase (0 a 8; 9 el final)
 	ld a,004h		;631b
 	jp nc,L_6496		;631d
-	call 04c7ah		;6320
+	call 04c7ah		;6320   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ld a,003h		;6323
-	call 04103h		;6325
+	call 04103h		;6325   ; vector_empieza_fase: jp p00:4492
 	ld a,001h		;6328
 	jp L_64A3		;632a
 L_632D:
 	ld a,b			;632d
 	cp 005h		;632e
-	jp nc,04ae0h		;6330
-	call 0461ah		;6333
+	jp nc,04ae0h		;6330   ; nada_4AE0: ret
+	call 0461ah		;6333   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_6336: 5 destinos del despachador p00:461A (call en p01:6333, el
@@ -575,23 +575,23 @@ L_6340:
 	ld hl,0f0f9h		;6341
 	ld (hl),030h		;6344
 	pop hl			;6346
-	call 04b78h		;6347
-	call 04c7ah		;634a
-	ld a,(0cb0fh)		;634d
+	call 04b78h		;6347   ; apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+	call 04c7ah		;634a   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+	ld a,(0cb0fh)		;634d   ; lee las vidas, en BCD
 	sub 001h		;6350
 	daa			;6352
-	ld (0cb0fh),a		;6353
+	ld (0cb0fh),a		;6353   ; guarda las vidas, en BCD
 	jp c,L_64A7		;6356
-	call 04c7ah		;6359
+	call 04c7ah		;6359   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ld a,001h		;635c
-	call 04103h		;635e
+	call 04103h		;635e   ; vector_empieza_fase: jp p00:4492
 	ld hl,00102h		;6361
 	jp L_6492		;6364
 L_6367:
 	ld a,060h		;6367
 	ld (0ca02h),a		;6369
 	ld a,04bh		;636c
-	call 04aebh		;636e
+	call 04aebh		;636e   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	call L_63EE		;6371
 	ld hl,0641eh		;6374
 	ld de,02830h		;6377
@@ -607,7 +607,7 @@ L_6367:
 	call L_63E8		;6393
 	jp L_64A7		;6396
 L_6399:
-	ld a,(0c90ch)		;6399
+	ld a,(0c90ch)		;6399   ; lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 	bit 4,a		;639c
 	jr nz,L_63AF		;639e
 	ld a,(0ca02h)		;63a0
@@ -632,34 +632,34 @@ L_63C7:
 	ld hl,0f0f9h		;63c8
 	ld (hl),031h		;63cb
 	pop hl			;63cd
-	call 049e3h		;63ce
+	call 049e3h		;63ce   ; prepara_arranque: el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
 	xor a			;63d1
 	jp L_622D		;63d2
 L_63D5:
 	ld a,(0ca02h)		;63d5
 	or a			;63d8
 	ret nz			;63d9
-	call 04c7ah		;63da
+	call 04c7ah		;63da   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ld a,002h		;63dd
-	call 04103h		;63df
+	call 04103h		;63df   ; vector_empieza_fase: jp p00:4492
 	ld hl,00102h		;63e2
 	jp L_6492		;63e5
 L_63E8:
-	call 04ce0h		;63e8
-	jp 04cf5h		;63eb
+	call 04ce0h		;63e8   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+	jp 04cf5h		;63eb   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 L_63EE:
 	ld hl,06405h		;63ee
 	ld b,006h		;63f1
 	call 04a1fh		;63f3
-	call 04760h		;63f6
+	call 04760h		;63f6   ; apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
 	xor a			;63f9
 	ld h,a			;63fa
 	ld l,a			;63fb
 	ld b,a			;63fc
 	ld c,a			;63fd
 	ld d,a			;63fe
-	call 047fch		;63ff
-	jp 047d2h		;6402
+	call 047fch		;63ff   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+	jp 047d2h		;6402   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_6405: lo leen p00:4A23, p00:4A25, p00:4CE8, p00:4D5F, p01:6C6F
@@ -685,29 +685,29 @@ DATA_sin_leer_6437:
 
 
 L_6440:
-	ld hl,0ca00h		;6440
+	ld hl,0ca00h		;6440   ; apunta a el estado de la partida
 	ld de,0c000h		;6443
 	ld bc,00600h		;6446
 	ldir		;6449
 	call L_647C		;644b
-	ld hl,0ca00h		;644e
+	ld hl,0ca00h		;644e   ; apunta a el estado de la partida
 	ld bc,01effh		;6451
-	call 04648h		;6454
-	ld de,0ca00h		;6457
+	call 04648h		;6454   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
+	ld de,0ca00h		;6457   ; apunta a el estado de la partida
 	ld hl,0c000h		;645a
 	ld bc,00600h		;645d
 	ldir		;6460
 	xor a			;6462
-	ld (0ca10h),a		;6463
+	ld (0ca10h),a		;6463   ; guarda la fase (0 a 8; 9 el final)
 	ld a,(0ca04h)		;6466
 	inc a			;6469
 	jr z,L_646F		;646a
 	ld (0ca04h),a		;646c
 L_646F:
 	ld a,003h		;646f
-	call 04103h		;6471
+	call 04103h		;6471   ; vector_empieza_fase: jp p00:4492
 	ld bc,00102h		;6474
-	ld (0ca00h),bc		;6477
+	ld (0ca00h),bc		;6477   ; guarda el estado de la partida y el byte siguiente (16 bits)
 	ret			;647b
 L_647C:
 	ld hl,0c947h		;647c
@@ -716,21 +716,21 @@ L_647C:
 L_6484:
 	call L_601B		;6484
 	ld a,001h		;6487
-	ld (0c942h),a		;6489
+	ld (0c942h),a		;6489   ; guarda 1: hay que mandar la cola de sonidos
 	jr z,L_6484		;648c
-	call 04c7ah		;648e
+	call 04c7ah		;648e   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ret			;6491
 L_6492:
-	ld (0ca00h),hl		;6492
+	ld (0ca00h),hl		;6492   ; guarda el estado de la partida y el byte siguiente (16 bits)
 	ret			;6495
 L_6496:
-	ld hl,0ca00h		;6496
+	ld hl,0ca00h		;6496   ; apunta a el estado de la partida
 	ld (hl),a			;6499
 	inc hl			;649a
 	ld (hl),000h		;649b
 	ret			;649d
 L_649E:
-	ld hl,0ca00h		;649e
+	ld hl,0ca00h		;649e   ; apunta a el estado de la partida
 	inc (hl)			;64a1
 	xor a			;64a2
 L_64A3:
@@ -745,26 +745,26 @@ L_64AC:
 	ld hl,0f0f9h		;64ad
 	ld (hl),000h		;64b0
 	pop hl			;64b2
-	ld hl,0ca00h		;64b3
+	ld hl,0ca00h		;64b3   ; apunta a el estado de la partida
 	ld bc,025ffh		;64b6
-	call 04648h		;64b9
+	call 04648h		;64b9   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	xor a			;64bc
 	ld (0c947h),a		;64bd
 	push hl			;64c0
 	ld hl,0f0f9h		;64c1
 	ld (hl),001h		;64c4
 	pop hl			;64c6
-	ld a,(0c900h)		;64c7
+	ld a,(0c900h)		;64c7   ; lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	cp 004h		;64ca
 	ld a,000h		;64cc
 	jr nz,L_64D9		;64ce
-	ld a,(0f0fch)		;64d0
+	ld a,(0f0fch)		;64d0   ; lee la fase con la que empieza la partida
 	push af			;64d3
 	xor a			;64d4
-	ld (0f0fch),a		;64d5
+	ld (0f0fch),a		;64d5   ; guarda la fase con la que empieza la partida
 	pop af			;64d8
 L_64D9:
-	ld (0ca10h),a		;64d9
+	ld (0ca10h),a		;64d9   ; guarda la fase (0 a 8; 9 el final)
 	push hl			;64dc
 	ld hl,0f0f9h		;64dd
 	ld (hl),002h		;64e0
@@ -774,7 +774,7 @@ L_64D9:
 	ld a,(04032h)		;64e8
 	inc a			;64eb
 	ret z			;64ec
-	ld a,(0c90dh)		;64ed
+	ld a,(0c90dh)		;64ed   ; lee las teclas F1-F5
 	bit 2,a		;64f0
 	ret z			;64f2
 	set 0,(hl)		;64f3
@@ -790,7 +790,7 @@ L_6501:
 	ld hl,0665ch		;6503
 	call L_6960		;6506
 	pop de			;6509
-	call 049d9h		;650a
+	call 049d9h		;650a   ; avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 	pop bc			;650d
 	inc c			;650e
 	djnz L_6501		;650f
@@ -848,12 +848,12 @@ DATA_sin_leer_653C:
 
 
 L_6664:
-	call 047d2h		;6664
-	call 049e3h		;6667
-	call 0474bh		;666a
-	call 04790h		;666d
+	call 047d2h		;6664   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+	call 049e3h		;6667   ; prepara_arranque: el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+	call 0474bh		;666a   ; apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+	call 04790h		;666d   ; paleta_inicial: los 16 colores de la tabla p00:47A4
 	ld hl,066d6h		;6670
-	call 047c4h		;6673
+	call 047c4h		;6673   ; lista_de_colores: pone los colores de HL: [color][D][E] hasta un 0xFF
 	ld a,00fh		;6676
 	ld (0f3ebh),a		;6678
 	call 00062h		;667b   ; BIOS CHGCLR - Changes the screen colors
@@ -864,7 +864,7 @@ L_6664:
 	ld bc,0a848h		;6688
 	xor a			;668b
 	ld d,001h		;668c
-	call 047fch		;668e
+	call 047fch		;668e   ; orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 	ld hl,0678eh		;6691
 	ld de,00800h		;6694
 	ld bc,00d01h		;6697
@@ -874,16 +874,16 @@ L_6664:
 	ld bc,00d02h		;66a3
 	call L_692E		;66a6
 	ld hl,0685eh		;66a9
-	ld de,0d800h		;66ac
+	ld de,0d800h		;66ac   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 	ld bc,01a03h		;66af
 	call L_692E		;66b2
 	ld de,04040h		;66b5
 	ld hl,0674dh		;66b8
 	call L_672D		;66bb
-	call 0473eh		;66be
+	call 0473eh		;66be   ; enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
 	ld hl,0d700h		;66c1
 	ld bc,0000fh		;66c4
-	call 04648h		;66c7
+	call 04648h		;66c7   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,0d700h		;66ca
 	ld (hl),03ch		;66cd
 	inc hl			;66cf
@@ -927,8 +927,8 @@ L_6719:
 	ld hl,02840h		;671f
 	ld de,02840h		;6722
 	ld a,001h		;6725
-	call 04838h		;6727
-	jp 047d2h		;672a
+	call 04838h		;6727   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+	jp 047d2h		;672a   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 L_672D:
 	push de			;672d
 L_672E:
@@ -950,8 +950,8 @@ L_672E:
 	jr L_672D		;6740
 L_6742:
 	ld a,c			;6742
-	call 049b9h		;6743
-	call 049d9h		;6746
+	call 049b9h		;6743   ; pinta_letra_c: la letra A con p00:4838 y A = 5
+	call 049d9h		;6746   ; avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 	jr L_672E		;6749
 L_674B:
 	pop de			;674b
@@ -1000,14 +1000,14 @@ DATA_leido_674D:
 
 
 L_692E:
-	call 047d2h		;692e
+	call 047d2h		;692e   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	call L_6960		;6931
-	call 049d9h		;6934
+	call 049d9h		;6934   ; avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 	djnz L_692E		;6937
 	ret			;6939
 L_693A:
 	ld b,008h		;693a
-	ld de,0d800h		;693c
+	ld de,0d800h		;693c   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
 L_693F:
 	push bc			;693f
 	push hl			;6940
@@ -1051,8 +1051,8 @@ L_6960:
 	ld a,d			;696f
 	add a,080h		;6970
 	ld d,a			;6972
-	ld hl,0d800h		;6973
-	call 0490bh		;6976
+	ld hl,0d800h		;6973   ; apunta a el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)
+	call 0490bh		;6976   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 	pop hl			;6979
 	ld bc,00008h		;697a
 	add hl,bc			;697d
@@ -1060,20 +1060,20 @@ L_6960:
 	pop bc			;697f
 	ret			;6980
 L_6981:
-	call 047d2h		;6981
-	call 0474bh		;6984
-	call 047d2h		;6987
+	call 047d2h		;6981   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+	call 0474bh		;6984   ; apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+	call 047d2h		;6987   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	call L_63EE		;698a
 	call L_6A98		;698d
 	call L_6012		;6990
 	ret			;6993
 L_6994:
-	call 047d2h		;6994
+	call 047d2h		;6994   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	call L_63EE		;6997
-	call 047d2h		;699a
+	call 047d2h		;699a   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 	ld bc,00007h		;699d
 	call 00047h		;69a0   ; BIOS WRTVDP - Writes data in the VDP-register
-	call 04c7ah		;69a3
+	call 04c7ah		;69a3   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
 	ld b,0e8h		;69a6
 	ld c,017h		;69a8
 	call 00047h		;69aa   ; BIOS WRTVDP - Writes data in the VDP-register
@@ -1081,7 +1081,7 @@ L_6994:
 	ld de,01828h		;69b0
 	ld bc,0d840h		;69b3
 	ld a,002h		;69b6
-	call 04838h		;69b8
+	call 04838h		;69b8   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 	ld hl,06a2ch		;69bb
 	call L_6A26		;69be
 	ld hl,06a3fh		;69c1
@@ -1089,14 +1089,14 @@ L_6994:
 	ld b,0e8h		;69c7
 L_69C9:
 	xor a			;69c9
-	ld (0c914h),a		;69ca
+	ld (0c914h),a		;69ca   ; guarda la cuenta de interrupciones del cuadro
 	ld c,017h		;69cd
 	push bc			;69cf
 	call 00047h		;69d0   ; BIOS WRTVDP - Writes data in the VDP-register
 	pop bc			;69d3
 L_69D4:
 	ei			;69d4
-	ld a,(0c914h)		;69d5
+	ld a,(0c914h)		;69d5   ; lee la cuenta de interrupciones del cuadro
 	or a			;69d8
 	jr z,L_69D4		;69d9
 	inc b			;69db
@@ -1105,12 +1105,12 @@ L_69D4:
 	sub 001h		;69de
 	jp m,L_69C9		;69e0
 	ld hl,06a50h		;69e3
-	call 04c94h		;69e6
+	call 04c94h		;69e6   ; pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
 	ld hl,05840h		;69e9
 	ld de,05810h		;69ec
 	ld bc,06040h		;69ef
 	ld a,002h		;69f2
-	call 04838h		;69f4
+	call 04838h		;69f4   ; orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 	ld hl,06a59h		;69f7
 	call L_6A26		;69fa
 	ld hl,06a68h		;69fd
@@ -1129,8 +1129,8 @@ L_69D4:
 	call L_6A84		;6a22
 	ret			;6a25
 L_6A26:
-	call 04ce0h		;6a26
-	jp 04cf5h		;6a29
+	call 04ce0h		;6a26   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+	jp 04cf5h		;6a29   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_6A2C: lo leen p00:4C9C, p00:4CE8, p00:4D5F, p01:6C6F jugando
@@ -1174,12 +1174,12 @@ L_6A9C:
 	ret			;6aac
 L_6AAD:
 	ld bc,00606h		;6aad
-	jp 04921h		;6ab0
+	jp 04921h		;6ab0   ; copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 L_6AB3:
 	push de			;6ab3
 	push hl			;6ab4
 	ld bc,00804h		;6ab5
-	call 04921h		;6ab8
+	call 04921h		;6ab8   ; copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 	pop hl			;6abb
 	pop de			;6abc
 	ret			;6abd
@@ -1188,7 +1188,7 @@ L_6ABE:
 	push hl			;6abf
 	call L_6ACC		;6ac0
 	ld bc,00804h		;6ac3
-	call 04921h		;6ac6
+	call 04921h		;6ac6   ; copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 	pop hl			;6ac9
 	pop de			;6aca
 	ret			;6acb
@@ -1276,7 +1276,7 @@ L_6B33:
 	ld hl,0e000h		;6b38
 	ld bc,01000h		;6b3b
 	ld a,0ffh		;6b3e
-	call 046c5h		;6b40
+	call 046c5h		;6b40   ; llena_vram_baja: pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
 	ld hl,06ca9h		;6b43
 	ld de,0e000h		;6b46
 	call L_6B6D		;6b49
@@ -1284,11 +1284,11 @@ L_6B33:
 	call L_6B6D		;6b4f
 	ld hl,0df90h		;6b52
 	ld bc,0006fh		;6b55
-	call 04648h		;6b58
+	call 04648h		;6b58   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,0df90h		;6b5b
 	ld bc,0006fh		;6b5e
 	ld a,0ffh		;6b61
-	call 04649h		;6b63
+	call 04649h		;6b63   ; llena_memoria: pone A en BC + 1 bytes desde HL
 	ld hl,00000h		;6b66
 	ld (0df9eh),hl		;6b69
 	ret			;6b6c
@@ -1412,7 +1412,7 @@ L_6C05:
 	ex de,hl			;6c10
 	ret			;6c11
 L_6C12:
-	ld de,0cb0fh		;6c12
+	ld de,0cb0fh		;6c12   ; apunta a las vidas, en BCD
 	ld hl,0df97h		;6c15
 	ld b,001h		;6c18
 	exx			;6c1a
@@ -1805,14 +1805,14 @@ L_77B5:
 	or a			;77bb
 	call z,L_6A92		;77bc
 	ld a,055h		;77bf
-	call 04aebh		;77c1
-	ld hl,0ca00h		;77c4
+	call 04aebh		;77c1   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+	ld hl,0ca00h		;77c4   ; apunta a el estado de la partida
 	ld bc,025ffh		;77c7
-	call 04648h		;77ca
+	call 04648h		;77ca   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	call L_784D		;77cd
 	xor a			;77d0
 	ld hl,00000h		;77d1
-	ld (0c917h),hl		;77d4
+	ld (0c917h),hl		;77d4   ; guarda el numero al azar: B y C de p00:4678 y el byte siguiente (16 bits)
 	ld (0c947h),a		;77d7
 	ld (0c92dh),a		;77da
 	ld (0c92eh),a		;77dd
@@ -1855,8 +1855,8 @@ L_77F0:
 	ei			;7820
 	ret nz			;7821
 	ld a,084h		;7822
-	call 04af0h		;7824
-	call 04d27h		;7827
+	call 04af0h		;7824   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
+	call 04d27h		;7827   ; fundido_a_negro: los 16 colores con destino 0 y empieza el fundido
 L_782A:
 	ld a,(0c92dh)		;782a
 	inc a			;782d
@@ -1864,12 +1864,12 @@ L_782A:
 	cp 00ah		;7831
 	ret nz			;7833
 	call L_6A84		;7834
-	call 04c7ah		;7837
-	call 04b78h		;783a
+	call 04c7ah		;7837   ; paleta_a_negro: apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+	call 04b78h		;783a   ; apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
 	call L_63EE		;783d
-	call 0474bh		;7840
+	call 0474bh		;7840   ; apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
 	ld a,055h		;7843
-	call 04aebh		;7845
+	call 04aebh		;7845   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	xor a			;7848
 	ret			;7849
 L_784A:
@@ -1879,7 +1879,7 @@ L_784D:
 	call L_7863		;784d
 	ld a,(hl)			;7850
 	inc hl			;7851
-	ld (0ca10h),a		;7852
+	ld (0ca10h),a		;7852   ; guarda la fase (0 a 8; 9 el final)
 	ld a,(hl)			;7855
 	inc hl			;7856
 	ld (0ca1eh),a		;7857
@@ -1900,7 +1900,7 @@ L_786C:
 	add a,a			;786f
 	add a,a			;7870
 	ld hl,07877h		;7871
-	jp 04600h		;7874
+	jp 04600h		;7874   ; suma_a_hl: HL = HL + A
 
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_7877: ninguna partida de la campana lo lee
@@ -1962,20 +1962,20 @@ L_789C:
 	ld (0c91dh),hl		;78c4
 L_78C7:
 	ld a,(0c92eh)		;78c7
-	ld (0c908h),a		;78ca
+	ld (0c908h),a		;78ca   ; guarda copia de los mandos de 0xC909
 	ld a,(0c92fh)		;78cd
-	ld (0c907h),a		;78d0
+	ld (0c907h),a		;78d0   ; guarda lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	ret			;78d3
 L_78D4:
 	ld a,(0c91fh)		;78d4
 	cp 002h		;78d7
 	jr z,L_78E9		;78d9
 	ld a,01fh		;78db
-	call 04c23h		;78dd
+	call 04c23h		;78dd   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,(hl)			;78e0
 	ex af,af'			;78e1
 	ld a,003h		;78e2
-	call 04c23h		;78e4
+	call 04c23h		;78e4   ; banco_en_A000: pone el banco A en 0xA000
 	ex af,af'			;78e7
 	ret			;78e8
 L_78E9:
@@ -2004,11 +2004,11 @@ L_7905:
 	inc a			;7908
 	jr z,L_7921		;7909
 	ld (0c91ah),a		;790b
-	ld a,(0c908h)		;790e
+	ld a,(0c908h)		;790e   ; lee copia de los mandos de 0xC909
 	ld hl,0c92eh		;7911
 	cp (hl)			;7914
 	jr nz,L_7921		;7915
-	ld a,(0c907h)		;7917
+	ld a,(0c907h)		;7917   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	ld hl,0c92fh		;791a
 	cp (hl)			;791d
 	jr nz,L_7921		;791e
@@ -2025,9 +2025,9 @@ L_7921:
 	call L_78F3		;7935
 	inc hl			;7938
 	ld (0c91dh),hl		;7939
-	ld a,(0c908h)		;793c
+	ld a,(0c908h)		;793c   ; lee copia de los mandos de 0xC909
 	ld (0c92eh),a		;793f
-	ld a,(0c907h)		;7942
+	ld a,(0c907h)		;7942   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	ld (0c92fh),a		;7945
 	xor a			;7948
 	ld (0c91ah),a		;7949

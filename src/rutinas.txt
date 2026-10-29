@@ -1,0 +1,624 @@
+# Rutinas con nombre, leidas en el listado: "pNN 0xDIR nombre  que hace" (las carga tools/anotaciones.py)
+p00 0x4033 arranque  INIT del cartucho: pone el cartucho en la pagina 2 (ENASLT), borra la RAM 0xC000-0xF0EF y 0xD500-0xDCFF, la pila en 0xF0F0, el gancho H.KEYI a p00:4110 y salta a p00:42F2
+p00 0x4083 gancho_de_partida  pone el gancho H.KEYI en p00:4270 (la interrupcion con lineas)
+p00 0x4100 vector_cuadro_de_partida  jp p00:438E
+p00 0x4103 vector_empieza_fase  jp p00:4492
+p00 0x4106 vector_vacio  jp p00:4452, que es un ret
+p00 0x4109 vector_4109  jp p00:458B
+p00 0x4110 interrupcion  el gancho H.KEYI: cuenta 0xC914, cada dos cuadros p00:4A6A, el fundido de p00:4D6E y, si no hay otro cuadro a medias (0xC906), guarda los bancos, llama a p00:4B4A con interrupciones y los devuelve
+p00 0x414E lee_estado_vdp  lee el registro de estado del VDP (el puerto de 0x0006 + 1): asi se da por atendida la interrupcion
+p00 0x4158 interrupcion_y_reinicio  la interrupcion de p00:4270 y, si el bit 4 de 0xC90A esta puesto y no hay cuadro a medias, vuelve al estado de 0xC945 con la pila de nuevo en 0xF0F0
+p00 0x4189 lineas_del_vdp  en el borde: manda la lista de registros de 0xC0AE (cuantos y los bytes, con otir) y la primera vez cambia de tablas (p00:41C2) y enciende la interrupcion de linea (bit 4 del registro 0)
+p00 0x4197 manda_registros  la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
+p00 0x41C2 tablas_actuales  las tablas de registros que tocan con 0xC09B
+p00 0x41C7 cambia_tablas  cambia de pagina (p00:41FA si 0xC0B5), sube 0xC09B y, segun su bit 0, apunta 0xC0A4, 0xC0AC y 0xC0AE a un juego de tablas o al otro
+p00 0x41FA pon_pagina_vdp  con 0xC0B4 escribe los registros 10, 3 y 4 del VDP (las tablas de colores y de patrones)
+p00 0x4255 interrupcion_del_borde  la interrupcion no era de linea: si el estado 0 dice que es el borde, p00:4189 y p00:4110
+p00 0x4270 interrupcion_de_lineas  el gancho en partida: si el estado 1 del VDP no dice linea, p00:4255; si dice, espera el borrado horizontal (estado 2, bit 5) y manda la lista de registros de 0xC0AC (la primera) o la de 0xC0A4 (la segunda)
+p00 0x42F2 inicio  borra fase, vidas y estado; pasa por los estados 1 y 2 al ritmo de 0xC914; pone el gancho de lineas, guarda la fase - 1 en 0xF0FC y las vidas en 0xF0FD, borra la RAM y sigue en p00:4357
+p00 0x4357 bucle_principal  cada vuelta: mandos (p00:4A7A, p00:4A58), reinicio con el bit 7 de 0xC90C, bancos 1-2-3 y p01:6000; luego espera a que 0xC914 pase de 0 (o de 2 desde el estado 2) contando las vueltas en 0xC915
+p00 0x438E cuadro_de_partida  la pausa y luego, apuntando en 0xF0FA por que paso va, las partes de la partida en los bancos 1, 9, 4, 2 y 7; acaba con p00:440F
+p00 0x440F como_va_la_fase  A = 2 si la fase esta acabada (0xCA0F), 1 si 0xCA40 es 0, 0 si sigue; si el byte 0x4032 no es 0xFF, el bit 3 de 0xC90C tambien acaba la fase
+p00 0x4432 depuracion_vida  con el bit 2 de 0xC90C sube 0xCA1E (0 a 5) y una vida
+p00 0x4452 nada  ret
+p00 0x4453 pausa  con el bit 0 de 0xC90C (y no en el estado 5 ni con 0xCA41): el sonido 0x82, espera a que se vuelva a pulsar y el sonido 0x81
+p00 0x448B sube_ca02_y_cuadro  sube 0xCA02 y sigue en el cuadro de partida (p00:4391)
+p00 0x4492 empieza_fase  segun A: 0 partida nueva, 1, 2 (resta 2 a 0xCB08) y 3 o mas; prepara la fase con p00:44E9 y lo que toque de los bancos 2 y 4
+p00 0x44D9 vidas_al_empezar  las vidas de 0xF0FD (o 2 si es 0) a 0xCB0F
+p00 0x44E9 prepara_fase  sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
+p00 0x453D prepara_banco_2  p02:8003 con los bancos 4-2-3
+p00 0x4555 prepara_banco_2_b  p02:8012 con los bancos 4-2-3
+p00 0x456D llama_8018  p02:8018 con los bancos 4-2-3
+p00 0x4577 llama_6018  p04:6018 con los bancos 4-2-3
+p00 0x4581 llama_601B  p04:601B con los bancos 4-2-3
+p00 0x458B llama_6000_6012  p04:6000 y p04:6012 con los bancos 4-5-6 y luego los 9-10
+p00 0x4598 borra_ca1e  fuera del estado 5, 0xCA1E a 0
+p00 0x4600 suma_a_hl  HL = HL + A
+p00 0x4605 suma_a_de  DE = DE + A
+p00 0x460A niega_de  DE = -DE
+p00 0x4612 niega_hl  HL = -HL
+p00 0x461A despachador  salta a la entrada A de la tabla de direcciones que va detras del call
+p00 0x4624 entrada_de_tabla_de  HL = la palabra A de la tabla de DE
+p00 0x462E entrada_de_tabla_hl  HL = la palabra A de la tabla de HL (pasando por DE)
+p00 0x4639 dos_palabras_de_tabla  de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
+p00 0x4648 borra_memoria  pone a 0 BC + 1 bytes desde HL
+p00 0x4649 llena_memoria  pone A en BC + 1 bytes desde HL
+p00 0x4650 compara_hl_de  Z si HL = DE
+p00 0x4656 cambia_ix_iy  cambia IX por IY
+p00 0x465F slot_del_cartucho  el slot de la pagina 1 (RSLREG, EXPTBL y SLTTBL) en el formato de ENASLT
+p00 0x4678 numero_al_azar  A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+p00 0x468E entrada_de_tabla  HL = la palabra A de la tabla de HL
+p00 0x4694 lee_palabra  HL = la palabra que apunta HL
+p00 0x4699 vuelve_quitando_4  quita 4 palabras de la pila y vuelve: no vuelve a quien llama sino mas atras
+p00 0x469B vuelve_quitando_3  quita 3 palabras de la pila y vuelve
+p00 0x469D vuelve_quitando_2  quita 2 palabras de la pila y vuelve
+p00 0x469F vuelve_quitando_1  quita 1 palabra de la pila y vuelve
+p00 0x46A2 vuelve  ret
+p00 0x46A3 vueltas_de_otir  de BC a las vueltas de otir: B = C (bytes de la primera) y A = B, mas 1 si C no es 0
+p00 0x46AB copia_a_vram_alta  copia BC bytes de HL a la VRAM en DE, en los 64 KB altos
+p00 0x46AC copia_a_vram_baja  copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
+p00 0x46AD copia_a_vram  copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
+p00 0x46C0 llena_vram_alta  pone A en BC bytes de la VRAM desde HL, en los 64 KB altos
+p00 0x46C5 llena_vram_baja  pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
+p00 0x46E1 escribe_byte_vram  pone A en la direccion HL de la VRAM (64 KB bajos)
+p00 0x46F0 direccion_vram  apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+p00 0x4713 escribe_registro_vdp  pone B en el registro C del VDP
+p00 0x4725 prepara_vdp  esconde los sprites, apaga la pantalla, borra la VRAM con una orden del VDP (p00:47FC), el registro 23 a 0 y enciende la pantalla
+p00 0x473E enciende_pantalla  el bit 6 del registro 1 (copia en 0xF3E0)
+p00 0x474A nada_474A  ret
+p00 0x474B apaga_pantalla  quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+p00 0x4758 esconde_sprites  pone 0xD8 (la Y que acaba la lista) en el primer sprite, en 0xF600 de la VRAM
+p00 0x4760 apaga_sprites  el bit 1 del registro 8 (copia en 0xFFE7)
+p00 0x476B enciende_sprites  quita el bit 1 del registro 8
+p00 0x4776 pon_color  el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+p00 0x4790 paleta_inicial  los 16 colores de la tabla p00:47A4
+p00 0x47C4 lista_de_colores  pone los colores de HL: [color][D][E] hasta un 0xFF
+p00 0x47D2 espera_orden_vdp  espera a que el VDP acabe su orden (estado 2, bit 0)
+p00 0x47DC lee_estado_vdp_a  lee el registro de estado A del VDP y deja el 0 puesto
+p00 0x47FC orden_rellena  orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+p00 0x4838 orden_copia  orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+p00 0x487C orden_copia_logica  orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
+p00 0x48C8 pon_tablas_vdp  guarda A en 0xFAF5 y escribe los registros 2, 10, 4, 11 y 6 del VDP mezclando A con las copias de 0xF3E1-0xF3E5
+p00 0x490B copia_caracter  copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
+p00 0x4921 copia_rectangulo  copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
+p00 0x4933 copia_a_vram_segun_pagina  copia BC bytes a la VRAM, en los 64 KB bajos si 0xC91B es 0 y en los altos si no
+p00 0x493D copia_caracteres  B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+p00 0x4952 copia_bloque_16  copia 16 filas de 8 bytes de HL a la VRAM en DE (16 x 16 puntos)
+p00 0x4967 escribe_texto  el texto de HL: posicion D, E, letras (p00:4983) y 0xFE con otra posicion; 0xFF acaba
+p00 0x496B borra_texto  el mismo recorrido con cada letra a 0
+p00 0x4983 pinta_letra  copia la letra A de la fuente de la VRAM (p00:49CB) a D, E: orden HMMM de 8 x 8
+p00 0x4995 pinta_letra_b  igual que p00:4983
+p00 0x49A7 pinta_letra_transparente  la letra A con una copia logica (p00:487C, A = 0x48)
+p00 0x49B9 pinta_letra_c  la letra A con p00:4838 y A = 5
+p00 0x49CB sitio_de_la_letra  de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
+p00 0x49D9 avanza_8_puntos  D + 8 y, si da la vuelta, E + 8
+p00 0x49E3 prepara_arranque  el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
+p00 0x4A1D lista_de_registros  B parejas [registro][valor] de HL al VDP con WRTVDP
+p00 0x4A58 teclas_de_funcion  F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+p00 0x4A63 recien_pulsadas  guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
+p00 0x4A6A mandos_del_cuadro  lee los mandos (p00:4A8C) en 0xC909, lo recien pulsado en 0xC90A y lo junta en 0xC90B
+p00 0x4A7A copia_mandos  0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+p00 0x4A8C lee_mandos  el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
+p00 0x4AC8 lee_teclas_de_funcion  F1-F5 (filas 6 y 7 del teclado) en los bits 0-4
+p00 0x4AE0 nada_4AE0  ret
+p00 0x4AEB pide_sonido  mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+p00 0x4AF0 pide_sonido_b  lo mismo con hasta 0x17 en la cola
+p00 0x4AF5 pide_musica  lo mismo con hasta 0x17 en la cola
+p00 0x4B31 sonido_ahora  con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
+p00 0x4B4A sonido_del_cuadro  bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso del sonido (p28:6006)
+p00 0x4B5B manda_cola_de_sonidos  cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+p00 0x4B78 apaga_lineas  borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
+p00 0x4B8F enciende_lineas  0xC940 = 1
+p00 0x4B95 bancos_1_2_3  pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+p00 0x4B99 bancos_4_5_6  pone el 4, el 5 y el 6
+p00 0x4BB0 bancos_4_7_8  pone el 4, el 7 y el 8
+p00 0x4BC8 bancos_28_29_30  pone el 28, el 29 y el 30 (el sonido)
+p00 0x4BDF bancos_9_10  pone el 9 en 0x6000 y el 10 en 0x8000
+p00 0x4BEF bancos_4_2_3  pone el 4, el 2 y el 3
+p00 0x4C07 banco_en_6000  pone el banco A en 0x6000
+p00 0x4C0E bancos_en_6000_8000  pone el banco A en 0x6000 y el A + 1 en 0x8000
+p00 0x4C15 banco_en_8000  pone el banco A en 0x8000
+p00 0x4C1C bancos_en_8000_A000  pone el banco A en 0x8000 y el A + 1 en 0xA000
+p00 0x4C23 banco_en_A000  pone el banco A en 0xA000
+p00 0x4C2A llamada_lejana  lee detras del call los tres bancos y la direccion (5 bytes), los pone, llama y vuelve por p00:4C61 detras de los 5 bytes
+p00 0x4C61 vuelta_de_llamada_lejana  devuelve los bancos de antes de la llamada lejana
+p00 0x4C7A paleta_a_negro  apaga la pantalla, pone los 16 colores a 0 en 0xEF00, los manda y enciende la pantalla
+p00 0x4C94 pon_colores_ya  espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
+p00 0x4CAF pon_color_ya  un color de la lista: [rojo, azul][numero, verde] (cuatro nibbles) a su sitio en 0xEF00
+p00 0x4CD0 componente_ya  un componente (0-7) en el formato de 0xEF00, en las dos casillas
+p00 0x4CDC prepara_paleta_ya  0xEF60 a 0 y p00:4CE0
+p00 0x4CE0 prepara_paleta  espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+p00 0x4CF5 empieza_fundido  0xEF60 = 0x20: 32 pasos de fundido
+p00 0x4D01 color_de_destino  un color de la lista como destino del fundido (p00:4D46 con cada componente)
+p00 0x4D27 fundido_a_negro  los 16 colores con destino 0 y empieza el fundido
+p00 0x4D2B fundido_a_blanco  los 16 colores con destino 7 y empieza el fundido
+p00 0x4D46 componente_de_destino  apunta en 0xEF00 un componente de destino y lo que le falta
+p00 0x4D5F dos_nibbles  B = el nibble alto de (HL) y C el bajo; HL + 1
+p00 0x4D6E paso_de_fundido  desde la interrupcion: si 0xEF60 cuenta, un paso de todos los colores (p00:4E14), los manda y al acabar los fija (p00:4D84)
+p00 0x4D84 fija_paleta  copia los 48 componentes de destino a los actuales
+p00 0x4D99 limpia_destinos  marca los 48 componentes como sin cambio
+p00 0x4DA9 manda_paleta  los 16 colores de 0xEF00 al VDP (p00:4776)
+p00 0x4DD7 manda_paleta_clara  los 16 colores con cada componente mas claro (p00:4E0E)
+p00 0x4E0E aclara  el componente A + 4, sin pasar de 7
+p00 0x4E14 paso_de_colores  suma a cada componente de 0xEF00 su paso
+p00 0x4E37 casilla_del_borde  la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+p00 0x4E3A casilla_mas_scroll  la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+p00 0x4E4A casilla_del_scroll  la casilla de 0xC0CD, 0xC0CC
+p00 0x4E4E sitio_en_el_mapa  HL = 0xE000 + 64 x (E and 0x1F) + (D and 0x3F): la casilla D, E del mapa de 64 x 32 de la RAM
+p00 0x4E65 pon_c0d8_4  0xC0D8 = 4
+p00 0x4E6B registro_6  el registro 6 del VDP (patrones de los sprites) = A + 0x19
+p00 0x4E73 pon_c0d4_1  0xC0D4 = 1
+p00 0x4E79 tramo_de_a  A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+p00 0x4E82 trozo_de_vram_4  la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
+p00 0x4E8A trozo_de_vram  HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
+p00 0x4EA9 pagina_del_trozo  si A >= 12, A - 12 y C = 0xFF; si no, C = 0
+p00 0x4F00 arranca_tipo_0F  la puesta en marcha del actor del tipo 0x0F (tabla p04:6360, desde p04:6344)
+p00 0x4F0D arranca_tipo_0D  la puesta en marcha del actor del tipo 0x0D (tabla p04:6360, desde p04:6344)
+p00 0x4F1C arranca_tipo_0E  la puesta en marcha del actor del tipo 0x0E (tabla p04:6360, desde p04:6344)
+p00 0x500A arranca_tipo_21  la puesta en marcha del actor del tipo 0x21 (tabla p04:6360, desde p04:6344)
+p00 0x50CD arranca_tipo_03  la puesta en marcha del actor del tipo 0x03 (tabla p04:6360, desde p04:6344)
+p00 0x5104 arranca_tipo_01  la puesta en marcha del actor de 11 tipos, entre el 0x01 y el 0x0C (tabla p04:6360, desde p04:6344)
+p00 0x511E arranca_tipo_68  la puesta en marcha del actor del tipo 0x68 (tabla p04:6360, desde p04:6344)
+p00 0x5161 arranca_tipo_37  la puesta en marcha del actor del tipo 0x37 (tabla p04:6360, desde p04:6344)
+p00 0x5291 arranca_tipo_10  la puesta en marcha del actor del tipo 0x10 (tabla p04:6360, desde p04:6344)
+p00 0x5305 arranca_tipo_11  la puesta en marcha del actor del tipo 0x11 (tabla p04:6360, desde p04:6344)
+p00 0x535A arranca_tipo_12  la puesta en marcha del actor del tipo 0x12 (tabla p04:6360, desde p04:6344)
+p00 0x53BB arranca_tipo_13  la puesta en marcha del actor del tipo 0x13 (tabla p04:6360, desde p04:6344)
+p00 0x5438 arranca_tipo_16  la puesta en marcha del actor del tipo 0x16 (tabla p04:6360, desde p04:6344)
+p00 0x54C9 arranca_tipo_18  la puesta en marcha del actor del tipo 0x18 (tabla p04:6360, desde p04:6344)
+p00 0x5592 arranca_tipo_19  la puesta en marcha del actor del tipo 0x19 (tabla p04:6360, desde p04:6344)
+p00 0x576C arranca_tipo_1A  la puesta en marcha del actor del tipo 0x1A (tabla p04:6360, desde p04:6344)
+p00 0x5911 arranca_tipo_55  la puesta en marcha del actor del tipo 0x55 (tabla p04:6360, desde p04:6344)
+p00 0x5A8A arranca_tipo_42  la puesta en marcha del actor del tipo 0x42 (tabla p04:6360, desde p04:6344)
+p00 0x5AA8 arranca_tipo_50  la puesta en marcha del actor del tipo 0x50 (tabla p04:6360, desde p04:6344)
+p00 0x5B2A arranca_tipo_60  la puesta en marcha del actor del tipo 0x60 (tabla p04:6360, desde p04:6344)
+p00 0x5B31 arranca_tipo_47  la puesta en marcha del actor del tipo 0x47 (tabla p04:6360, desde p04:6344)
+p00 0x5BB5 arranca_tipo_1B  la puesta en marcha del actor del tipo 0x1B (tabla p04:6360, desde p04:6344)
+p00 0x5CDF arranca_tipo_31  la puesta en marcha del actor del tipo 0x31 (tabla p04:6360, desde p04:6344)
+p00 0x5D8A arranca_tipo_65  la puesta en marcha del actor del tipo 0x65 (tabla p04:6360, desde p04:6344)
+p04 0x6458 arranca_tipo_51  la puesta en marcha del actor de 9 tipos, entre el 0x51 y el 0x6D (tabla p04:6360, desde p04:6344)
+p05 0x8009 arranca_tipo_15  la puesta en marcha del actor del tipo 0x15 (tabla p04:6360, desde p04:6344)
+p05 0x808F arranca_tipo_17  la puesta en marcha del actor del tipo 0x17 (tabla p04:6360, desde p04:6344)
+p05 0x8150 arranca_tipo_27  la puesta en marcha del actor del tipo 0x27 (tabla p04:6360, desde p04:6344)
+p05 0x8229 arranca_tipo_28  la puesta en marcha del actor del tipo 0x28 (tabla p04:6360, desde p04:6344)
+p05 0x82D0 arranca_tipo_29  la puesta en marcha del actor del tipo 0x29 (tabla p04:6360, desde p04:6344)
+p05 0x8337 arranca_tipo_2A  la puesta en marcha del actor del tipo 0x2A (tabla p04:6360, desde p04:6344)
+p05 0x8347 arranca_tipo_2B  la puesta en marcha del actor del tipo 0x2B (tabla p04:6360, desde p04:6344)
+p05 0x83B5 arranca_tipo_2C  la puesta en marcha del actor del tipo 0x2C (tabla p04:6360, desde p04:6344)
+p05 0x8431 arranca_tipo_2D  la puesta en marcha del actor del tipo 0x2D (tabla p04:6360, desde p04:6344)
+p05 0x8512 arranca_tipo_2E  la puesta en marcha del actor del tipo 0x2E (tabla p04:6360, desde p04:6344)
+p05 0x86A4 arranca_tipo_2F  la puesta en marcha del actor del tipo 0x2F (tabla p04:6360, desde p04:6344)
+p05 0x875F arranca_tipo_30  la puesta en marcha del actor del tipo 0x30 (tabla p04:6360, desde p04:6344)
+p05 0x87BB arranca_tipo_32  la puesta en marcha del actor del tipo 0x32 (tabla p04:6360, desde p04:6344)
+p05 0x8809 arranca_tipo_33  la puesta en marcha del actor del tipo 0x33 (tabla p04:6360, desde p04:6344)
+p05 0x890F arranca_tipo_34  la puesta en marcha del actor del tipo 0x34 (tabla p04:6360, desde p04:6344)
+p05 0x891F arranca_tipo_35  la puesta en marcha del actor del tipo 0x35 (tabla p04:6360, desde p04:6344)
+p05 0x8AAE arranca_tipo_36  la puesta en marcha del actor del tipo 0x36 (tabla p04:6360, desde p04:6344)
+p05 0x8AF1 arranca_tipo_72  la puesta en marcha del actor del tipo 0x72 (tabla p04:6360, desde p04:6344)
+p05 0x8BF9 arranca_tipo_38  la puesta en marcha del actor del tipo 0x38 (tabla p04:6360, desde p04:6344)
+p05 0x8C3A arranca_tipo_39  la puesta en marcha del actor del tipo 0x39 (tabla p04:6360, desde p04:6344)
+p05 0x8D2B arranca_tipo_3A  la puesta en marcha del actor del tipo 0x3A (tabla p04:6360, desde p04:6344)
+p05 0x8D3B arranca_tipo_41  la puesta en marcha del actor del tipo 0x41 (tabla p04:6360, desde p04:6344)
+p05 0x8E94 arranca_tipo_43  la puesta en marcha del actor del tipo 0x43 (tabla p04:6360, desde p04:6344)
+p05 0x8FA7 arranca_tipo_44  la puesta en marcha del actor del tipo 0x44 (tabla p04:6360, desde p04:6344)
+p05 0x9024 arranca_tipo_45  la puesta en marcha del actor del tipo 0x45 (tabla p04:6360, desde p04:6344)
+p05 0x903F arranca_tipo_46  la puesta en marcha del actor del tipo 0x46 (tabla p04:6360, desde p04:6344)
+p05 0x91C9 arranca_tipo_48  la puesta en marcha del actor del tipo 0x48 (tabla p04:6360, desde p04:6344)
+p05 0x92F5 arranca_tipo_49  la puesta en marcha del actor del tipo 0x49 (tabla p04:6360, desde p04:6344)
+p05 0x939A arranca_tipo_4A  la puesta en marcha del actor del tipo 0x4A (tabla p04:6360, desde p04:6344)
+p05 0x9461 arranca_tipo_73  la puesta en marcha del actor del tipo 0x73 (tabla p04:6360, desde p04:6344)
+p05 0x9476 arranca_tipo_4B  la puesta en marcha del actor del tipo 0x4B (tabla p04:6360, desde p04:6344)
+p05 0x9480 arranca_tipo_4C  la puesta en marcha del actor del tipo 0x4C (tabla p04:6360, desde p04:6344)
+p05 0x94FA arranca_tipo_4D  la puesta en marcha del actor del tipo 0x4D (tabla p04:6360, desde p04:6344)
+p05 0x9647 arranca_tipo_4E  la puesta en marcha del actor del tipo 0x4E (tabla p04:6360, desde p04:6344)
+p05 0x96A0 arranca_tipo_4F  la puesta en marcha del actor del tipo 0x4F (tabla p04:6360, desde p04:6344)
+p05 0x96C1 arranca_tipo_79  la puesta en marcha del actor del tipo 0x79 (tabla p04:6360, desde p04:6344)
+p05 0x980B arranca_tipo_5A  la puesta en marcha del actor del tipo 0x5A (tabla p04:6360, desde p04:6344)
+p05 0x9940 arranca_tipo_52  la puesta en marcha del actor del tipo 0x52 (tabla p04:6360, desde p04:6344)
+p05 0x994C arranca_tipo_53  la puesta en marcha del actor del tipo 0x53 (tabla p04:6360, desde p04:6344)
+p05 0x99A3 arranca_tipo_54  la puesta en marcha del actor del tipo 0x54 (tabla p04:6360, desde p04:6344)
+p05 0x9A40 arranca_tipo_62  la puesta en marcha del actor del tipo 0x62 (tabla p04:6360, desde p04:6344)
+p05 0x9A82 arranca_tipo_69  la puesta en marcha del actor del tipo 0x69 (tabla p04:6360, desde p04:6344)
+p05 0x9BFA arranca_tipo_61  la puesta en marcha del actor del tipo 0x61 (tabla p04:6360, desde p04:6344)
+p05 0x9C72 arranca_tipo_66  la puesta en marcha del actor del tipo 0x66 (tabla p04:6360, desde p04:6344)
+p05 0x9D1D arranca_tipo_67  la puesta en marcha del actor del tipo 0x67 (tabla p04:6360, desde p04:6344)
+p05 0x9D1E arranca_tipo_70  la puesta en marcha del actor del tipo 0x70 (tabla p04:6360, desde p04:6344)
+p05 0x9E7A arranca_tipo_74  la puesta en marcha del actor del tipo 0x74 (tabla p04:6360, desde p04:6344)
+p05 0x9E7B arranca_tipo_75  la puesta en marcha del actor del tipo 0x75 (tabla p04:6360, desde p04:6344)
+p05 0x9F4D arranca_tipo_6E  la puesta en marcha del actor del tipo 0x6E (tabla p04:6360, desde p04:6344)
+p05 0x9FBE arranca_tipo_6F  la puesta en marcha del actor del tipo 0x6F (tabla p04:6360, desde p04:6344)
+p05 0x9FFF arranca_tipo_63  la puesta en marcha del actor del tipo 0x63 (tabla p04:6360, desde p04:6344)
+p06 0xA00F arranca_tipo_7A  la puesta en marcha del actor del tipo 0x7A (tabla p04:6360, desde p04:6344)
+p06 0xA191 arranca_tipo_3B  la puesta en marcha del actor del tipo 0x3B (tabla p04:6360, desde p04:6344)
+p06 0xA2B7 arranca_tipo_3C  la puesta en marcha del actor del tipo 0x3C (tabla p04:6360, desde p04:6344)
+p06 0xA300 arranca_tipo_64  la puesta en marcha del actor del tipo 0x64 (tabla p04:6360, desde p04:6344)
+p06 0xA536 arranca_tipo_3D  la puesta en marcha del actor del tipo 0x3D (tabla p04:6360, desde p04:6344)
+p06 0xA58B arranca_tipo_40  la puesta en marcha del actor del tipo 0x40 (tabla p04:6360, desde p04:6344)
+p06 0xA667 arranca_tipo_3E  la puesta en marcha del actor del tipo 0x3E (tabla p04:6360, desde p04:6344)
+p06 0xA853 arranca_tipo_3F  la puesta en marcha del actor del tipo 0x3F (tabla p04:6360, desde p04:6344)
+p06 0xAA48 arranca_tipo_78  la puesta en marcha del actor del tipo 0x78 (tabla p04:6360, desde p04:6344)
+p06 0xAE2A arranca_tipo_14  la puesta en marcha del actor del tipo 0x14 (tabla p04:6360, desde p04:6344)
+p06 0xB06F arranca_tipo_58  la puesta en marcha del actor del tipo 0x58 (tabla p04:6360, desde p04:6344)
+p06 0xB0C1 arranca_tipo_71  la puesta en marcha del actor del tipo 0x71 (tabla p04:6360, desde p04:6344)
+p06 0xB0E3 arranca_tipo_77  la puesta en marcha del actor del tipo 0x77 (tabla p04:6360, desde p04:6344)
+p06 0xB42A arranca_tipo_76  la puesta en marcha del actor del tipo 0x76 (tabla p04:6360, desde p04:6344)
+p06 0xB54B arranca_tipo_7B  la puesta en marcha del actor del tipo 0x7B (tabla p04:6360, desde p04:6344)
+p06 0xB6C8 arranca_tipo_59  la puesta en marcha del actor del tipo 0x59 (tabla p04:6360, desde p04:6344)
+p06 0xB6E7 arranca_tipo_5E  la puesta en marcha del actor del tipo 0x5E (tabla p04:6360, desde p04:6344)
+p06 0xB782 arranca_tipo_7C  la puesta en marcha del actor del tipo 0x7C (tabla p04:6360, desde p04:6344)
+p06 0xBA28 arranca_tipo_5C  la puesta en marcha del actor del tipo 0x5C (tabla p04:6360, desde p04:6344)
+p06 0xBA41 arranca_tipo_1C  la puesta en marcha del actor del tipo 0x1C (tabla p04:6360, desde p04:6344)
+p06 0xBAAB arranca_tipo_1D  la puesta en marcha del actor del tipo 0x1D (tabla p04:6360, desde p04:6344)
+p06 0xBB75 arranca_tipo_1E  la puesta en marcha del actor del tipo 0x1E (tabla p04:6360, desde p04:6344)
+p06 0xBC53 arranca_tipo_1F  la puesta en marcha del actor del tipo 0x1F (tabla p04:6360, desde p04:6344)
+p06 0xBCFE arranca_tipo_20  la puesta en marcha del actor del tipo 0x20 (tabla p04:6360, desde p04:6344)
+p06 0xBD18 arranca_tipo_22  la puesta en marcha del actor del tipo 0x22 (tabla p04:6360, desde p04:6344)
+p06 0xBD7A arranca_tipo_23  la puesta en marcha del actor del tipo 0x23 (tabla p04:6360, desde p04:6344)
+p06 0xBDA1 arranca_tipo_24  la puesta en marcha del actor del tipo 0x24 (tabla p04:6360, desde p04:6344)
+p06 0xBDE7 arranca_tipo_25  la puesta en marcha del actor del tipo 0x25 (tabla p04:6360, desde p04:6344)
+p06 0xBE6B arranca_tipo_26  la puesta en marcha del actor del tipo 0x26 (tabla p04:6360, desde p04:6344)
+p06 0xBF29 arranca_tipo_56  la puesta en marcha del actor del tipo 0x56 (tabla p04:6360, desde p04:6344)
+p00 0x4F33 mueve_tipo_0E  lo que hace en cada cuadro el actor del tipo 0x0E (tabla p04:64D1, desde p04:64B9)
+p00 0x4FF1 mueve_tipo_21  lo que hace en cada cuadro el actor del tipo 0x21 (tabla p04:64D1, desde p04:64B9)
+p00 0x50D0 mueve_tipo_03  lo que hace en cada cuadro el actor del tipo 0x03 (tabla p04:64D1, desde p04:64B9)
+p00 0x5111 mueve_tipo_01  lo que hace en cada cuadro el actor de 11 tipos, entre el 0x01 y el 0x0C (tabla p04:64D1, desde p04:64B9)
+p00 0x5112 mueve_tipo_68  lo que hace en cada cuadro el actor del tipo 0x68 (tabla p04:64D1, desde p04:64B9)
+p00 0x514C mueve_tipo_37  lo que hace en cada cuadro el actor del tipo 0x37 (tabla p04:64D1, desde p04:64B9)
+p00 0x5288 mueve_tipo_10  lo que hace en cada cuadro el actor del tipo 0x10 (tabla p04:64D1, desde p04:64B9)
+p00 0x52F4 mueve_tipo_11  lo que hace en cada cuadro el actor del tipo 0x11 (tabla p04:64D1, desde p04:64B9)
+p00 0x534E mueve_tipo_12  lo que hace en cada cuadro el actor del tipo 0x12 (tabla p04:64D1, desde p04:64B9)
+p00 0x53C4 mueve_tipo_13  lo que hace en cada cuadro el actor del tipo 0x13 (tabla p04:64D1, desde p04:64B9)
+p00 0x542C mueve_tipo_16  lo que hace en cada cuadro el actor del tipo 0x16 (tabla p04:64D1, desde p04:64B9)
+p00 0x54C1 mueve_tipo_18  lo que hace en cada cuadro el actor del tipo 0x18 (tabla p04:64D1, desde p04:64B9)
+p00 0x557C mueve_tipo_19  lo que hace en cada cuadro el actor del tipo 0x19 (tabla p04:64D1, desde p04:64B9)
+p00 0x5763 mueve_tipo_1A  lo que hace en cada cuadro el actor del tipo 0x1A (tabla p04:64D1, desde p04:64B9)
+p00 0x58F0 mueve_tipo_55  lo que hace en cada cuadro el actor del tipo 0x55 (tabla p04:64D1, desde p04:64B9)
+p00 0x5A84 mueve_tipo_42  lo que hace en cada cuadro el actor del tipo 0x42 (tabla p04:64D1, desde p04:64B9)
+p00 0x5AA2 mueve_tipo_50  lo que hace en cada cuadro el actor del tipo 0x50 (tabla p04:64D1, desde p04:64B9)
+p00 0x5B19 mueve_tipo_60  lo que hace en cada cuadro el actor del tipo 0x60 (tabla p04:64D1, desde p04:64B9)
+p00 0x5B2B mueve_tipo_47  lo que hace en cada cuadro el actor del tipo 0x47 (tabla p04:64D1, desde p04:64B9)
+p00 0x5BC2 mueve_tipo_1B  lo que hace en cada cuadro el actor del tipo 0x1B (tabla p04:64D1, desde p04:64B9)
+p00 0x5CF3 mueve_tipo_31  lo que hace en cada cuadro el actor del tipo 0x31 (tabla p04:64D1, desde p04:64B9)
+p00 0x5DA0 mueve_tipo_65  lo que hace en cada cuadro el actor del tipo 0x65 (tabla p04:64D1, desde p04:64B9)
+p04 0x66C1 mueve_tipo_57  lo que hace en cada cuadro el actor de los tipos 0x57, 0x5B, 0x5D, 0x6C y 0x6D (tabla p04:64D1, desde p04:64B9)
+p05 0x8000 mueve_tipo_15  lo que hace en cada cuadro el actor del tipo 0x15 (tabla p04:64D1, desde p04:64B9)
+p05 0x807F mueve_tipo_17  lo que hace en cada cuadro el actor del tipo 0x17 (tabla p04:64D1, desde p04:64B9)
+p05 0x8170 mueve_tipo_27  lo que hace en cada cuadro el actor del tipo 0x27 (tabla p04:64D1, desde p04:64B9)
+p05 0x821D mueve_tipo_28  lo que hace en cada cuadro el actor del tipo 0x28 (tabla p04:64D1, desde p04:64B9)
+p05 0x82CA mueve_tipo_29  lo que hace en cada cuadro el actor del tipo 0x29 (tabla p04:64D1, desde p04:64B9)
+p05 0x8338 mueve_tipo_2A  lo que hace en cada cuadro el actor del tipo 0x2A (tabla p04:64D1, desde p04:64B9)
+p05 0x8341 mueve_tipo_2B  lo que hace en cada cuadro el actor del tipo 0x2B (tabla p04:64D1, desde p04:64B9)
+p05 0x83BF mueve_tipo_2C  lo que hace en cada cuadro el actor del tipo 0x2C (tabla p04:64D1, desde p04:64B9)
+p05 0x844D mueve_tipo_2D  lo que hace en cada cuadro el actor del tipo 0x2D (tabla p04:64D1, desde p04:64B9)
+p05 0x84F9 mueve_tipo_2E  lo que hace en cada cuadro el actor del tipo 0x2E (tabla p04:64D1, desde p04:64B9)
+p05 0x8694 mueve_tipo_2F  lo que hace en cada cuadro el actor del tipo 0x2F (tabla p04:64D1, desde p04:64B9)
+p05 0x879B mueve_tipo_30  lo que hace en cada cuadro el actor del tipo 0x30 (tabla p04:64D1, desde p04:64B9)
+p05 0x87C1 mueve_tipo_32  lo que hace en cada cuadro el actor del tipo 0x32 (tabla p04:64D1, desde p04:64B9)
+p05 0x87F1 mueve_tipo_33  lo que hace en cada cuadro el actor del tipo 0x33 (tabla p04:64D1, desde p04:64B9)
+p05 0x8910 mueve_tipo_35  lo que hace en cada cuadro el actor del tipo 0x35 (tabla p04:64D1, desde p04:64B9)
+p05 0x8AD7 mueve_tipo_72  lo que hace en cada cuadro el actor del tipo 0x72 (tabla p04:64D1, desde p04:64B9)
+p05 0x8BF3 mueve_tipo_38  lo que hace en cada cuadro el actor del tipo 0x38 (tabla p04:64D1, desde p04:64B9)
+p05 0x8C34 mueve_tipo_39  lo que hace en cada cuadro el actor del tipo 0x39 (tabla p04:64D1, desde p04:64B9)
+p05 0x8D2C mueve_tipo_41  lo que hace en cada cuadro el actor del tipo 0x41 (tabla p04:64D1, desde p04:64B9)
+p05 0x8E81 mueve_tipo_43  lo que hace en cada cuadro el actor del tipo 0x43 (tabla p04:64D1, desde p04:64B9)
+p05 0x8F94 mueve_tipo_44  lo que hace en cada cuadro el actor del tipo 0x44 (tabla p04:64D1, desde p04:64B9)
+p05 0x903C mueve_tipo_45  lo que hace en cada cuadro el actor del tipo 0x45 (tabla p04:64D1, desde p04:64B9)
+p05 0x9054 mueve_tipo_46  lo que hace en cada cuadro el actor del tipo 0x46 (tabla p04:64D1, desde p04:64B9)
+p05 0x91AC mueve_tipo_48  lo que hace en cada cuadro el actor del tipo 0x48 (tabla p04:64D1, desde p04:64B9)
+p05 0x92E4 mueve_tipo_49  lo que hace en cada cuadro el actor del tipo 0x49 (tabla p04:64D1, desde p04:64B9)
+p05 0x937B mueve_tipo_4A  lo que hace en cada cuadro el actor del tipo 0x4A (tabla p04:64D1, desde p04:64B9)
+p05 0x9473 mueve_tipo_73  lo que hace en cada cuadro el actor del tipo 0x73 (tabla p04:64D1, desde p04:64B9)
+p05 0x9477 mueve_tipo_4C  lo que hace en cada cuadro el actor del tipo 0x4C (tabla p04:64D1, desde p04:64B9)
+p05 0x9508 mueve_tipo_4D  lo que hace en cada cuadro el actor del tipo 0x4D (tabla p04:64D1, desde p04:64B9)
+p05 0x9655 mueve_tipo_4E  lo que hace en cada cuadro el actor del tipo 0x4E (tabla p04:64D1, desde p04:64B9)
+p05 0x9658 mueve_tipo_4F  lo que hace en cada cuadro el actor del tipo 0x4F (tabla p04:64D1, desde p04:64B9)
+p05 0x96AC mueve_tipo_79  lo que hace en cada cuadro el actor del tipo 0x79 (tabla p04:64D1, desde p04:64B9)
+p05 0x9805 mueve_tipo_5A  lo que hace en cada cuadro el actor del tipo 0x5A (tabla p04:64D1, desde p04:64B9)
+p05 0x983D mueve_tipo_51  lo que hace en cada cuadro el actor del tipo 0x51 (tabla p04:64D1, desde p04:64B9)
+p05 0x999A mueve_tipo_54  lo que hace en cada cuadro el actor del tipo 0x54 (tabla p04:64D1, desde p04:64B9)
+p05 0x9A39 mueve_tipo_5F  lo que hace en cada cuadro el actor del tipo 0x5F (tabla p04:64D1, desde p04:64B9)
+p05 0x9A41 mueve_tipo_62  lo que hace en cada cuadro el actor del tipo 0x62 (tabla p04:64D1, desde p04:64B9)
+p05 0x9A7C mueve_tipo_69  lo que hace en cada cuadro el actor del tipo 0x69 (tabla p04:64D1, desde p04:64B9)
+p05 0x9AD7 mueve_tipo_6A  lo que hace en cada cuadro el actor del tipo 0x6A (tabla p04:64D1, desde p04:64B9)
+p05 0x9B38 mueve_tipo_6B  lo que hace en cada cuadro el actor del tipo 0x6B (tabla p04:64D1, desde p04:64B9)
+p05 0x9C3B mueve_tipo_61  lo que hace en cada cuadro el actor del tipo 0x61 (tabla p04:64D1, desde p04:64B9)
+p05 0x9C6C mueve_tipo_66  lo que hace en cada cuadro el actor del tipo 0x66 (tabla p04:64D1, desde p04:64B9)
+p05 0x9D60 mueve_tipo_70  lo que hace en cada cuadro el actor del tipo 0x70 (tabla p04:64D1, desde p04:64B9)
+p05 0x9E7C mueve_tipo_75  lo que hace en cada cuadro el actor del tipo 0x75 (tabla p04:64D1, desde p04:64B9)
+p05 0x9F47 mueve_tipo_6E  lo que hace en cada cuadro el actor del tipo 0x6E (tabla p04:64D1, desde p04:64B9)
+p05 0x9FB0 mueve_tipo_6F  lo que hace en cada cuadro el actor del tipo 0x6F (tabla p04:64D1, desde p04:64B9)
+p06 0xA000 mueve_tipo_7A  lo que hace en cada cuadro el actor del tipo 0x7A (tabla p04:64D1, desde p04:64B9)
+p06 0xA17B mueve_tipo_3B  lo que hace en cada cuadro el actor del tipo 0x3B (tabla p04:64D1, desde p04:64B9)
+p06 0xA2B1 mueve_tipo_3C  lo que hace en cada cuadro el actor del tipo 0x3C (tabla p04:64D1, desde p04:64B9)
+p06 0xA2D8 mueve_tipo_64  lo que hace en cada cuadro el actor del tipo 0x64 (tabla p04:64D1, desde p04:64B9)
+p06 0xA530 mueve_tipo_3D  lo que hace en cada cuadro el actor del tipo 0x3D (tabla p04:64D1, desde p04:64B9)
+p06 0xA57F mueve_tipo_40  lo que hace en cada cuadro el actor del tipo 0x40 (tabla p04:64D1, desde p04:64B9)
+p06 0xA647 mueve_tipo_3E  lo que hace en cada cuadro el actor del tipo 0x3E (tabla p04:64D1, desde p04:64B9)
+p06 0xAA19 mueve_tipo_78  lo que hace en cada cuadro el actor del tipo 0x78 (tabla p04:64D1, desde p04:64B9)
+p06 0xAE0A mueve_tipo_14  lo que hace en cada cuadro el actor del tipo 0x14 (tabla p04:64D1, desde p04:64B9)
+p06 0xB066 mueve_tipo_58  lo que hace en cada cuadro el actor del tipo 0x58 (tabla p04:64D1, desde p04:64B9)
+p06 0xB0CC mueve_tipo_77  lo que hace en cada cuadro el actor del tipo 0x77 (tabla p04:64D1, desde p04:64B9)
+p06 0xB423 mueve_tipo_76  lo que hace en cada cuadro el actor del tipo 0x76 (tabla p04:64D1, desde p04:64B9)
+p06 0xB513 mueve_tipo_7B  lo que hace en cada cuadro el actor del tipo 0x7B (tabla p04:64D1, desde p04:64B9)
+p06 0xB6DE mueve_tipo_5E  lo que hace en cada cuadro el actor del tipo 0x5E (tabla p04:64D1, desde p04:64B9)
+p06 0xB76C mueve_tipo_7C  lo que hace en cada cuadro el actor del tipo 0x7C (tabla p04:64D1, desde p04:64B9)
+p06 0xBA3B mueve_tipo_1C  lo que hace en cada cuadro el actor del tipo 0x1C (tabla p04:64D1, desde p04:64B9)
+p06 0xBA9F mueve_tipo_1D  lo que hace en cada cuadro el actor del tipo 0x1D (tabla p04:64D1, desde p04:64B9)
+p06 0xBB69 mueve_tipo_1E  lo que hace en cada cuadro el actor del tipo 0x1E (tabla p04:64D1, desde p04:64B9)
+p06 0xBC3A mueve_tipo_1F  lo que hace en cada cuadro el actor del tipo 0x1F (tabla p04:64D1, desde p04:64B9)
+p06 0xBCEC mueve_tipo_20  lo que hace en cada cuadro el actor del tipo 0x20 (tabla p04:64D1, desde p04:64B9)
+p06 0xBD0F mueve_tipo_22  lo que hace en cada cuadro el actor del tipo 0x22 (tabla p04:64D1, desde p04:64B9)
+p06 0xBD74 mueve_tipo_23  lo que hace en cada cuadro el actor del tipo 0x23 (tabla p04:64D1, desde p04:64B9)
+p06 0xBD9B mueve_tipo_24  lo que hace en cada cuadro el actor del tipo 0x24 (tabla p04:64D1, desde p04:64B9)
+p06 0xBDDB mueve_tipo_25  lo que hace en cada cuadro el actor del tipo 0x25 (tabla p04:64D1, desde p04:64B9)
+p06 0xBE5F mueve_tipo_26  lo que hace en cada cuadro el actor del tipo 0x26 (tabla p04:64D1, desde p04:64B9)
+p06 0xBF14 mueve_tipo_56  lo que hace en cada cuadro el actor del tipo 0x56 (tabla p04:64D1, desde p04:64B9)
+p04 0x66C2 tras_mover_66C2  a donde vuelve el movimiento del actor de 10 tipos, entre el 0x1F y el 0x7C (la primera palabra de p04:64D1, que se empuja)
+p04 0x6DD3 tras_mover_6DD3  a donde vuelve el movimiento del actor de los tipos 0x1B, 0x30, 0x37 y 0x43 (la primera palabra de p04:64D1, que se empuja)
+p04 0x6DE1 tras_mover_6DE1  a donde vuelve el movimiento del actor de 10 tipos, entre el 0x1C y el 0x4F (la primera palabra de p04:64D1, que se empuja)
+p04 0x6DF5 tras_mover_6DF5  a donde vuelve el movimiento del actor de 64 tipos, entre el 0x01 y el 0x74 (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E09 tras_mover_6E09  a donde vuelve el movimiento del actor de los tipos 0x2A y 0x2D (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E1D tras_mover_6E1D  a donde vuelve el movimiento del actor de los tipos 0x46, 0x49 y 0x73 (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E35 tras_mover_6E35  a donde vuelve el movimiento del actor de 16 tipos, entre el 0x0E y el 0x79 (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E44 tras_mover_6E44  a donde vuelve el movimiento del actor de 9 tipos, entre el 0x14 y el 0x7B (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E6D tras_mover_6E6D  a donde vuelve el movimiento del actor del tipo 0x5F (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E6E tras_mover_6E6E  a donde vuelve el movimiento del actor de los tipos 0x60, 0x61, 0x63 y 0x67 (la primera palabra de p04:64D1, que se empuja)
+p04 0x6E81 tras_mover_6E81  a donde vuelve el movimiento del actor del tipo 0x75 (la primera palabra de p04:64D1, que se empuja)
+p04 0x671A busca_ficha_libre  si quedan fichas (0xCE44), busca la primera libre de las 20 de 0xCE80: IX y C = su numero (1-20); si no, cuenta el fallo en 0xCE50 y vuelve con acarreo
+p04 0x6747 borra_ficha  los 0x40 bytes de la ficha de IX a 0
+p04 0x6754 pon_sitio_del_guion  la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
+p04 0x6796 siguiente_de_la_lista  el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
+p04 0x67B0 tipo_y_lista_de_hl  el tipo y la lista de un actor nuevo desde HL
+p04 0x67CE lista_del_padre  la lista del actor de IY desde su indice
+p04 0x67DD tipo_de_la_lista  el tipo del actor, el siguiente byte de su lista
+p04 0x67E7 pon_lista  apunta la lista del actor a HL: largo en ix+0x2F (y con el bit 7, algo mas en ix+0x30)
+p04 0x67FE crea_hijo_a  si hay ficha, crea un actor unido al de IY (p04:6938)
+p04 0x6814 crea_hijo_b  si hay ficha, crea un actor unido al de IY (p04:694D)
+p04 0x682A crea_hijo_c  p04:6836 sin perder el indice de la lista
+p04 0x6836 crea_hijo_d  si hay ficha, crea un actor unido al de IY (p04:6964)
+p04 0x684C crea_actor_tipo_a  si hay ficha, crea un actor del tipo D (p04:66DC)
+p04 0x685D crea_actor_tipo_b  si hay ficha, crea un actor del tipo D unido al de IY
+p04 0x6871 hay_fichas  acarreo si no quedan las fichas que pide A (0xCE44)
+p04 0x6886 quita_bit7_del_tipo  el bit 7 del tipo del actor de IY a 0
+p04 0x688B busca_hermano  busca en las 20 fichas la que tiene el mismo numero de grupo (ix+0x2D) y la cuenta de ix+0x39: IY; si no, IY = 0xD700 y acarreo
+p04 0x68B9 padre_por_35  IY = la ficha de ix+0x35 (0xD700 y acarreo si no hay)
+p04 0x68C4 padre_por_36  IY = la ficha de ix+0x36 (0xD700 y acarreo si no hay)
+p04 0x68DE padre  IY = la ficha de ix+0x34 (bits 0-5); compara su numero
+p04 0x68F8 ficha_a_iy  IY = la ficha numero A (p04:68FF)
+p04 0x68FF ficha_numero  HL = 0xCE80 + 0x40 x (A - 1)
+p04 0x6926 hijo_encima  la Y y la X del actor de IY = las de IX
+p04 0x6929 hijo_al_lado  la Y y la X del actor de IY = las de IX mas C y B
+p04 0x6938 une_hijo_a  une el actor nuevo al de IY (p04:694D) y, si su numero es menor, lo pasa al tipo 0x5F
+p04 0x694D une_hijo  apunta en los dos actores la union (ix+0x34, ix+0x37, ix+0x38, ix+0x3B)
+p04 0x6964 une_hijo_en_cadena  une el actor nuevo al de IY detras del ultimo de la cadena (ix+0x33, ix+0x35, ix+0x36)
+p04 0x699E indice_a_0  el indice de la lista del actor (ix+0x2E) a 0
+p04 0x699F indice_a_a  el indice de la lista del actor = A
+p04 0x69A3 crea_actor  un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
+p04 0x69BF crea_actor_unido  p04:69A3 y lo une al de IY
+p04 0x69D7 prepara_destello  la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
+p04 0x69F2 prepara_destello_8  p04:69D7 con 0xCE4B = 8
+p04 0x69FB colores_de_destello  los colores de la tabla de p07 (bancos 4-7-8, p04:6A3C) y el color 0 a negro
+p04 0x6A13 destello_del_cuadro  p04:6A22 con los bancos 4-7-8
+p04 0x6A1C quita_destello  el bit 1 de 0xCE48 a 0
+p04 0x6A22 paso_de_destello  cada 4 cuadros (0xCA02) cambia 8 colores con las tablas de p07:86C0 o p07:86D2 por fase (0xCE4B)
+p04 0x6A4F tabla_por_fase  HL = la palabra 0xCE4B de la tabla de DE
+p04 0x6A5C color_de_tabla  un color de la tabla: el numero y los dos bytes (D, E)
+p04 0x6A6C colores_de_6606  los 8 colores de la tabla p04:6606
+p04 0x6A7F mueve_actor  la posicion del actor mas su velocidad (Y y X, con fraccion)
+p04 0x6A8F suma_16  suma 16 bits de (DE) a (HL), avanzando los dos
+p04 0x6A9A acelera_actor  la velocidad del actor mas su aceleracion (Y y X)
+p04 0x6AAC dibujo_por_fase  el dibujo del actor (ix+5) de la tabla de DE por la fase
+p04 0x6AB8 siguiente_dibujo  ix+5 + 1, a 0 al llegar a B
+p04 0x6AC2 siguiente_ix6  ix+6 + 1, a 0 al llegar a B
+p04 0x6ACC sube_hasta_b  A + 1, a 0 si llega a B
+p04 0x6AD2 baja_cuenta  baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
+p04 0x6ADB pon_cuenta  ix+0x17 = A
+p04 0x6ADF baja_cuenta_2  baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
+p04 0x6AE8 pon_cuenta_2  ix+0x18 = A
+p04 0x6AEC vaiven  ix+0x18 sube hasta B y luego baja (el bit 7 dice hacia donde)
+p04 0x6B07 compara_velocidad_y  Z si el valor absoluto de la velocidad en Y es DE
+p04 0x6B15 compara_velocidad_x  Z si el valor absoluto de la velocidad en X es DE
+p04 0x6B23 invierte_aceleracion_y  la aceleracion en Y cambiada de signo
+p04 0x6B33 invierte_aceleracion_x  la aceleracion en X cambiada de signo
+p04 0x6B43 invierte_velocidad_y  la velocidad en Y cambiada de signo
+p04 0x6B53 invierte_velocidad_x  la velocidad en X cambiada de signo
+p04 0x6B63 rumbo_con_velocidad  0xCA26 = A y p04:7270, p04:7240
+p04 0x6B6C velocidad_hacia_iy  la velocidad del actor hacia el de IY con la rapidez A (p04:6B85 y p04:7240)
+p04 0x6B7F rumbo_hacia  p04:6B85 y p04:7240 sin guardar la velocidad
+p04 0x6B85 direccion_hacia  0xCA26 = A, la direccion hacia el de IY (p04:71D6) y p04:7270
+p04 0x6B8E direccion_b  p04:71B8 y p04:7270
+p04 0x6B94 octante_de_la_nave  C = hacia donde queda la nave (0xCA48, 0xCA4A) desde el actor, de 0 a 7
+p04 0x6BE6 velocidad_a_0  las dos velocidades a 0
+p04 0x6BEB pon_velocidad  la velocidad en Y = HL y en X = DE
+p04 0x6BF0 velocidad_y_a_0  la velocidad en Y a 0
+p04 0x6BF3 pon_velocidad_y  la velocidad en Y = HL
+p04 0x6BFA velocidad_x_a_0  la velocidad en X a 0
+p04 0x6BFD pon_velocidad_x  la velocidad en X = DE
+p04 0x6C04 pon_aceleracion  la aceleracion en X = DE y en Y = HL
+p04 0x6C0C pon_aceleracion_y  la aceleracion en Y = HL
+p04 0x6C16 pon_aceleracion_x  la aceleracion en X = DE
+p04 0x6C1D siguiente_paso  el paso del actor + 1
+p04 0x6C21 lo_lleva_el_scroll  si el bit 2 de ix+0x15, la Y y la X del actor mas 0xCA12 y 0xCA14
+p04 0x6C26 scroll_y_x  la Y y la X del actor mas 0xCA12 y 0xCA14
+p04 0x6C29 scroll_y  la Y del actor mas 0xCA12
+p04 0x6C3A scroll_x  la X del actor mas 0xCA14
+p04 0x6C4B llamada_lejana_a  guarda IX e IY y hace la llamada lejana que va detras
+p04 0x6C5C llamada_lejana_b  guarda IX e IY y hace la llamada lejana que va detras
+p04 0x6C6D pon_c0dc  0xC0DC = HL y 0xC0DE = DE
+p04 0x6E2C tipo_del_actor  A = el tipo del actor; Z si la ficha esta libre y acarreo si tiene el bit 7
+p04 0x6E98 quita_actor  el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+p04 0x6EAC libera_ficha  el tipo y las banderas del actor a 0
+p04 0x6EB4 suelta_sprites  los sprites del actor (ix+0x19 a ix+0x1C) a 0
+p04 0x6000 vector_guion  jp p04:625E (los actores que salen por el guion de la fase)
+p04 0x6003 vector_prepara_guion  jp p04:6214
+p04 0x6006 vector_actores_del_cuadro  jp p04:601E
+p04 0x6009 vector_borra_actores  jp p04:60B4
+p04 0x600C vector_6459  jp p04:6459
+p04 0x600F vector_mueve_un_actor  jp p04:606A
+p04 0x6012 vector_actores_con_el_scroll  jp p04:62CB
+p04 0x6015 vector_78E1  jp p04:78E1
+p04 0x6018 vector_7DE4  jp p04:7DE4
+p04 0x601B vector_7DF1  jp p04:7DF1
+p04 0x601E actores_del_cuadro  el efecto de la fase (p04:60FA), los 20 actores (p04:6056), el fin de fase (p04:6035), 0xCB06, los 18 pequenos (p04:6485) y, con 0xCE74, p04:607D
+p04 0x6035 fin_de_fase_en_dos_pasos  si 0xCE4F no es 0: la primera vez lo pone a 2, la segunda acaba la fase (0xCA0F = 1)
+p04 0x6048 mira_cb06  si el nibble bajo de 0xCB06 es 2 o mas, 0xCB06 = 0x80
+p04 0x6056 mueve_actores  los 20 actores de 0xCE80 (p04:606A)
+p04 0x606A mueve_un_actor  si la ficha no esta libre: con el bit 7 del tipo p04:7D9C; si no, p04:64A2
+p04 0x6074 quita_si_lo_quitan  quita el actor si el bit 6 de ix+0x34
+p04 0x607D mira_tipo_1B  a los actores de tipo 0x1B que tienen debajo los caracteres 0xCB-0xCD les pone ix+0x16 = 0 e ix+4 = 1; 0xCE74 a 0
+p04 0x609A mira_lo_de_debajo  el caracter del mapa bajo el actor (p04:7B06) y, si es 0xCB-0xCD, ix+0x16 = 0 e ix+4 = 1
+p04 0x60B4 borra_actores  borra las fichas de 0xCE40-0xD17F y 0xD440-0xD69F y deja 20 libres
+p04 0x60D6 orden_5F  la entrada del guion de tipo 0x5F: su tercer byte elige una orden (p04:60E9 o p04:60F4)
+p04 0x60E9 orden_5F_1  0xCE60 y 0xCE61 con los dos bytes de la entrada
+p04 0x60F4 orden_5F_2  0xCE60 con el byte de la entrada
+p04 0x60FA efecto_de_fase  0xCE60 = 1: colores que cambian cada dos cuadros (tabla p04:617E por 0xCE61); 2: quita todos los actores salvo los de tipo 0x65
+p04 0x6214 prepara_guion  si 0xE900 esta vacio copia el guion de la fase (p04:6222); 0xCE42 = 0xE900
+p04 0x6222 copia_guion  0x600 bytes del guion de la fase (p05:93B8 + 2 x fase) a 0xE900
+p04 0x6239 actor_de_ee80  si 0xCE7F: un actor nuevo con la lista de 0xEE81 (largo en 0xEE80-0xEE81) y su puesta en marcha
+p04 0x625E guion_de_la_fase  recorre el guion de 0xE900 desde 0xCE42: cada entrada [posicion alta][baja][tipo][largo]...; cuando el scroll (0xCA34) llega a la posicion, crea el actor (p04:66D0) y lo pone en marcha (p04:6344)
+p04 0x62BB es_orden_5F  Z si el tipo es 0x5F, despues de hacer la orden (p04:60D6)
+p04 0x62C4 guion_desde_e900  0xCA34 = 0xE900
+p04 0x62CB actores_con_el_scroll  a los 20 actores con el bit 2 de ix+0x15, la Y y la X mas 0xCA12 y 0xCA14
+p04 0x6306 tipo_en_la_lista  Z si B esta en la lista de p04:6315 (acaba en 0xFF); acarreo si no
+p04 0x6344 arranca_actor  la puesta en marcha del actor por su tipo (tabla p04:6360, tipo - 1); nada si la ficha esta libre o el tipo lleva el bit 7
+p04 0x6459 actor_especial  con los bancos 4-5-6: el tipo 3 a p00:5100, el 0x4D a p05:95DD y el 0x27 a p05:81AA
+p04 0x6472 actor_especial_por_tipo  el salto de p04:6459 por el tipo
+p04 0x6485 mueve_actores_pequenos  los 18 actores de 0x20 bytes de 0xD460 (p04:64A2)
+p04 0x649F mueve_actor_pequeno  jp p04:64A2
+p04 0x64A2 mueve_y_actua  mueve el actor (p04:6A7F), apunta su tipo en 0xF0FE, le aplica el scroll (salvo al tipo 0x5F) y hace lo de su tipo (p04:64B9)
+p04 0x64B9 accion_por_tipo  con A = tipo - 1: empuja la primera palabra de la entrada de p04:64D1 (a donde se vuelve) y salta a la segunda
+p04 0x66D0 crea_actor_del_guion  ficha libre, borrada, tipo y lista desde HL (p04:67B0) y los datos del tipo (p04:66F4)
+p04 0x66DC crea_actor_tipo_d  ficha libre, borrada, tipo D, numero C y los datos del tipo
+p04 0x66EB crea_actor_como_iy  ficha libre, borrada, con la lista del actor de IY (p04:67CE) y los datos del tipo
+p04 0x66F4 datos_del_tipo  con los bancos 4-2-3: los 4 bytes del tipo en p02:9100 + 4 x (tipo - 1) a ix+0x13-0x16
+p04 0x6C75 scroll_por_el_actor  con la Y del actor mas A y su X calcula 0xCA1C, 0xC0BB, 0xCA1A y 0xC0D2
+p04 0x6C7D scroll_por_el_actor_d  lo mismo con D ya puesto
+p04 0x6CAE vaiven_y_acelera  p04:6CB5 y la velocidad mas la aceleracion
+p04 0x6CB5 vaiven_de_velocidad  si el valor absoluto de la velocidad en Y pasa de DE, o el de la X de HL, cambia de signo esa aceleracion
+p04 0x6CCD vaiven_y  si el valor absoluto de la velocidad en Y pasa de BC, cambia de signo la aceleracion en Y
+p04 0x6CDE valor_absoluto  HL = el valor absoluto de HL
+p04 0x6CE9 olvida_sitio_guardado  ix+0x2A = 0xFF: no hay posicion guardada
+p04 0x6CEE guarda_o_vuelve  mueve con el scroll la posicion guardada (p04:6D2C) y, con Z, guarda la actual; si no, vuelve a la guardada
+p04 0x6CF5 guarda_sitio  la X, la Y y sus fracciones a ix+0x28-0x2B
+p04 0x6D0E vuelve_al_sitio_guardado  si hay posicion guardada (ix+0x2A no es 0xFF), la pone
+p04 0x6D2C sitio_guardado_con_scroll  la posicion guardada mas 0xCA14 (X) y 0xCA12 (Y)
+p04 0x6D4F acerca_velocidad_8  cada velocidad, un octavo mas cerca de la de DE (X) y HL (Y): (7 x v + destino) / 8
+p04 0x6D96 acerca_velocidad_4  lo mismo en cuartos: (3 x v + destino) / 4
+p04 0x6E50 empujon  0xCE52 y 0xCE76 a 1 y la Y y la X del actor mas 0xCE6A y 0xCE69
+p04 0x6E91 avisa_fin_de_fase  0xCE4F = 1 (p04:6035 acaba la fase al cuadro siguiente)
+p04 0x6ECB junta_banderas  pasa los bits 5 y 6 de ix+0x15 a los bits 0 y 1; Z si queda a 0
+p04 0x6EDA en_la_esquina  acarreo si la Y + 8 es menor que 0x28 y la X + 0x0A menor que 0x34
+p04 0x6EED fuera_de_pantalla  acarreo si el actor se ha salido (limites 0x18 / 0xFC en Y y 0x22 / 0xFE en X)
+p04 0x6EFF fuera_de_pantalla_b  lo mismo con limites 0x1B / 0xF0 y 0x22 / 0xFE
+p04 0x6F0D fuera_de_pantalla_c  lo mismo con limites 0x1A / 0xFE y 0x22 / 0xFE
+p04 0x6F1F fuera_de_pantalla_d  lo mismo con limites 0x1A / 0xF8 y 0x22 / 0xF0
+p04 0x6F2D fuera_de_limites  acarreo si A (la Y) no esta entre E y D o B (la X) no esta entre L y H, mirando el signo
+p04 0x6F47 fuera_de_pantalla_e  lo mismo con limites 0x2C / 0xF6 en los dos ejes
+p04 0x6F55 crea_tipo_3  un actor de tipo 3 en la Y E y la X D, con las fracciones de 0xCA31-0xCA32
+p04 0x6F8C ficha_en_cac0  en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
+p04 0x6FCD mira_cc01  el siguiente valor de 0xCC01 (p04:7024), ix+3 y el ix+6 de la tabla p04:7049
+p04 0x6FE1 mira_cb  segun p04:6FF7 cambia A a 0x0E o 0x0C y vuelve mas atras
+p04 0x6FF7 mira_cb48_cb41_cb50  1 o 2 segun A (3, 0x0A o 7) y 0xCB48, 0xCB41, 0xCB50 y 0xCB58
+p04 0x7024 siguiente_cc01  0xCC01 = el que va detras del actual en la tabla p04:7042 (2 si no esta)
+p04 0x7058 marca_actores  a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
+p04 0x708B marca_tipos_70D2  al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
+p04 0x70DA crea_actor_pequeno  en la primera ficha libre de 0xD460 (p04:7207), borrada, un actor de tipo D con los datos de su tipo; acarreo si no hay
+p04 0x70EF nave_muy_cerca  acarreo si la nave esta a menos de 12 puntos del centro del actor (la Y y la X mas la mitad de ix+0x13 e ix+0x14), sumando los dos ejes (p04:7725)
+p04 0x7110 dispara_cerca_de_la_nave  una bala hacia la nave (p04:714A) con la Y y la X de la nave movidas al azar hasta 4 puntos
+p04 0x7143 dispara_a_la_nave  si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
+p04 0x714A bala_hacia_la_nave  en una ficha pequena libre, una bala de tipo 0x60 en el sitio del actor y con la velocidad hacia la nave (p04:71B8, p04:7270, p04:7240)
+p04 0x715C llena_bala  la ficha de HL: tipo 0x60, la Y y la X del actor, la velocidad (C, B, E, D) e ix+0x11 = 4
+p04 0x7186 rapidez_de_bala  0xCA26 = la rapidez de la tabla p04:71A8 por 0xCA19
+p04 0x7197 rapidez_de_bala_b  igual que p04:7186
+p04 0x71B8 hacia_la_nave  las posiciones en octavos (p04:71EA) de la nave (0xCA47-0xCA4A) y del actor
+p04 0x71C4 octavos_del_actor  la posicion del actor en octavos de punto (p04:71EA)
+p04 0x71D6 octavos_de_iy_e_ix  las posiciones en octavos del actor de IY y del de IX
+p04 0x71EA en_octavos  E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en un byte
+p04 0x7207 ficha_pequena_libre  HL = la primera de las 18 fichas de 0xD460 que esta libre; NZ si no hay
+p04 0x721D borra_ficha_pequena  los 0x20 bytes de HL a 0
+p04 0x722A velocidad_por_rumbo  con el rumbo D (bit 7 y bit 6 dan los signos) y el angulo E, la velocidad (p04:7240)
+p04 0x7240 velocidad_por_angulo  con el angulo A (0-0x3F) y la tabla p04:73AD, las dos velocidades por la rapidez de 0xCA26 y con los signos de 0xCA23 y 0xCA24: DE y HL
+p04 0x7270 angulo_hacia  de las dos posiciones en octavos (BC y DE), los signos en 0xCA23 y 0xCA24 y el angulo en 0xCA20 (tabla p04:73ED)
+p04 0x729E por_la_rapidez  DE = E x 0xCA26 / 32
+p04 0x72B0 multiplica  HL = H x E
+p04 0x72D4 dispara_si_arriba  si la Y es menor que 0x16: 0xCE6C + 1, p04:750F y p04:7586 y, segun ix+0x20, una bala a la nave
+p04 0x72F6 dispara_con_rapidez  0xCA26 = A y una bala hacia la nave si no esta muy cerca
+p04 0x7300 rafaga  p04:7306 con BC = 0 y la rapidez por 0xCA19
+p04 0x7306 rafaga_de_lista  una bala por cada rumbo de la lista de HL (acaba en 0xFF), con la tabla p04:738D, desplazada BC (p04:737C)
+p04 0x7322 bala_con_rumbo  en una ficha pequena libre, una bala con el rumbo B, C desde el actor
+p04 0x733B octavos_del_actor_b  la posicion del actor en octavos, sin tocar BC
+p04 0x734D signos_del_rumbo  0xCA23 y 0xCA24 con los bits 0 y 1 de B; A = C
+p04 0x7362 bala_numero  la bala con el rumbo A de la tabla p04:738D
+p04 0x7371 pon_bala  en la ficha de HL, el tipo B y el byte 5 = C
+p04 0x737C desplaza_bala  la Y y la X de la ficha de HL mas C y B
+p04 0x74ED coseno  el seno de A + 0x40 (p04:74EF)
+p04 0x74EF seno  HL = el seno del angulo A (0-0xFF) con la tabla de un cuarto de vuelta p04:73AD, con signo
+p04 0x74FF seno_del_cuarto  el valor de la tabla p04:73AD para A (0-0x7F), dando la vuelta en el segundo cuarto
+p04 0x750F al_azar_contra_ca19  acarreo si un numero al azar de 0 a 15 es mayor o igual que 0xCA19
+p04 0x7512 contra_ca19  acarreo si A and 0x0F es mayor o igual que 0xCA19
+p04 0x751A bala_y_desplaza  una bala a la nave (p04:7143) y la desplaza BC
+p04 0x7523 borra_fichas_pequenas  borra 0xD440-0xD69F; detras, 16 nop
+p04 0x753C fondo_bajo_el_actor  el caracter del mapa en la posicion del actor mas D, E (con el scroll fino de 0xCA1A y 0xCA1C) y su bit 0 en la tabla 0xDE00 (Z si no es solido); acarreo si cae fuera
+p04 0x755D hacia_la_nave_8  E = Y de la nave - Y del actor; D = lo mismo en X
+p04 0x756C distancia_a_la_nave  HL = la Y de la nave - la del actor y DE = lo mismo en X, con fraccion
+p04 0x7586 distancia_y  HL = la Y de la nave - la del actor, con fraccion
+p04 0x7595 fondo_en_h_d  p04:759A con el desplazamiento H, D
+p04 0x759A fondo_en  el bit 0 de la tabla 0xDE00 del caracter del mapa en la posicion del actor mas HL, DE
+p04 0x75AA fondo_en_b  lo mismo devolviendo tambien el bit 2
+p04 0x75C2 fondo_o_actores  lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
+p04 0x75DE choca_con_actores  con la posicion del actor (y el scroll fino), mira si toca a alguno de los 20 actores (p04:7606)
+p04 0x7606 toca_algun_actor  para los 20 actores de 0xCE80, si el punto D, E cae en su caja (p04:7622) les apunta el golpe y vuelve dos niveles atras con acarreo
+p04 0x7622 toca_este_actor  si el punto cae en la caja del actor de HL (ix+0x13 alto, ix+0x14 ancho) y se puede tocar (p04:7662), apunta el golpe (p04:76A9)
+p04 0x7659 solo_tipo_3  el tipo 1 solo toca a los de tipo 3
+p04 0x7662 dentro_de_la_caja  si el bit 4 de iy+0x15 deja tocarlo, acarreo si el punto esta dentro de su caja
+p04 0x76A9 apunta_golpe  iy+4 = 1 o 2 segun el tipo del que toca (el tipo 4 pone su ix+6)
+p04 0x76D0 posicion_mas  la posicion del actor mas HL y DE y el scroll fino: D, E
+p04 0x76F0 nada_76F0  ret
+p04 0x76F1 casilla_en_pantalla  si D < 0x20 y E < 0x18, la casilla del mapa (p00:4E3A) en DE y acarreo
+p04 0x76FF centro_del_actor  la posicion del actor mas la mitad de su ancho (ix+0x14) y de su alto
+p04 0x7725 cerca_de_la_nave  acarreo si la suma de las distancias a la nave en los dos ejes (desde H, L y D, E) es menor que BC
+p04 0x7747 dibuja_actor  con los bancos 4-7-8, los sprites del actor (p04:776B)
+p04 0x7760 suelta_si_toca  si los bits 5 y 0 de ix+0x15 son 1 y 0, suelta sus sprites
+p04 0x776B dibuja_por_banderas  por los bits 0 y 1 de ix+0x15: los sprites del dibujo (p04:777E), los de p04:7A3E o los dos
+p04 0x777E sprites_del_dibujo  los sprites del dibujo ix+5 del tipo (tablas de p07:8496): cuantos y, por cada uno, su sitio (p04:7864) y su sprite (p04:78E6 o p04:79B6)
+p04 0x77D0 sprites_del_dibujo_b  lo mismo guardando los bancos y con p04:794E
+p04 0x781A sin_sprite_tipo_1  0xC0EC = 1 y acarreo
+p04 0x7821 sin_sprite  no queda sprite para el actor: el tipo 1 lo apunta en 0xC0EC; los tipos 0x1F, 0x43, 0x48 y 0x50 siguen sin el; a los demas se les deja de dibujar y se les quita (de las 20 fichas) o se libera la ficha (de las pequenas)
+p04 0x7861 sprite_fuera  E = 0xE8: el sprite queda fuera de la pantalla
+p04 0x7864 sitio_del_sprite  la Y y la X en puntos del actor (x 8) mas las del trozo de HL: E, D; B, C y el patron del trozo; si se sale, lo salta (p04:78A4)
+p04 0x7897 se_sale_por_arriba  si la Y del actor no es 0xFE o 0xFF, salta el trozo y vuelve mas atras
+p04 0x78A4 salta_trozo  pasa el trozo y deja el sprite fuera (E = 0xE8)
+p04 0x78A7 salta_trozo_b  lo mismo desde el tercer byte
+p04 0x78B2 sitio_del_sprite_b  igual que p04:7864 para los trozos que no son el primero
+p04 0x78E1 sin_sprites_puestos  ix+0x19 = 0: el cuadro empieza sin sprites
+p04 0x78E6 pon_sprite  el patron A mas el del tipo (0xDF00 + tipo) en el siguiente sprite del actor (hasta 6; los busca en el grupo de 0xC023): Y, X, patron y color en las paginas 0xC0-0xC3
+p04 0x792C sprite_del_grupo_c023  un sprite libre del grupo de 0xC023 (12) para el actor; si no hay, vuelve mas atras
+p04 0x793D primer_sprite_c023  el primer sprite del actor, del grupo de 0xC023
+p04 0x794E pon_sprite_b  lo mismo con el grupo de 0xC009 (13 sprites)
+p04 0x7994 sprite_del_grupo_c009  un sprite libre del grupo de 0xC009
+p04 0x79A5 primer_sprite_c009  el primer sprite del actor, del grupo de 0xC009
+p04 0x79B6 pon_sprite_c  lo mismo con el grupo de 0xC03B (12) y un quinto byte (B) en la pagina 0xC4
+p04 0x79FE primer_sprite_c03b  el primer sprite del actor, del grupo de 0xC03B
+p04 0x7A0F sprite_del_grupo_c03b  un sprite libre del grupo de 0xC03B
+p04 0x7A20 sprite_libre  el primero libre de los B del grupo de HL (de 2 en 2), marcado con 0x8F; acarreo si no hay
+p04 0x7A35 busca_libre  el primer 0 de HL de 2 en 2, B veces; acarreo si no hay
+p04 0x7A3E pinta_pieza_del_actor  la pieza de caracteres del actor (p04:7A5F) en el mapa de 0xD800 (p04:7ABA)
+p04 0x7A43 pinta_pieza_a  con los bancos 4-7-8, la pieza A del tipo en el mapa
+p04 0x7A5F pieza_del_actor  la pieza ix+6 del tipo (tabla p07:8596 + 2 x (tipo - 1)) en su sitio (p04:7A70)
+p04 0x7A70 sitio_de_la_pieza  la pieza A de la tabla de DE: E = Y + su fila y D = X + su columna (con el scroll fino), B filas y C columnas y HL en sus caracteres
+p04 0x7A96 pinta_pieza_con_bancos  con los bancos 4-7-8, la pieza en el mapa (p04:7AA8)
+p04 0x7A9F siguiente_columna  D + 1; si se sale del mapa (0xDE00), vuelve tres niveles atras
+p04 0x7AA8 pinta_pieza_con_scroll  la pieza con el scroll fino de 0xCA1A y 0xCA1C
+p04 0x7ABA pinta_pieza  copia B filas de C caracteres de HL al mapa de 0xD800 en D, E (el 0 no se copia: transparente), 0x30 por fila
+p04 0x7AC0 copia_filas  el bucle de p04:7ABA
+p04 0x7B06 casilla_bajo_el_actor  la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
+p04 0x7B18 casilla_del_mapa  si D < 0x20 y E < 0x18, DE = 0xD800 + 0x30 x (E + 8) + D + 8 y acarreo; si no, vuelve mas atras
+p04 0x7B29 casilla_con_margen  lo mismo dejando 8 casillas de margen por cada lado
+p04 0x7B4E vuelve_atras  quita una palabra de la pila y vuelve
+p04 0x7B51 fila_dda0  HL = 0xDDA0 + D + 0x0F si cabe (acarreo)
+p04 0x7B56 fila_d950  HL = 0xD950 + D + 0x0F si cabe (acarreo)
+p04 0x7B65 pinta_varias_piezas  la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
+p04 0x7C01 copia_a_d700  copia a 0xD700 la lista de HL (su largo en el primer byte)
+p04 0x7C0F con_iy_como_ix  con IX e IY cambiados, p04:7C26
+p04 0x7C26 nada_7C26  ret
+p04 0x7C27 quita_si_toca_fondo  si el bit 4 de ix+0x15: libera la ficha si se sale del mapa o si el caracter de debajo es solido

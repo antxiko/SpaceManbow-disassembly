@@ -41,7 +41,7 @@ L_8018:
 L_801B:
 	call L_8031		;801b
 	call L_82B4		;801e
-	ld a,(0c907h)		;8021
+	ld a,(0c907h)		;8021   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	and 010h		;8024
 	call nz,L_8599		;8026
 	ld a,(0ca43h)		;8029
@@ -52,12 +52,12 @@ L_8031:
 	call L_8060		;8031
 	ld a,(ix+001h)		;8034
 	or a			;8037
-	jp z,077d0h		;8038
-	call 07747h		;803b
+	jp z,077d0h		;8038   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
+	call 07747h		;803b   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 	ld a,(0c0ech)		;803e
 	or a			;8041
 	ret z			;8042
-	call 077d0h		;8043
+	call 077d0h		;8043   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	xor a			;8046
 	ld (0c0ech),a		;8047
 	ld (ix+019h),a		;804a
@@ -69,11 +69,11 @@ L_8031:
 	ld (ix+01fh),a		;805c
 	ret			;805f
 L_8060:
-	ld ix,0ca40h		;8060
+	ld ix,0ca40h		;8060   ; apunta a la nave: su ficha de actor (0 = muerta)
 	ld a,(0ce75h)		;8064
 	or a			;8067
 	ret nz			;8068
-	ld a,(ix+001h)		;8069
+	ld a,(ix+001h)		;8069   ; lee el paso del actor
 	dec a			;806c
 	jr z,L_80DA		;806d
 	dec a			;806f
@@ -90,11 +90,11 @@ L_8060:
 	ld a,(0ce75h)		;8085
 	or a			;8088
 	ret nz			;8089
-	ld a,(ix+018h)		;808a
+	ld a,(ix+018h)		;808a   ; lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 	or a			;808d
 	jr z,L_8099		;808e
 	dec a			;8090
-	ld (ix+018h),a		;8091
+	ld (ix+018h),a		;8091   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ld (ix+004h),000h		;8094
 	ret			;8098
 L_8099:
@@ -115,7 +115,7 @@ L_8099:
 	ld (ix+01fh),a		;80c4
 	set 3,(ix+015h)		;80c7
 	ld a,04ch		;80cb
-	call 04aebh		;80cd
+	call 04aebh		;80cd   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	ld hl,0c947h		;80d0
 	set 0,(hl)		;80d3
 	ld (ix+017h),028h		;80d5
@@ -129,7 +129,7 @@ L_80DA:
 	ld a,006h		;80e3
 L_80E5:
 	ld (ix+005h),a		;80e5
-	call 06ad2h		;80e8
+	call 06ad2h		;80e8   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 	ret nz			;80eb
 	inc (ix+001h)		;80ec
 L_80EF:
@@ -148,13 +148,13 @@ L_80FE:
 	ld (0ca4dh),hl		;8104
 	ret			;8107
 L_8108:
-	ld a,(0c900h)		;8108
+	ld a,(0c900h)		;8108   ; lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	cp 004h		;810b
 	jr z,L_8114		;810d
-	ld a,(0c908h)		;810f
+	ld a,(0c908h)		;810f   ; lee copia de los mandos de 0xC909
 	jr L_8117		;8112
 L_8114:
-	ld a,(0c909h)		;8114
+	ld a,(0c909h)		;8114   ; lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
 L_8117:
 	and 00fh		;8117
 	ld (0cb18h),a		;8119
@@ -261,7 +261,7 @@ DATA_sin_leer_81E0:
 
 
 L_820D:
-	ld a,(0c908h)		;820d
+	ld a,(0c908h)		;820d   ; lee copia de los mandos de 0xC909
 	ld b,000h		;8210
 	and 003h		;8212
 	jr z,L_821B		;8214
@@ -290,27 +290,27 @@ L_8238:
 	ld (0cc01h),a		;8239
 	ld (0cb1dh),a		;823c
 	call L_828B		;823f
-	ld hl,0ca40h		;8242
+	ld hl,0ca40h		;8242   ; apunta a la nave: su ficha de actor (0 = muerta)
 	ld bc,0003fh		;8245
-	call 04648h		;8248
+	call 04648h		;8248   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	call L_8254		;824b
 	call L_83E7		;824e
 	jp L_8704		;8251
 L_8254:
-	ld ix,0ca40h		;8254
-	ld (ix+000h),001h		;8258
-	ld (ix+008h),008h		;825c
-	ld (ix+00ah),005h		;8260
-	ld (ix+015h),039h		;8264
+	ld ix,0ca40h		;8254   ; apunta a la nave: su ficha de actor (0 = muerta)
+	ld (ix+000h),001h		;8258   ; el tipo del actor (0 = libre) = 0x01
+	ld (ix+008h),008h		;825c   ; la Y del actor (en caracteres de 8 puntos) = 0x08
+	ld (ix+00ah),005h		;8260   ; la X del actor (en caracteres de 8 puntos) = 0x05
+	ld (ix+015h),039h		;8264   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x39
 	ld (ix+013h),003h		;8268
 	ld (ix+014h),003h		;826c
-	ld (ix+018h),00fh		;8270
+	ld (ix+018h),00fh		;8270   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0F
 	set 7,(ix+014h)		;8274
 	ret			;8278
 L_8279:
 	ld hl,0cb40h		;8279
 	ld bc,00027h		;827c
-	call 04648h		;827f
+	call 04648h		;827f   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	xor a			;8282
 	ld (0cb1ah),a		;8283
 	call L_84A5		;8286
@@ -330,7 +330,7 @@ L_829F:
 	ld (0cb03h),a		;82a0
 	ld hl,0cac0h		;82a3
 	ld bc,0003fh		;82a6
-	call 04648h		;82a9
+	call 04648h		;82a9   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld bc,0ff80h		;82ac
 	ld (0cb1bh),bc		;82af
 	ret			;82b3
@@ -355,17 +355,17 @@ L_82D2:
 	or a			;82da
 	ret z			;82db
 	call L_82E2		;82dc
-	jp 077d0h		;82df
+	jp 077d0h		;82df   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 L_82E2:
 	ld a,(ix+001h)		;82e2
 	dec a			;82e5
 	jr z,$+58		;82e6
 	jp p,L_8320		;82e8
 	ld bc,00300h		;82eb
-	call 076ffh		;82ee
+	call 076ffh		;82ee   ; centro_del_actor: la posicion del actor mas la mitad de su ancho (ix+0x14) y de su alto
 	ret nc			;82f1
-	call 0756ch		;82f2
-	call 04612h		;82f5
+	call 0756ch		;82f2   ; distancia_a_la_nave: HL = la Y de la nave - la del actor y DE = lo mismo en X, con fraccion
+	call 04612h		;82f5   ; niega_hl: HL = -HL
 L_82F8:
 	call L_834C		;82f8
 	ld a,(0cb41h)		;82fb
@@ -376,7 +376,7 @@ L_82F8:
 	jr nz,L_830E		;8309
 	ld hl,0831dh		;830b
 L_830E:
-	call 04600h		;830e
+	call 04600h		;830e   ; suma_a_hl: HL = HL + A
 	ld a,(hl)			;8311
 	ld b,a			;8312
 	call L_84AC		;8313
@@ -452,9 +452,9 @@ L_8361:
 	push af			;8365
 	ld a,(ix+003h)		;8366
 	ld de,0839ch		;8369
-	call 04624h		;836c
+	call 04624h		;836c   ; entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 	pop af			;836f
-	call nz,04612h		;8370
+	call nz,04612h		;8370   ; niega_hl: HL = -HL
 	ld (ix+018h),h		;8373
 	ld (ix+017h),l		;8376
 	ret			;8379
@@ -541,7 +541,7 @@ L_83EF:
 	cp 00ah		;83f9
 	jr nc,L_8406		;83fb
 	ld hl,0842dh		;83fd
-	call 04600h		;8400
+	call 04600h		;8400   ; suma_a_hl: HL = HL + A
 	ld a,(hl)			;8403
 	add a,c			;8404
 	ld c,a			;8405
@@ -562,7 +562,7 @@ L_8406:
 	add a,c			;841a
 	ld c,a			;841b
 	ld a,(0cb08h)		;841c
-	call 04e79h		;841f
+	call 04e79h		;841f   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,c			;8422
 	cp 010h		;8423
 	jr c,L_8429		;8425
@@ -598,11 +598,11 @@ L_844A:
 	ret			;844a
 L_844B:
 	ld a,00ah		;844b
-	call 04af5h		;844d
+	call 04af5h		;844d   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	ret			;8450
 L_8451:
 	ld a,00fh		;8451
-	call 04af5h		;8453
+	call 04af5h		;8453   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	ret			;8456
 L_8457:
 	ld a,001h		;8457
@@ -612,15 +612,15 @@ L_845D:
 	ld a,(ix+017h)		;845d
 	cpl			;8460
 	push af			;8461
-	call 06f8ch		;8462
-	jp c,0469fh		;8465
+	call 06f8ch		;8462   ; ficha_en_cac0: en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
+	jp c,0469fh		;8465   ; vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 	pop af			;8468
 	ld (ix+001h),002h		;8469
 	jp L_82F8		;846d
 L_8470:
 	call L_8484		;8470
 	ld a,00ah		;8473
-	call 04af5h		;8475
+	call 04af5h		;8475   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	ret			;8478
 L_8479:
 	ld a,(0cb01h)		;8479
@@ -642,10 +642,10 @@ L_8492:
 	ld (0cb07h),de		;8492
 	ex de,hl			;8496
 	ld a,h			;8497
-	call 04e79h		;8498
+	call 04e79h		;8498   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	ld h,a			;849b
 	ld a,b			;849c
-	call 04e79h		;849d
+	call 04e79h		;849d   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	cp h			;84a0
 	ret z			;84a1
 	jp L_871E		;84a2
@@ -698,13 +698,13 @@ L_84EE:
 	ret			;84f5
 L_84F6:
 	call L_8530		;84f6
-	ld a,(0c907h)		;84f9
+	ld a,(0c907h)		;84f9   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
 	bit 5,a		;84fc
 	ret z			;84fe
 	call L_8526		;84ff
 	ret z			;8502
 	ld a,008h		;8503
-	call 04af5h		;8505
+	call 04af5h		;8505   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	call L_8569		;8508
 	ld b,005h		;850b
 	ld ix,0cb40h		;850d
@@ -731,7 +731,7 @@ L_8530:
 	cp 02eh		;8533
 	ret nc			;8535
 	ld hl,0ca02h		;8536
-	ld a,(0ca10h)		;8539
+	ld a,(0ca10h)		;8539   ; lee la fase (0 a 8; 9 el final)
 	cp 005h		;853c
 	ld a,00fh		;853e
 	jr c,L_8544		;8540
@@ -752,10 +752,10 @@ L_8544:
 	ret c			;8557
 	ld (0cb07h),hl		;8558
 	ld a,b			;855b
-	call 04e79h		;855c
+	call 04e79h		;855c   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	ld b,a			;855f
 	ld a,h			;8560
-	call 04e79h		;8561
+	call 04e79h		;8561   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	xor b			;8564
 	ret z			;8565
 	jp L_871E		;8566
@@ -778,7 +778,7 @@ L_8583:
 	ret			;8587
 L_8588:
 	ld hl,08590h		;8588
-	call 04600h		;858b
+	call 04600h		;858b   ; suma_a_hl: HL = HL + A
 	ld a,(hl)			;858e
 	ret			;858f
 
@@ -840,8 +840,8 @@ L_85ED:
 L_85FD:
 	ld a,(iy+001h)		;85fd
 	cp 00bh		;8600
-	jp nc,04ae0h		;8602
-	call 0461ah		;8605
+	jp nc,04ae0h		;8602   ; nada_4AE0: ret
+	call 0461ah		;8605   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_8608: 11 destinos del despachador p00:461A (call en p02:8605, el
@@ -958,21 +958,21 @@ L_86A5:
 	ld (ix+003h),a		;86ab
 	ret			;86ae
 L_86AF:
-	call 075c2h		;86af
+	call 075c2h		;86af   ; fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 	ret z			;86b2
 	jp c,L_87DB		;86b3
 	bit 4,a		;86b6
 	call nz,L_86CB		;86b8
 	jp L_87DB		;86bb
 L_86BE:
-	call 075c2h		;86be
+	call 075c2h		;86be   ; fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 	ret z			;86c1
 	jp c,L_87DB		;86c2
 	bit 4,a		;86c5
 	jp nz,L_86CB		;86c7
 	ret			;86ca
 L_86CB:
-	call 076f1h		;86cb
+	call 076f1h		;86cb   ; casilla_en_pantalla: si D < 0x20 y E < 0x18, la casilla del mapa (p00:4E3A) en DE y acarreo
 	ex de,hl			;86ce
 	ld a,(hl)			;86cf
 	cp 0a7h		;86d0
@@ -983,12 +983,12 @@ L_86CB:
 	ret nc			;86d8
 	ld (hl),a			;86d9
 	ld a,01eh		;86da
-	call 04af5h		;86dc
+	call 04af5h		;86dc   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	jp L_87DB		;86df
 L_86E2:
 	ld (hl),000h		;86e2
 	ld a,01fh		;86e4
-	call 04af5h		;86e6
+	call 04af5h		;86e6   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	jp L_87DB		;86e9
 L_86EC:
 	ld a,(ix+004h)		;86ec
@@ -1008,7 +1008,7 @@ L_8704:
 	pop hl			;870a
 	ld hl,0cc40h		;870b
 	ld bc,000ffh		;870e
-	call 04648h		;8711
+	call 04648h		;8711   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	jr L_871E		;8714
 L_8716:
 	ld c,000h		;8716
@@ -1019,7 +1019,7 @@ L_871A:
 L_871E:
 	call L_8732		;871e
 	ld a,(0cb08h)		;8721
-	call 04e79h		;8724
+	call 04e79h		;8724   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	xor a			;8727
 	ld c,000h		;8728
 	ld hl,00040h		;872a
@@ -1033,9 +1033,9 @@ L_8732:
 	ld c,006h		;873b
 L_873D:
 	ld a,(0cb08h)		;873d
-	call 04e79h		;8740
+	call 04e79h		;8740   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	ld hl,00020h		;8743
-	ld de,0ca00h		;8746
+	ld de,0ca00h		;8746   ; apunta a el estado de la partida
 L_8749:
 	push de			;8749
 	push hl			;874a
@@ -1055,7 +1055,7 @@ L_8749:
 	ex de,hl			;875b
 	jp L_87FB		;875c
 L_875F:
-	call 075c2h		;875f
+	call 075c2h		;875f   ; fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 	bit 5,a		;8762
 	jp nz,L_87BF		;8764
 	bit 1,a		;8767
@@ -1063,11 +1063,11 @@ L_875F:
 	ld (ix+004h),0ffh		;876a
 	ret			;876e
 L_876F:
-	ld ix,0ca40h		;876f
+	ld ix,0ca40h		;876f   ; apunta a la nave: su ficha de actor (0 = muerta)
 	ld de,00140h		;8773
 	ld hl,001e0h		;8776
 	call L_875F		;8779
-	ld ix,0ca40h		;877c
+	ld ix,0ca40h		;877c   ; apunta a la nave: su ficha de actor (0 = muerta)
 	ld de,001c0h		;8780
 	ld hl,001e0h		;8783
 	call L_875F		;8786
@@ -1088,8 +1088,8 @@ L_8793:
 	ret			;87a3
 L_87A4:
 	cp 009h		;87a4
-	jp nc,04ae0h		;87a6
-	call 0461ah		;87a9
+	jp nc,04ae0h		;87a6   ; nada_4AE0: ret
+	call 0461ah		;87a9   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_87AC: 9 destinos del despachador p00:461A (call en p02:87A9, el
@@ -1118,9 +1118,9 @@ L_87BF:
 	push iy		;87cc
 	call L_83A4		;87ce
 	pop ix		;87d1
-	call 06e98h		;87d3
+	call 06e98h		;87d3   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 	ld a,009h		;87d6
-	jp 04af5h		;87d8
+	jp 04af5h		;87d8   ; pide_musica: lo mismo con hasta 0x17 en la cola
 L_87DB:
 	ld (ix+000h),000h		;87db
 	or a			;87df
@@ -1160,7 +1160,7 @@ L_880D:
 	push bc			;880d
 	push hl			;880e
 	ex de,hl			;880f
-	call 046ach		;8810
+	call 046ach		;8810   ; copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 	pop hl			;8813
 	pop bc			;8814
 	ret			;8815
@@ -1198,26 +1198,26 @@ L_883B:
 	ld (ix+008h),b		;8859
 	ld (ix+007h),c		;885c
 	ld de,00180h		;885f
-	call 06bfdh		;8862
+	call 06bfdh		;8862   ; pon_velocidad_x: la velocidad en X = DE
 	ld (ix+015h),005h		;8865
 	ld (ix+017h),005h		;8869
 	call L_8950		;886d
 	ld a,00ch		;8870
-	call 04af5h		;8872
+	call 04af5h		;8872   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	or a			;8875
 	ret			;8876
 L_8877:
 	call L_8885		;8877
-	call 06a7fh		;887a
+	call 06a7fh		;887a   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
 	ld a,(ix+000h)		;887d
 	or a			;8880
-	jp nz,077d0h		;8881
+	jp nz,077d0h		;8881   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8884
 L_8885:
 	ld a,(ix+001h)		;8885
 	cp 006h		;8888
-	jp nc,04ae0h		;888a
-	call 0461ah		;888d
+	jp nc,04ae0h		;888a   ; nada_4AE0: ret
+	call 0461ah		;888d   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_8890: 6 destinos del despachador p00:461A (call en p02:888D, el
@@ -1238,7 +1238,7 @@ L_889C:
 	ret nz			;88a2
 	ld (ix+017h),005h		;88a3
 	ld de,000c0h		;88a7
-	call 06bfdh		;88aa
+	call 06bfdh		;88aa   ; pon_velocidad_x: la velocidad en X = DE
 	jp L_894C		;88ad
 L_88B0:
 	call L_88E6		;88b0
@@ -1246,7 +1246,7 @@ L_88B0:
 	ret nz			;88b6
 	ld (ix+017h),005h		;88b7
 	ld de,00040h		;88bb
-	call 06bfdh		;88be
+	call 06bfdh		;88be   ; pon_velocidad_x: la velocidad en X = DE
 	jp L_894C		;88c1
 L_88C4:
 	call L_88E6		;88c4
@@ -1260,7 +1260,7 @@ L_88CB:
 	ld (ix+005h),a		;88d5
 	call L_8950		;88d8
 	ld de,00000h		;88db
-	call 06bfdh		;88de
+	call 06bfdh		;88de   ; pon_velocidad_x: la velocidad en X = DE
 	ld (ix+001h),003h		;88e1
 	ret			;88e5
 L_88E6:
@@ -1271,7 +1271,7 @@ L_88E6:
 	ld d,h			;88ef
 	ld l,000h		;88f0
 	ld e,l			;88f2
-	call 075c2h		;88f3
+	call 075c2h		;88f3   ; fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 	ret z			;88f6
 	jr L_88CB		;88f7
 L_88F9:
@@ -1289,26 +1289,26 @@ L_88F9:
 	ret nz			;8911
 	call L_8973		;8912
 	ld a,00dh		;8915
-	call 04af5h		;8917
+	call 04af5h		;8917   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	jr L_894C		;891a
 L_891C:
 	dec (ix+017h)		;891c
 	ret nz			;891f
 	bit 0,(ix+003h)		;8920
 	jr z,L_894C		;8924
-	call 04e65h		;8926
-	call 04dd7h		;8929
-	call 07523h		;892c
-	call 07058h		;892f
+	call 04e65h		;8926   ; pon_c0d8_4: 0xC0D8 = 4
+	call 04dd7h		;8929   ; manda_paleta_clara: los 16 colores con cada componente mas claro (p00:4E0E)
+	call 07523h		;892c   ; borra_fichas_pequenas: borra 0xD440-0xD69F; detras, 16 nop
+	call 07058h		;892f   ; marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 	jr L_894C		;8932
 L_8934:
 	bit 0,(ix+003h)		;8934
 	jp z,L_87DB		;8938
-	call 0708bh		;893b
+	call 0708bh		;893b   ; marca_tipos_70D2: al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
 	ld a,00eh		;893e
-	call 04af5h		;8940
-	call 07523h		;8943
-	call 07058h		;8946
+	call 04af5h		;8940   ; pide_musica: lo mismo con hasta 0x17 en la cola
+	call 07523h		;8943   ; borra_fichas_pequenas: borra 0xD440-0xD69F; detras, 16 nop
+	call 07058h		;8946   ; marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 	jp L_87DB		;8949
 L_894C:
 	inc (ix+001h)		;894c
@@ -1370,7 +1370,7 @@ L_8979:
 	push af			;899e
 	push hl			;899f
 	push bc			;89a0
-	call 04776h		;89a1
+	call 04776h		;89a1   ; pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 	pop bc			;89a4
 	pop hl			;89a5
 	pop af			;89a6
@@ -1528,14 +1528,14 @@ L_8C35:
 	call L_8D51		;8c3b
 	pop iy		;8c3e
 	ld a,003h		;8c40
-	call 04af0h		;8c42
+	call 04af0h		;8c42   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 	or a			;8c45
 	ret			;8c46
 L_8C47:
 	call L_87E1		;8c47
 	ret c			;8c4a
 	ld a,(0cb08h)		;8c4b
-	call 04e79h		;8c4e
+	call 04e79h		;8c4e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8c51
 	add a,a			;8c52
 	ld (ix+006h),a		;8c53
@@ -1560,7 +1560,7 @@ L_8C47:
 	dec a			;8c8d
 	jr nz,L_8D0B		;8c8e
 	ld a,(0cb08h)		;8c90
-	call 04e79h		;8c93
+	call 04e79h		;8c93   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00fh		;8c96
 	ld (ix+005h),a		;8c98
 	ret			;8c9b
@@ -1575,7 +1575,7 @@ L_8CA9:
 	call L_8CCD		;8ca9
 	ret c			;8cac
 	ld a,(0cb08h)		;8cad
-	call 04e79h		;8cb0
+	call 04e79h		;8cb0   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8cb3
 	ld (ix+006h),a		;8cb4
 	push af			;8cb7
@@ -1588,7 +1588,7 @@ L_8CA9:
 	jr z,L_8CC8		;8cc4
 	ld a,002h		;8cc6
 L_8CC8:
-	call 04af0h		;8cc8
+	call 04af0h		;8cc8   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 	or a			;8ccb
 	ret			;8ccc
 L_8CCD:
@@ -1629,7 +1629,7 @@ L_8D16:
 	ret			;8d1b
 L_8D1C:
 	ld a,(0cb08h)		;8d1c
-	call 04e79h		;8d1f
+	call 04e79h		;8d1f   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00ch		;8d22
 	ld (ix+005h),a		;8d24
 	or a			;8d27
@@ -1642,7 +1642,7 @@ L_8D29:
 	ld (ix+00dh),c		;8d35
 	ld (ix+00eh),b		;8d38
 	ld a,(0cb08h)		;8d3b
-	call 04e79h		;8d3e
+	call 04e79h		;8d3e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,a			;8d41
 	ld c,a			;8d42
 	ld a,d			;8d43
@@ -1654,14 +1654,14 @@ L_8D49:
 	ld (ix+005h),a		;8d4a
 	ret			;8d4d
 L_8D4E:
-	call 06a7fh		;8d4e
+	call 06a7fh		;8d4e   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
 L_8D51:
 	call L_86EC		;8d51
 	ret nc			;8d54
 	bit 1,(ix+005h)		;8d55
 	jp nz,L_8DA1		;8d59
 	call L_8E0C		;8d5c
-	jp z,077d0h		;8d5f
+	jp z,077d0h		;8d5f   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ld h,(ix+00eh)		;8d62
 	ld l,(ix+00dh)		;8d65
 	ld a,h			;8d68
@@ -1695,11 +1695,11 @@ L_8D51:
 	call L_86AF		;8d96
 	ld a,(ix+000h)		;8d99
 	or a			;8d9c
-	jp nz,077d0h		;8d9d
+	jp nz,077d0h		;8d9d   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8da0
 L_8DA1:
 	call L_8E0C		;8da1
-	jp z,077d0h		;8da4
+	jp z,077d0h		;8da4   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ld de,00080h		;8da7
 	ld hl,00080h		;8daa
 	call L_86BE		;8dad
@@ -1717,7 +1717,7 @@ L_8DA1:
 	call L_86AF		;8dd1
 	ld a,(ix+000h)		;8dd4
 	or a			;8dd7
-	jp nz,077d0h		;8dd8
+	jp nz,077d0h		;8dd8   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8ddb
 
 ; ----------------------------------------------------------------------
@@ -1752,7 +1752,7 @@ DATA_leido_8E06:
 L_8E0C:
 	ld d,(ix+00ah)		;8e0c
 	ld e,(ix+008h)		;8e0f
-	call 07b06h		;8e12
+	call 07b06h		;8e12   ; casilla_bajo_el_actor: la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
 	jr nc,L_8E4D		;8e15
 	ex de,hl			;8e17
 	ld d,0deh		;8e18
@@ -1831,7 +1831,7 @@ L_8E50:
 	ld (ix+007h),c		;8e85
 	ld de,00000h		;8e88
 	ld hl,00100h		;8e8b
-	call 06bebh		;8e8e
+	call 06bebh		;8e8e   ; pon_velocidad: la velocidad en Y = HL y en X = DE
 	ld (ix+015h),005h		;8e91
 	ld (ix+017h),001h		;8e95
 	or a			;8e99
@@ -1853,13 +1853,13 @@ L_8E9B:
 	call L_86EC		;8eb0
 	ld a,(ix+000h)		;8eb3
 	or a			;8eb6
-	jp nz,077d0h		;8eb7
+	jp nz,077d0h		;8eb7   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8eba
 L_8EBB:
-	ld a,(0ca10h)		;8ebb
+	ld a,(0ca10h)		;8ebb   ; lee la fase (0 a 8; 9 el final)
 	cp 004h		;8ebe
-	jp z,06a7fh		;8ec0
-	call 06c29h		;8ec3
+	jp z,06a7fh		;8ec0   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
+	call 06c29h		;8ec3   ; scroll_y: la Y del actor mas 0xCA12
 	ld de,00100h		;8ec6
 	ld hl,00200h		;8ec9
 	call L_8F06		;8ecc
@@ -1881,11 +1881,11 @@ L_8EBB:
 	ld de,00200h		;8ef9
 	ld hl,00000h		;8efc
 L_8EFF:
-	call 06bebh		;8eff
-	call 06a7fh		;8f02
+	call 06bebh		;8eff   ; pon_velocidad: la velocidad en Y = HL y en X = DE
+	call 06a7fh		;8f02   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
 	ret			;8f05
 L_8F06:
-	call 075aah		;8f06
+	call 075aah		;8f06   ; fondo_en_b: lo mismo devolviendo tambien el bit 2
 	ccf			;8f09
 	ret nc			;8f0a
 	cp 003h		;8f0b
@@ -1899,7 +1899,7 @@ L_8F12:
 	ld a,0afh		;8f12
 	push hl			;8f14
 	push af			;8f15
-	call 0465fh		;8f16
+	call 0465fh		;8f16   ; slot_del_cartucho: el slot de la pagina 1 (RSLREG, EXPTBL y SLTTBL) en el formato de ENASLT
 	pop bc			;8f19
 	pop hl			;8f1a
 	push af			;8f1b
@@ -1975,16 +1975,16 @@ L_8F86:
 	ld sp,0d000h		;8f9c
 	call L_8F12+1		;8f9f
 	ld a,01fh		;8fa2
-	call 04c07h		;8fa4
+	call 04c07h		;8fa4   ; banco_en_6000: pone el banco A en 0x6000
 	ld sp,0d200h		;8fa7
-	jp 06000h		;8faa
+	jp 06000h		;8faa   ; vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
 L_8FAD:
-	call 04b8fh		;8fad
+	call 04b8fh		;8fad   ; enciende_lineas: 0xC940 = 1
 	ld a,(0f3e0h)		;8fb0
 	set 5,a		;8fb3
 	jr L_8FBF		;8fb5
 L_8FB7:
-	call 04b78h		;8fb7
+	call 04b78h		;8fb7   ; apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
 	ld a,(0f3e0h)		;8fba
 	res 5,a		;8fbd
 L_8FBF:
@@ -1999,9 +1999,9 @@ L_8FC5:
 	call L_8F12+1		;8fcd
 	pop hl			;8fd0
 	ld sp,hl			;8fd1
-	call 06003h		;8fd2
+	call 06003h		;8fd2   ; vector_prepara_guion: jp p04:6214
 	ld a,001h		;8fd5
-	call 04c07h		;8fd7
+	call 04c07h		;8fd7   ; banco_en_6000: pone el banco A en 0x6000
 	call L_8FAD		;8fda
 	ret			;8fdd
 

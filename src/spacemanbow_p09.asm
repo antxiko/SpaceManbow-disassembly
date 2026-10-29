@@ -569,14 +569,14 @@ DATA_sin_leer_6D1E:
 
 L_6D30:
 	call L_6D75		;6d30
-	ld a,(0ca10h)		;6d33
+	ld a,(0ca10h)		;6d33   ; lee la fase (0 a 8; 9 el final)
 	call L_6D00		;6d36
-	call 0476bh		;6d39
+	call 0476bh		;6d39   ; enciende_sprites: quita el bit 1 del registro 8
 	ld hl,0c000h		;6d3c
 	ld bc,005ffh		;6d3f
-	call 04648h		;6d42
+	call 04648h		;6d42   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld a,001h		;6d45
-	call 047dch		;6d47
+	call 047dch		;6d47   ; lee_estado_vdp_a: lee el registro de estado A del VDP y deja el 0 puesto
 	and 03eh		;6d4a
 	cp 004h		;6d4c
 	jr nz,L_6D59		;6d4e
@@ -587,14 +587,14 @@ L_6D59:
 	call L_77FC		;6d59
 	call L_7683		;6d5c
 	call L_6F99		;6d5f
-	call 04b8fh		;6d62
+	call 04b8fh		;6d62   ; enciende_lineas: 0xC940 = 1
 	call L_6E77		;6d65
 	ret			;6d68
 L_6D69:
 	call L_6D75		;6d69
 	call L_6F99		;6d6c
-	call 0476bh		;6d6f
-	jp 04b8fh		;6d72
+	call 0476bh		;6d6f   ; enciende_sprites: quita el bit 1 del registro 8
+	jp 04b8fh		;6d72   ; enciende_lineas: 0xC940 = 1
 L_6D75:
 	ld hl,0705ch		;6d75
 	ld b,009h		;6d78
@@ -611,7 +611,7 @@ L_6D75:
 	ld bc,00219h		;6d8f
 	jp 00047h		;6d92   ; BIOS WRTVDP - Writes data in the VDP-register
 L_6D95:
-	ld a,(0ca10h)		;6d95
+	ld a,(0ca10h)		;6d95   ; lee la fase (0 a 8; 9 el final)
 	cp 004h		;6d98
 	push af			;6d9a
 	call z,L_6DC3		;6d9b
@@ -666,8 +666,8 @@ L_6DEE:
 	ld e,a			;6df0
 	ld (0ca1ch),de		;6df1
 	ld (0ca1ah),de		;6df5
-	ld (0ca14h),de		;6df9
-	ld (0ca12h),de		;6dfd
+	ld (0ca14h),de		;6df9   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+	ld (0ca12h),de		;6dfd   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld (0c0d5h),a		;6e01
 	ld hl,0c0d4h		;6e04
 	inc (hl)			;6e07
@@ -705,13 +705,13 @@ L_6E16:
 L_6E2D:
 	ld hl,0e000h		;6e2d
 	ld bc,007ffh		;6e30
-	call 04648h		;6e33
+	call 04648h		;6e33   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ret			;6e36
 L_6E37:
 	ld hl,(0c0dch)		;6e37
-	ld (0ca12h),hl		;6e3a
+	ld (0ca12h),hl		;6e3a   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld hl,(0c0deh)		;6e3d
-	ld (0ca14h),hl		;6e40
+	ld (0ca14h),hl		;6e40   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ret			;6e43
 L_6E44:
 	call L_7070		;6e44
@@ -719,22 +719,22 @@ L_6E44:
 	rrca			;6e4a
 	call L_6F43		;6e4b
 	call L_707E		;6e4e
-	ld a,(0ca10h)		;6e51
+	ld a,(0ca10h)		;6e51   ; lee la fase (0 a 8; 9 el final)
 	or a			;6e54
 	call z,L_6E8A		;6e55
-	ld a,(0ca10h)		;6e58
+	ld a,(0ca10h)		;6e58   ; lee la fase (0 a 8; 9 el final)
 	cp 002h		;6e5b
 	call z,L_6E97		;6e5d
 	call L_7683		;6e60
 	ld a,001h		;6e63
 	ld (0c09ch),a		;6e65
-	ld a,(0ef60h)		;6e68
+	ld a,(0ef60h)		;6e68   ; lee los pasos que le quedan al fundido de la paleta (bits 0-5)
 	rlca			;6e6b
 	ret nc			;6e6c
 	rlca			;6e6d
-	jp c,04cf5h		;6e6e
+	jp c,04cf5h		;6e6e   ; empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 	ld a,0c0h		;6e71
-	ld (0ef60h),a		;6e73
+	ld (0ef60h),a		;6e73   ; guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
 	ret			;6e76
 L_6E77:
 	xor a			;6e77
@@ -742,7 +742,7 @@ L_6E77:
 	ld hl,0e800h		;6e7b
 	ld b,018h		;6e7e
 L_6E80:
-	call 04678h		;6e80
+	call 04678h		;6e80   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 	and 01fh		;6e83
 	ld (hl),a			;6e85
 	inc hl			;6e86
@@ -769,15 +769,15 @@ L_6E9C:
 	push bc			;6ea7
 	push de			;6ea8
 	ld de,(0c0e6h)		;6ea9
-	ld hl,(0ca12h)		;6ead
-	call 04612h		;6eb0
+	ld hl,(0ca12h)		;6ead   ; lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+	call 04612h		;6eb0   ; niega_hl: HL = -HL
 	add hl,de			;6eb3
 	ld a,d			;6eb4
 	cp h			;6eb5
 	ld (0c0e6h),hl		;6eb6
 	call nz,L_6F20		;6eb9
 	ld hl,(0c0e8h)		;6ebc
-	ld de,(0ca14h)		;6ebf
+	ld de,(0ca14h)		;6ebf   ; lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 	add hl,de			;6ec3
 	pop de			;6ec4
 	add hl,de			;6ec5
@@ -984,7 +984,7 @@ L_7070:
 	dec a			;7075
 	ld (0c0d8h),a		;7076
 	ret nz			;7079
-	jp 04da9h		;707a
+	jp 04da9h		;707a   ; manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
 L_707D:
 	ret			;707d
 L_707E:
@@ -994,13 +994,13 @@ L_707E:
 L_7085:
 	ld hl,0c000h		;7085
 	ld bc,0007fh		;7088
-	call 04648h		;708b
+	call 04648h		;708b   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,0c180h		;708e
 	ld bc,0007fh		;7091
-	call 04648h		;7094
+	call 04648h		;7094   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld hl,0c280h		;7097
 	ld bc,0007fh		;709a
-	call 04648h		;709d
+	call 04648h		;709d   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ret			;70a0
 
 ; ----------------------------------------------------------------------
@@ -1032,7 +1032,7 @@ L_70E4:
 	inc d			;70f6
 L_70F7:
 	xor a			;70f7
-	call 046f0h		;70f8
+	call 046f0h		;70f8   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	push hl			;70fb
 	ex de,hl			;70fc
 	call L_7106		;70fd
@@ -1081,7 +1081,7 @@ L_713F:
 	inc d			;714a
 L_714B:
 	xor a			;714b
-	call 046f0h		;714c
+	call 046f0h		;714c   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	push hl			;714f
 	ex de,hl			;7150
 	call L_715A		;7151
@@ -2053,7 +2053,7 @@ L_769A:
 	call L_76BD		;76ab
 	ex (sp),hl			;76ae
 	xor a			;76af
-	call 046f0h		;76b0
+	call 046f0h		;76b0   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	ld a,(00007h)		;76b3
 	ld c,a			;76b6
 	pop hl			;76b7
@@ -2064,7 +2064,7 @@ L_76BB:
 L_76BD:
 	push af			;76bd
 	xor a			;76be
-	call 046f0h		;76bf
+	call 046f0h		;76bf   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	ld a,(00007h)		;76c2
 	ld c,a			;76c5
 	ld hl,0d988h		;76c6
@@ -2160,7 +2160,7 @@ L_773D:
 	rrca			;7753
 	ret			;7754
 L_7755:
-	call 04e4ah		;7755
+	call 04e4ah		;7755   ; casilla_del_scroll: la casilla de 0xC0CD, 0xC0CC
 	ld a,l			;7758
 	ld b,018h		;7759
 	and 03fh		;775b
@@ -2265,15 +2265,15 @@ L_77FC:
 	ld (0c0e5h),a		;77fd
 	ld (0c0d7h),a		;7800
 	ld hl,07d76h		;7803
-	ld a,(0ca10h)		;7806
-	call 0468eh		;7809
+	ld a,(0ca10h)		;7806   ; lee la fase (0 a 8; 9 el final)
+	call 0468eh		;7809   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	ld (0c0c8h),hl		;780c
 	ld hl,07c8ch		;780f
-	ld a,(0ca10h)		;7812
-	call 0468eh		;7815
+	ld a,(0ca10h)		;7812   ; lee la fase (0 a 8; 9 el final)
+	call 0468eh		;7815   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 	ld a,(0ca1eh)		;7818
 	ex de,hl			;781b
-	call 04639h		;781c
+	call 04639h		;781c   ; dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
 	ld (0c0cah),de		;781f
 	ld (0ca34h),hl		;7823
 	ld a,(0ca1eh)		;7826
@@ -2291,7 +2291,7 @@ L_77FC:
 	ld (0ca34h),hl		;7845
 L_7848:
 	call L_7AC4		;7848
-	call 04109h		;784b
+	call 04109h		;784b   ; vector_4109: jp p00:458B
 	ld a,(0ca33h)		;784e
 	or a			;7851
 	jr nz,L_7848		;7852
@@ -2299,7 +2299,7 @@ L_7848:
 	ret			;7857
 L_7858:
 	ld a,01bh		;7858
-	call 04c23h		;785a
+	call 04c23h		;785a   ; banco_en_A000: pone el banco A en 0xA000
 	ld hl,(0c0cah)		;785d
 	inc hl			;7860
 	ld a,(hl)			;7861
@@ -2309,8 +2309,8 @@ L_7858:
 	jr c,$+44		;7868
 	sub 010h		;786a
 	cp 010h		;786c
-	jp nc,04ae0h		;786e
-	call 0461ah		;7871
+	jp nc,04ae0h		;786e   ; nada_4AE0: ret
+	call 0461ah		;7871   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7874: 16 destinos del despachador p00:461A (call en p09:7871, el
@@ -2497,19 +2497,19 @@ L_79EB:
 	inc hl			;79f1
 	push hl			;79f2
 	ex de,hl			;79f3
-	call 04ce0h		;79f4
+	call 04ce0h		;79f4   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 	pop hl			;79f7
 	ld (0c0cah),hl		;79f8
 	or a			;79fb
 	ret			;79fc
 L_79FD:
 	call L_7BD6		;79fd
-	call 04e73h		;7a00
+	call 04e73h		;7a00   ; pon_c0d4_1: 0xC0D4 = 1
 	call L_78F0		;7a03
 	scf			;7a06
 	ret			;7a07
 L_7A08:
-	ld a,(0ef60h)		;7a08
+	ld a,(0ef60h)		;7a08   ; lee los pasos que le quedan al fundido de la paleta (bits 0-5)
 	or a			;7a0b
 	ret z			;7a0c
 	ld hl,(0c0cah)		;7a0d
@@ -2530,7 +2530,7 @@ L_7A23:
 	ld a,(hl)			;7a26
 	inc hl			;7a27
 	ld (0c0cah),hl		;7a28
-	call 04e6bh		;7a2b
+	call 04e6bh		;7a2b   ; registro_6: el registro 6 del VDP (patrones de los sprites) = A + 0x19
 	or a			;7a2e
 	ret			;7a2f
 L_7A30:
@@ -2548,11 +2548,11 @@ L_7A38:
 	ld a,030h		;7a43
 	ld (0c0d7h),a		;7a45
 	ld a,084h		;7a48
-	call 04aebh		;7a4a
+	call 04aebh		;7a4a   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	or a			;7a4d
 	ret			;7a4e
 L_7A4F:
-	call 04aebh		;7a4f
+	call 04aebh		;7a4f   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	or a			;7a52
 	ret			;7a53
 L_7A54:
@@ -2581,7 +2581,7 @@ L_7A6A:
 	ex de,hl			;7a72
 	ld a,(0ca33h)		;7a73
 	or a			;7a76
-	call nz,04cdch		;7a77
+	call nz,04cdch		;7a77   ; prepara_paleta_ya: 0xEF60 a 0 y p00:4CE0
 	pop hl			;7a7a
 	ld (0c0cah),hl		;7a7b
 	or a			;7a7e
@@ -2629,7 +2629,7 @@ L_7AB5:
 	ld (0c0d7h),a		;7abb
 	ret nz			;7abe
 	ld a,039h		;7abf
-	jp 04aebh		;7ac1
+	jp 04aebh		;7ac1   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 L_7AC4:
 	ld a,(0c0d6h)		;7ac4
 	dec a			;7ac7
@@ -2656,7 +2656,7 @@ L_7AD2:
 	ret c			;7aed
 	call L_7C08		;7aee
 	ld a,01bh		;7af1
-	call 04c23h		;7af3
+	call 04c23h		;7af3   ; banco_en_A000: pone el banco A en 0xA000
 	ld hl,(0c0cah)		;7af6
 	ld a,(hl)			;7af9
 	cp 0feh		;7afa
@@ -2684,14 +2684,14 @@ L_7B09:
 	adc a,(hl)			;7b1a
 	ld (hl),a			;7b1b
 	ld de,(0c0bdh)		;7b1c
-	call 0460ah		;7b20
+	call 0460ah		;7b20   ; niega_de: DE = -DE
 	sra d		;7b23
 	rr e		;7b25
 	sra d		;7b27
 	rr e		;7b29
 	sra d		;7b2b
 	rr e		;7b2d
-	ld (0ca14h),de		;7b2f
+	ld (0ca14h),de		;7b2f   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld de,(0c0bah)		;7b33
 	sra d		;7b37
 	rr e		;7b39
@@ -2701,7 +2701,7 @@ L_7B09:
 	rr e		;7b41
 	ld (0ca1ch),de		;7b43
 	ld d,000h		;7b47
-	call 0460ah		;7b49
+	call 0460ah		;7b49   ; niega_de: DE = -DE
 	ld (0ca38h),de		;7b4c
 	ld a,(0c0c1h)		;7b50
 	ld c,a			;7b53
@@ -2723,14 +2723,14 @@ L_7B09:
 	ld a,(0c0c1h)		;7b67
 	ld h,a			;7b6a
 	ld de,(0c0c3h)		;7b6b
-	call 0460ah		;7b6f
+	call 0460ah		;7b6f   ; niega_de: DE = -DE
 	sra d		;7b72
 	rr e		;7b74
 	sra d		;7b76
 	rr e		;7b78
 	sra d		;7b7a
 	rr e		;7b7c
-	ld (0ca12h),de		;7b7e
+	ld (0ca12h),de		;7b7e   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld de,(0c0c0h)		;7b82
 	sra d		;7b86
 	rr e		;7b88
@@ -2740,7 +2740,7 @@ L_7B09:
 	rr e		;7b90
 	ld (0ca1ah),de		;7b92
 	ld d,000h		;7b96
-	call 0460ah		;7b98
+	call 0460ah		;7b98   ; niega_de: DE = -DE
 	ld (0ca36h),de		;7b9b
 	ld a,(0c0d5h)		;7b9f
 	ld (0ca18h),a		;7ba2
@@ -2776,13 +2776,13 @@ L_7BD6:
 	ld e,a			;7bd8
 	ld (0c0bdh),de		;7bd9
 	ld (0c0c3h),de		;7bdd
-	ld (0ca14h),de		;7be1
-	ld (0ca12h),de		;7be5
+	ld (0ca14h),de		;7be1   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+	ld (0ca12h),de		;7be5   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld (0ca18h),a		;7be9
 	ret			;7bec
 L_7BED:
 	ld a,01bh		;7bed
-	call 04c23h		;7bef
+	call 04c23h		;7bef   ; banco_en_A000: pone el banco A en 0xA000
 	ld hl,(0c0cah)		;7bf2
 L_7BF5:
 	ld a,(hl)			;7bf5
@@ -2802,7 +2802,7 @@ L_7C08:
 	ld hl,(0c0cah)		;7c08
 	push hl			;7c0b
 	ld a,01bh		;7c0c
-	call 04c23h		;7c0e
+	call 04c23h		;7c0e   ; banco_en_A000: pone el banco A en 0xA000
 	call L_7C3E		;7c11
 	ld a,(0c0dah)		;7c14
 	inc a			;7c17
@@ -2833,12 +2833,12 @@ L_7C3E:
 	call nz,L_7C33		;7c42
 	call L_7C2B		;7c45
 	ld a,019h		;7c48
-	call 04c15h		;7c4a
+	call 04c15h		;7c4a   ; banco_en_8000: pone el banco A en 0x8000
 	call L_7AAB		;7c4d
 	ld a,(0c0ceh)		;7c50
 	cp 009h		;7c53
-	jp nc,04ae0h		;7c55
-	call 0461ah		;7c58
+	jp nc,04ae0h		;7c55   ; nada_4AE0: ret
+	call 0461ah		;7c58   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 
 ; ----------------------------------------------------------------------
 ; DATOS tabla_7C5B: 9 destinos del despachador p00:461A (call en p09:7C58, el
@@ -3035,20 +3035,20 @@ DATA_leido_7D76:
 
 L_7D88:
 	ld de,03700h		;7d88
-	call 04e3ah		;7d8b
+	call 04e3ah		;7d8b   ; casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 	ld de,(0c0cah)		;7d8e
 	call L_7DB8		;7d92
 	ld de,(0c0cah)		;7d95
 	ld hl,0ffdch		;7d99
 	add hl,de			;7d9c
 	push hl			;7d9d
-	call 04e37h		;7d9e
+	call 04e37h		;7d9e   ; casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
 	pop de			;7da1
 	call L_7DB8		;7da2
 	jr L_7DB4		;7da5
 L_7DA7:
 	ld de,02000h		;7da7
-	call 04e37h		;7daa
+	call 04e37h		;7daa   ; casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
 	ld de,(0c0cah)		;7dad
 	call L_7DB8		;7db1
 L_7DB4:
@@ -3076,13 +3076,13 @@ L_7DB8:
 L_7DD1:
 	ex af,af'			;7dd1
 	ld a,01bh		;7dd2
-	call 04c23h		;7dd4
+	call 04c23h		;7dd4   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,(de)			;7dd7
 	inc de			;7dd8
 	ld h,000h		;7dd9
 	ld l,a			;7ddb
 	ld a,01ah		;7ddc
-	call 04c23h		;7dde
+	call 04c23h		;7dde   ; banco_en_A000: pone el banco A en 0xA000
 	add hl,hl			;7de1
 	add hl,hl			;7de2
 	add hl,hl			;7de3
@@ -3169,7 +3169,7 @@ L_7E3F:
 	ret			;7e54
 L_7E55:
 	push af			;7e55
-	call 04e3ah		;7e56
+	call 04e3ah		;7e56   ; casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 	push hl			;7e59
 	exx			;7e5a
 	pop hl			;7e5b
@@ -3188,13 +3188,13 @@ L_7E55:
 L_7E71:
 	ex af,af'			;7e71
 	ld a,01bh		;7e72
-	call 04c23h		;7e74
+	call 04c23h		;7e74   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,(de)			;7e77
 	inc de			;7e78
 	ld h,000h		;7e79
 	ld l,a			;7e7b
 	ld a,01ah		;7e7c
-	call 04c23h		;7e7e
+	call 04c23h		;7e7e   ; banco_en_A000: pone el banco A en 0xA000
 	add hl,hl			;7e81
 	add hl,hl			;7e82
 	add hl,hl			;7e83
@@ -3276,7 +3276,7 @@ L_7EDE:
 	ret			;7efb
 L_7EFC:
 	push af			;7efc
-	call 04e3ah		;7efd
+	call 04e3ah		;7efd   ; casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 	push hl			;7f00
 	exx			;7f01
 	pop hl			;7f02
@@ -3297,13 +3297,13 @@ L_7EFC:
 L_7F1C:
 	ex af,af'			;7f1c
 	ld a,01bh		;7f1d
-	call 04c23h		;7f1f
+	call 04c23h		;7f1f   ; banco_en_A000: pone el banco A en 0xA000
 	ld a,(de)			;7f22
 	inc de			;7f23
 	ld h,000h		;7f24
 	ld l,a			;7f26
 	ld a,01ah		;7f27
-	call 04c23h		;7f29
+	call 04c23h		;7f29   ; banco_en_A000: pone el banco A en 0xA000
 	add hl,hl			;7f2c
 	add hl,hl			;7f2d
 	add hl,hl			;7f2e

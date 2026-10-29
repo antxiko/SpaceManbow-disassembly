@@ -36,3 +36,9 @@ D 0x7EA9 0x7EB4 leido_7EA9  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:749C, p28:
 D 0x7EB4 0x7ED4 sin_leer_7EB4  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (32 bytes)
 D 0x7ED4 0x8000 leido_7ED4  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:7495, p28:749C, p28:7536, p28:7538, p28:754B jugando (tools/cobertura.py) (300 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x6430 banco_en_8000: pone el banco A en 0x8000
+C 0x6436 banco_en_8000: pone el banco A en 0x8000
+C 0x6AD9 banco_en_A000: pone el banco A en 0xA000
+# --- fin de las anotaciones de anota.py ---

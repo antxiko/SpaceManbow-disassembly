@@ -17,3 +17,52 @@ D 0xB83F 0xB878 sin_leer_B83F  ninguna partida de la campana lo lee (tools/cober
 D 0xB878 0xBDC3 leido_B878  lo leen p03:A82C, p03:A877, p03:A879, p03:A87B, p03:A87D, p03:A87F, p03:A882, p03:A8DD y 20 mas jugando (tools/cobertura.py) (1355 bytes)
 D 0xBDE7 0xBF2E leido_BDE7  lo leen p01:6C6F, p03:BDD8, p03:BDDA jugando (tools/cobertura.py) (327 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0xA600 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
+C 0xA60D orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA610 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA61A bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA631 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA642 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA64E enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0xA658 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA666 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA66F espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA672 enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0xA67C orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA67F bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA682 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA68C orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA69F copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
+C 0xA6A2 teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+C 0xA6A9 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA6AE espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA6B9 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
+C 0xA71A borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xA82F nada_4AE0: ret
+C 0xA832 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0xA898 vuelve_quitando_4: quita 4 palabras de la pila y vuelve: no vuelve a quien llama sino mas atras
+C 0xA9DA orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA9E6 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xAA2A pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
+C 0xAA4F prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0xAA52 empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0xAB0F borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xAB32 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xAB5D pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0xAB6B borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xAB9A borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xABA3 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xADB6 orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
+C 0xADC8 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0xADFB bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
+C 0xAE15 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xAE89 copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAE90 apunta a el estado de la partida
+C 0xAEA6 bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
+C 0xAF21 copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAF7A copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAFDB copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xB03B direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+# --- fin de las anotaciones de anota.py ---

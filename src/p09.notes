@@ -77,3 +77,79 @@ D 0x7D5E 0x7D62 leido_7D5E  lo leen p00:463F, p00:4641, p00:4643, p00:4645 jugan
 D 0x7D62 0x7D76 sin_leer_7D62  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (20 bytes)
 D 0x7D76 0x7D88 leido_7D76  lo leen p00:4694, p00:4696 jugando (tools/cobertura.py) (18 bytes)
 # --- fin de los datos de datos_leidos.py ---
+
+# --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+C 0x6D33 lee la fase (0 a 8; 9 el final)
+C 0x6D39 enciende_sprites: quita el bit 1 del registro 8
+C 0x6D42 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x6D47 lee_estado_vdp_a: lee el registro de estado A del VDP y deja el 0 puesto
+C 0x6D62 enciende_lineas: 0xC940 = 1
+C 0x6D6F enciende_sprites: quita el bit 1 del registro 8
+C 0x6D72 enciende_lineas: 0xC940 = 1
+C 0x6D95 lee la fase (0 a 8; 9 el final)
+C 0x6DF9 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6DFD guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E33 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x6E3A guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E40 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E51 lee la fase (0 a 8; 9 el final)
+C 0x6E58 lee la fase (0 a 8; 9 el final)
+C 0x6E68 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x6E6E empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0x6E73 guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x6E80 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x6EAD lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6EB0 niega_hl: HL = -HL
+C 0x6EBF lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x707A manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
+C 0x708B borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x7094 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x709D borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x70F8 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x714C direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x76B0 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x76BF direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x7755 casilla_del_scroll: la casilla de 0xC0CD, 0xC0CC
+C 0x7806 lee la fase (0 a 8; 9 el final)
+C 0x7809 entrada_de_tabla: HL = la palabra A de la tabla de HL
+C 0x7812 lee la fase (0 a 8; 9 el final)
+C 0x7815 entrada_de_tabla: HL = la palabra A de la tabla de HL
+C 0x781C dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
+C 0x784B vector_4109: jp p00:458B
+C 0x785A banco_en_A000: pone el banco A en 0xA000
+C 0x786E nada_4AE0: ret
+C 0x7871 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x79F4 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x7A00 pon_c0d4_1: 0xC0D4 = 1
+C 0x7A08 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x7A2B registro_6: el registro 6 del VDP (patrones de los sprites) = A + 0x19
+C 0x7A4A pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7A4F pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7A77 prepara_paleta_ya: 0xEF60 a 0 y p00:4CE0
+C 0x7AC1 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7AF3 banco_en_A000: pone el banco A en 0xA000
+C 0x7B20 niega_de: DE = -DE
+C 0x7B2F guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7B49 niega_de: DE = -DE
+C 0x7B6F niega_de: DE = -DE
+C 0x7B7E guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7B98 niega_de: DE = -DE
+C 0x7BE1 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7BE5 guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7BEF banco_en_A000: pone el banco A en 0xA000
+C 0x7C0E banco_en_A000: pone el banco A en 0xA000
+C 0x7C4A banco_en_8000: pone el banco A en 0x8000
+C 0x7C55 nada_4AE0: ret
+C 0x7C58 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x7D8B casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7D9E casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+C 0x7DAA casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+C 0x7DD4 banco_en_A000: pone el banco A en 0xA000
+C 0x7DDE banco_en_A000: pone el banco A en 0xA000
+C 0x7E56 casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7E74 banco_en_A000: pone el banco A en 0xA000
+C 0x7E7E banco_en_A000: pone el banco A en 0xA000
+C 0x7EFD casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7F1F banco_en_A000: pone el banco A en 0xA000
+C 0x7F29 banco_en_A000: pone el banco A en 0xA000
+# --- fin de las anotaciones de anota.py ---
