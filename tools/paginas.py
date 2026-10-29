@@ -30,12 +30,22 @@ _R6, _R8, _RA = 0x6000, 0x8000, 0xA000
 ORG = {0: 0x4000,
        1: _R6, 2: _R8, 3: _RA,          # p00:4B95 (1-2-3); p00:4BEF (4-2-3)
        4: _R6, 5: _R8, 6: _RA,          # p00:4B99 (4-5-6)
-       7: _R8, 8: _RA,                  # p00:4BB0 (4-7-8)
+       7: _R8,                          # p00:4BB0 (4-7-8)
        9: _R6, 10: _R8, 11: _RA,        # p00:4BDF (9-10); p04:6C4F llamada lejana (9-10-11)
        28: _R6, 29: _R8, 30: _RA,       # p00:4BC8 (28-29-30)
-       31: _R6}                         # p02:8FA4 ld a,0x1F / call 4C07
-for _b in range(N_PAGINAS):             # SIN MEDIR todavia: se fijan con el trazado
-    ORG.setdefault(_b, _R8)
+       # Los de datos, en la ventana en la que la campana (tools/cobertura.py)
+       # lee mas bytes suyos; los que tambien se leen en otra van con su
+       # ventana mayoritaria (tools/bloques.py corre las direcciones).
+       8: _RA,
+       11: _R6, 12: _R6, 13: _R8,       # 11 y 12 tambien en 0x8000; 13 tambien en 0x6000
+       14: _RA, 15: _RA, 16: _RA, 17: _RA, 18: _RA, 19: _RA, 20: _RA,
+       21: _R6,                         # tambien en 0xA000
+       22: _R6,                         # tambien en 0x8000
+       23: _RA, 24: _RA, 25: _R8, 26: _RA, 27: _RA,
+       31: _R6}                         # p02:8FA4 lo pone en 0x6000 (ld a,0x1F / call 4C07); sus
+                                        # bytes se leen en 0xA000 (p01:78E0)
+for _b in range(N_PAGINAS):
+    assert _b in ORG, _b
 
 # Registro del mapper -> ranura que gobierna (Konami con SCC).
 REGISTROS = {0x5000: 0x4000, 0x7000: 0x6000, 0x9000: 0x8000, 0xB000: 0xA000}

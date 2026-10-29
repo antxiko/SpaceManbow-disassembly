@@ -27,7 +27,7 @@ L_8003:
 L_8006:
 	jp L_878A		;8006
 L_8009:
-	jp L_8F11		;8009   ; jp 3, 4 y 5 del vector de p02:8000 (p02:8F11, 8F64, 8FC5): ninguna partida de la campana los llama
+	jp L_8F11		;8009
 L_800C:
 	jp L_8F64		;800c
 L_800F:
@@ -1908,7 +1908,7 @@ L_8F06:
 L_8F11:
 	ret			;8f11
 L_8F12:
-	ld a,0afh		;8f12   ; con A=0xAF, o con A=0 entrando en 0x8F13 (el byte 0xAF es `xor a`): pone la RAM en la pagina 1 (ENASLT con 0xF342) y cambia 0x4000-0x4FFF por 0xC000-0xCFFF (A distinto de 0) o 0x5000-0x70EF por 0xD000-0xF0EF (A=0); luego devuelve el cartucho a la pagina 1
+	ld a,0afh		;8f12
 	push hl			;8f14
 	push af			;8f15
 	call 0465fh		;8f16
@@ -1960,7 +1960,7 @@ L_8F56:
 	jr nz,L_8F56		;8f61
 	ret			;8f63
 L_8F64:
-	ld a,(0ffa7h)		;8f64   ; solo con disco: si el gancho H.PHYD (0xFFA7) es `ret` vuelve; si no, deja el gancho H.KEYI en `ret`, cambia la RAM con p02:8F12 y p02:8F13, pone el banco 31 en 0x6000 y salta a 0x6000 (p02:8FAA, que el trazado no sigue: cartucho.LLAMADAS_AJENAS)
+	ld a,(0ffa7h)		;8f64
 	cp 0c9h		;8f67
 	ret z			;8f69
 	ld a,(0fd9ah)		;8f6a

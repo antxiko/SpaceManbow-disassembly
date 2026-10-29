@@ -87,14 +87,18 @@ def declara(v, ini, fin, nom, texto, lectores, F=None):
     a = ini
     while a < fin:
         b = v.banco(a)
-        tope = ORG[b] + TAM_PAGINA
+        tope = (a & 0xE000) + TAM_PAGINA
         z = min(fin, tope)
         t = texto
         if a > ini:
             t += " (sigue del banco %d)" % v.banco(a - 1)
         if z < fin:
             t += " (sigue en el banco %d, en 0x%04X)" % (v.banco(z), z)
-        BLOQUES.append(dict(p=b, ini=a, fin=z, nombre=nom if a == ini else nom + "_cola",
+        # un banco de datos puede estar puesto en otra ranura que la de su
+        # org (p31 se lee en 0xA000 y va en 0x6000): en las notas va con las
+        # direcciones de su org
+        d = ORG[b] - (a & 0xE000)
+        BLOQUES.append(dict(p=b, ini=a + d, fin=z + d, nombre=nom if a == ini else nom + "_cola",
                             texto=t, lectores=list(lectores), F=F))
         a = z
 

@@ -19,6 +19,6 @@
 0x801F   # p09:6D00 jp
 0x8073   # rutina: escribe 0xFF 65536 veces en el puerto que da el byte 0x0007 de la BIOS
 0x8085   # rutina: escribe 0..255 en el mismo puerto
-0x808F   # rutina: llama a p10:8157 con A=8, mira los bits 5 y 6 y escribe el registro 23 del VDP con la BIOS (0x0047)
+0x808E   # rutina: llama a p10:8157 con A=8, mira los bits 5 y 6 y escribe el registro 23 del VDP con la BIOS (0x0047)
 0x80F4   # p09:6D03 jp
 0x814F   # codigo huerfano: 8 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x814F

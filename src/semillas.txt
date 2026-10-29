@@ -653,7 +653,7 @@ p07 0x8275 4 7 8  # rutina: la misma llamada con IY = 0xCAC0 y 0xCAE0
 p09 0x7085 9 10 11  # rutina: borra 0x7F bytes en 0xC000, 0xC180 y 0xC280 con p00:4648
 p10 0x8073 9 10 11  # rutina: escribe 0xFF 65536 veces en el puerto que da el byte 0x0007 de la BIOS
 p10 0x8085 9 10 11  # rutina: escribe 0..255 en el mismo puerto
-p10 0x808F 9 10 11  # rutina: llama a p10:8157 con A=8, mira los bits 5 y 6 y escribe el registro 23 del VDP con la BIOS (0x0047)
+p10 0x808E 9 10 11  # rutina: llama a p10:8157 con A=8, mira los bits 5 y 6 y escribe el registro 23 del VDP con la BIOS (0x0047)
 # --- fin de lo puesto a mano ---
 # --- TABLAS DE SALTOS (las reescribe tools/tablas_saltos.py desde cartucho.TABLAS_SALTO) ---
 p00 0x5104 4 5 6  # entrada 0 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando

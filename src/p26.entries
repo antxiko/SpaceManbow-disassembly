@@ -1,4 +1,4 @@
-# Puntos de entrada del banco 26 (se ejecuta en 0x8000).
+# Puntos de entrada del banco 26 (se ejecuta en 0xa000).
 #
 # Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
 # vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
