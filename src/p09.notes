@@ -87,6 +87,9 @@ C 0x6D62 enciende_lineas: 0xC940 = 1
 C 0x6D6F enciende_sprites: quita el bit 1 del registro 8
 C 0x6D72 enciende_lineas: 0xC940 = 1
 C 0x6D95 lee la fase (0 a 8; 9 el final)
+C 0x6DBD lee la cuenta de cuadros de la partida
+C 0x6DF1 guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
+C 0x6DF5 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x6DF9 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6DFD guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6E33 borra_memoria: pone a 0 BC + 1 bytes desde HL
@@ -101,6 +104,7 @@ C 0x6E80 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C),
 C 0x6EAD lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6EB0 niega_hl: HL = -HL
 C 0x6EBF lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6EC9 lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 C 0x707A manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
 C 0x708B borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x7094 borra_memoria: pone a 0 BC + 1 bytes desde HL
@@ -115,10 +119,14 @@ C 0x7809 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x7812 lee la fase (0 a 8; 9 el final)
 C 0x7815 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x781C dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
+C 0x7823 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7841 lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7845 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x784B vector_4109: jp p00:458B
 C 0x785A banco_en_A000: pone el banco A en 0xA000
 C 0x786E nada_4AE0: ret
 C 0x7871 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x78FA guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x79F4 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 C 0x7A00 pon_c0d4_1: 0xC0D4 = 1
 C 0x7A08 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
@@ -130,14 +138,18 @@ C 0x7AC1 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya
 C 0x7AF3 banco_en_A000: pone el banco A en 0xA000
 C 0x7B20 niega_de: DE = -DE
 C 0x7B2F guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7B43 guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 C 0x7B49 niega_de: DE = -DE
 C 0x7B6F niega_de: DE = -DE
 C 0x7B7E guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x7B92 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x7B98 niega_de: DE = -DE
 C 0x7BE1 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7BE5 guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7BEF banco_en_A000: pone el banco A en 0xA000
 C 0x7C0E banco_en_A000: pone el banco A en 0xA000
+C 0x7C2B lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7C2F guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x7C4A banco_en_8000: pone el banco A en 0x8000
 C 0x7C55 nada_4AE0: ret
 C 0x7C58 despachador: salta a la entrada A de la tabla de direcciones que va detras del call

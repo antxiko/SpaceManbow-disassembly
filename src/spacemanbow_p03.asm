@@ -1952,7 +1952,7 @@ L_BDD8:
 	or e			;bddd
 	ret z			;bdde
 	ld a,0feh		;bddf
-	call 06009h		;bde1
+	call 06009h		;bde1   ; vector_6C6A: jp p01:6C6A
 	inc hl			;bde4
 	jr L_BDD8		;bde5
 

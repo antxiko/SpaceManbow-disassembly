@@ -630,7 +630,7 @@ L_6D95:
 	call L_7755		;6db9
 	ret			;6dbc
 L_6DBD:
-	ld a,(0ca02h)		;6dbd
+	ld a,(0ca02h)		;6dbd   ; lee la cuenta de cuadros de la partida
 	and 003h		;6dc0
 	ret nz			;6dc2
 L_6DC3:
@@ -664,8 +664,8 @@ L_6DEE:
 	xor a			;6dee
 	ld d,a			;6def
 	ld e,a			;6df0
-	ld (0ca1ch),de		;6df1
-	ld (0ca1ah),de		;6df5
+	ld (0ca1ch),de		;6df1   ; guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
+	ld (0ca1ah),de		;6df5   ; guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld (0ca14h),de		;6df9   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld (0ca12h),de		;6dfd   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld (0c0d5h),a		;6e01
@@ -782,7 +782,7 @@ L_6E9C:
 	pop de			;6ec4
 	add hl,de			;6ec5
 	ld (0c0e8h),hl		;6ec6
-	ld de,(0ca1ch)		;6ec9
+	ld de,(0ca1ch)		;6ec9   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 	ld d,000h		;6ecd
 	add hl,de			;6ecf
 	ld a,l			;6ed0
@@ -2275,7 +2275,7 @@ L_77FC:
 	ex de,hl			;781b
 	call 04639h		;781c   ; dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
 	ld (0c0cah),de		;781f
-	ld (0ca34h),hl		;7823
+	ld (0ca34h),hl		;7823   ; guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	ld a,(0ca1eh)		;7826
 	ld (0c0e1h),a		;7829
 	xor a			;782c
@@ -2286,9 +2286,9 @@ L_77FC:
 	call L_7BED		;7838
 	call L_7BED		;783b
 	call L_7C08		;783e
-	ld hl,(0ca34h)		;7841
+	ld hl,(0ca34h)		;7841   ; lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	dec hl			;7844
-	ld (0ca34h),hl		;7845
+	ld (0ca34h),hl		;7845   ; guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 L_7848:
 	call L_7AC4		;7848
 	call 04109h		;784b   ; vector_4109: jp p00:458B
@@ -2407,7 +2407,7 @@ L_78F0:
 	add a,010h		;78f5
 	ld d,a			;78f7
 	ld e,000h		;78f8
-	ld (0ca34h),de		;78fa
+	ld (0ca34h),de		;78fa   ; guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	ret			;78fe
 
 ; ----------------------------------------------------------------------
@@ -2699,7 +2699,7 @@ L_7B09:
 	rr e		;7b3d
 	sra d		;7b3f
 	rr e		;7b41
-	ld (0ca1ch),de		;7b43
+	ld (0ca1ch),de		;7b43   ; guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 	ld d,000h		;7b47
 	call 0460ah		;7b49   ; niega_de: DE = -DE
 	ld (0ca38h),de		;7b4c
@@ -2738,7 +2738,7 @@ L_7B09:
 	rr e		;7b8c
 	sra d		;7b8e
 	rr e		;7b90
-	ld (0ca1ah),de		;7b92
+	ld (0ca1ah),de		;7b92   ; guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld d,000h		;7b96
 	call 0460ah		;7b98   ; niega_de: DE = -DE
 	ld (0ca36h),de		;7b9b
@@ -2817,9 +2817,9 @@ L_7C08:
 	ld (0c0cah),hl		;7c27
 	ret			;7c2a
 L_7C2B:
-	ld hl,(0ca34h)		;7c2b
+	ld hl,(0ca34h)		;7c2b   ; lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	inc hl			;7c2e
-	ld (0ca34h),hl		;7c2f
+	ld (0ca34h),hl		;7c2f   ; guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	ret			;7c32
 L_7C33:
 	dec a			;7c33

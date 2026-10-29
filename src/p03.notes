@@ -65,4 +65,5 @@ C 0xAF21 copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la dere
 C 0xAF7A copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 C 0xAFDB copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 C 0xB03B direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0xBDE1 vector_6C6A: jp p01:6C6A
 # --- fin de las anotaciones de anota.py ---

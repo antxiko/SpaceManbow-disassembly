@@ -56,8 +56,6 @@ RAM = {
     0xD703: ("el banco que lee el RLE de p10:8290 en 0xA000", "p10:82C5"),
     0xEF60: ("los pasos que le quedan al fundido de la paleta (bits 0-5)", "p00:4D6E"),
     0xC906: ("1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar", "p00:4110"),
-    0xC907: ("lo pulsado desde el ultimo cuadro (copia de 0xC90B)", "p00:4A7A"),
-    0xC908: ("copia de los mandos de 0xC909", "p00:4A7A"),
     0xC90A: ("los mandos recien pulsados", "p00:4A6A"),
     0xC90B: ("los mandos pulsados desde la ultima copia", "p00:4A6A"),
     0xC90C: ("las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)", "p00:4A58"),
@@ -81,7 +79,38 @@ RAM = {
     0xF0FA: ("por que paso va el cuadro de partida (p00:438E)", "p00:4391"),
     0xF0FC: ("la fase con la que empieza la partida", "p00:433B"),
     0xF0FD: ("las vidas con las que se sigue", "p00:4340"),
-    0xCB0B: ("el marcador, en BCD (3 bytes)", "work/prueba_fase.py"),
+    0xCB0B: ("el marcador, en BCD (3 bytes)", "work/prueba_fase.py, p04:7E03"),
+    0xCA02: ("la cuenta de cuadros de la partida", "p00:448B"),
+    0xCA19: ("el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)", "p04:7186"),
+    0xCA1A: ("el scroll fino en Y: se suma a la fraccion de la Y de los actores", "p04:6CA3, p04:7A79"),
+    0xCA1C: ("el scroll fino en X: se suma a la fraccion de la X de los actores", "p04:6C89, p04:7A85"),
+    0xCA26: ("la rapidez con la que p04:7240 calcula una velocidad", "p04:729E"),
+    0xCA34: ("la posicion del scroll que mira el guion de la fase (p04:625E)", "p04:6279"),
+    0xCA47: ("la fraccion de la Y de la nave (0xCA47-0xCA48, palabra)", "p04:71B8"),
+    0xCA49: ("la fraccion de la X de la nave (0xCA49-0xCA4A, palabra)", "p04:71B8"),
+    0xC947: ("bit 0: no se aceptan sonidos", "p00:4AF8"),
+    0xE900: ("el guion de la fase (0x600 bytes copiados de p05:93B8)", "p04:6222"),
+    0xCE42: ("por donde va el guion de la fase", "p04:625E"),
+    0xCE80: ("las 20 fichas de actor de 0x40 bytes", "p04:6056"),
+    0xD460: ("las 18 fichas de actor pequenas, de 0x20 bytes (balas)", "p04:6485, p04:7207"),
+    0xC907: ("lo recien pulsado que usa la partida (de los mandos o de la demostracion)", "p00:4A7A, p01:78C7"),
+    0xC908: ("los mandos que usa la partida (de 0xC909 o de la demostracion)", "p00:4A7A, p01:78C7"),
+    0xC919: ("la demostracion que toca (0-2)", "p01:7863"),
+    0xC91A: ("los cuadros que le quedan al trio de entradas de la demostracion", "p01:789C"),
+    0xC91D: ("por donde van las entradas de la demostracion", "p01:789C"),
+    0xC91F: ("las demostraciones: 0 se leen del banco 31; 1 se graban en el slot 0x88; 2 se leen de ahi", "p01:7883"),
+    0xC92D: ("los cuadros del final de la demostracion", "p01:782A"),
+    0xC92E: ("los mandos del trio de la demostracion", "p01:789C"),
+    0xC92F: ("lo recien pulsado del trio de la demostracion", "p01:789C"),
+    0xC945: ("el estado (y paso) al que salta p00:4158 con el disparo", "p00:4168, p01:6A9C"),
+    0xC91C: ("los dos colores con los que p01:6ADD pinta las letras", "p01:6C6A"),
+    0xF0F8: ("por que paso va el programa (p01:6021)", "p01:603F"),
+    0xF0F9: ("por que paso va la partida (p01:6256)", "p01:627F"),
+    0xCA01: ("el paso del estado de la partida", "p01:6256"),
+    0xC901: ("el paso del estado del programa", "p01:6021"),
+    0xC904: ("una espera del programa (p01:6238 la baja)", "p01:6238"),
+    0xCB10: ("los puntos de la siguiente vida extra, en BCD", "p04:7E29"),
+    0xC922: ("el record, en BCD (3 bytes)", "p04:7E50"),
 }
 
 RAM16 = {}
@@ -96,6 +125,7 @@ RAM16 = {}
 CAMPOS_ACTOR = {
     0x00: "el tipo del actor (0 = libre)",
     0x01: "el paso del actor",
+    0x04: "el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)",
     0x05: "el dibujo del actor (p04:7791)",
     0x07: "la Y del actor (fraccion: 32 por punto)",
     0x08: "la Y del actor (en caracteres de 8 puntos)",
@@ -109,7 +139,10 @@ CAMPOS_ACTOR = {
     0x10: "la aceleracion en Y del actor (alta)",
     0x11: "la aceleracion en X del actor (baja)",
     0x12: "la aceleracion en X del actor (alta)",
+    0x13: "el alto de la caja del actor (p04:7662)",
+    0x14: "el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)",
     0x15: "las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)",
+    0x16: "la vida del actor (p04:7C44 le resta los golpes)",
     0x17: "una cuenta del actor (p04:6AD2 la baja hasta 1)",
     0x18: "otra cuenta del actor (p04:6ADF la baja hasta 1)",
     0x19: "cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)",
@@ -118,7 +151,7 @@ CAMPOS_ACTOR = {
 CARGAS_ACTOR = (tuple(0xCE80 + 0x40 * k for k in range(20)) + tuple(0xD460 + 0x20 * k for k in range(18))
                 + (0xCA40,))
 
-FICHAS = ((CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 4: ((0x6344, 0x7E73),), 5: ((0x8000, 0xA000),),
+FICHAS = ((CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
                           6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR),)
 
 

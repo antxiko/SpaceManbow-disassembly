@@ -42,7 +42,7 @@ D 0x934C 0xA000 leido_934C  lo leen p04:622C, p04:622E, p04:6236, p04:6707, p04:
 # --- fin de los datos de datos_leidos.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
-C 0x8021 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x8021 lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
 C 0x8038 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 C 0x803B dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 C 0x8043 sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
@@ -50,12 +50,20 @@ C 0x8060 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x8069 lee el paso del actor
 C 0x808A lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8091 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x8094 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
+C 0x8099 resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 C 0x80CD pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x80D0 apunta a bit 0: no se aceptan sonidos
 C 0x80E8 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x8108 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
-C 0x810F lee copia de los mandos de 0xC909
+C 0x810F lee los mandos que usa la partida (de 0xC909 o de la demostracion)
 C 0x8114 lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
-C 0x820D lee copia de los mandos de 0xC909
+C 0x8144 lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+C 0x814E guarda la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+C 0x8162 lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
+C 0x8171 guarda la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
+C 0x820D lee los mandos que usa la partida (de 0xC909 o de la demostracion)
+C 0x8231 guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x8242 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x8248 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x8254 apunta a la nave: su ficha de actor (0 = muerta)
@@ -63,18 +71,25 @@ C 0x8258 el tipo del actor (0 = libre) = 0x01
 C 0x825C la Y del actor (en caracteres de 8 puntos) = 0x08
 C 0x8260 la X del actor (en caracteres de 8 puntos) = 0x05
 C 0x8264 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x39
+C 0x8268 el alto de la caja del actor (p04:7662) = 0x03
+C 0x826C el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
 C 0x8270 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0F
+C 0x8274 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x827F borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x82A9 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x82C6 lee la cuenta de cuadros de la partida
 C 0x82DF sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 C 0x82EE centro_del_actor: la posicion del actor mas la mitad de su ancho (ix+0x14) y de su alto
 C 0x82F2 distancia_a_la_nave: HL = la Y de la nave - la del actor y DE = lo mismo en X, con fraccion
 C 0x82F5 niega_hl: HL = -HL
 C 0x830E suma_a_hl: HL = HL + A
+C 0x8324 lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
+C 0x8332 lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 C 0x836C entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 C 0x8370 niega_hl: HL = -HL
 C 0x8400 suma_a_hl: HL = HL + A
 C 0x841F tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8429 guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x844D pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x8453 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x8462 ficha_en_cac0: en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
@@ -82,19 +97,23 @@ C 0x8465 vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 C 0x8475 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x8498 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 C 0x849D tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
-C 0x84F9 lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x84F9 lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
 C 0x8505 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8536 apunta a la cuenta de cuadros de la partida
 C 0x8539 lee la fase (0 a 8; 9 el final)
 C 0x855C tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 C 0x8561 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 C 0x858B suma_a_hl: HL = HL + A
 C 0x8602 nada_4AE0: ret
 C 0x8605 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x866C lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+C 0x8670 lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 C 0x86AF fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 C 0x86BE fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 C 0x86CB casilla_en_pantalla: si D < 0x20 y E < 0x18, la casilla del mapa (p00:4E3A) en DE y acarreo
 C 0x86DC pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x86E6 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x8705 apunta a por que paso va la partida (p01:6256)
 C 0x8711 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x8724 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 C 0x8740 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas

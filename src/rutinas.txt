@@ -7,7 +7,7 @@ p00 0x4106 vector_vacio  jp p00:4452, que es un ret
 p00 0x4109 vector_4109  jp p00:458B
 p00 0x4110 interrupcion  el gancho H.KEYI: cuenta 0xC914, cada dos cuadros p00:4A6A, el fundido de p00:4D6E y, si no hay otro cuadro a medias (0xC906), guarda los bancos, llama a p00:4B4A con interrupciones y los devuelve
 p00 0x414E lee_estado_vdp  lee el registro de estado del VDP (el puerto de 0x0006 + 1): asi se da por atendida la interrupcion
-p00 0x4158 interrupcion_y_reinicio  la interrupcion de p00:4270 y, si el bit 4 de 0xC90A esta puesto y no hay cuadro a medias, vuelve al estado de 0xC945 con la pila de nuevo en 0xF0F0
+p00 0x4158 interrupcion_saltable  el gancho de p00:410C: la interrupcion de p00:4270 y, si se acaba de pulsar el disparo (bit 4 de 0xC90A) y no hay cuadro a medias, salta al estado de 0xC945 con la pila de nuevo en 0xF0F0
 p00 0x4189 lineas_del_vdp  en el borde: manda la lista de registros de 0xC0AE (cuantos y los bytes, con otir) y la primera vez cambia de tablas (p00:41C2) y enciende la interrupcion de linea (bit 4 del registro 0)
 p00 0x4197 manda_registros  la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
 p00 0x41C2 tablas_actuales  las tablas de registros que tocan con 0xC09B
@@ -622,3 +622,140 @@ p04 0x7C01 copia_a_d700  copia a 0xD700 la lista de HL (su largo en el primer by
 p04 0x7C0F con_iy_como_ix  con IX e IY cambiados, p04:7C26
 p04 0x7C26 nada_7C26  ret
 p04 0x7C27 quita_si_toca_fondo  si el bit 4 de ix+0x15: libera la ficha si se sale del mapa o si el caracter de debajo es solido
+p04 0x7C44 resta_golpe  si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
+p04 0x7C63 resta_golpe_jefe  lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
+p04 0x7C6B resta_golpe_jefe_b  lo mismo sin mirar ix+0x3F
+p04 0x7CA7 olvida_golpe  ix+4 = 0
+p04 0x7CAC resta_golpe_sin_mas  si tiene golpe, se lo resta de la vida
+p04 0x7CBE puntos_y_sonido  los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
+p04 0x7CC3 actor_destruido  ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
+p04 0x7CE0 suma_puntos_del_tipo  los puntos numero (HL) de la tabla p04:7CF6 (p04:7E03)
+p04 0x7D0A datos_al_destruir  HL = p04:7E74 + 3 x tipo: el tipo de la explosion, el sonido y los puntos
+p04 0x7D1B parar_actor  suelta los sprites y p04:7D1E
+p04 0x7D1E borra_movimiento  el paso, las uniones, los dibujos, la cuenta y las velocidades a 0
+p04 0x7D3E suelta_de_los_suyos  deshace las uniones del actor con los de su grupo (p04:7D89, p04:7D54)
+p04 0x7D54 avisa_al_padre  al actor de ix+0x34 le baja ix+0x37 y avisa a los suyos (p04:7DA6)
+p04 0x7D5E suelta_de_los_suyos_b  lo mismo y, si el padre se queda sin hijos, le sube ix+0x3D
+p04 0x7D89 marca_hijos  a los 20 actores del grupo B les pone el bit 6 de ix+0x34 (se van a quitar)
+p04 0x7D9C quitado_por_el_padre  si el bit 6 de ix+0x34, ix+4 = 0xFF (un golpe que lo destruye)
+p04 0x7DA6 avisa_a_los_unidos  marca con el bit 7 a los de ix+0x35 e ix+0x36
+p04 0x7DC3 puntos_del_tipo  los puntos del tipo del actor
+p04 0x7DCD sonido_del_tipo  el sonido del tipo del actor (p00:4AF5)
+p04 0x7DD8 datos_del_tipo_a  HL = p04:7E74 + 3 x A
+p04 0x7DE4 borra_marcadores  el marcador y el record a 0 (p04:7DF1)
+p04 0x7DF1 marcador_a_0  el marcador a 0 y la siguiente vida extra a 50.000 (0xCB10 = 0x50)
+p04 0x7E03 suma_puntos  suma DE (BCD) al marcador de 0xCB0B; si pasa de 999.990 se queda ahi; vida extra cada 50.000 (p04:7E29) y record (p04:7E50)
+p04 0x7E29 vida_extra  si el marcador llega a 0xCB10-0xCB11, los sube 50.000 y una vida mas (el sonido 0x0F)
+p04 0x7E50 record  si el marcador pasa del record de 0xC922, lo copia
+p01 0x6000 vector_programa  jp p01:6021
+p01 0x6003 vector_6BD6  jp p01:6BD6
+p01 0x6006 vector_6B33  jp p01:6B33
+p01 0x6009 vector_6C6A  jp p01:6C6A
+p01 0x6021 programa  cuenta 0xC903 y salta por el estado 0xC900 (tabla p01:6032): 0 arranque, 1 logotipo, 2 titulo, 3 historia, 4 partida, 5 demostracion; 0xC901 es el paso dentro del estado
+p01 0x603E estado_arranque  prepara el VDP (p00:4725) y pasa al estado 1
+p01 0x604B a_demostracion  pasa al estado 5, la demostracion
+p01 0x6050 estado_logotipo  si se pulsa algo pasa al titulo (p01:623D); si no, el paso de 0xC901 (tabla p01:605F)
+p01 0x6065 logotipo_prepara  borra 0xD700-0xD70F, prepara el logotipo (p01:6664) y siguiente paso
+p01 0x607B logotipo_anima  un paso del logotipo (p01:6707); cuando 0xD702 lo dice, 0xC904 = 0x80 y siguiente paso
+p01 0x6096 espera_y_sigue  baja 0xC904 y, al llegar a 0, pasa al estado siguiente
+p01 0x609D estado_titulo  el paso de 0xC901 (tabla p01:60A6)
+p01 0x60AA titulo_prepara  una espera, p01:6981 y siguiente paso
+p01 0x60C6 titulo_sigue  una espera, p01:6994 y siguiente estado
+p01 0x60DB estado_historia  el paso de 0xC901 (tabla p01:60E4)
+p01 0x60E8 historia  p01:6A92, p03:A65B, y tres pantallas de texto (p01:6C6A con p01:615D y p01:616C) con su paleta (p01:6157), 0xF0 cuadros cada una; borra la VRAM y siguiente paso
+p01 0x6157 paleta_y_fundido  los colores de HL como destino (p00:4CE0) y empieza el fundido
+p01 0x6199 historia_sigue  p03:A6A5 y, cuando vuelve con NZ, pasa al estado 5 (la demostracion)
+p01 0x61B0 estado_partida  el paso de 0xC901 (tabla p01:61B9)
+p01 0x61BD partida_prepara  p01:64AC y siguiente paso
+p01 0x61D0 partida_cuadro  un cuadro de la partida (p01:6256)
+p01 0x61E2 estado_demostracion  la demostracion: el paso de 0xC901 (tabla p01:61EB)
+p01 0x61EF demostracion_prepara  p01:77B5 y siguiente paso
+p01 0x6202 demostracion_cuadro  un cuadro de la demostracion (p01:77F0); cuando acaba (Z), al estado 0
+p01 0x6216 siguiente_paso_y_0  0xC904 = 0 y siguiente paso
+p01 0x6217 siguiente_paso_con_a  0xC904 = A y siguiente paso
+p01 0x621A siguiente_paso  0xC901 + 1
+p01 0x621F siguiente_estado  0xC900 + 1, paso 0 y 0xC904 = 0
+p01 0x622C a_estado_0  al estado 0
+p01 0x622D a_estado  al estado A, paso 0
+p01 0x6238 baja_c904  0xC904 - 1; Z al llegar a 0
+p01 0x623D pulsado_al_titulo  si se ha pulsado algo (0xC907), al estado 2 (titulo) con acarreo
+p01 0x6249 mandos_en_c921  los mandos (p00:4A8C) en 0xC921 y lo recien pulsado en 0xC920
+p01 0x6256 partida  0xCA02 + 1 y salta por el estado de la partida 0xCA00 (tabla p01:6267), con su paso en 0xCA01
+p01 0x6271 partida_estado_0  el paso de 0xCA01
+p01 0x627E partida_0_0  siguiente paso de la partida (p01:64A7)
+p01 0x6288 partida_0_1  al estado 1 de la partida (p01:649E)
+p01 0x6292 partida_estado_1  el paso de 0xCA01
+p01 0x629F partida_1_0  siguiente paso de la partida
+p01 0x62B0 partida_1_1  al estado siguiente de la partida
+p01 0x62C1 partida_estado_jugando  el paso de 0xCA01 (tabla p01:62CA)
+p01 0x62D0 empieza_la_fase  paleta a negro y la fase empieza (p00:4103 con A = 0)
+p01 0x62E8 jugando  un cuadro de partida (p00:4100): 0 sigue; 1 nave muerta, al estado 3 de la partida; 2 fase acabada, siguiente paso
+p01 0x6300 sonidos_si  0xC947 = 0
+p01 0x6308 fase_siguiente  0xCA10 + 1; despues de la 8, al estado 4 (el final); si no, la fase empieza (p00:4103 con A = 3)
+p01 0x632D partida_estado_muerte  el paso de 0xCA01 (tabla p01:6336)
+p01 0x6340 resta_vida  una vida menos (0xCB0F, BCD): si quedan, la fase vuelve a empezar (p00:4103 con A = 1); si no, siguiente paso
+p01 0x6367 fin_de_partida  0xCA02 = 0x60, el sonido 0x4B, borra la pantalla (p01:63EE) y escribe los dos textos (p01:641E, p01:6428) con sus colores
+p01 0x6399 fin_de_partida_espera  con F5 (bit 4 de 0xC90C) se sigue (p01:63AF); si no, al acabar la cuenta de 0xCA02, siguiente paso
+p01 0x63AF sigue_la_partida  escribe el texto de p01:6437, sus colores, y prepara seguir (p01:63D5)
+p01 0x63C7 vuelve_al_arranque  prepara el arranque (p00:49E3) y al estado 0
+p01 0x63D5 sigue_la_partida_b  al acabar la cuenta, la fase vuelve a empezar (p00:4103 con A = 2)
+p01 0x63E8 paleta_y_fundido_b  igual que p01:6157
+p01 0x63EE pantalla_limpia  los 6 registros del VDP de p01:6405, sin sprites y la VRAM borrada
+p01 0x6440 secuencia_entre_fases  guarda 0xCA00-0xCFFF en 0xC000, hace la secuencia de p03 (p01:647C), borra la RAM de la partida y la devuelve; fase 0, 0xCA04 + 1 (sin pasar de 0xFF), la fase empieza (p00:4103 con A = 3) y la partida al estado 2, paso 1
+p01 0x647C secuencia_de_p03  0xC947 = 0, p03:A62A y p03:A69F cada cuadro hasta que vuelve con NZ; paleta a negro
+p01 0x6492 estado_de_partida_hl  0xCA00 = HL (estado y paso)
+p01 0x6496 a_estado_de_partida  0xCA00 = A y paso 0
+p01 0x649E siguiente_estado_de_partida  0xCA00 + 1 y paso 0
+p01 0x64A3 paso_de_partida_a  0xCA01 = A
+p01 0x64A7 siguiente_paso_de_partida  0xCA01 + 1
+p01 0x64AC prepara_partida  borra 0xCA00-0xEFFF; la fase de 0xF0FC (solo en el estado 4) y 0xCA03 = 0; con el byte 0x4032 distinto de 0xFF y F3 pulsada, el bit 0 de 0xCA03
+p01 0x64F6 copia_fuente_653C  con 0xFAF6 = 1: 16 caracteres de p01:665C (p01:6960) y la fuente de p01:653C a la VRAM (p01:692E)
+p01 0x6530 letra_de_la_bios  HL = la letra A de la fuente de la BIOS (la direccion de 0x0004 + 8 x A)
+p01 0x6664 prepara_logotipo  prepara el arranque, apaga la pantalla, la paleta (p01:66D6), el borde, el registro 7, un rectangulo, los graficos del logotipo (p01:678E, p01:67F6, p01:685E con p01:692E), el texto de p01:674D y enciende; 0xD700 = 0x3C, 0xD701 = 0x31, 0xD702 = 0
+p01 0x6707 paso_del_logotipo  cada dos cuadros, una linea mas del logotipo (copia de la VRAM, p00:4838) hasta que 0xD701 llega a 0 y 0xD702 = 1
+p01 0x672D texto_por_columnas  las letras de HL con p00:49B9 hasta un 0xFF; 0xFE trae cuanto se mueve D y baja E 8 puntos
+p01 0x692E copia_letras  B letras de 1 bit por punto de HL a la VRAM (p01:6960), una detras de otra
+p01 0x693A de_1_a_4_bits  pasa 8 filas de un caracter de 1 bit por punto (HL) a 4 bits por punto en 0xD800, con el color C
+p01 0x6960 letra_a_vram  una letra de HL a 4 bits (p01:693A) y a la VRAM en D, E (p00:490B)
+p01 0x6981 titulo_prepara_b  pantalla limpia, el gancho que salta a la partida con el disparo (p01:6A98) y p03:A600
+p01 0x6994 titulo_aparece  pantalla limpia, el titulo subiendo con el registro 23 (de 0xE8 a 0, un paso por cuadro), sus copias, colores y textos, p03:A651 y el gancho normal (p01:6A84)
+p01 0x6A26 paleta_y_fundido_c  igual que p01:6157
+p01 0x6A84 gancho_normal  H.KEYI a la direccion de p00:410E (p00:4270)
+p01 0x6A92 gancho_saltable_titulo  0xC945 = 2 (el titulo) y H.KEYI a la de p00:410C (p00:4158): con el disparo se salta al titulo
+p01 0x6A98 gancho_saltable_partida  0xC945 = 4 (la partida) y H.KEYI a p00:4158
+p01 0x6AAD copia_6x6  copia 6 filas de 6 bytes a la VRAM (p00:4921)
+p01 0x6AB3 copia_caracter  copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
+p01 0x6ABE copia_caracter_coloreado  lo mismo con los colores 0x0E y 0x0F cambiados por los de 0xC91C (p01:6ACC)
+p01 0x6ACC recolorea  copia el caracter a 0xD700 y cambia sus colores 0x0E y 0x0F (p01:6ADD)
+p01 0x6ADD recolorea_d700  en los 32 bytes de 0xD700, el color 0x0E por el nibble bajo de 0xC91C y el 0x0F por el alto
+p01 0x6B02 color_de_c91c  A = el color de 0xC91C que toca si A es 0x0E o 0x0F
+p01 0x6B19 por_36  HL = A x 36
+p01 0x6B25 por_32  HL = A x 32
+p01 0x6B2E por_3  HL = HL x 3
+p01 0x6B33 prepara_marcador  0xC91C = 0xFE, la VRAM de 0xE000-0xEFFF a 0xFF, las tres filas del marcador (p01:6CA9) y las copias de 0xDF90-0xDFFF a 0xFF
+p01 0x6B6D fila_del_marcador  32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
+p01 0x6B82 pinta_icono  el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
+p01 0x6B97 pinta_cifra  la cifra A (p01:7135 + 32 x A) en DE
+p01 0x6BAC pinta_cifra_coloreada  la cifra A con los colores de 0xC91C
+p01 0x6BC1 pinta_caracter_del_marcador  el caracter A de p01:6D09 en DE
+p01 0x6BD6 marcador_del_cuadro  las cifras que han cambiado (p01:6C12) y los iconos de 0xCB08 (p01:6BDD)
+p01 0x6BDD iconos_de_cb08  0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
+p01 0x6BFD clase_de_icono  B = 1 hasta el icono 7 y 2 desde el 8
+p01 0x6C05 sitio_del_icono  DE = 0xE21C + 6 x A en la VRAM
+p01 0x6C12 cifras_del_marcador  las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el record (0xC922-0xC924): solo las que han cambiado desde sus copias de 0xDF90
+p01 0x6C3F cambia_cifras  B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
+p01 0x6C4F pinta_dos_cifras  las dos cifras del byte A
+p01 0x6C6A escribe_cadena  0xC91C = A xor 0xF0 (los colores) y la cadena de HL en DE hasta un 0 (p01:6C7F y p01:6BAC)
+p01 0x6C7F de_ascii  la letra ASCII A al numero del caracter: '@' '<' '>' '.' '-' y espacio de 0x2E a 0x33, letras desde 0x0A, cifras desde 0x24
+p01 0x6C90 signo_de_ascii  Z y C = el caracter de los signos '@' '<' '>' '.' '-' y espacio
+p01 0x77B5 prepara_demostracion  el gancho normal (o, si 0xC91F es 0, el que salta al titulo con el disparo), el sonido 0x55, borra la partida, la demostracion siguiente (p01:784D), el azar a 0 (0xC917), las entradas (p01:7883) y 0xCB07 = 0x0B80
+p01 0x77F0 cuadro_de_demostracion  las entradas grabadas de este cuadro (p01:789C) y un cuadro de partida (p01:6256); al llegar a la marca de fin (tres 0xFF detras), el sonido 0x84 y fundido a negro, y diez cuadros despues acaba (Z)
+p01 0x782A fin_de_demostracion  cuenta diez cuadros en 0xC92D y deja la pantalla limpia con el sonido 0x55; Z
+p01 0x784D siguiente_demostracion  la fase, 0xCA1E y el puntero a las entradas (0xC91D) de la demostracion siguiente (p01:7863)
+p01 0x7863 demostracion_numero  0xC919 pasa por 0, 1 y 2; HL = su entrada de 4 bytes en p01:7877
+p01 0x7883 prepara_entradas  segun 0xC91F: 0, se leen del banco 31; 1, se graban en 0x4000 del slot 0x88; 2, se leen de ahi
+p01 0x789C entradas_del_cuadro  cuando se acaba la cuenta de 0xC91A, lee el siguiente trio [cuadros][mandos][recien pulsados] (p01:78D4) y los deja en 0xC908 y 0xC907; con 0xC91F = 1 los graba (p01:7905)
+p01 0x78D4 byte_de_demostracion  el byte de HL con el banco 31 en 0xA000 (las demostraciones grabadas); con 0xC91F = 2, del slot 0x88 con RDSLT
+p01 0x78F3 graba_byte  el byte A en HL del slot 0x88 con WRSLT
+p01 0x78FE grabacion_en_4000  0xC91D = 0x4000
+p01 0x7905 graba_entradas  cuenta los cuadros con las mismas entradas; cuando cambian (o a los 255), graba el trio [cuadros][mandos][recien pulsados] en el slot 0x88 (p01:78F3)

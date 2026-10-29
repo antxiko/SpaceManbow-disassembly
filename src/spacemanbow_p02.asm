@@ -41,7 +41,7 @@ L_8018:
 L_801B:
 	call L_8031		;801b
 	call L_82B4		;801e
-	ld a,(0c907h)		;8021   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+	ld a,(0c907h)		;8021   ; lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
 	and 010h		;8024
 	call nz,L_8599		;8026
 	ld a,(0ca43h)		;8029
@@ -95,10 +95,10 @@ L_8060:
 	jr z,L_8099		;808e
 	dec a			;8090
 	ld (ix+018h),a		;8091   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
-	ld (ix+004h),000h		;8094
+	ld (ix+004h),000h		;8094   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;8098
 L_8099:
-	call 07c44h		;8099
+	call 07c44h		;8099   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 	ret nc			;809c
 	ld (ix+001h),001h		;809d
 	ld (ix+003h),001h		;80a1
@@ -116,7 +116,7 @@ L_8099:
 	set 3,(ix+015h)		;80c7
 	ld a,04ch		;80cb
 	call 04aebh		;80cd   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
-	ld hl,0c947h		;80d0
+	ld hl,0c947h		;80d0   ; apunta a bit 0: no se aceptan sonidos
 	set 0,(hl)		;80d3
 	ld (ix+017h),028h		;80d5
 	ret			;80d9
@@ -151,7 +151,7 @@ L_8108:
 	ld a,(0c900h)		;8108   ; lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 	cp 004h		;810b
 	jr z,L_8114		;810d
-	ld a,(0c908h)		;810f   ; lee copia de los mandos de 0xC909
+	ld a,(0c908h)		;810f   ; lee los mandos que usa la partida (de 0xC909 o de la demostracion)
 	jr L_8117		;8112
 L_8114:
 	ld a,(0c909h)		;8114   ; lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
@@ -186,12 +186,12 @@ L_8117:
 	ex de,hl			;813d
 	call nz,L_8177		;813e
 	ld (0ca4bh),hl		;8141
-	ld bc,(0ca47h)		;8144
+	ld bc,(0ca47h)		;8144   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	add hl,bc			;8148
 	ld a,h			;8149
 	cp 014h		;814a
 	jr nc,L_8151		;814c
-	ld (0ca47h),hl		;814e
+	ld (0ca47h),hl		;814e   ; guarda la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 L_8151:
 	pop hl			;8151
 	ld e,(hl)			;8152
@@ -206,7 +206,7 @@ L_8151:
 	ex de,hl			;815b
 	call nz,L_8177		;815c
 	ld (0ca4dh),hl		;815f
-	ld bc,(0ca49h)		;8162
+	ld bc,(0ca49h)		;8162   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	add hl,bc			;8166
 	ex de,hl			;8167
 	ld hl,0ff80h		;8168
@@ -214,7 +214,7 @@ L_8151:
 	ld a,h			;816c
 	cp 01dh		;816d
 	jr nc,L_8175		;816f
-	ld (0ca49h),de		;8171
+	ld (0ca49h),de		;8171   ; guarda la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 L_8175:
 	or a			;8175
 	ret			;8176
@@ -261,7 +261,7 @@ DATA_sin_leer_81E0:
 
 
 L_820D:
-	ld a,(0c908h)		;820d   ; lee copia de los mandos de 0xC909
+	ld a,(0c908h)		;820d   ; lee los mandos que usa la partida (de 0xC909 o de la demostracion)
 	ld b,000h		;8210
 	and 003h		;8212
 	jr z,L_821B		;8214
@@ -282,7 +282,7 @@ L_8224:
 	xor a			;822a
 	ld (0c0ech),a		;822b
 	ld (0cb01h),a		;822e
-	ld (0ca19h),a		;8231
+	ld (0ca19h),a		;8231   ; guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	dec a			;8234
 	ld (0cb02h),a		;8235
 L_8238:
@@ -302,10 +302,10 @@ L_8254:
 	ld (ix+008h),008h		;825c   ; la Y del actor (en caracteres de 8 puntos) = 0x08
 	ld (ix+00ah),005h		;8260   ; la X del actor (en caracteres de 8 puntos) = 0x05
 	ld (ix+015h),039h		;8264   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x39
-	ld (ix+013h),003h		;8268
-	ld (ix+014h),003h		;826c
+	ld (ix+013h),003h		;8268   ; el alto de la caja del actor (p04:7662) = 0x03
+	ld (ix+014h),003h		;826c   ; el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
 	ld (ix+018h),00fh		;8270   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0F
-	set 7,(ix+014h)		;8274
+	set 7,(ix+014h)		;8274   ; pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ret			;8278
 L_8279:
 	ld hl,0cb40h		;8279
@@ -342,7 +342,7 @@ L_82B4:
 	call L_82D2		;82c2
 	ret			;82c5
 L_82C6:
-	ld a,(0ca02h)		;82c6
+	ld a,(0ca02h)		;82c6   ; lee la cuenta de cuadros de la partida
 	and 003h		;82c9
 	ld (0cac5h),a		;82cb
 	ld (0cae5h),a		;82ce
@@ -406,12 +406,12 @@ L_8320:
 	call L_8324		;8320
 	ret			;8323
 L_8324:
-	ld hl,(0ca49h)		;8324
+	ld hl,(0ca49h)		;8324   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	ld bc,(0cb1bh)		;8327
 	add hl,bc			;832b
 	ld (ix+00ah),h		;832c
 	ld (ix+009h),l		;832f
-	ld hl,(0ca47h)		;8332
+	ld hl,(0ca47h)		;8332   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	ld bc,000e0h		;8335
 	add hl,bc			;8338
 	ld b,(ix+018h)		;8339
@@ -568,7 +568,7 @@ L_8406:
 	jr c,L_8429		;8425
 	ld a,00fh		;8427
 L_8429:
-	ld (0ca19h),a		;8429
+	ld (0ca19h),a		;8429   ; guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	ret			;842c
 
 ; ----------------------------------------------------------------------
@@ -698,7 +698,7 @@ L_84EE:
 	ret			;84f5
 L_84F6:
 	call L_8530		;84f6
-	ld a,(0c907h)		;84f9   ; lee lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+	ld a,(0c907h)		;84f9   ; lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
 	bit 5,a		;84fc
 	ret z			;84fe
 	call L_8526		;84ff
@@ -730,7 +730,7 @@ L_8530:
 	ld a,(0cb02h)		;8530
 	cp 02eh		;8533
 	ret nc			;8535
-	ld hl,0ca02h		;8536
+	ld hl,0ca02h		;8536   ; apunta a la cuenta de cuadros de la partida
 	ld a,(0ca10h)		;8539   ; lee la fase (0 a 8; 9 el final)
 	cp 005h		;853c
 	ld a,00fh		;853e
@@ -925,8 +925,8 @@ L_8661:
 	dec a			;8667
 	sub 003h		;8668
 	jr c,L_8675		;866a
-	ld bc,(0ca47h)		;866c
-	ld de,(0ca49h)		;8670
+	ld bc,(0ca47h)		;866c   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+	ld de,(0ca49h)		;8670   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	ret			;8674
 L_8675:
 	ld a,(0cad8h)		;8675
@@ -1003,7 +1003,7 @@ L_86EC:
 	jp L_87DB		;8701
 L_8704:
 	push hl			;8704
-	ld hl,0f0f9h		;8705
+	ld hl,0f0f9h		;8705   ; apunta a por que paso va la partida (p01:6256)
 	ld (hl),000h		;8708
 	pop hl			;870a
 	ld hl,0cc40h		;870b

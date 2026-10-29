@@ -67,7 +67,7 @@ L 0x4106 vector_vacio jp p00:4452, que es un ret
 L 0x4109 vector_4109 jp p00:458B
 L 0x4110 interrupcion el gancho H.KEYI: cuenta 0xC914, cada dos cuadros p00:4A6A, el fundido de p00:4D6E y, si no hay otro cuadro a medias (0xC906), guarda los bancos, llama a p00:4B4A con interrupciones y los devuelve
 L 0x414E lee_estado_vdp lee el registro de estado del VDP (el puerto de 0x0006 + 1): asi se da por atendida la interrupcion
-L 0x4158 interrupcion_y_reinicio la interrupcion de p00:4270 y, si el bit 4 de 0xC90A esta puesto y no hay cuadro a medias, vuelve al estado de 0xC945 con la pila de nuevo en 0xF0F0
+L 0x4158 interrupcion_saltable el gancho de p00:410C: la interrupcion de p00:4270 y, si se acaba de pulsar el disparo (bit 4 de 0xC90A) y no hay cuadro a medias, salta al estado de 0xC945 con la pila de nuevo en 0xF0F0
 L 0x4189 lineas_del_vdp en el borde: manda la lista de registros de 0xC0AE (cuantos y los bytes, con otir) y la primera vez cambia de tablas (p00:41C2) y enciende la interrupcion de linea (bit 4 del registro 0)
 L 0x4197 manda_registros la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
 L 0x41C2 tablas_actuales las tablas de registros que tocan con 0xC09B
@@ -281,6 +281,7 @@ C 0x414B guarda 1 mientras se atiende un cuadro: la interrupcion no vuelve a ent
 C 0x4158 interrupcion_de_lineas: el gancho en partida: si el estado 1 del VDP no dice linea, p00:4255; si dice, espera el borrado horizontal (estado 2, bit 5) y manda la lista de registros de 0xC0AC (la primera) o la de 0xC0A4 (la segunda)
 C 0x415B lee los mandos recien pulsados
 C 0x4162 lee 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
+C 0x4167 lee el estado (y paso) al que salta p00:4158 con el disparo y el byte siguiente (16 bits)
 C 0x416B guarda el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida) y el byte siguiente (16 bits)
 C 0x416F gancho_de_partida: pone el gancho H.KEYI en p00:4270 (la interrupcion con lineas)
 C 0x4172 el banco de 0x4000 (no se cambia)
@@ -321,6 +322,7 @@ C 0x435B copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
 C 0x435E teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
 C 0x4361 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 C 0x4368 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x436B vector_programa: jp p01:6021
 C 0x4370 guarda 1: hay que mandar la cola de sonidos
 C 0x4373 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 C 0x437E apunta a la cuenta de interrupciones del cuadro
@@ -328,6 +330,7 @@ C 0x4388 guarda las vueltas de espera del bucle principal y el byte siguiente (1
 C 0x438E pausa: con el bit 0 de 0xC90C (y no en el estado 5 ni con 0xCA41): el sonido 0x82, espera a que se vuelva a pulsar y el sonido 0x81
 C 0x4392 apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x4398 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x439B vector_6BD6: jp p01:6BD6
 C 0x439F apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x43A5 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
 C 0x43AC apunta a por que paso va el cuadro de partida (p00:438E)
@@ -350,6 +353,7 @@ C 0x440B como_va_la_fase: A = 2 si la fase esta acabada (0xCA0F), 1 si 0xCA40 es
 C 0x440F lee distinto de 0: la fase esta acabada
 C 0x4416 lee la nave: su ficha de actor (0 = muerta)
 C 0x4423 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
+C 0x442C guarda el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x4432 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 C 0x4444 lee las vidas, en BCD
 C 0x444A guarda las vidas, en BCD
@@ -362,6 +366,7 @@ C 0x446C copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
 C 0x446F teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
 C 0x447A lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 C 0x4487 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x448B apunta a la cuenta de cuadros de la partida
 C 0x449C borra_ca1e: fuera del estado 5, 0xCA1E a 0
 C 0x449F prepara_fase: sin el bit 1 de 0xCA03 borra 0xE900; las preparaciones de los bancos 4, 9 y 1, el sonido 0x55 y la musica de la fase (tabla p00:4AE2)
 C 0x44A2 prepara_banco_2: p02:8003 con los bancos 4-2-3
@@ -378,6 +383,7 @@ C 0x44D5 prepara_banco_2_b: p02:8012 con los bancos 4-2-3
 C 0x44D9 lee las vidas con las que se sigue
 C 0x44E1 guarda las vidas, en BCD
 C 0x44E5 guarda las vidas con las que se sigue
+C 0x44F1 guarda el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x44F4 vector_vacio: jp p00:4452, que es un ret
 C 0x44F8 apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x44FE bancos_4_5_6: pone el 4, el 5 y el 6
@@ -388,6 +394,7 @@ C 0x450E vector_prepara_guion: jp p04:6214
 C 0x4512 apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x4518 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
 C 0x451E bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0x4521 vector_6B33: jp p01:6B33
 C 0x4526 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 C 0x4529 sonido_ahora: con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y un paso del sonido (p28:6006)
 C 0x452C bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
@@ -464,9 +471,10 @@ C 0x4A5B apunta a las teclas F1-F5
 C 0x4A6A lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
 C 0x4A6D apunta a los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
 C 0x4A7B lee los mandos (bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2)
-C 0x4A7E guarda copia de los mandos de 0xC909
+C 0x4A7E guarda los mandos que usa la partida (de 0xC909 o de la demostracion)
 C 0x4A81 apunta a los mandos pulsados desde la ultima copia
-C 0x4A87 guarda lo pulsado desde el ultimo cuadro (copia de 0xC90B)
+C 0x4A87 guarda lo recien pulsado que usa la partida (de los mandos o de la demostracion)
+C 0x4AFC apunta a bit 0: no se aceptan sonidos
 C 0x4B04 apunta a cuantos sonidos hay en la cola (detras, los numeros)
 C 0x4B27 apunta a cuantos sonidos hay en la cola (detras, los numeros)
 C 0x4B31 apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
@@ -478,6 +486,7 @@ C 0x4B4A bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
 C 0x4B4D apunta a 1: hay que mandar la cola de sonidos
 C 0x4B54 manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
 C 0x4B5B apunta a cuantos sonidos hay en la cola (detras, los numeros)
+C 0x4B68 vector_6BD6: jp p01:6BD6
 C 0x4B6F apunta a cuantos sonidos hay en la cola (detras, los numeros)
 C 0x4B75 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x4B79 apunta a el estado de las interrupciones de linea (0 apagadas)
@@ -586,8 +595,10 @@ C 0x4F04 guarda el paso del actor
 C 0x4F0D lee el paso del actor
 C 0x4F24 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x32
 C 0x4F28 lee la Y del actor (en caracteres de 8 puntos)
+C 0x4F36 lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 C 0x4F3C pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x4F46 guarda el dibujo del actor (p04:7791)
+C 0x4F4D pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x4F51 el paso del actor = 0x04
 C 0x4F58 lee el paso del actor
 C 0x4F60 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -598,6 +609,7 @@ C 0x4F81 suma 1 a el paso del actor
 C 0x4F85 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x4F8C una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 C 0x4F92 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4F98 lee la cuenta de cuadros de la partida
 C 0x4FA4 lee la Y del actor (en caracteres de 8 puntos)
 C 0x4FAA guarda la Y del actor (en caracteres de 8 puntos)
 C 0x4FB1 guarda la Y del actor (en caracteres de 8 puntos)
@@ -608,13 +620,17 @@ C 0x4FC2 dispara_cerca_de_la_nave: una bala hacia la nave (p04:714A) con la Y y 
 C 0x4FC6 guarda la X del actor (en caracteres de 8 puntos)
 C 0x4FCA pone a cero el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x4FD3 lee el dibujo del actor (p04:7791)
+C 0x4FDA apunta a el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x4FEC guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x4FF1 lee el paso del actor
 C 0x4FF9 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x5010 el paso del actor = 0x05
 C 0x5015 guarda las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x5019 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5020 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x5026 lee la X del actor (en caracteres de 8 puntos)
 C 0x502C pone a uno el bit 1 de el dibujo del actor (p04:7791)
+C 0x5033 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x503D apunta a la nave: su ficha de actor (0 = muerta)
 C 0x505A suma_a_hl: HL = HL + A
 C 0x5067 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0A
@@ -637,6 +653,7 @@ C 0x5112 lee el paso del actor
 C 0x5121 pon_aceleracion_y: la aceleracion en Y = HL
 C 0x5124 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x04
 C 0x512B acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
+C 0x5135 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x514C lee el paso del actor
 C 0x5154 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x5161 lee las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
@@ -667,11 +684,14 @@ C 0x5240 lee el dibujo del actor (p04:7791)
 C 0x5246 guarda el dibujo del actor (p04:7791)
 C 0x5249 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5273 niega_hl: HL = -HL
+C 0x527E lee la cuenta de cuadros de la partida
 C 0x5288 lee el paso del actor
+C 0x5291 lee la cuenta de cuadros de la partida
 C 0x529E guarda la Y del actor (en caracteres de 8 puntos)
 C 0x52A3 guarda la X del actor (en caracteres de 8 puntos)
 C 0x52A6 lee la Y de la nave
 C 0x52A9 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x52B7 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x52C2 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x52D4 lee la X de la nave
 C 0x52DC le resta la X del actor (en caracteres de 8 puntos)
@@ -680,6 +700,7 @@ C 0x52F9 lee el paso del actor
 C 0x5305 lee la Y del actor (en caracteres de 8 puntos)
 C 0x530A guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5313 pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x531E lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x5329 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x5330 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x533A le resta la Y del actor (en caracteres de 8 puntos)
@@ -692,23 +713,28 @@ C 0x5386 lee la Y del actor (en caracteres de 8 puntos)
 C 0x53BB la X del actor (en caracteres de 8 puntos) = 0x14
 C 0x53BF la Y del actor (en caracteres de 8 puntos) = 0x10
 C 0x53C4 lee el paso del actor
+C 0x53D6 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x53D9 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x0A
 C 0x53E3 suma 1 a el paso del actor
 C 0x53EF suma 1 a el paso del actor
 C 0x53F2 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x53FE niega_hl: HL = -HL
+C 0x5407 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x5410 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x16
 C 0x5419 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x541D el paso del actor = 0x00
+C 0x5422 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x542C lee el paso del actor
 C 0x5447 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
 C 0x544B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0xC0
 C 0x544F pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x5460 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x5464 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x5472 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x18
 C 0x5486 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x54BE dispara_a_la_nave: si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
 C 0x54C1 lee el paso del actor
+C 0x54E9 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x54FB una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x17
 C 0x5502 dibujo_por_fase: el dibujo del actor (ix+5) de la tabla de DE por la fase
 C 0x5531 compara_velocidad_y: Z si el valor absoluto de la velocidad en Y es DE
@@ -723,6 +749,7 @@ C 0x55B2 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
 C 0x55DC guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x560A una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
 C 0x5612 guarda el paso del actor
+C 0x562A lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x5638 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x5663 lee la aceleracion en Y del actor (baja)
 C 0x5666 lee la aceleracion en Y del actor (alta)
@@ -733,10 +760,13 @@ C 0x5681 guarda la velocidad en Y del actor (baja)
 C 0x5684 guarda la velocidad en Y del actor (alta)
 C 0x5688 lee la X del actor (en caracteres de 8 puntos)
 C 0x568C lee la Y del actor (en caracteres de 8 puntos)
+C 0x5694 lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 C 0x5697 guarda la Y del actor (fraccion: 32 por punto)
 C 0x569B suma 1 a la Y del actor (en caracteres de 8 puntos)
 C 0x56D0 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x56F0 el dibujo del actor (p04:7791) = 0x04
+C 0x5712 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
+C 0x5715 lee la cuenta de cuadros de la partida
 C 0x571A lee el dibujo del actor (p04:7791)
 C 0x571F guarda el dibujo del actor (p04:7791)
 C 0x572B guarda el dibujo del actor (p04:7791)
@@ -748,11 +778,18 @@ C 0x57B5 guarda la velocidad en Y del actor (baja)
 C 0x57BA guarda la velocidad en Y del actor (alta)
 C 0x57BF guarda la velocidad en X del actor (baja)
 C 0x57C4 guarda la velocidad en X del actor (alta)
+C 0x57C8 lee la vida del actor (p04:7C44 le resta los golpes)
 C 0x57DC pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x5805 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x10
+C 0x5812 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x581C guarda la rapidez con la que p04:7240 calcula una velocidad
 C 0x5833 guarda el dibujo del actor (p04:7791)
+C 0x5837 lee la cuenta de cuadros de la partida
 C 0x5840 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5843 lee la X del actor (en caracteres de 8 puntos)
+C 0x584D la vida del actor (p04:7C44 le resta los golpes) = 0x00
+C 0x5851 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x01
+C 0x585E lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 C 0x5866 lee la X del actor (fraccion: 32 por punto)
 C 0x586A lee la X del actor (en caracteres de 8 puntos)
 C 0x5874 lee la Y del actor (en caracteres de 8 puntos)
@@ -777,7 +814,9 @@ C 0x597A lee la Y del actor (en caracteres de 8 puntos)
 C 0x5987 le resta la Y del actor (en caracteres de 8 puntos)
 C 0x5996 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x59B0 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x59BB lee la cuenta de cuadros de la partida
 C 0x59CC guarda el dibujo del actor (p04:7791)
+C 0x59D0 lee la cuenta de cuadros de la partida
 C 0x59E9 lee la Y del actor (en caracteres de 8 puntos)
 C 0x59EC lee la X del actor (en caracteres de 8 puntos)
 C 0x59F4 lee la Y del actor (fraccion: 32 por punto)
@@ -806,6 +845,7 @@ C 0x5BCB otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
 C 0x5BCF suma 1 a el paso del actor
 C 0x5BD5 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 C 0x5BDC niega_hl: HL = -HL
+C 0x5BE5 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x5BF5 lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x5C02 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x5C10 lee la X del actor (en caracteres de 8 puntos)
@@ -820,6 +860,7 @@ C 0x5C37 lee la Y de la nave
 C 0x5C3A le resta la Y del actor (en caracteres de 8 puntos)
 C 0x5C4B guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5C4E guarda la Y del actor (fraccion: 32 por punto)
+C 0x5C52 lee la cuenta de cuadros de la partida
 C 0x5C55 XOR con la Y del actor (fraccion: 32 por punto)
 C 0x5C5D lee la X de la nave
 C 0x5C60 le resta la X del actor (en caracteres de 8 puntos)
@@ -831,14 +872,19 @@ C 0x5C76 lee la X del actor (en caracteres de 8 puntos)
 C 0x5C79 lee la X del actor (fraccion: 32 por punto)
 C 0x5C7D guarda la X del actor (en caracteres de 8 puntos)
 C 0x5C80 guarda la X del actor (fraccion: 32 por punto)
+C 0x5C84 lee la posicion del scroll que mira el guion de la fase (p04:625E)
+C 0x5C8C lee la cuenta de cuadros de la partida
 C 0x5CA5 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 C 0x5CAA guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5CAD la X del actor (en caracteres de 8 puntos) = 0x1F
+C 0x5CB4 lee la posicion del scroll que mira el guion de la fase (p04:625E)
 C 0x5CC7 suma_a_hl: HL = HL + A
 C 0x5CEA guarda el dibujo del actor (p04:7791)
 C 0x5CF6 lee la X del actor (en caracteres de 8 puntos)
 C 0x5CFA lee la Y del actor (en caracteres de 8 puntos)
+C 0x5CFD lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 C 0x5D00 le suma la Y del actor (fraccion: 32 por punto)
+C 0x5D06 lee el scroll fino en X: se suma a la fraccion de la X de los actores
 C 0x5D09 le suma la X del actor (fraccion: 32 por punto)
 C 0x5D3D lee el paso del actor
 C 0x5D45 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -850,6 +896,7 @@ C 0x5D99 guarda la aceleracion en X del actor (baja)
 C 0x5D9C guarda la aceleracion en X del actor (alta)
 C 0x5DA9 lee la X del actor (en caracteres de 8 puntos)
 C 0x5DAF la X del actor (en caracteres de 8 puntos) = 0x00
+C 0x5DBC lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x5DEA lee la aceleracion en X del actor (alta)
 C 0x5DED lee la aceleracion en X del actor (baja)
 C 0x5DF0 suma_a_hl: HL = HL + A

@@ -180,6 +180,7 @@ C 0x8082 despachador: salta a la entrada A de la tabla de direcciones que va det
 C 0x808F pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0x8094 pon_cuenta: ix+0x17 = A
 C 0x809F baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
+C 0x80AA lee la cuenta de cuadros de la partida
 C 0x80B0 invierte_velocidad_y: la velocidad en Y cambiada de signo
 C 0x80B3 lee la Y de la nave
 C 0x80B6 le resta la Y del actor (en caracteres de 8 puntos)
@@ -196,13 +197,16 @@ C 0x8150 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su 
 C 0x8153 lee la Y del actor (en caracteres de 8 puntos)
 C 0x815C guarda la Y del actor (en caracteres de 8 puntos)
 C 0x815F la X del actor (en caracteres de 8 puntos) = 0x01
+C 0x8163 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x8168 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0x816B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
+C 0x8173 lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 C 0x8178 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x02
 C 0x817D lee la X del actor (en caracteres de 8 puntos)
 C 0x8184 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8188 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x0A
 C 0x818C apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8190 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x819A velocidad_hacia_iy: la velocidad del actor hacia el de IY con la rapidez A (p04:6B85 y p04:7240)
 C 0x819D lee la velocidad en X del actor (alta)
 C 0x81A6 guarda el dibujo del actor (p04:7791)
@@ -216,23 +220,30 @@ C 0x8206 guarda la velocidad en X del actor (alta)
 C 0x8209 guarda la velocidad en X del actor (baja)
 C 0x821D lee el paso del actor
 C 0x8229 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
+C 0x8236 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x823D la vida del actor (p04:7C44 le resta los golpes) = 0x2C
 C 0x8243 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8246 siguiente_paso: el paso del actor + 1
 C 0x8249 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x8254 siguiente_paso: el paso del actor + 1
 C 0x8257 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x825A siguiente_paso: el paso del actor + 1
+C 0x825D lee la cuenta de cuadros de la partida
 C 0x826F pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x8272 lee la X del actor (en caracteres de 8 puntos)
+C 0x827D lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x829B arranca_tipo_45: la puesta en marcha del actor del tipo 0x45 (tabla p04:6360, desde p04:6344)
 C 0x82A0 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x82A7 el paso del actor = 0x02
+C 0x82AB lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x82BA guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x82CA lee el paso del actor
 C 0x82D0 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0x82E0 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x82F2 siguiente_paso: el paso del actor + 1
+C 0x82F8 lee la cuenta de cuadros de la partida
 C 0x8301 dispara_si_arriba: si la Y es menor que 0x16: 0xCE6C + 1, p04:750F y p04:7586 y, segun ix+0x20, una bala a la nave
+C 0x8304 lee la cuenta de cuadros de la partida
 C 0x830D octante_de_la_nave: C = hacia donde queda la nave (0xCA48, 0xCA4A) desde el actor, de 0 a 7
 C 0x831F suma_a_hl: HL = HL + A
 C 0x833B pon_velocidad_y: la velocidad en Y = HL
@@ -313,10 +324,13 @@ C 0x8515 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero
 C 0x8529 lee la Y del actor (en caracteres de 8 puntos)
 C 0x852E guarda la Y del actor (en caracteres de 8 puntos)
 C 0x853D siguiente_paso: el paso del actor + 1
+C 0x8545 sonido_del_tipo: el sonido del tipo del actor (p00:4AF5)
+C 0x8548 puntos_del_tipo: los puntos del tipo del actor
 C 0x8555 el paso del actor = 0x03
 C 0x855E el paso del actor = 0x02
 C 0x8562 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x03
 C 0x8567 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x856B sonido_del_tipo: el sonido del tipo del actor (p00:4AF5)
 C 0x856E una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x03
 C 0x857C el paso del actor = 0x03
 C 0x8671 crea_actor_unido: p04:69A3 y lo une al de IY
@@ -384,6 +398,7 @@ C 0x88D3 velocidad_y_a_0: la velocidad en Y a 0
 C 0x88DD pon_velocidad_y: la velocidad en Y = HL
 C 0x88E0 niega_hl: HL = -HL
 C 0x88E7 pon_velocidad_y: la velocidad en Y = HL
+C 0x88EA lee la cuenta de cuadros de la partida
 C 0x88F0 al_azar_contra_ca19: acarreo si un numero al azar de 0 a 15 es mayor o igual que 0xCA19
 C 0x88FC arranca_tipo_70: la puesta en marcha del actor del tipo 0x70 (tabla p04:6360, desde p04:6344)
 C 0x8909 arranca_tipo_70: la puesta en marcha del actor del tipo 0x70 (tabla p04:6360, desde p04:6344)
@@ -429,6 +444,7 @@ C 0x8B42 guarda el paso del actor
 C 0x8B53 pon_velocidad_x: la velocidad en X = DE
 C 0x8B59 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8B67 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+C 0x8B79 lee la cuenta de cuadros de la partida
 C 0x8B7F resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8BA2 suma_a_hl: HL = HL + A
 C 0x8BA7 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -446,10 +462,12 @@ C 0x8BFC numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C),
 C 0x8C0B siguiente_paso: el paso del actor + 1
 C 0x8C0E baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x8C1A siguiente_ix6: ix+6 + 1, a 0 al llegar a B
+C 0x8C1D lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x8C2C guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8C34 lee el paso del actor
 C 0x8C3A pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0x8C44 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
+C 0x8C5A la vida del actor (p04:7C44 le resta los golpes) = 0x18
 C 0x8C5E siguiente_paso: el paso del actor + 1
 C 0x8C6F lee la Y del actor (en caracteres de 8 puntos)
 C 0x8C77 lee la X del actor (en caracteres de 8 puntos)
@@ -463,6 +481,7 @@ C 0x8CB6 guarda la velocidad en X del actor (alta)
 C 0x8CBF baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x8CC3 baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 C 0x8CC7 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x06
+C 0x8CDF lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x8CEE guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8CF6 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x01
 C 0x8D2F pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
@@ -497,7 +516,10 @@ C 0x8EC7 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x8ED4 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8EDB lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8EE5 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x8EE9 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x8EF1 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x8EF8 lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
+C 0x8EFF el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 C 0x8F08 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x8F0D las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x6F
 C 0x8F11 suma 1 a el paso del actor
@@ -616,6 +638,7 @@ C 0x92AE lee la Y del actor (en caracteres de 8 puntos)
 C 0x92B4 la Y del actor (en caracteres de 8 puntos) = 0x1D
 C 0x92BE multiplica: HL = H x E
 C 0x92D5 niega_hl: HL = -HL
+C 0x92E4 lee la cuenta de cuadros de la partida
 C 0x92E9 guarda el dibujo del actor (p04:7791)
 C 0x92EC lee el paso del actor
 C 0x92F5 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
@@ -640,6 +663,7 @@ C 0x9369 el paso del actor = 0x01
 C 0x936F le suma la Y del actor (en caracteres de 8 puntos)
 C 0x9374 le suma la X del actor (en caracteres de 8 puntos)
 C 0x9378 fondo_bajo_el_actor: el caracter del mapa en la posicion del actor mas D, E (con el scroll fino de 0xCA1A y 0xCA1C) y su bit 0 en la tabla 0xDE00 (Z si no es solido); acarreo si cae fuera
+C 0x937B lee la cuenta de cuadros de la partida
 C 0x938B scroll_y_x: la Y y la X del actor mas 0xCA12 y 0xCA14
 C 0x938E lee el paso del actor
 C 0x9391 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -650,6 +674,7 @@ C 0x93A4 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x93A8 suma 1 a el paso del actor
 C 0x93AE pon_velocidad_y: la velocidad en Y = HL
 C 0x93B7 pon_aceleracion: la aceleracion en X = DE y en Y = HL
+C 0x93C4 lee la cuenta de cuadros de la partida
 C 0x93CA suma 1 a la X del actor (en caracteres de 8 puntos)
 C 0x93CD suma 1 a la Y del actor (en caracteres de 8 puntos)
 C 0x93D2 dispara_a_la_nave: si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
@@ -686,6 +711,7 @@ C 0x94C8 siguiente_dibujo: ix+5 + 1, a 0 al llegar a B
 C 0x94CC el dibujo del actor (p04:7791) = 0x06
 C 0x94D3 pon_velocidad_y: la velocidad en Y = HL
 C 0x94D9 pon_aceleracion_y: la aceleracion en Y = HL
+C 0x94E0 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x94E4 suma 1 a la Y del actor (en caracteres de 8 puntos)
 C 0x94E7 suma 1 a la Y del actor (en caracteres de 8 puntos)
 C 0x94EA siguiente_paso: el paso del actor + 1
@@ -703,11 +729,15 @@ C 0x951A lee la Y del actor (en caracteres de 8 puntos)
 C 0x951F quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0x9522 lee la X del actor (en caracteres de 8 puntos)
 C 0x9527 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+C 0x952A lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 C 0x9530 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x9533 resta_golpe_sin_mas: si tiene golpe, se lo resta de la vida
 C 0x9536 dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
+C 0x9539 actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 C 0x9544 sitio_guardado_con_scroll: la posicion guardada mas 0xCA14 (X) y 0xCA12 (Y)
 C 0x954D lee la X del actor (en caracteres de 8 puntos)
 C 0x9550 lee la X del actor (fraccion: 32 por punto)
+C 0x9553 lee la cuenta de cuadros de la partida
 C 0x9561 guarda la aceleracion en X del actor (alta)
 C 0x9564 guarda la aceleracion en X del actor (baja)
 C 0x9569 niega_hl: HL = -HL
@@ -739,8 +769,14 @@ C 0x968D guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x96AC avisa_fin_de_fase: 0xCE4F = 1 (p04:6035 acaba la fase al cuadro siguiente)
 C 0x96B2 pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
 C 0x96B5 lee el paso del actor
+C 0x96C1 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x96C8 la vida del actor (p04:7C44 le resta los golpes) = 0x40
 C 0x96CC pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0x96D5 siguiente_paso: el paso del actor + 1
+C 0x96E1 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
+C 0x96E5 resta_golpe_jefe: lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
+C 0x96EA pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
+C 0x96F0 puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
 C 0x96FC siguiente_paso: el paso del actor + 1
 C 0x9701 siguiente_ix6: ix+6 + 1, a 0 al llegar a B
 C 0x9707 marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
@@ -749,12 +785,16 @@ C 0x970E siguiente_paso: el paso del actor + 1
 C 0x9711 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x9717 guarda distinto de 0: la fase esta acabada
 C 0x971B baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
+C 0x971F lee la cuenta de cuadros de la partida
 C 0x9751 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x9771 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x9795 olvida_golpe: ix+4 = 0
 C 0x9805 lee el paso del actor
 C 0x980B pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0x981A pon_cuenta: ix+0x17 = A
 C 0x981D siguiente_paso: el paso del actor + 1
 C 0x9820 lee la X del actor (en caracteres de 8 puntos)
+C 0x9826 lee la cuenta de cuadros de la partida
 C 0x982C baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x983A pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x983D lee el paso del actor
@@ -769,6 +809,7 @@ C 0x9860 guarda el paso del actor
 C 0x9870 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 C 0x9876 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 C 0x987C siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
+C 0x988B lee la posicion del scroll que mira el guion de la fase (p04:625E)
 C 0x9894 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x98A0 baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 C 0x98A7 crea_hijo_b: si hay ficha, crea un actor unido al de IY (p04:694D)
@@ -870,6 +911,7 @@ C 0x9C45 velocidad_y_a_0: la velocidad en Y a 0
 C 0x9C4B pon_velocidad_x: la velocidad en X = DE
 C 0x9C51 pon_aceleracion_x: la aceleracion en X = DE
 C 0x9C54 siguiente_paso: el paso del actor + 1
+C 0x9C57 lee la cuenta de cuadros de la partida
 C 0x9C5D acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
 C 0x9C62 crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 C 0x9C69 hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
@@ -877,12 +919,16 @@ C 0x9C6C lee el paso del actor
 C 0x9C75 pon_velocidad_x: la velocidad en X = DE
 C 0x9C7B pon_aceleracion_x: la aceleracion en X = DE
 C 0x9C7E la Y del actor (fraccion: 32 por punto) = 0x80
+C 0x9C82 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x9C8B lee la Y de la nave
 C 0x9C9F pon_aceleracion_y: la aceleracion en Y = HL
+C 0x9CA4 guarda la vida del actor (p04:7C44 le resta los golpes)
 C 0x9CA7 siguiente_paso: el paso del actor + 1
 C 0x9CAA acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
 C 0x9CBD pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x9CC8 pide_sonido_b: lo mismo con hasta 0x17 en la cola
+C 0x9CCB lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x9CD9 apunta a la rapidez con la que p04:7240 calcula una velocidad
 C 0x9CE8 bala_numero: la bala con el rumbo A de la tabla p04:738D
 C 0x9CF1 pon_bala: en la ficha de HL, el tipo B y el byte 5 = C
 C 0x9D02 lee lo que se suma a la Y de los actores que lleva el scroll
@@ -891,12 +937,14 @@ C 0x9D22 crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 C 0x9D2C hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
 C 0x9D60 lee el paso del actor
 C 0x9D69 lee la aceleracion en X del actor (alta)
+C 0x9D6C guarda la rapidez con la que p04:7240 calcula una velocidad
 C 0x9D6F lee la aceleracion en Y del actor (baja)
 C 0x9D78 siguiente_paso: el paso del actor + 1
 C 0x9D7B baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x9D7F otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x60
 C 0x9D83 siguiente_paso: el paso del actor + 1
 C 0x9D86 baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
+C 0x9D8A lee la cuenta de cuadros de la partida
 C 0x9D90 lee la aceleracion en X del actor (alta)
 C 0x9D93 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x9D97 direccion_hacia: 0xCA26 = A, la direccion hacia el de IY (p04:71D6) y p04:7270

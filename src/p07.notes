@@ -43,16 +43,23 @@ D 0x9EB3 0xA000 leido_9EB3  lo leen p04:7A75, p04:7A77, p04:7A82, p04:7A8E, p04:
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
 C 0x8026 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8051 apunta a las 20 fichas de actor de 0x40 bytes
 C 0x8058 lee el tipo del actor (0 = libre)
 C 0x8064 lee las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x806E lee la X del actor (en caracteres de 8 puntos)
+C 0x8071 lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x8080 lee la Y del actor (en caracteres de 8 puntos)
+C 0x8083 lee el alto de la caja del actor (p04:7662)
 C 0x8132 pon_sprite: el patron A mas el del tipo (0xDF00 + tipo) en el siguiente sprite del actor (hasta 6; los busca en el grupo de 0xC023): Y, X, patron y color en las paginas 0xC0-0xC3
 C 0x815A vector_6459: jp p04:6459
 C 0x81A1 vuelve_quitando_2: quita 2 palabras de la pila y vuelve
 C 0x826D apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8280 apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 C 0x829A lee el tipo del actor (0 = libre)
 C 0x82A0 mira el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x82A7 lee la X del actor (en caracteres de 8 puntos)
+C 0x82AA lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x82B9 lee la Y del actor (en caracteres de 8 puntos)
+C 0x82BC lee el alto de la caja del actor (p04:7662)
+C 0x8320 apunta a las 20 fichas de actor de 0x40 bytes
 # --- fin de las anotaciones de anota.py ---

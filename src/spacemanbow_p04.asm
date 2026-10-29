@@ -31,9 +31,9 @@ vector_actores_con_el_scroll:		; jp p04:62CB
 vector_78E1:		; jp p04:78E1
 	jp sin_sprites_puestos		;6015   ; sin_sprites_puestos: ix+0x19 = 0: el cuadro empieza sin sprites
 vector_7DE4:		; jp p04:7DE4
-	jp L_7DE4		;6018
+	jp borra_marcadores		;6018   ; borra_marcadores: el marcador y el record a 0 (p04:7DF1)
 vector_7DF1:		; jp p04:7DF1
-	jp L_7DF1		;601b
+	jp marcador_a_0		;601b   ; marcador_a_0: el marcador a 0 y la siguiente vida extra a 50.000 (0xCB10 = 0x50)
 actores_del_cuadro:		; el efecto de la fase (p04:60FA), los 20 actores (p04:6056), el fin de fase (p04:6035), 0xCB06, los 18 pequenos (p04:6485) y, con 0xCE74, p04:607D
 	call efecto_de_fase		;601e   ; efecto_de_fase: 0xCE60 = 1: colores que cambian cada dos cuadros (tabla p04:617E por 0xCE61); 2: quita todos los actores salvo los de tipo 0x65
 	call mueve_actores		;6021   ; mueve_actores: los 20 actores de 0xCE80 (p04:606A)
@@ -43,7 +43,7 @@ actores_del_cuadro:		; el efecto de la fase (p04:60FA), los 20 actores (p04:6056
 	ld a,(0ce74h)		;602d
 	or a			;6030
 	ret z			;6031
-	jp mira_tipo_1B		;6032   ; mira_tipo_1B: a los actores de tipo 0x1B que tienen debajo los caracteres 0xCB-0xCD les pone ix+0x16 = 0 e ix+4 = 1; 0xCE74 a 0
+	jp mira_tipo_1B		;6032
 fin_de_fase_en_dos_pasos:		; si 0xCE4F no es 0: la primera vez lo pone a 2, la segunda acaba la fase (0xCA0F = 1)
 	ld hl,0ce4fh		;6035
 	ld a,(hl)			;6038
@@ -69,7 +69,7 @@ mira_cb06:		; si el nibble bajo de 0xCB06 es 2 o mas, 0xCB06 = 0x80
 	ret			;6055
 mueve_actores:		; los 20 actores de 0xCE80 (p04:606A)
 	ld bc,01440h		;6056
-	ld ix,0ce80h		;6059
+	ld ix,0ce80h		;6059   ; apunta a las 20 fichas de actor de 0x40 bytes
 L_605D:
 	push bc			;605d
 	call mueve_un_actor		;605e   ; mueve_un_actor: si la ficha no esta libre: con el bit 7 del tipo p04:7D9C; si no, p04:64A2
@@ -82,7 +82,7 @@ L_605D:
 mueve_un_actor:		; si la ficha no esta libre: con el bit 7 del tipo p04:7D9C; si no, p04:64A2
 	call tipo_del_actor		;606a   ; tipo_del_actor: A = el tipo del actor; Z si la ficha esta libre y acarreo si tiene el bit 7
 	ret z			;606d
-	jp c,L_7D9C		;606e
+	jp c,quitado_por_el_padre		;606e   ; quitado_por_el_padre: si el bit 6 de ix+0x34, ix+4 = 0xFF (un golpe que lo destruye)
 	jp mueve_y_actua		;6071   ; mueve_y_actua: mueve el actor (p04:6A7F), apunta su tipo en 0xF0FE, le aplica el scroll (salvo al tipo 0x5F) y hace lo de su tipo (p04:64B9)
 quita_si_lo_quitan:		; quita el actor si el bit 6 de ix+0x34
 	ld a,(ix+034h)		;6074
@@ -91,7 +91,7 @@ quita_si_lo_quitan:		; quita el actor si el bit 6 de ix+0x34
 	jp quita_actor		;607a   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 mira_tipo_1B:		; a los actores de tipo 0x1B que tienen debajo los caracteres 0xCB-0xCD les pone ix+0x16 = 0 e ix+4 = 1; 0xCE74 a 0
 	ld bc,01440h		;607d
-	ld ix,0ce80h		;6080
+	ld ix,0ce80h		;6080   ; apunta a las 20 fichas de actor de 0x40 bytes
 L_6084:
 	push bc			;6084
 	ld a,(ix+000h)		;6085   ; lee el tipo del actor (0 = libre)
@@ -106,8 +106,8 @@ L_6084:
 	ld (0ce74h),a		;6096
 	ret			;6099
 mira_lo_de_debajo:		; el caracter del mapa bajo el actor (p04:7B06) y, si es 0xCB-0xCD, ix+0x16 = 0 e ix+4 = 1
-	ld d,(ix+00ah)		;609a
-	ld e,(ix+008h)		;609d
+	ld d,(ix+00ah)		;609a   ; lee la X del actor (en caracteres de 8 puntos)
+	ld e,(ix+008h)		;609d   ; lee la Y del actor (en caracteres de 8 puntos)
 	inc d			;60a0
 	inc e			;60a1
 	call casilla_bajo_el_actor		;60a2   ; casilla_bajo_el_actor: la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
@@ -115,8 +115,8 @@ mira_lo_de_debajo:		; el caracter del mapa bajo el actor (p04:7B06) y, si es 0xC
 	sub 0cbh		;60a6
 	cp 003h		;60a8
 	ret nc			;60aa
-	ld (ix+016h),000h		;60ab
-	ld (ix+004h),001h		;60af
+	ld (ix+016h),000h		;60ab   ; la vida del actor (p04:7C44 le resta los golpes) = 0x00
+	ld (ix+004h),001h		;60af   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x01
 	ret			;60b3
 borra_actores:		; borra las fichas de 0xCE40-0xD17F y 0xD440-0xD69F y deja 20 libres
 	call L_60BE		;60b4
@@ -180,7 +180,7 @@ efecto_de_fase:		; 0xCE60 = 1: colores que cambian cada dos cuadros (tabla p04:6
 	jr z,L_6105		;6103
 L_6105:
 	ld bc,01440h		;6105
-	ld ix,0ce80h		;6108
+	ld ix,0ce80h		;6108   ; apunta a las 20 fichas de actor de 0x40 bytes
 L_610C:
 	push bc			;610c
 	ld a,(ix+000h)		;610d   ; lee el tipo del actor (0 = libre)
@@ -202,7 +202,7 @@ L_6125:
 	and a			;6128
 	jr z,L_6173		;6129
 	ld l,a			;612b
-	ld a,(0ca02h)		;612c
+	ld a,(0ca02h)		;612c   ; lee la cuenta de cuadros de la partida
 	and 001h		;612f
 	ret nz			;6131
 	dec l			;6132
@@ -284,11 +284,11 @@ DATA_leido_617E:
 
 
 prepara_guion:		; si 0xE900 esta vacio copia el guion de la fase (p04:6222); 0xCE42 = 0xE900
-	ld a,(0e900h)		;6214
+	ld a,(0e900h)		;6214   ; lee el guion de la fase (0x600 bytes copiados de p05:93B8)
 	and a			;6217
 	call z,copia_guion		;6218   ; copia_guion: 0x600 bytes del guion de la fase (p05:93B8 + 2 x fase) a 0xE900
-	ld hl,0e900h		;621b
-	ld (0ce42h),hl		;621e
+	ld hl,0e900h		;621b   ; apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
+	ld (0ce42h),hl		;621e   ; guarda por donde va el guion de la fase y el byte siguiente (16 bits)
 	ret			;6221
 copia_guion:		; 0x600 bytes del guion de la fase (p05:93B8 + 2 x fase) a 0xE900
 	ld de,093b8h		;6222
@@ -299,7 +299,7 @@ copia_guion:		; 0x600 bytes del guion de la fase (p05:93B8 + 2 x fase) a 0xE900
 	ld e,(hl)			;622c
 	inc hl			;622d
 	ld d,(hl)			;622e
-	ld hl,0e900h		;622f
+	ld hl,0e900h		;622f   ; apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
 	ex de,hl			;6232
 	ld bc,00600h		;6233
 	ldir		;6236
@@ -322,7 +322,7 @@ actor_de_ee80:		; si 0xCE7F: un actor nuevo con la lista de 0xEE81 (largo en 0xE
 	ret			;625d
 guion_de_la_fase:		; recorre el guion de 0xE900 desde 0xCE42: cada entrada [posicion alta][baja][tipo][largo]...; cuando el scroll (0xCA34) llega a la posicion, crea el actor (p04:66D0) y lo pone en marcha (p04:6344)
 	call actor_de_ee80		;625e   ; actor_de_ee80: si 0xCE7F: un actor nuevo con la lista de 0xEE81 (largo en 0xEE80-0xEE81) y su puesta en marcha
-	ld hl,(0ce42h)		;6261
+	ld hl,(0ce42h)		;6261   ; lee por donde va el guion de la fase y el byte siguiente (16 bits)
 	ld a,(hl)			;6264
 	and a			;6265
 	ret z			;6266
@@ -340,7 +340,7 @@ guion_de_la_fase:		; recorre el guion de 0xE900 desde 0xCE42: cada entrada [posi
 	jr z,L_62AB		;6277
 L_6279:
 	push hl			;6279
-	ld hl,(0ca34h)		;627a
+	ld hl,(0ca34h)		;627a   ; lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	call 04650h		;627d   ; compara_hl_de: Z si HL = DE
 	pop hl			;6280
 	ret c			;6281
@@ -350,12 +350,12 @@ L_6279:
 	jr z,L_6293		;6287
 	and 07fh		;6289
 	ld b,a			;628b
-	ld a,(0ca19h)		;628c
+	ld a,(0ca19h)		;628c   ; lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	cp 004h		;628f
 	jr c,L_62AB		;6291
 L_6293:
 	push hl			;6293
-	call es_orden_5F		;6294   ; es_orden_5F: Z si el tipo es 0x5F, despues de hacer la orden (p04:60D6)
+	call es_orden_5F		;6294
 	jr z,L_62AA		;6297
 	ld a,(0ca33h)		;6299
 	or a			;629c
@@ -376,21 +376,21 @@ L_62AB:
 	ld e,a			;62b2
 	ld d,000h		;62b3
 	add hl,de			;62b5
-	ld (0ce42h),hl		;62b6
+	ld (0ce42h),hl		;62b6   ; guarda por donde va el guion de la fase y el byte siguiente (16 bits)
 	jr guion_de_la_fase		;62b9
 es_orden_5F:		; Z si el tipo es 0x5F, despues de hacer la orden (p04:60D6)
 	ld a,b			;62bb
 	cp 05fh		;62bc
 	ret nz			;62be
-	call orden_5F		;62bf   ; orden_5F: la entrada del guion de tipo 0x5F: su tercer byte elige una orden (p04:60E9 o p04:60F4)
+	call orden_5F		;62bf
 	xor a			;62c2
 	ret			;62c3
 guion_desde_e900:		; 0xCA34 = 0xE900
-	ld hl,0e900h		;62c4
-	ld (0ca34h),hl		;62c7
+	ld hl,0e900h		;62c4   ; apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
+	ld (0ca34h),hl		;62c7   ; guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 	ret			;62ca
 actores_con_el_scroll:		; a los 20 actores con el bit 2 de ix+0x15, la Y y la X mas 0xCA12 y 0xCA14
-	ld ix,0ce80h		;62cb
+	ld ix,0ce80h		;62cb   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;62cf
 L_62D1:
 	ld a,(ix+000h)		;62d1   ; lee el tipo del actor (0 = libre)
@@ -554,7 +554,7 @@ actor_especial_por_tipo:		; el salto de p04:6459 por el tipo
 	ret			;6484
 mueve_actores_pequenos:		; los 18 actores de 0x20 bytes de 0xD460 (p04:64A2)
 	ld bc,01220h		;6485
-	ld ix,0d460h		;6488
+	ld ix,0d460h		;6488   ; apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 L_648C:
 	push bc			;648c
 	ld a,(ix+000h)		;648d   ; lee el tipo del actor (0 = libre)
@@ -739,7 +739,7 @@ busca_ficha_libre:		; si quedan fichas (0xCE44), busca la primera libre de las 2
 	jr c,L_673E		;671f
 	ld (0ce44h),a		;6721   ; guarda cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)
 	exx			;6724
-	ld hl,0ce80h		;6725
+	ld hl,0ce80h		;6725   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld de,00040h		;6728
 	ld b,014h		;672b
 	ld c,001h		;672d
@@ -798,7 +798,7 @@ pon_sitio_del_guion:		; la Y y la X del actor con el siguiente byte de su lista 
 L_6773:
 	ld c,b			;6773
 	ld a,000h		;6774
-	sub (ix+013h)		;6776
+	sub (ix+013h)		;6776   ; le resta el alto de la caja del actor (p04:7662)
 	ld b,a			;6779
 	jr L_678F		;677a
 L_677C:
@@ -967,7 +967,7 @@ quita_bit7_del_tipo:		; el bit 7 del tipo del actor de IY a 0
 busca_hermano:		; busca en las 20 fichas la que tiene el mismo numero de grupo (ix+0x2D) y la cuenta de ix+0x39: IY; si no, IY = 0xD700 y acarreo
 	inc (ix+039h)		;688b
 	ld c,(ix+039h)		;688e
-	ld hl,0ce80h		;6891
+	ld hl,0ce80h		;6891   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;6894
 L_6896:
 	push hl			;6896
@@ -1049,7 +1049,7 @@ ficha_numero:		; HL = 0xCE80 + 0x40 x (A - 1)
 	ld a,b			;6906
 	and 00fh		;6907
 	ld h,a			;6909
-	ld de,0ce80h		;690a
+	ld de,0ce80h		;690a   ; apunta a las 20 fichas de actor de 0x40 bytes
 	add hl,de			;690d
 	ret			;690e
 L_690F:
@@ -1156,7 +1156,7 @@ prepara_destello:		; la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 	ld a,(0ca10h)		;69d7   ; lee la fase (0 a 8; 9 el final)
 	ld (0ce4bh),a		;69da
 	inc (ix+03fh)		;69dd
-	ld a,(ix+016h)		;69e0
+	ld a,(ix+016h)		;69e0   ; lee la vida del actor (p04:7C44 le resta los golpes)
 	rrca			;69e3
 	rrca			;69e4
 	and 03fh		;69e5
@@ -1200,7 +1200,7 @@ paso_de_destello:		; cada 4 cuadros (0xCA02) cambia 8 colores con las tablas de 
 	inc hl			;6a29
 	cp (hl)			;6a2a
 	jr nz,L_6A34		;6a2b
-	ld a,(0ca02h)		;6a2d
+	ld a,(0ca02h)		;6a2d   ; lee la cuenta de cuadros de la partida
 	and 003h		;6a30
 	ret nz			;6a32
 	ld a,(hl)			;6a33
@@ -1406,7 +1406,7 @@ L_6B5C:
 	ld (ix+00eh),h		;6b5f   ; guarda la velocidad en X del actor (alta)
 	ret			;6b62
 rumbo_con_velocidad:		; 0xCA26 = A y p04:7270, p04:7240
-	ld (0ca26h),a		;6b63
+	ld (0ca26h),a		;6b63   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	call angulo_hacia		;6b66   ; angulo_hacia: de las dos posiciones en octavos (BC y DE), los signos en 0xCA23 y 0xCA24 y el angulo en 0xCA20 (tabla p04:73ED)
 	jp velocidad_por_angulo		;6b69   ; velocidad_por_angulo: con el angulo A (0-0x3F) y la tabla p04:73AD, las dos velocidades por la rapidez de 0xCA26 y con los signos de 0xCA23 y 0xCA24: DE y HL
 velocidad_hacia_iy:		; la velocidad del actor hacia el de IY con la rapidez A (p04:6B85 y p04:7240)
@@ -1422,7 +1422,7 @@ rumbo_hacia:		; p04:6B85 y p04:7240 sin guardar la velocidad
 	call direccion_hacia		;6b7f   ; direccion_hacia: 0xCA26 = A, la direccion hacia el de IY (p04:71D6) y p04:7270
 	jp velocidad_por_angulo		;6b82   ; velocidad_por_angulo: con el angulo A (0-0x3F) y la tabla p04:73AD, las dos velocidades por la rapidez de 0xCA26 y con los signos de 0xCA23 y 0xCA24: DE y HL
 direccion_hacia:		; 0xCA26 = A, la direccion hacia el de IY (p04:71D6) y p04:7270
-	ld (0ca26h),a		;6b85
+	ld (0ca26h),a		;6b85   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	call octavos_de_iy_e_ix		;6b88   ; octavos_de_iy_e_ix: las posiciones en octavos del actor de IY y del de IX
 	jp angulo_hacia		;6b8b   ; angulo_hacia: de las dos posiciones en octavos (BC y DE), los signos en 0xCA23 y 0xCA24 y el angulo en 0xCA20 (tabla p04:73ED)
 direccion_b:		; p04:71B8 y p04:7270
@@ -1628,7 +1628,7 @@ scroll_por_el_actor_d:		; lo mismo con D ya puesto
 	and 0e0h		;6c83
 	neg		;6c85
 	and 0e0h		;6c87
-	ld (0ca1ch),a		;6c89
+	ld (0ca1ch),a		;6c89   ; guarda el scroll fino en X: se suma a la fraccion de la X de los actores
 	rlca			;6c8c
 	rlca			;6c8d
 	rlca			;6c8e
@@ -1644,7 +1644,7 @@ scroll_por_el_actor_d:		; lo mismo con D ya puesto
 L_6C9F:
 	neg		;6c9f
 	and 0e0h		;6ca1
-	ld (0ca1ah),a		;6ca3
+	ld (0ca1ah),a		;6ca3   ; guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	rlca			;6ca6
 	rlca			;6ca7
 	rlca			;6ca8
@@ -1830,8 +1830,8 @@ L_6DE4:
 	call fuera_de_pantalla_c		;6de6   ; fuera_de_pantalla_c: lo mismo con limites 0x1A / 0xFE y 0x22 / 0xFE
 	jp c,quita_actor		;6de9   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 L_6DEC:
-	call L_7C44		;6dec
-	call c,L_7CC3		;6def
+	call resta_golpe		;6dec   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
+	call c,actor_destruido		;6def   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6df2   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 tras_mover_6DF5:		; a donde vuelve el movimiento del actor de 64 tipos, entre el 0x01 y el 0x74 (la primera palabra de p04:64D1, que se empuja)
 	call tipo_del_actor		;6df5   ; tipo_del_actor: A = el tipo del actor; Z si la ficha esta libre y acarreo si tiene el bit 7
@@ -1840,8 +1840,8 @@ L_6DF8:
 	ret z			;6df9
 	call fuera_de_pantalla		;6dfa   ; fuera_de_pantalla: acarreo si el actor se ha salido (limites 0x18 / 0xFC en Y y 0x22 / 0xFE en X)
 	jp c,quita_actor		;6dfd   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	call L_7C44		;6e00
-	call c,L_7CC3		;6e03
+	call resta_golpe		;6e00   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
+	call c,actor_destruido		;6e03   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6e06   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 tras_mover_6E09:		; a donde vuelve el movimiento del actor de los tipos 0x2A y 0x2D (la primera palabra de p04:64D1, que se empuja)
 	call tipo_del_actor		;6e09   ; tipo_del_actor: A = el tipo del actor; Z si la ficha esta libre y acarreo si tiene el bit 7
@@ -1850,16 +1850,16 @@ L_6E0C:
 	ret z			;6e0d
 	call fuera_de_pantalla_b		;6e0e   ; fuera_de_pantalla_b: lo mismo con limites 0x1B / 0xF0 y 0x22 / 0xFE
 	jp c,quita_actor		;6e11   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	call L_7C44		;6e14
-	call c,L_7CC3		;6e17
+	call resta_golpe		;6e14   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
+	call c,actor_destruido		;6e17   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6e1a   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 tras_mover_6E1D:		; a donde vuelve el movimiento del actor de los tipos 0x46, 0x49 y 0x73 (la primera palabra de p04:64D1, que se empuja)
 	call fuera_de_pantalla_d		;6e1d   ; fuera_de_pantalla_d: lo mismo con limites 0x1A / 0xF8 y 0x22 / 0xF0
 L_6E20:
 	jp c,quita_actor		;6e20   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	call L_7C44		;6e23
+	call resta_golpe		;6e23   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 L_6E26:
-	call c,L_7CC3		;6e26
+	call c,actor_destruido		;6e26   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6e29   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 tipo_del_actor:		; A = el tipo del actor; Z si la ficha esta libre y acarreo si tiene el bit 7
 	ld a,(ix+000h)		;6e2c   ; lee el tipo del actor (0 = libre)
@@ -1872,13 +1872,13 @@ tipo_del_actor:		; A = el tipo del actor; Z si la ficha esta libre y acarreo si 
 tras_mover_6E35:		; a donde vuelve el movimiento del actor de 16 tipos, entre el 0x0E y el 0x79 (la primera palabra de p04:64D1, que se empuja)
 	call fuera_de_pantalla_e		;6e35   ; fuera_de_pantalla_e: lo mismo con limites 0x2C / 0xF6 en los dos ejes
 	jp c,quita_actor		;6e38   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	call L_7C44		;6e3b
-	call c,L_7CC3		;6e3e
+	call resta_golpe		;6e3b   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
+	call c,actor_destruido		;6e3e   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6e41   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 tras_mover_6E44:		; a donde vuelve el movimiento del actor de 9 tipos, entre el 0x14 y el 0x7B (la primera palabra de p04:64D1, que se empuja)
-	call L_7C63		;6e44
+	call resta_golpe_jefe		;6e44   ; resta_golpe_jefe: lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
 	call c,empujon		;6e47   ; empujon: 0xCE52 y 0xCE76 a 1 y la Y y la X del actor mas 0xCE6A y 0xCE69
-	call c,L_7CC3		;6e4a
+	call c,actor_destruido		;6e4a   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	jp dibuja_actor		;6e4d   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
 empujon:		; 0xCE52 y 0xCE76 a 1 y la Y y la X del actor mas 0xCE6A y 0xCE69
 	ex af,af'			;6e50
@@ -1899,7 +1899,7 @@ tras_mover_6E6E:		; a donde vuelve el movimiento del actor de los tipos 0x60, 0x
 	call fuera_de_pantalla		;6e6e   ; fuera_de_pantalla: acarreo si el actor se ha salido (limites 0x18 / 0xFC en Y y 0x22 / 0xFE en X)
 L_6E71:
 	jp c,libera_ficha		;6e71   ; libera_ficha: el tipo y las banderas del actor a 0
-	ld a,(ix+004h)		;6e74
+	ld a,(ix+004h)		;6e74   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;6e77
 	jp nz,libera_ficha		;6e78   ; libera_ficha: el tipo y las banderas del actor a 0
 	call quita_si_toca_fondo		;6e7b   ; quita_si_toca_fondo: si el bit 4 de ix+0x15: libera la ficha si se sale del mapa o si el caracter de debajo es solido
@@ -1909,7 +1909,7 @@ tras_mover_6E81:		; a donde vuelve el movimiento del actor del tipo 0x75 (la pri
 	call fuera_de_pantalla		;6e81   ; fuera_de_pantalla: acarreo si el actor se ha salido (limites 0x18 / 0xFC en Y y 0x22 / 0xFE en X)
 L_6E84:
 	jp c,libera_ficha		;6e84   ; libera_ficha: el tipo y las banderas del actor a 0
-	ld a,(ix+004h)		;6e87
+	ld a,(ix+004h)		;6e87   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;6e8a
 	jp nz,libera_ficha		;6e8b   ; libera_ficha: el tipo y las banderas del actor a 0
 	jp dibuja_actor		;6e8e   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
@@ -1932,7 +1932,7 @@ DATA_sin_leer_6E97:
 
 
 quita_actor:		; el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-	call L_7D3E		;6e98
+	call suelta_de_los_suyos		;6e98   ; suelta_de_los_suyos: deshace las uniones del actor con los de su grupo (p04:7D89, p04:7D54)
 	ld hl,0ce44h		;6e9b   ; apunta a cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)
 	inc (hl)			;6e9e
 	call suelta_sprites		;6e9f   ; suelta_sprites: los sprites del actor (ix+0x19 a ix+0x1C) a 0
@@ -2088,8 +2088,8 @@ L_6FA2:
 	pop hl			;6fad
 	pop de			;6fae
 	ld (ix+015h),091h		;6faf   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x91
-	ld (ix+013h),003h		;6fb3
-	ld (ix+014h),003h		;6fb7
+	ld (ix+013h),003h		;6fb3   ; el alto de la caja del actor (p04:7662) = 0x03
+	ld (ix+014h),003h		;6fb7   ; el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
 	ld (ix+000h),002h		;6fbb   ; el tipo del actor (0 = libre) = 0x02
 	ld (ix+00ah),d		;6fbf   ; guarda la X del actor (en caracteres de 8 puntos)
 	ld (ix+009h),e		;6fc2   ; guarda la X del actor (fraccion: 32 por punto)
@@ -2188,7 +2188,7 @@ DATA_leido_7042:
 
 
 marca_actores:		; a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
-	ld hl,0ce80h		;7058
+	ld hl,0ce80h		;7058   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;705b
 L_705D:
 	ld a,(hl)			;705d
@@ -2216,10 +2216,10 @@ L_7081:
 	ld de,00040h		;7081
 	add hl,de			;7084
 	djnz L_705D		;7085
-	call marca_tipos_70D2		;7087   ; marca_tipos_70D2: al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
+	call marca_tipos_70D2		;7087
 	ret			;708a
 marca_tipos_70D2:		; al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
-	ld hl,0ce80h		;708b
+	ld hl,0ce80h		;708b   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;708e
 L_7090:
 	ld a,(hl)			;7090
@@ -2277,13 +2277,13 @@ L_70ED:
 	or a			;70ed
 	ret			;70ee
 nave_muy_cerca:		; acarreo si la nave esta a menos de 12 puntos del centro del actor (la Y y la X mas la mitad de ix+0x13 e ix+0x14), sumando los dos ejes (p04:7725)
-	ld a,(ix+013h)		;70ef
+	ld a,(ix+013h)		;70ef   ; lee el alto de la caja del actor (p04:7662)
 	rrca			;70f2
 	and 03fh		;70f3
 	add a,(ix+008h)		;70f5   ; le suma la Y del actor (en caracteres de 8 puntos)
 	ld h,a			;70f8
 	ld l,(ix+007h)		;70f9   ; lee la Y del actor (fraccion: 32 por punto)
-	ld a,(ix+014h)		;70fc
+	ld a,(ix+014h)		;70fc   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	rrca			;70ff
 	and 03fh		;7100
 	add a,(ix+00ah)		;7102   ; le suma la X del actor (en caracteres de 8 puntos)
@@ -2367,21 +2367,21 @@ llena_bala:		; la ficha de HL: tipo 0x60, la Y y la X del actor, la velocidad (C
 rapidez_de_bala:		; 0xCA26 = la rapidez de la tabla p04:71A8 por 0xCA19
 	exx			;7186
 	ld hl,071a8h		;7187
-	ld de,(0ca19h)		;718a
+	ld de,(0ca19h)		;718a   ; lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F) y el byte siguiente (16 bits)
 	ld d,000h		;718e
 	add hl,de			;7190
 	ld a,(hl)			;7191
-	ld (0ca26h),a		;7192
+	ld (0ca26h),a		;7192   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	exx			;7195
 	ret			;7196
 rapidez_de_bala_b:		; igual que p04:7186
 	exx			;7197
 	ld hl,071a8h		;7198
-	ld de,(0ca19h)		;719b
+	ld de,(0ca19h)		;719b   ; lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F) y el byte siguiente (16 bits)
 	ld d,000h		;719f
 	add hl,de			;71a1
 	ld a,(hl)			;71a2
-	ld (0ca26h),a		;71a3
+	ld (0ca26h),a		;71a3   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	exx			;71a6
 	ret			;71a7
 
@@ -2413,8 +2413,8 @@ DATA_sin_leer_71AE:
 
 
 hacia_la_nave:		; las posiciones en octavos (p04:71EA) de la nave (0xCA47-0xCA4A) y del actor
-	ld de,(0ca47h)		;71b8
-	ld bc,(0ca49h)		;71bc
+	ld de,(0ca47h)		;71b8   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+	ld bc,(0ca49h)		;71bc   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	call en_octavos		;71c0   ; en_octavos: E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en un byte
 	ex de,hl			;71c3
 octavos_del_actor:		; la posicion del actor en octavos de punto (p04:71EA)
@@ -2458,7 +2458,7 @@ en_octavos:		; E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en un byte
 	ld d,a			;7205
 	ret			;7206
 ficha_pequena_libre:		; HL = la primera de las 18 fichas de 0xD460 que esta libre; NZ si no hay
-	ld hl,0d460h		;7207
+	ld hl,0d460h		;7207   ; apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 	exx			;720a
 	ld b,012h		;720b
 L_720D:
@@ -2491,7 +2491,7 @@ L_7224:
 velocidad_por_rumbo:		; con el rumbo D (bit 7 y bit 6 dan los signos) y el angulo E, la velocidad (p04:7240)
 	ld e,a			;722a
 	ld a,d			;722b
-	ld (0ca26h),a		;722c
+	ld (0ca26h),a		;722c   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	ld a,d			;722f
 	and 080h		;7230
 	ld (0ca23h),a		;7232
@@ -2566,7 +2566,7 @@ L_7289:
 	ld (0ca20h),a		;729a
 	ret			;729d
 por_la_rapidez:		; DE = E x 0xCA26 / 32
-	ld a,(0ca26h)		;729e
+	ld a,(0ca26h)		;729e   ; lee la rapidez con la que p04:7240 calcula una velocidad
 	ld h,a			;72a1
 	call multiplica		;72a2   ; multiplica: HL = H x E
 	xor a			;72a5
@@ -2637,7 +2637,7 @@ L_72F1:
 	ret c			;72f2
 	jp dispara_a_la_nave		;72f3   ; dispara_a_la_nave: si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
 dispara_con_rapidez:		; 0xCA26 = A y una bala hacia la nave si no esta muy cerca
-	ld (0ca26h),a		;72f6
+	ld (0ca26h),a		;72f6   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	call nave_muy_cerca		;72f9   ; nave_muy_cerca: acarreo si la nave esta a menos de 12 puntos del centro del actor (la Y y la X mas la mitad de ix+0x13 e ix+0x14), sumando los dos ejes (p04:7725)
 	ret c			;72fc
 	jp bala_hacia_la_nave		;72fd   ; bala_hacia_la_nave: en una ficha pequena libre, una bala de tipo 0x60 en el sitio del actor y con la velocidad hacia la nave (p04:71B8, p04:7270, p04:7240)
@@ -2825,7 +2825,7 @@ al_azar_contra_ca19:		; acarreo si un numero al azar de 0 a 15 es mayor o igual 
 	call 04678h		;750f   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 contra_ca19:		; acarreo si A and 0x0F es mayor o igual que 0xCA19
 	and 00fh		;7512
-	ld hl,0ca19h		;7514
+	ld hl,0ca19h		;7514   ; apunta a el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	cp (hl)			;7517
 	ccf			;7518
 	ret			;7519
@@ -2857,12 +2857,12 @@ borra_fichas_pequenas:		; borra 0xD440-0xD69F; detras, 16 nop
 	nop			;753a
 	nop			;753b
 fondo_bajo_el_actor:		; el caracter del mapa en la posicion del actor mas D, E (con el scroll fino de 0xCA1A y 0xCA1C) y su bit 0 en la tabla 0xDE00 (Z si no es solido); acarreo si cae fuera
-	ld a,(0ca1ah)		;753c
+	ld a,(0ca1ah)		;753c   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	add a,(ix+007h)		;753f   ; le suma la Y del actor (fraccion: 32 por punto)
 	ld a,000h		;7542
 	adc a,e			;7544
 	ld e,a			;7545
-	ld a,(0ca1ch)		;7546
+	ld a,(0ca1ch)		;7546   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores
 	add a,(ix+009h)		;7549   ; le suma la X del actor (fraccion: 32 por punto)
 	ld a,000h		;754c
 	adc a,d			;754e
@@ -2885,13 +2885,13 @@ hacia_la_nave_8:		; E = Y de la nave - Y del actor; D = lo mismo en X
 	ld d,a			;756a
 	ret			;756b
 distancia_a_la_nave:		; HL = la Y de la nave - la del actor y DE = lo mismo en X, con fraccion
-	ld hl,(0ca49h)		;756c
+	ld hl,(0ca49h)		;756c   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	ld b,(ix+00ah)		;756f   ; lee la X del actor (en caracteres de 8 puntos)
 	ld c,(ix+009h)		;7572   ; lee la X del actor (fraccion: 32 por punto)
 	or a			;7575
 	sbc hl,bc		;7576
 	ex de,hl			;7578
-	ld hl,(0ca47h)		;7579
+	ld hl,(0ca47h)		;7579   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	ld b,(ix+008h)		;757c   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld c,(ix+007h)		;757f   ; lee la Y del actor (fraccion: 32 por punto)
 	or a			;7582
@@ -2899,7 +2899,7 @@ distancia_a_la_nave:		; HL = la Y de la nave - la del actor y DE = lo mismo en X
 	ret			;7585
 distancia_y:		; HL = la Y de la nave - la del actor, con fraccion
 	push de			;7586
-	ld hl,(0ca47h)		;7587
+	ld hl,(0ca47h)		;7587   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	ld d,(ix+008h)		;758a   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld e,(ix+007h)		;758d   ; lee la Y del actor (fraccion: 32 por punto)
 	or a			;7590
@@ -2963,12 +2963,12 @@ choca_con_actores:		; con la posicion del actor (y el scroll fino), mira si toca
 	ld c,001h		;75e4
 	push bc			;75e6
 	push af			;75e7
-	ld a,(0ca1ah)		;75e8
+	ld a,(0ca1ah)		;75e8   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	add a,(ix+007h)		;75eb   ; le suma la Y del actor (fraccion: 32 por punto)
 	jr nc,L_75F1		;75ee
 	inc e			;75f0
 L_75F1:
-	ld a,(0ca1ch)		;75f1
+	ld a,(0ca1ch)		;75f1   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores
 	add a,(ix+009h)		;75f4   ; le suma la X del actor (fraccion: 32 por punto)
 	jr nc,L_75FA		;75f7
 	inc d			;75f9
@@ -2989,7 +2989,7 @@ toca_algun_actor:		; para los 20 actores de 0xCE80, si el punto D, E cae en su c
 	inc d			;7609
 	inc e			;760a
 	exx			;760b
-	ld hl,0ce80h		;760c
+	ld hl,0ce80h		;760c   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;760f
 L_7611:
 	push bc			;7611
@@ -3063,7 +3063,7 @@ L_7670:
 	push hl			;7670
 	ld h,(iy+00ah)		;7671
 	ld l,(iy+009h)		;7674
-	ld bc,(0ca1ch)		;7677
+	ld bc,(0ca1ch)		;7677   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 	ld b,000h		;767b
 	add hl,bc			;767d
 	ld a,(iy+014h)		;767e
@@ -3079,7 +3079,7 @@ L_7670:
 	jr nc,L_76A7		;768b
 	ld h,(iy+008h)		;768d
 	ld l,(iy+007h)		;7690
-	ld bc,(0ca1ah)		;7693
+	ld bc,(0ca1ah)		;7693   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld b,000h		;7697
 	add hl,bc			;7699
 	ld a,(iy+013h)		;769a
@@ -3129,14 +3129,14 @@ posicion_mas:		; la posicion del actor mas HL y DE y el scroll fino: D, E
 	ld b,(ix+008h)		;76d0   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld c,(ix+007h)		;76d3   ; lee la Y del actor (fraccion: 32 por punto)
 	add hl,bc			;76d6
-	ld bc,(0ca1ah)		;76d7
+	ld bc,(0ca1ah)		;76d7   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld b,000h		;76db
 	add hl,bc			;76dd
 	ex de,hl			;76de
 	ld b,(ix+00ah)		;76df   ; lee la X del actor (en caracteres de 8 puntos)
 	ld c,(ix+009h)		;76e2   ; lee la X del actor (fraccion: 32 por punto)
 	add hl,bc			;76e5
-	ld bc,(0ca1ch)		;76e6
+	ld bc,(0ca1ch)		;76e6   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 	ld b,000h		;76ea
 	add hl,bc			;76ec
 	ld l,d			;76ed
@@ -3159,14 +3159,14 @@ centro_del_actor:		; la posicion del actor mas la mitad de su ancho (ix+0x14) y 
 	push bc			;76ff
 	ld l,(ix+009h)		;7700   ; lee la X del actor (fraccion: 32 por punto)
 	ld h,(ix+00ah)		;7703   ; lee la X del actor (en caracteres de 8 puntos)
-	ld e,(ix+014h)		;7706
+	ld e,(ix+014h)		;7706   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	srl e		;7709
 	ld d,000h		;770b
 	add hl,de			;770d
 	ex de,hl			;770e
 	ld l,(ix+007h)		;770f   ; lee la Y del actor (fraccion: 32 por punto)
 	ld h,(ix+008h)		;7712   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld c,(ix+014h)		;7715
+	ld c,(ix+014h)		;7715   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	srl c		;7718
 	ld b,000h		;771a
 	add hl,bc			;771c
@@ -3190,14 +3190,14 @@ cerca_de_la_nave:		; acarreo si la suma de las distancias a la nave en los dos e
 	push bc			;7725
 	push de			;7726
 	ex de,hl			;7727
-	ld hl,(0ca47h)		;7728
+	ld hl,(0ca47h)		;7728   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	inc h			;772b
 	or a			;772c
 	sbc hl,de		;772d
 	bit 7,h		;772f
 	call nz,04612h		;7731   ; niega_hl: HL = -HL
 	ex de,hl			;7734
-	ld hl,(0ca49h)		;7735
+	ld hl,(0ca49h)		;7735   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	inc h			;7738
 	pop bc			;7739
 	or a			;773a
@@ -3745,13 +3745,13 @@ sitio_de_la_pieza:		; la pieza A de la tabla de DE: E = Y + su fila y D = X + su
 	inc hl			;7a76
 	ld d,(hl)			;7a77
 	ex de,hl			;7a78
-	ld a,(0ca1ah)		;7a79
+	ld a,(0ca1ah)		;7a79   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	add a,(ix+007h)		;7a7c   ; le suma la Y del actor (fraccion: 32 por punto)
 	ld a,(ix+008h)		;7a7f   ; lee la Y del actor (en caracteres de 8 puntos)
 	adc a,(hl)			;7a82
 	ld e,a			;7a83
 	inc hl			;7a84
-	ld a,(0ca1ch)		;7a85
+	ld a,(0ca1ch)		;7a85   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores
 	add a,(ix+009h)		;7a88   ; le suma la X del actor (fraccion: 32 por punto)
 	ld a,(ix+00ah)		;7a8b   ; lee la X del actor (en caracteres de 8 puntos)
 	adc a,(hl)			;7a8e
@@ -3774,12 +3774,12 @@ siguiente_columna:		; D + 1; si se sale del mapa (0xDE00), vuelve tres niveles a
 	scf			;7aa4
 	jp 0469bh		;7aa5   ; vuelve_quitando_3: quita 3 palabras de la pila y vuelve
 pinta_pieza_con_scroll:		; la pieza con el scroll fino de 0xCA1A y 0xCA1C
-	ld a,(0ca1ah)		;7aa8
+	ld a,(0ca1ah)		;7aa8   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	add a,(ix+007h)		;7aab   ; le suma la Y del actor (fraccion: 32 por punto)
 	jr nc,L_7AB1		;7aae
 	inc e			;7ab0
 L_7AB1:
-	ld a,(0ca1ch)		;7ab1
+	ld a,(0ca1ch)		;7ab1   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores
 	add a,(ix+009h)		;7ab4   ; le suma la X del actor (fraccion: 32 por punto)
 	jr nc,pinta_pieza		;7ab7
 	inc d			;7ab9
@@ -3845,12 +3845,12 @@ L_7AF7:
 	djnz copia_filas		;7b03
 	ret			;7b05
 casilla_bajo_el_actor:		; la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
-	ld a,(0ca1ah)		;7b06
+	ld a,(0ca1ah)		;7b06   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 	add a,(ix+007h)		;7b09   ; le suma la Y del actor (fraccion: 32 por punto)
 	jr nc,L_7B0F		;7b0c
 	inc e			;7b0e
 L_7B0F:
-	ld a,(0ca1ch)		;7b0f
+	ld a,(0ca1ch)		;7b0f   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores
 	add a,(ix+009h)		;7b12   ; le suma la X del actor (fraccion: 32 por punto)
 	jr nc,casilla_del_mapa		;7b15
 	inc d			;7b17
@@ -4048,7 +4048,7 @@ con_iy_como_ix:		; con IX e IY cambiados, p04:7C26
 	pop iy		;7c17
 	pop ix		;7c19
 	ld a,(ix+000h)		;7c1b
-	call nada_7C26		;7c1e   ; nada_7C26: ret
+	call nada_7C26		;7c1e
 	pop iy		;7c21
 	pop ix		;7c23
 	ret			;7c25
@@ -4071,29 +4071,29 @@ L_7C37:
 	rrca			;7c3f
 	ret nc			;7c40
 	jp libera_ficha		;7c41   ; libera_ficha: el tipo y las banderas del actor a 0
-L_7C44:
+resta_golpe:		; si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 	or a			;7c44
-	bit 7,(ix+014h)		;7c45
+	bit 7,(ix+014h)		;7c45   ; mira el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ret z			;7c49
-	ld a,(ix+004h)		;7c4a
-	ld (ix+004h),000h		;7c4d
+	ld a,(ix+004h)		;7c4a   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
+	ld (ix+004h),000h		;7c4d   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	and a			;7c51
 	ret z			;7c52
 	ld b,a			;7c53
-	ld a,(ix+016h)		;7c54
+	ld a,(ix+016h)		;7c54   ; lee la vida del actor (p04:7C44 le resta los golpes)
 	sub b			;7c57
-	ld (ix+016h),a		;7c58
+	ld (ix+016h),a		;7c58   ; guarda la vida del actor (p04:7C44 le resta los golpes)
 	push af			;7c5b
 	ld a,016h		;7c5c
 	call 04af0h		;7c5e   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 	pop af			;7c61
 	ret			;7c62
-L_7C63:
+resta_golpe_jefe:		; lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
 	ld a,(ix+03fh)		;7c63
 	and a			;7c66
 	ld c,001h		;7c67
 	jr z,L_7C77		;7c69
-L_7C6B:
+resta_golpe_jefe_b:		; lo mismo sin mirar ix+0x3F
 	ld hl,0ce48h		;7c6b
 	res 1,(hl)		;7c6e
 	dec hl			;7c70
@@ -4103,10 +4103,10 @@ L_7C6B:
 	jr z,L_7C77		;7c74
 	dec (hl)			;7c76
 L_7C77:
-	bit 7,(ix+014h)		;7c77
+	bit 7,(ix+014h)		;7c77   ; mira el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ret z			;7c7b
-	ld a,(ix+004h)		;7c7c
-	ld (ix+004h),000h		;7c7f
+	ld a,(ix+004h)		;7c7c   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
+	ld (ix+004h),000h		;7c7f   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	and a			;7c83
 	ret z			;7c84
 	ld b,a			;7c85
@@ -4117,9 +4117,9 @@ L_7C77:
 	inc hl			;7c8c
 	set 1,(hl)		;7c8d
 L_7C8F:
-	ld a,(ix+016h)		;7c8f
+	ld a,(ix+016h)		;7c8f   ; lee la vida del actor (p04:7C44 le resta los golpes)
 	sub b			;7c92
-	ld (ix+016h),a		;7c93
+	ld (ix+016h),a		;7c93   ; guarda la vida del actor (p04:7C44 le resta los golpes)
 	push af			;7c96
 	ld b,a			;7c97
 	ld a,(0ce4ah)		;7c98
@@ -4132,29 +4132,29 @@ L_7CA0:
 L_7CA5:
 	pop af			;7ca5
 	ret			;7ca6
-L_7CA7:
-	ld (ix+004h),000h		;7ca7
+olvida_golpe:		; ix+4 = 0
+	ld (ix+004h),000h		;7ca7   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;7cab
-L_7CAC:
-	ld a,(ix+004h)		;7cac
+resta_golpe_sin_mas:		; si tiene golpe, se lo resta de la vida
+	ld a,(ix+004h)		;7cac   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	and a			;7caf
 	ret z			;7cb0
-	ld (ix+004h),000h		;7cb1
+	ld (ix+004h),000h		;7cb1   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ld b,a			;7cb5
-	ld a,(ix+016h)		;7cb6
+	ld a,(ix+016h)		;7cb6   ; lee la vida del actor (p04:7C44 le resta los golpes)
 	sub b			;7cb9
-	ld (ix+016h),a		;7cba
+	ld (ix+016h),a		;7cba   ; guarda la vida del actor (p04:7C44 le resta los golpes)
 	ret			;7cbd
-L_7CBE:
-	call L_7D0A		;7cbe
+puntos_y_sonido:		; los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
+	call datos_al_destruir		;7cbe   ; datos_al_destruir: HL = p04:7E74 + 3 x tipo: el tipo de la explosion, el sonido y los puntos
 	jr L_7CD9		;7cc1
-L_7CC3:
+actor_destruido:		; ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	ld a,004h		;7cc3
 	ld (ix+015h),a		;7cc5   ; guarda las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
-	res 7,(ix+014h)		;7cc8
-	call L_7D5E		;7ccc
-	call L_7D1B		;7ccf
-	call L_7D0A		;7cd2
+	res 7,(ix+014h)		;7cc8   ; pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
+	call suelta_de_los_suyos_b		;7ccc   ; suelta_de_los_suyos_b: lo mismo y, si el padre se queda sin hijos, le sube ix+0x3D
+	call parar_actor		;7ccf   ; parar_actor: suelta los sprites y p04:7D1E
+	call datos_al_destruir		;7cd2   ; datos_al_destruir: HL = p04:7E74 + 3 x tipo: el tipo de la explosion, el sonido y los puntos
 	ld a,(hl)			;7cd5
 	ld (ix+000h),a		;7cd6   ; guarda el tipo del actor (0 = libre)
 L_7CD9:
@@ -4164,7 +4164,7 @@ L_7CD9:
 	call 04af0h		;7cdc   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 L_7CDF:
 	pop hl			;7cdf
-L_7CE0:
+suma_puntos_del_tipo:		; los puntos numero (HL) de la tabla p04:7CF6 (p04:7E03)
 	inc hl			;7ce0
 	ld l,(hl)			;7ce1
 	dec l			;7ce2
@@ -4178,7 +4178,7 @@ L_7CE0:
 	ld e,(hl)			;7cee
 	inc hl			;7cef
 	ld d,(hl)			;7cf0
-	call L_7E03		;7cf1
+	call suma_puntos		;7cf1   ; suma_puntos: suma DE (BCD) al marcador de 0xCB0B; si pasa de 999.990 se queda ahi; vida extra cada 50.000 (p04:7E29) y record (p04:7E50)
 	scf			;7cf4
 	ret			;7cf5
 
@@ -4195,7 +4195,7 @@ DATA_leido_7CF6:
 ; ======================================================================
 
 
-L_7D0A:
+datos_al_destruir:		; HL = p04:7E74 + 3 x tipo: el tipo de la explosion, el sonido y los puntos
 	ld a,(ix+000h)		;7d0a   ; lee el tipo del actor (0 = libre)
 	ld h,000h		;7d0d
 	ld l,a			;7d0f
@@ -4208,9 +4208,9 @@ L_7D16:
 	ld de,07e74h		;7d16
 	add hl,de			;7d19
 	ret			;7d1a
-L_7D1B:
+parar_actor:		; suelta los sprites y p04:7D1E
 	call suelta_sprites		;7d1b   ; suelta_sprites: los sprites del actor (ix+0x19 a ix+0x1C) a 0
-L_7D1E:
+borra_movimiento:		; el paso, las uniones, los dibujos, la cuenta y las velocidades a 0
 	xor a			;7d1e
 	ld (ix+001h),a		;7d1f   ; guarda el paso del actor
 	ld (ix+034h),a		;7d22
@@ -4223,34 +4223,34 @@ L_7D1E:
 	ld (ix+00dh),a		;7d37   ; guarda la velocidad en X del actor (baja)
 	ld (ix+00eh),a		;7d3a   ; guarda la velocidad en X del actor (alta)
 	ret			;7d3d
-L_7D3E:
+suelta_de_los_suyos:		; deshace las uniones del actor con los de su grupo (p04:7D89, p04:7D54)
 	ld a,(ix+034h)		;7d3e
 	ld b,(ix+02dh)		;7d41
 	and a			;7d44
 	ret z			;7d45
 	push af			;7d46
 	sla a		;7d47
-	call c,L_7D89		;7d49
+	call c,marca_hijos		;7d49   ; marca_hijos: a los 20 actores del grupo B les pone el bit 6 de ix+0x34 (se van a quitar)
 	pop af			;7d4c
 	sla a		;7d4d
 	sla a		;7d4f
 	ret c			;7d51
 	and a			;7d52
 	ret z			;7d53
-L_7D54:
+avisa_al_padre:		; al actor de ix+0x34 le baja ix+0x37 y avisa a los suyos (p04:7DA6)
 	call padre		;7d54   ; padre: IY = la ficha de ix+0x34 (bits 0-5); compara su numero
 	ret c			;7d57
 	ret nz			;7d58
 	dec (iy+037h)		;7d59
-	jr L_7DA6		;7d5c
-L_7D5E:
+	jr avisa_a_los_unidos		;7d5c
+suelta_de_los_suyos_b:		; lo mismo y, si el padre se queda sin hijos, le sube ix+0x3D
 	ld a,(ix+034h)		;7d5e
 	ld b,(ix+02dh)		;7d61
 	and a			;7d64
 	ret z			;7d65
 	push af			;7d66
 	sla a		;7d67
-	call c,L_7D89		;7d69
+	call c,marca_hijos		;7d69   ; marca_hijos: a los 20 actores del grupo B les pone el bit 6 de ix+0x34 (se van a quitar)
 L_7D6C:
 	pop af			;7d6c
 	sla a		;7d6d
@@ -4258,7 +4258,7 @@ L_7D6C:
 	ret c			;7d71
 	and a			;7d72
 	ret z			;7d73
-	call L_7D54		;7d74
+	call avisa_al_padre		;7d74   ; avisa_al_padre: al actor de ix+0x34 le baja ix+0x37 y avisa a los suyos (p04:7DA6)
 L_7D77:
 	dec (iy+03bh)		;7d77
 	ret nz			;7d7a
@@ -4270,7 +4270,7 @@ L_7D77:
 	ret z			;7d84
 	inc (ix+03dh)		;7d85
 	ret			;7d88
-L_7D89:
+marca_hijos:		; a los 20 actores del grupo B les pone el bit 6 de ix+0x34 (se van a quitar)
 	ld a,b			;7d89
 	ld b,014h		;7d8a
 	ld hl,0ceb4h		;7d8c
@@ -4282,13 +4282,13 @@ L_7D92:
 L_7D97:
 	add hl,de			;7d97
 	djnz L_7D92		;7d98
-	jr L_7DA6		;7d9a
-L_7D9C:
+	jr avisa_a_los_unidos		;7d9a
+quitado_por_el_padre:		; si el bit 6 de ix+0x34, ix+4 = 0xFF (un golpe que lo destruye)
 	bit 6,(ix+034h)		;7d9c
 	ret z			;7da0
-	ld (ix+004h),0ffh		;7da1
+	ld (ix+004h),0ffh		;7da1   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0xFF
 	ret			;7da5
-L_7DA6:
+avisa_a_los_unidos:		; marca con el bit 7 a los de ix+0x35 e ix+0x36
 	ld b,(ix+035h)		;7da6
 	ld c,(ix+036h)		;7da9
 	ld a,b			;7dac
@@ -4304,18 +4304,18 @@ L_7DB9:
 	ret c			;7dbd
 	set 7,(iy+036h)		;7dbe
 	ret			;7dc2
-L_7DC3:
+puntos_del_tipo:		; los puntos del tipo del actor
 	ld a,(ix+000h)		;7dc3   ; lee el tipo del actor (0 = libre)
-	call L_7DD8		;7dc6
+	call datos_del_tipo_a		;7dc6   ; datos_del_tipo_a: HL = p04:7E74 + 3 x A
 	inc hl			;7dc9
-	jp L_7CE0		;7dca
-L_7DCD:
+	jp suma_puntos_del_tipo		;7dca   ; suma_puntos_del_tipo: los puntos numero (HL) de la tabla p04:7CF6 (p04:7E03)
+sonido_del_tipo:		; el sonido del tipo del actor (p00:4AF5)
 	ld a,(ix+000h)		;7dcd   ; lee el tipo del actor (0 = libre)
-	call L_7DD8		;7dd0
+	call datos_del_tipo_a		;7dd0   ; datos_del_tipo_a: HL = p04:7E74 + 3 x A
 	inc hl			;7dd3
 	ld a,(hl)			;7dd4
 	jp 04af5h		;7dd5   ; pide_musica: lo mismo con hasta 0x17 en la cola
-L_7DD8:
+datos_del_tipo_a:		; HL = p04:7E74 + 3 x A
 	ld h,000h		;7dd8
 	ld l,a			;7dda
 	ld e,a			;7ddb
@@ -4325,21 +4325,21 @@ L_7DD8:
 	ld de,07e74h		;7ddf
 	add hl,de			;7de2
 	ret			;7de3
-L_7DE4:
-	call L_7DF1		;7de4
+borra_marcadores:		; el marcador y el record a 0 (p04:7DF1)
+	call marcador_a_0		;7de4   ; marcador_a_0: el marcador a 0 y la siguiente vida extra a 50.000 (0xCB10 = 0x50)
 	ld hl,00000h		;7de7
-	ld (0c922h),hl		;7dea
+	ld (0c922h),hl		;7dea   ; guarda el record, en BCD (3 bytes) y el byte siguiente (16 bits)
 	ld (0c923h),hl		;7ded
 	ret			;7df0
-L_7DF1:
+marcador_a_0:		; el marcador a 0 y la siguiente vida extra a 50.000 (0xCB10 = 0x50)
 	ld hl,00000h		;7df1
 	ld (0cb0ah),hl		;7df4
 	ld (0cb0ch),hl		;7df7
-	ld (0cb10h),hl		;7dfa
+	ld (0cb10h),hl		;7dfa   ; guarda los puntos de la siguiente vida extra, en BCD y el byte siguiente (16 bits)
 	ld a,050h		;7dfd
-	ld (0cb10h),a		;7dff
+	ld (0cb10h),a		;7dff   ; guarda los puntos de la siguiente vida extra, en BCD
 	ret			;7e02
-L_7E03:
+suma_puntos:		; suma DE (BCD) al marcador de 0xCB0B; si pasa de 999.990 se queda ahi; vida extra cada 50.000 (p04:7E29) y record (p04:7E50)
 	ld hl,0cb0bh		;7e03   ; apunta a el marcador, en BCD (3 bytes)
 	ld a,(hl)			;7e06
 	add a,e			;7e07
@@ -4355,7 +4355,7 @@ L_7E03:
 	adc a,000h		;7e11
 	daa			;7e13
 	ld (hl),a			;7e14
-	jr nc,L_7E29		;7e15
+	jr nc,vida_extra		;7e15
 	ld de,0c924h		;7e17
 	ld a,099h		;7e1a
 	ld (hl),a			;7e1c
@@ -4370,17 +4370,17 @@ L_7E03:
 	ld (hl),a			;7e26
 	ld (de),a			;7e27
 	ret			;7e28
-L_7E29:
+vida_extra:		; si el marcador llega a 0xCB10-0xCB11, los sube 50.000 y una vida mas (el sonido 0x0F)
 	ex de,hl			;7e29
 	ld hl,0cb11h		;7e2a
 	ld a,(de)			;7e2d
 	cp (hl)			;7e2e
-	jr c,L_7E50		;7e2f
+	jr c,record		;7e2f
 	dec e			;7e31
 	dec l			;7e32
 	ld a,(de)			;7e33
 	cp (hl)			;7e34
-	jr c,L_7E50		;7e35
+	jr c,record		;7e35
 	ld a,(hl)			;7e37
 	add a,050h		;7e38
 	daa			;7e3a
@@ -4398,7 +4398,7 @@ L_7E29:
 	ld (hl),a			;7e4a
 	ld a,00fh		;7e4b
 	call 04af0h		;7e4d   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
-L_7E50:
+record:		; si el marcador pasa del record de 0xC922, lo copia
 	ld hl,0cb0dh		;7e50
 	ld de,0c924h		;7e53
 	ld a,(de)			;7e56
@@ -4418,7 +4418,7 @@ L_7E50:
 	ret nc			;7e66
 L_7E67:
 	ld hl,0cb0bh		;7e67   ; apunta a el marcador, en BCD (3 bytes)
-	ld de,0c922h		;7e6a
+	ld de,0c922h		;7e6a   ; apunta a el record, en BCD (3 bytes)
 	ld bc,00003h		;7e6d
 	ldir		;7e70
 	ret			;7e72

@@ -60,7 +60,7 @@ L_8039:
 	and 07fh		;804d
 	ld d,a			;804f
 	exx			;8050
-	ld ix,0ce80h		;8051
+	ld ix,0ce80h		;8051   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;8055
 L_8057:
 	push bc			;8057
@@ -76,7 +76,7 @@ L_8057:
 	jr nz,L_809C		;806b
 	exx			;806d
 	ld c,(ix+00ah)		;806e   ; lee la X del actor (en caracteres de 8 puntos)
-	ld b,(ix+014h)		;8071
+	ld b,(ix+014h)		;8071   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	res 7,b		;8074
 	ld a,b			;8076
 	add a,d			;8077
@@ -88,7 +88,7 @@ L_8057:
 	jr nc,L_809B		;807d
 	ex de,hl			;807f
 	ld c,(ix+008h)		;8080   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld b,(ix+013h)		;8083
+	ld b,(ix+013h)		;8083   ; lee el alto de la caja del actor (p04:7662)
 	ld a,b			;8086
 	add a,d			;8087
 	ld b,a			;8088
@@ -436,7 +436,7 @@ L_8275:
 	call L_8280		;8279
 	ld iy,0cae0h		;827c
 L_8280:
-	ld ix,0d460h		;8280
+	ld ix,0d460h		;8280   ; apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 	ld b,012h		;8284
 	exx			;8286
 	ld l,(iy+008h)		;8287
@@ -457,7 +457,7 @@ L_8299:
 	jr z,L_82D5		;82a4
 	exx			;82a6
 	ld c,(ix+00ah)		;82a7   ; lee la X del actor (en caracteres de 8 puntos)
-	ld b,(ix+014h)		;82aa
+	ld b,(ix+014h)		;82aa   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	res 7,b		;82ad
 	ld a,b			;82af
 	add a,d			;82b0
@@ -469,7 +469,7 @@ L_8299:
 	jr nc,L_82D4		;82b6
 	ex de,hl			;82b8
 	ld c,(ix+008h)		;82b9   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld b,(ix+013h)		;82bc
+	ld b,(ix+013h)		;82bc   ; lee el alto de la caja del actor (p04:7662)
 	ld a,b			;82bf
 	add a,d			;82c0
 	ld b,a			;82c1
@@ -540,7 +540,7 @@ L_831A:
 	jr nz,L_82F5		;831d
 	ret			;831f
 L_8320:
-	ld hl,0ce80h		;8320
+	ld hl,0ce80h		;8320   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;8323
 	ld d,0d7h		;8325
 L_8327:
