@@ -50,7 +50,7 @@ nave_del_cuadro:		; la nave (p02:8031), las dos opciones (p02:82B4), el disparo 
 	ret			;8030
 nave:		; la mueve (p02:8060) y la dibuja (p04:77D0 o p04:7747); si se quedo sin sprites (0xC0EC), la vuelve a dibujar
 	call mueve_nave		;8031   ; mueve_nave: IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); si no, p02:80F4, la inclinacion (p02:820D) y los mandos (p02:8108); el choque (p02:8099) salvo con el bit 0 de 0xCA03 (depuracion), con 0xCE75 o 0xCE76, o mientras ix+0x18 cuenta al aparecer
-	ld a,(ix+001h)		;8034
+	ld a,(ix+001h)		;8034   ; lee el paso del actor
 	or a			;8037
 	jp z,077d0h		;8038   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	call 07747h		;803b   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
@@ -60,8 +60,8 @@ nave:		; la mueve (p02:8060) y la dibuja (p04:77D0 o p04:7747); si se quedo sin 
 	call 077d0h		;8043   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	xor a			;8046
 	ld (0c0ech),a		;8047
-	ld (ix+019h),a		;804a
-	ld (ix+01ah),a		;804d
+	ld (ix+019h),a		;804a   ; guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
+	ld (ix+01ah),a		;804d   ; guarda el primer sprite del actor (p04:793D)
 	ld (ix+01bh),a		;8050
 	ld (ix+01ch),a		;8053
 	ld (ix+01dh),a		;8056
@@ -100,40 +100,40 @@ mueve_nave:		; IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); 
 choque_de_la_nave:		; si el golpe le quita la vida (p04:7C44): paso 1, ya no se le puede dar, el dibujo 6, sin sprites, el sonido 0x4C, no se aceptan mas sonidos (bit 0 de 0xC947) e ix+0x17 = 0x28
 	call 07c44h		;8099   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 	ret nc			;809c
-	ld (ix+001h),001h		;809d
+	ld (ix+001h),001h		;809d   ; el paso del actor = 0x01
 	ld (ix+003h),001h		;80a1
-	ld (ix+015h),02dh		;80a5
-	res 7,(ix+014h)		;80a9
-	ld (ix+005h),006h		;80ad
+	ld (ix+015h),02dh		;80a5   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x2D
+	res 7,(ix+014h)		;80a9   ; pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
+	ld (ix+005h),006h		;80ad   ; el dibujo del actor (p04:7791) = 0x06
 	xor a			;80b1
-	ld (ix+019h),a		;80b2
-	ld (ix+01ah),a		;80b5
+	ld (ix+019h),a		;80b2   ; guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
+	ld (ix+01ah),a		;80b5   ; guarda el primer sprite del actor (p04:793D)
 	ld (ix+01bh),a		;80b8
 	ld (ix+01ch),a		;80bb
 	ld (ix+01dh),a		;80be
 	ld (ix+01eh),a		;80c1
 	ld (ix+01fh),a		;80c4
-	set 3,(ix+015h)		;80c7
+	set 3,(ix+015h)		;80c7   ; pone a uno el bit 3 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	ld a,04ch		;80cb
 	call 04aebh		;80cd   ; pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 	ld hl,0c947h		;80d0   ; apunta a bit 0: no se aceptan sonidos
 	set 0,(hl)		;80d3
-	ld (ix+017h),028h		;80d5
+	ld (ix+017h),028h		;80d5   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x28
 	ret			;80d9
 explosion_de_la_nave:		; los dibujos 6 a 9 en bucle mientras baja ix+0x17; luego paso 2
 	ld b,00ah		;80da
-	ld a,(ix+005h)		;80dc
+	ld a,(ix+005h)		;80dc   ; lee el dibujo del actor (p04:7791)
 	inc a			;80df
 	cp b			;80e0
 	jr c,L_80E5		;80e1
 	ld a,006h		;80e3
 L_80E5:
-	ld (ix+005h),a		;80e5
+	ld (ix+005h),a		;80e5   ; guarda el dibujo del actor (p04:7791)
 	call 06ad2h		;80e8   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 	ret nz			;80eb
-	inc (ix+001h)		;80ec
+	inc (ix+001h)		;80ec   ; suma 1 a el paso del actor
 nave_muerta:		; el tipo de la nave a 0 (p00:440F lo ve)
-	ld (ix+000h),000h		;80ef
+	ld (ix+000h),000h		;80ef   ; el tipo del actor (0 = libre) = 0x00
 	ret			;80f3
 baja_cb02:		; 0xCB02 - 1 si no es 0
 	ld a,(0cb02h)		;80f4
@@ -322,8 +322,8 @@ sin_sprites_opciones:		; ix+0x19 e ix+0x1A de las dos opciones (0xCAC0, 0xCAE0) 
 	call sin_sprites_ix		;828f   ; sin_sprites_ix: ix+0x19 e ix+0x1A a 0
 	ld ix,0cae0h		;8292
 sin_sprites_ix:		; ix+0x19 e ix+0x1A a 0
-	ld (ix+019h),000h		;8296
-	ld (ix+01ah),000h		;829a
+	ld (ix+019h),000h		;8296   ; cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6) = 0x00
+	ld (ix+01ah),000h		;829a   ; el primer sprite del actor (p04:793D) = 0x00
 	ret			;829e
 borra_opciones:		; 0xCB03 = 0, las fichas de 0xCAC0-0xCAFF a 0 y 0xCB1B = 0xFF80
 	xor a			;829f
@@ -351,13 +351,13 @@ opcion:		; si la nave no esta explotando y la opcion existe: la mueve (p02:82E2)
 	ld a,(0ca41h)		;82d2
 	or a			;82d5
 	ret nz			;82d6
-	ld a,(ix+000h)		;82d7
+	ld a,(ix+000h)		;82d7   ; lee el tipo del actor (0 = libre)
 	or a			;82da
 	ret z			;82db
 	call mueve_opcion		;82dc   ; mueve_opcion: paso 0: si la nave pasa cerca (p04:76FF con BC = 0x0300), toma su sitio respecto a ella (p02:834C), su arma (p02:84AC) y paso 1; luego la sigue (p02:8324)
 	jp 077d0h		;82df   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 mueve_opcion:		; paso 0: si la nave pasa cerca (p04:76FF con BC = 0x0300), toma su sitio respecto a ella (p02:834C), su arma (p02:84AC) y paso 1; luego la sigue (p02:8324)
-	ld a,(ix+001h)		;82e2
+	ld a,(ix+001h)		;82e2   ; lee el paso del actor
 	dec a			;82e5
 	jr z,$+58		;82e6
 	jp p,opcion_sigue		;82e8   ; opcion_sigue: p02:8324
@@ -372,7 +372,7 @@ opcion_engancha:		; el desplazamiento respecto a la nave (p02:834C) y el arma de
 	ld c,a			;82fe
 	ld hl,0831ah		;82ff
 	ld a,(0cb05h)		;8302
-	bit 7,(ix+018h)		;8305
+	bit 7,(ix+018h)		;8305   ; mira el bit 7 de otra cuenta del actor (p04:6ADF la baja hasta 1)
 	jr nz,L_830E		;8309
 	ld hl,0831dh		;830b
 L_830E:
@@ -380,7 +380,7 @@ L_830E:
 	ld a,(hl)			;8311
 	ld b,a			;8312
 	call pon_arma		;8313   ; pon_arma: el arma B con el nivel C en su casilla (p02:84C0; B = 0 pasa a ser 1)
-	inc (ix+001h)		;8316
+	inc (ix+001h)		;8316   ; suma 1 a el paso del actor
 	ret			;8319
 
 ; ----------------------------------------------------------------------
@@ -409,16 +409,16 @@ opcion_junto_a_la_nave:		; la X de la nave mas 0xCB1B y la Y mas 0xE0 y el despl
 	ld hl,(0ca49h)		;8324   ; lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 	ld bc,(0cb1bh)		;8327
 	add hl,bc			;832b
-	ld (ix+00ah),h		;832c
-	ld (ix+009h),l		;832f
+	ld (ix+00ah),h		;832c   ; guarda la X del actor (en caracteres de 8 puntos)
+	ld (ix+009h),l		;832f   ; guarda la X del actor (fraccion: 32 por punto)
 	ld hl,(0ca47h)		;8332   ; lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 	ld bc,000e0h		;8335
 	add hl,bc			;8338
-	ld b,(ix+018h)		;8339
-	ld c,(ix+017h)		;833c
+	ld b,(ix+018h)		;8339   ; lee otra cuenta del actor (p04:6ADF la baja hasta 1)
+	ld c,(ix+017h)		;833c   ; lee una cuenta del actor (p04:6AD2 la baja hasta 1)
 	add hl,bc			;833f
-	ld (ix+008h),h		;8340
-	ld (ix+007h),l		;8343
+	ld (ix+008h),h		;8340   ; guarda la Y del actor (en caracteres de 8 puntos)
+	ld (ix+007h),l		;8343   ; guarda la Y del actor (fraccion: 32 por punto)
 	ret			;8346
 
 ; ----------------------------------------------------------------------
@@ -446,17 +446,17 @@ sitio_de_la_opcion:		; el desplazamiento en Y de la opcion respecto a la nave (t
 L_8359:
 	bit 7,h		;8359
 	jr z,L_8361		;835b
-	set 7,(ix+010h)		;835d
+	set 7,(ix+010h)		;835d   ; pone a uno el bit 7 de la aceleracion en Y del actor (alta)
 L_8361:
-	bit 7,(ix+010h)		;8361
+	bit 7,(ix+010h)		;8361   ; mira el bit 7 de la aceleracion en Y del actor (alta)
 	push af			;8365
 	ld a,(ix+003h)		;8366
 	ld de,0839ch		;8369
 	call 04624h		;836c   ; entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 	pop af			;836f
 	call nz,04612h		;8370   ; niega_hl: HL = -HL
-	ld (ix+018h),h		;8373
-	ld (ix+017h),l		;8376
+	ld (ix+018h),h		;8373   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+	ld (ix+017h),l		;8376   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret			;8379
 otra_opcion:		; IY = la otra opcion que ya esta enganchada y A = su ix+0x18; acarreo si no hay
 	ld iy,0cac0h		;837a
@@ -609,13 +609,13 @@ capsula_0B:		; 0xCB1D = 1
 	ld (0cb1dh),a		;8459
 	ret			;845c
 capsula_7:		; una opcion nueva (p04:6F8C) enganchada (paso 2); si no hay ficha, nada
-	ld a,(ix+017h)		;845d
+	ld a,(ix+017h)		;845d   ; lee una cuenta del actor (p04:6AD2 la baja hasta 1)
 	cpl			;8460
 	push af			;8461
 	call 06f8ch		;8462   ; ficha_en_cac0: en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
 	jp c,0469fh		;8465   ; vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 	pop af			;8468
-	ld (ix+001h),002h		;8469
+	ld (ix+001h),002h		;8469   ; el paso del actor = 0x02
 	jp opcion_engancha		;846d   ; opcion_engancha: el desplazamiento respecto a la nave (p02:834C) y el arma de la tabla p02:831A o p02:831D por 0xCB05
 capsula_0E:		; sube 0xCB07 (p02:8484) y el sonido 0x0A
 	call sube_cb07		;8470   ; sube_cb07: 0xCB08 + 1 (hasta 0x10) con 0xCB07 = 0xFF; si cambia de tramo (p00:4E79), p02:871E
@@ -663,8 +663,8 @@ pon_arma:		; el arma B con el nivel C en su casilla (p02:84C0; B = 0 pasa a ser 
 	jr nz,L_84B7		;84b3
 	ld b,001h		;84b5
 L_84B7:
-	ld (ix+001h),c		;84b7
-	ld (ix+000h),b		;84ba
+	ld (ix+001h),c		;84b7   ; guarda el paso del actor
+	ld (ix+000h),b		;84ba   ; guarda el tipo del actor (0 = libre)
 	pop ix		;84bd
 	ret			;84bf
 casilla_del_arma:		; IX = la casilla del arma B: 0 en 0xCB40, 2-4 en 0xCB58, 5-7 en 0xCB50, el resto en 0xCB48
@@ -953,7 +953,7 @@ L_869C:
 	ld de,(0cae9h)		;86a0
 	ret			;86a4
 tipo_del_disparo:		; ix+0 = A e ix+3 = el arma de IY
-	ld (ix+000h),a		;86a5
+	ld (ix+000h),a		;86a5   ; guarda el tipo del actor (0 = libre)
 	ld a,(iy+000h)		;86a8
 	ld (ix+003h),a		;86ab
 	ret			;86ae
@@ -991,13 +991,13 @@ L_86E2:
 	call 04af5h		;86e6   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	jp quita_disparo		;86e9   ; quita_disparo: ix+0 = 0
 disparo_fuera:		; se quita si ha dado (ix+4), si la Y pasa de 0x18 o si la X pasa de 0x20
-	ld a,(ix+004h)		;86ec
+	ld a,(ix+004h)		;86ec   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;86ef
 	jp nz,quita_disparo		;86f0   ; quita_disparo: ix+0 = 0
-	ld a,(ix+008h)		;86f3
+	ld a,(ix+008h)		;86f3   ; lee la Y del actor (en caracteres de 8 puntos)
 	cp 018h		;86f6
 	jp nc,quita_disparo		;86f8   ; quita_disparo: ix+0 = 0
-	ld a,(ix+00ah)		;86fb
+	ld a,(ix+00ah)		;86fb   ; lee la X del actor (en caracteres de 8 puntos)
 	cp 020h		;86fe
 	ret c			;8700
 	jp quita_disparo		;8701   ; quita_disparo: ix+0 = 0
@@ -1060,7 +1060,7 @@ nave_contra_fondo_en:		; el caracter bajo la nave mas DE, HL (p04:75C2): con el 
 	jp nz,recoge_capsula_tocada		;8764   ; recoge_capsula_tocada: si el actor de IY es una capsula (tipo 3, paso 1): su efecto (p02:83A4), se quita y el sonido 9
 	bit 1,a		;8767
 	ret z			;8769
-	ld (ix+004h),0ffh		;876a
+	ld (ix+004h),0ffh		;876a   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0xFF
 	ret			;876e
 nave_contra_fondo:		; p02:875F en dos puntos de la nave
 	ld ix,0ca40h		;876f   ; apunta a la nave: su ficha de actor (0 = muerta)
@@ -1077,7 +1077,7 @@ disparos_del_cuadro:		; la nave contra el fondo y los 8 disparos de 0x20 bytes d
 	ld ix,0cc40h		;878d
 	ld b,008h		;8791
 L_8793:
-	ld a,(ix+000h)		;8793
+	ld a,(ix+000h)		;8793   ; lee el tipo del actor (0 = libre)
 	or a			;8796
 	push bc			;8797
 	call nz,disparo_por_tipo		;8798   ; disparo_por_tipo: salta por el tipo del disparo (hasta 8; tabla p02:87AE)
@@ -1122,13 +1122,13 @@ recoge_capsula_tocada:		; si el actor de IY es una capsula (tipo 3, paso 1): su 
 	ld a,009h		;87d6
 	jp 04af5h		;87d8   ; pide_musica: lo mismo con hasta 0x17 en la cola
 quita_disparo:		; ix+0 = 0
-	ld (ix+000h),000h		;87db
+	ld (ix+000h),000h		;87db   ; el tipo del actor (0 = libre) = 0x00
 	or a			;87df
 	ret			;87e0
 disparo_libre:		; IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 	ld de,00020h		;87e1
 L_87E4:
-	ld a,(ix+000h)		;87e4
+	ld a,(ix+000h)		;87e4   ; lee el tipo del actor (0 = libre)
 	and a			;87e7
 	jr z,L_87F0		;87e8
 	add ix,de		;87ea
@@ -1179,7 +1179,7 @@ lanza_bomba:		; si las tres fichas de IX estan libres, dos bombas (p02:883B) con
 	call disparo_libre		;8826   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 	call bomba		;8829   ; bomba: 0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180, sus patrones (p02:8950) y el sonido 0x0C
 	ld (ix+003h),005h		;882c
-	ld (ix+005h),004h		;8830
+	ld (ix+005h),004h		;8830   ; el dibujo del actor (p04:7791) = 0x04
 	pop ix		;8834
 	ld b,003h		;8836
 	call disparo_libre		;8838   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
@@ -1209,12 +1209,12 @@ bomba:		; 0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180
 bomba_del_cuadro:		; su paso (p02:8885), la mueve y la dibuja
 	call paso_de_la_bomba		;8877   ; paso_de_la_bomba: salta por ix+1 (hasta 5; tabla p02:8890)
 	call 06a7fh		;887a   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
-	ld a,(ix+000h)		;887d
+	ld a,(ix+000h)		;887d   ; lee el tipo del actor (0 = libre)
 	or a			;8880
 	jp nz,077d0h		;8881   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8884
 paso_de_la_bomba:		; salta por ix+1 (hasta 5; tabla p02:8890)
-	ld a,(ix+001h)		;8885
+	ld a,(ix+001h)		;8885   ; lee el paso del actor
 	cp 006h		;8888
 	jp nc,04ae0h		;888a   ; nada_4AE0: ret
 	call 0461ah		;888d   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -1234,37 +1234,37 @@ DATA_tabla_8890:
 
 bomba_0:		; hasta tocar algo (p02:88E6): cada 5 cuadros, velocidad en X 0xC0 y siguiente paso
 	call bomba_toca		;889c   ; bomba_toca: estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
-	dec (ix+017h)		;889f
+	dec (ix+017h)		;889f   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;88a2
-	ld (ix+017h),005h		;88a3
+	ld (ix+017h),005h		;88a3   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 	ld de,000c0h		;88a7
 	call 06bfdh		;88aa   ; pon_velocidad_x: la velocidad en X = DE
 	jp siguiente_paso_ix		;88ad   ; siguiente_paso_ix: ix+1 + 1
 bomba_1:		; lo mismo con 0x40
 	call bomba_toca		;88b0   ; bomba_toca: estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
-	dec (ix+017h)		;88b3
+	dec (ix+017h)		;88b3   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;88b6
-	ld (ix+017h),005h		;88b7
+	ld (ix+017h),005h		;88b7   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 	ld de,00040h		;88bb
 	call 06bfdh		;88be   ; pon_velocidad_x: la velocidad en X = DE
 	jp siguiente_paso_ix		;88c1   ; siguiente_paso_ix: ix+1 + 1
 bomba_2:		; hasta tocar algo
 	call bomba_toca		;88c4   ; bomba_toca: estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
-	dec (ix+017h)		;88c7
+	dec (ix+017h)		;88c7   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;88ca
 bomba_estalla:		; el dibujo siguiente (de 4 en 4), sus patrones, quieta y paso 3
-	ld (ix+017h),003h		;88cb
-	ld a,(ix+005h)		;88cf
+	ld (ix+017h),003h		;88cb   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x03
+	ld a,(ix+005h)		;88cf   ; lee el dibujo del actor (p04:7791)
 	and 004h		;88d2
 	inc a			;88d4
-	ld (ix+005h),a		;88d5
+	ld (ix+005h),a		;88d5   ; guarda el dibujo del actor (p04:7791)
 	call patrones_de_la_bomba		;88d8   ; patrones_de_la_bomba: los patrones del dibujo ix+5 (hasta 2) de p02:8B30 a la VRAM (0xCA20)
 	ld de,00000h		;88db
 	call 06bfdh		;88de   ; pon_velocidad_x: la velocidad en X = DE
-	ld (ix+001h),003h		;88e1
+	ld (ix+001h),003h		;88e1   ; el paso del actor = 0x03
 	ret			;88e5
 bomba_toca:		; estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
-	ld a,(ix+00ah)		;88e6
+	ld a,(ix+00ah)		;88e6   ; lee la X del actor (en caracteres de 8 puntos)
 	cp 01dh		;88e9
 	jr nc,bomba_estalla		;88eb
 	ld h,001h		;88ed
@@ -1275,12 +1275,12 @@ bomba_toca:		; estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
 	ret z			;88f6
 	jr bomba_estalla		;88f7
 bomba_3:		; cada 5 cuadros el dibujo siguiente; al cuarto, la paleta oscura (p02:8973), el sonido 0x0D y siguiente paso
-	dec (ix+017h)		;88f9
+	dec (ix+017h)		;88f9   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;88fc
-	ld (ix+017h),005h		;88fd
-	ld a,(ix+005h)		;8901
+	ld (ix+017h),005h		;88fd   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
+	ld a,(ix+005h)		;8901   ; lee el dibujo del actor (p04:7791)
 	inc a			;8904
-	ld (ix+005h),a		;8905
+	ld (ix+005h),a		;8905   ; guarda el dibujo del actor (p04:7791)
 	push af			;8908
 	call patrones_de_la_bomba		;8909   ; patrones_de_la_bomba: los patrones del dibujo ix+5 (hasta 2) de p02:8B30 a la VRAM (0xCA20)
 	pop af			;890c
@@ -1292,7 +1292,7 @@ bomba_3:		; cada 5 cuadros el dibujo siguiente; al cuarto, la paleta oscura (p02
 	call 04af5h		;8917   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	jr siguiente_paso_ix		;891a
 bomba_4:		; al acabar la cuenta, si ix+3 es impar: destello (p00:4E65, p00:4DD7), borra las balas (p04:7523) y da a todos los actores (p04:7058)
-	dec (ix+017h)		;891c
+	dec (ix+017h)		;891c   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;891f
 	bit 0,(ix+003h)		;8920
 	jr z,siguiente_paso_ix		;8924
@@ -1311,10 +1311,10 @@ bomba_5:		; si ix+3 es impar: p04:708B, el sonido 0x0E, borra las balas y da a t
 	call 07058h		;8946   ; marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 	jp quita_disparo		;8949   ; quita_disparo: ix+0 = 0
 siguiente_paso_ix:		; ix+1 + 1
-	inc (ix+001h)		;894c
+	inc (ix+001h)		;894c   ; suma 1 a el paso del actor
 	ret			;894f
 patrones_de_la_bomba:		; los patrones del dibujo ix+5 (hasta 2) de p02:8B30 a la VRAM (0xCA20)
-	ld a,(ix+005h)		;8950
+	ld a,(ix+005h)		;8950   ; lee el dibujo del actor (p04:7791)
 	bit 2,a		;8953
 	ret nz			;8955
 	cp 003h		;8956
@@ -1518,8 +1518,8 @@ disparo_principal:		; el arma 1: con 0xCB1D lanza bombas (p02:8816); si no, si l
 	or a			;8c2c
 	ret			;8c2d
 pon_velocidad_y_disparo:		; ix+0x0B-0x0C = HL
-	ld (ix+00ch),h		;8c2e
-	ld (ix+00bh),l		;8c31
+	ld (ix+00ch),h		;8c2e   ; guarda la velocidad en Y del actor (alta)
+	ld (ix+00bh),l		;8c31   ; guarda la velocidad en Y del actor (baja)
 	ret			;8c34
 un_disparo:		; crea el disparo (p02:8C47), lo mueve (p02:8D51) y el sonido 3
 	call crea_disparo		;8c35   ; crea_disparo: en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), el arma, la velocidad de p02:8DDC, el sitio de salida, caja de 3 x 3, tipo 4 y el dibujo (p02:8D0B)
@@ -1543,17 +1543,17 @@ crea_disparo:		; en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), 
 	ld (ix+003h),a		;8c59
 	ld bc,08ddch		;8c5c
 	call datos_del_disparo		;8c5f   ; datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
-	ld (ix+00bh),e		;8c62
-	ld (ix+00ch),d		;8c65
-	ld (ix+00dh),c		;8c68
-	ld (ix+00eh),b		;8c6b
+	ld (ix+00bh),e		;8c62   ; guarda la velocidad en Y del actor (baja)
+	ld (ix+00ch),d		;8c65   ; guarda la velocidad en Y del actor (alta)
+	ld (ix+00dh),c		;8c68   ; guarda la velocidad en X del actor (baja)
+	ld (ix+00eh),b		;8c6b   ; guarda la velocidad en X del actor (alta)
 	call origen_del_disparo		;8c6e   ; origen_del_disparo: el sitio de salida con el arma de IY (0 cuenta como 1)
-	ld (ix+00ah),d		;8c71
-	ld (ix+009h),e		;8c74
-	ld (ix+008h),b		;8c77
-	ld (ix+007h),c		;8c7a
-	ld (ix+014h),003h		;8c7d
-	ld (ix+013h),003h		;8c81
+	ld (ix+00ah),d		;8c71   ; guarda la X del actor (en caracteres de 8 puntos)
+	ld (ix+009h),e		;8c74   ; guarda la X del actor (fraccion: 32 por punto)
+	ld (ix+008h),b		;8c77   ; guarda la Y del actor (en caracteres de 8 puntos)
+	ld (ix+007h),c		;8c7a   ; guarda la Y del actor (fraccion: 32 por punto)
+	ld (ix+014h),003h		;8c7d   ; el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
+	ld (ix+013h),003h		;8c81   ; el alto de la caja del actor (p04:7662) = 0x03
 	ld a,004h		;8c85
 	call tipo_del_disparo		;8c87   ; tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
 	ld a,(iy+000h)		;8c8a
@@ -1562,7 +1562,7 @@ crea_disparo:		; en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), 
 	ld a,(0cb08h)		;8c90
 	call 04e79h		;8c93   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00fh		;8c96
-	ld (ix+005h),a		;8c98
+	ld (ix+005h),a		;8c98   ; guarda el dibujo del actor (p04:7791)
 	ret			;8c9b
 disparo_de_arma:		; el arma de IY: la 1 con 0xCB1D lanza bombas; si no, un disparo (p02:8CCD) con la potencia del tramo de 0xCB08 y el sonido 4 (tramo 2) o 2
 	ld a,(iy+000h)		;8c9c
@@ -1598,17 +1598,17 @@ crea_disparo_b:		; lo mismo que p02:8C47 sin la potencia
 	ld (ix+003h),a		;8cd4
 	ld bc,08ddch		;8cd7
 	call datos_del_disparo		;8cda   ; datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
-	ld (ix+00bh),e		;8cdd
-	ld (ix+00ch),d		;8ce0
-	ld (ix+00dh),c		;8ce3
-	ld (ix+00eh),b		;8ce6
+	ld (ix+00bh),e		;8cdd   ; guarda la velocidad en Y del actor (baja)
+	ld (ix+00ch),d		;8ce0   ; guarda la velocidad en Y del actor (alta)
+	ld (ix+00dh),c		;8ce3   ; guarda la velocidad en X del actor (baja)
+	ld (ix+00eh),b		;8ce6   ; guarda la velocidad en X del actor (alta)
 	call origen_del_disparo		;8ce9   ; origen_del_disparo: el sitio de salida con el arma de IY (0 cuenta como 1)
-	ld (ix+00ah),d		;8cec
-	ld (ix+009h),e		;8cef
-	ld (ix+008h),b		;8cf2
-	ld (ix+007h),c		;8cf5
-	ld (ix+014h),003h		;8cf8
-	ld (ix+013h),003h		;8cfc
+	ld (ix+00ah),d		;8cec   ; guarda la X del actor (en caracteres de 8 puntos)
+	ld (ix+009h),e		;8cef   ; guarda la X del actor (fraccion: 32 por punto)
+	ld (ix+008h),b		;8cf2   ; guarda la Y del actor (en caracteres de 8 puntos)
+	ld (ix+007h),c		;8cf5   ; guarda la Y del actor (fraccion: 32 por punto)
+	ld (ix+014h),003h		;8cf8   ; el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
+	ld (ix+013h),003h		;8cfc   ; el alto de la caja del actor (p04:7662) = 0x03
 	ld a,004h		;8d00
 	call tipo_del_disparo		;8d02   ; tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
 	ld a,(iy+000h)		;8d05
@@ -1618,29 +1618,29 @@ dibujo_del_disparo:		; ix+5 = 1 si se mueve en Y, 0 si no
 	xor a			;8d0b
 	add a,a			;8d0c
 	ld c,a			;8d0d
-	ld a,(ix+00ch)		;8d0e
+	ld a,(ix+00ch)		;8d0e   ; lee la velocidad en Y del actor (alta)
 	or a			;8d11
 	jr z,L_8D16		;8d12
 	ld a,001h		;8d14
 L_8D16:
 	add a,c			;8d16
-	ld (ix+005h),a		;8d17
+	ld (ix+005h),a		;8d17   ; guarda el dibujo del actor (p04:7791)
 	or a			;8d1a
 	ret			;8d1b
 dibujo_del_disparo_1:		; ix+5 = el tramo de 0xCB08 + 0x0C
 	ld a,(0cb08h)		;8d1c
 	call 04e79h		;8d1f   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00ch		;8d22
-	ld (ix+005h),a		;8d24
+	ld (ix+005h),a		;8d24   ; guarda el dibujo del actor (p04:7791)
 	or a			;8d27
 	ret			;8d28
 velocidad_del_disparo:		; la velocidad de la entrada A de p02:8DDC y el dibujo por el tramo de 0xCB08
 	ld bc,08ddch		;8d29
 	call datos_del_disparo		;8d2c   ; datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
-	ld (ix+00bh),e		;8d2f
-	ld (ix+00ch),d		;8d32
-	ld (ix+00dh),c		;8d35
-	ld (ix+00eh),b		;8d38
+	ld (ix+00bh),e		;8d2f   ; guarda la velocidad en Y del actor (baja)
+	ld (ix+00ch),d		;8d32   ; guarda la velocidad en Y del actor (alta)
+	ld (ix+00dh),c		;8d35   ; guarda la velocidad en X del actor (baja)
+	ld (ix+00eh),b		;8d38   ; guarda la velocidad en X del actor (alta)
 	ld a,(0cb08h)		;8d3b
 	call 04e79h		;8d3e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,a			;8d41
@@ -1651,19 +1651,19 @@ velocidad_del_disparo:		; la velocidad de la entrada A de p02:8DDC y el dibujo p
 	ld a,001h		;8d47
 L_8D49:
 	add a,c			;8d49
-	ld (ix+005h),a		;8d4a
+	ld (ix+005h),a		;8d4a   ; guarda el dibujo del actor (p04:7791)
 	ret			;8d4d
 mueve_disparo:		; lo mueve y p02:8D51
 	call 06a7fh		;8d4e   ; mueve_actor: la posicion del actor mas su velocidad (Y y X, con fraccion)
 disparo_del_cuadro:		; si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira el choque contra el fondo por delante y en el centro (p02:86AF); lo dibuja
 	call disparo_fuera		;8d51   ; disparo_fuera: se quita si ha dado (ix+4), si la Y pasa de 0x18 o si la X pasa de 0x20
 	ret nc			;8d54
-	bit 1,(ix+005h)		;8d55
+	bit 1,(ix+005h)		;8d55   ; mira el bit 1 de el dibujo del actor (p04:7791)
 	jp nz,disparo_grande		;8d59   ; disparo_grande: lo mismo mirando cuatro puntos y el centro
 	call fondo_alrededor		;8d5c   ; fondo_alrededor: Z si los 9 caracteres alrededor del disparo estan vacios en la tabla 0xDE00 (NZ tambien si se sale)
 	jp z,077d0h		;8d5f   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
-	ld h,(ix+00eh)		;8d62
-	ld l,(ix+00dh)		;8d65
+	ld h,(ix+00eh)		;8d62   ; lee la velocidad en X del actor (alta)
+	ld l,(ix+00dh)		;8d65   ; lee la velocidad en X del actor (baja)
 	ld a,h			;8d68
 	cpl			;8d69
 	ld h,a			;8d6a
@@ -1676,8 +1676,8 @@ disparo_del_cuadro:		; si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira 
 	ld bc,00100h		;8d73
 	add hl,bc			;8d76
 	ex de,hl			;8d77
-	ld h,(ix+00ch)		;8d78
-	ld l,(ix+00bh)		;8d7b
+	ld h,(ix+00ch)		;8d78   ; lee la velocidad en Y del actor (alta)
+	ld l,(ix+00bh)		;8d7b   ; lee la velocidad en Y del actor (baja)
 	ld a,h			;8d7e
 	cpl			;8d7f
 	ld h,a			;8d80
@@ -1693,7 +1693,7 @@ disparo_del_cuadro:		; si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira 
 	ld de,00100h		;8d90
 	ld hl,00100h		;8d93
 	call disparo_contra_fondo		;8d96   ; disparo_contra_fondo: si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
-	ld a,(ix+000h)		;8d99
+	ld a,(ix+000h)		;8d99   ; lee el tipo del actor (0 = libre)
 	or a			;8d9c
 	jp nz,077d0h		;8d9d   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8da0
@@ -1715,7 +1715,7 @@ disparo_grande:		; lo mismo mirando cuatro puntos y el centro
 	ld de,00100h		;8dcb
 	ld hl,00100h		;8dce
 	call disparo_contra_fondo		;8dd1   ; disparo_contra_fondo: si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
-	ld a,(ix+000h)		;8dd4
+	ld a,(ix+000h)		;8dd4   ; lee el tipo del actor (0 = libre)
 	or a			;8dd7
 	jp nz,077d0h		;8dd8   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8ddb
@@ -1750,8 +1750,8 @@ DATA_leido_8E06:
 
 
 fondo_alrededor:		; Z si los 9 caracteres alrededor del disparo estan vacios en la tabla 0xDE00 (NZ tambien si se sale)
-	ld d,(ix+00ah)		;8e0c
-	ld e,(ix+008h)		;8e0f
+	ld d,(ix+00ah)		;8e0c   ; lee la X del actor (en caracteres de 8 puntos)
+	ld e,(ix+008h)		;8e0f   ; lee la Y del actor (en caracteres de 8 puntos)
 	call 07b06h		;8e12   ; casilla_bajo_el_actor: la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
 	jr nc,fuera_nz		;8e15
 	ex de,hl			;8e17
@@ -1817,23 +1817,23 @@ disparo_por_el_suelo:		; un disparo de tipo 7 (uno solo, 0xCC0E) que sale de la 
 	ld (0cc0eh),a		;8e5d
 	ld a,007h		;8e60
 	call tipo_del_disparo		;8e62   ; tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
-	ld (ix+014h),003h		;8e65
-	ld (ix+013h),003h		;8e69
+	ld (ix+014h),003h		;8e65   ; el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
+	ld (ix+013h),003h		;8e69   ; el alto de la caja del actor (p04:7662) = 0x03
 	ld a,(iy+000h)		;8e6d
 	ld a,004h		;8e70
 	ld (ix+003h),a		;8e72
 	xor a			;8e75
 	ld hl,0000ch		;8e76
 	call origen_del_disparo		;8e79   ; origen_del_disparo: el sitio de salida con el arma de IY (0 cuenta como 1)
-	ld (ix+00ah),d		;8e7c
-	ld (ix+009h),e		;8e7f
-	ld (ix+008h),b		;8e82
-	ld (ix+007h),c		;8e85
+	ld (ix+00ah),d		;8e7c   ; guarda la X del actor (en caracteres de 8 puntos)
+	ld (ix+009h),e		;8e7f   ; guarda la X del actor (fraccion: 32 por punto)
+	ld (ix+008h),b		;8e82   ; guarda la Y del actor (en caracteres de 8 puntos)
+	ld (ix+007h),c		;8e85   ; guarda la Y del actor (fraccion: 32 por punto)
 	ld de,00000h		;8e88
 	ld hl,00100h		;8e8b
 	call 06bebh		;8e8e   ; pon_velocidad: la velocidad en Y = HL y en X = DE
-	ld (ix+015h),005h		;8e91
-	ld (ix+017h),001h		;8e95
+	ld (ix+015h),005h		;8e91   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x05
+	ld (ix+017h),001h		;8e95   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 	or a			;8e99
 	ret			;8e9a
 disparo_por_el_suelo_cuadro:		; lo mueve pegado al fondo (p02:8EBB), mira el fondo y lo dibuja
@@ -1851,7 +1851,7 @@ disparo_por_el_suelo_cuadro:		; lo mueve pegado al fondo (p02:8EBB), mira el fon
 	ld h,d			;8eac
 	call disparo_contra_fondo		;8ead   ; disparo_contra_fondo: si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
 	call disparo_fuera		;8eb0   ; disparo_fuera: se quita si ha dado (ix+4), si la Y pasa de 0x18 o si la X pasa de 0x20
-	ld a,(ix+000h)		;8eb3
+	ld a,(ix+000h)		;8eb3   ; lee el tipo del actor (0 = libre)
 	or a			;8eb6
 	jp nz,077d0h		;8eb7   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	ret			;8eba

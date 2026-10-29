@@ -473,6 +473,7 @@ C 0x49B2 orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): co
 C 0x49BC sitio_de_la_letra: de la letra A, donde esta en la fuente: H = (A and 0x1F) x 8, L = (A and 0xE0) / 4
 C 0x49C4 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 C 0x49E3 bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
+C 0x49E8 vector_inicia_sonido: jp p28:6009
 C 0x49EB bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 C 0x49F0 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x49FB lista_de_registros: B parejas [registro][valor] de HL al VDP con WRTVDP
@@ -498,10 +499,12 @@ C 0x4B31 apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a e
 C 0x4B36 bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
 C 0x4B39 apunta a 1: hay que mandar la cola de sonidos
 C 0x4B3E manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+C 0x4B41 vector_paso_del_sonido: jp p28:6AD6
 C 0x4B44 apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
 C 0x4B4A bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
 C 0x4B4D apunta a 1: hay que mandar la cola de sonidos
 C 0x4B54 manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
+C 0x4B57 vector_paso_del_sonido: jp p28:6AD6
 C 0x4B5B apunta a cuantos sonidos hay en la cola (detras, los numeros)
 C 0x4B68 vector_6BD6: jp p01:6BD6
 C 0x4B6F apunta a cuantos sonidos hay en la cola (detras, los numeros)

@@ -2069,11 +2069,11 @@ L_6F88:
 	ret			;6f8b
 ficha_en_cac0:		; en la primera libre de 0xCAC0 y 0xCAE0 un actor de tipo 2 (banderas 0x91) en la X D, E y la Y H, L; acarreo si no hay
 	ld ix,0cac0h		;6f8c
-	ld a,(ix+000h)		;6f90
+	ld a,(ix+000h)		;6f90   ; lee el tipo del actor (0 = libre)
 	or a			;6f93
 	jr z,L_6FA2		;6f94
 	ld ix,0cae0h		;6f96
-	ld a,(ix+000h)		;6f9a
+	ld a,(ix+000h)		;6f9a   ; lee el tipo del actor (0 = libre)
 	or a			;6f9d
 	jr z,L_6FA2		;6f9e
 	scf			;6fa0

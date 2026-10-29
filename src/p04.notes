@@ -737,6 +737,8 @@ C 0x6F68 guarda la X del actor (en caracteres de 8 puntos)
 C 0x6F6B guarda la Y del actor (en caracteres de 8 puntos)
 C 0x6F78 guarda la X del actor (fraccion: 32 por punto)
 C 0x6F81 guarda la Y del actor (fraccion: 32 por punto)
+C 0x6F90 lee el tipo del actor (0 = libre)
+C 0x6F9A lee el tipo del actor (0 = libre)
 C 0x6FAA borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6FAF las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x91
 C 0x6FB3 el alto de la caja del actor (p04:7662) = 0x03

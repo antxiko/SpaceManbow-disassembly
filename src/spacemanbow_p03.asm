@@ -230,16 +230,16 @@ primer_objeto:		; borra 0xE000-0xE6FF y pone el objeto 0 (0xE100) con el guion d
 	call 04648h		;a71a   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld ix,0e100h		;a71d
 	pop hl			;a721
-	ld (ix+002h),l		;a722
-	ld (ix+003h),h		;a725
-	ld (ix+00eh),00ah		;a728
-	ld (ix+00fh),028h		;a72c
-	ld (ix+012h),014h		;a730
-	ld (ix+013h),00ch		;a734
-	ld (ix+014h),006h		;a738
-	ld (ix+015h),006h		;a73c
-	set 0,(ix+00dh)		;a740
-	set 5,(ix+00dh)		;a744
+	ld (ix+002h),l		;a722   ; guarda por donde va el guion del objeto (bajo)
+	ld (ix+003h),h		;a725   ; guarda por donde va el guion del objeto (alto)
+	ld (ix+00eh),00ah		;a728   ; la X del rectangulo de origen = 0x0A
+	ld (ix+00fh),028h		;a72c   ; la Y del rectangulo de origen = 0x28
+	ld (ix+012h),014h		;a730   ; el ancho del rectangulo = 0x14
+	ld (ix+013h),00ch		;a734   ; el alto del rectangulo = 0x0C
+	ld (ix+014h),006h		;a738   ; el desplazamiento en X (orden 0x0C) = 0x06
+	ld (ix+015h),006h		;a73c   ; el desplazamiento en Y (orden 0x0C) = 0x06
+	set 0,(ix+00dh)		;a740   ; pone a uno el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
+	set 5,(ix+00dh)		;a744   ; pone a uno el bit 5 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	ret			;a748
 objetos_del_cuadro:		; mueve los 0x30 objetos (p03:A754), los pinta por su prioridad (p03:A767) y A = 0xE0FF
 	call mueve_objetos		;a749   ; mueve_objetos: los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
@@ -273,7 +273,7 @@ pinta_prioridad:		; los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
 	ld b,030h		;a777
 L_A779:
 	push bc			;a779
-	ld a,(ix+00ch)		;a77a
+	ld a,(ix+00ch)		;a77a   ; lee la prioridad del objeto al pintarlo
 	cp c			;a77d
 	push ix		;a77e
 	call z,pinta_objeto		;a780   ; pinta_objeto: si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
@@ -288,71 +288,71 @@ objeto:		; su guion (p03:A818) y su movimiento (p03:A795)
 	call mueve_objeto		;a791   ; mueve_objeto: la X (ix+4-5) mas su velocidad (ix+8-9) y la Y (ix+6-7) mas la suya (ix+0x0A-0x0B); con las banderas 1 y 3 (o 1 y 4) dan la vuelta al llegar a ix+0x16 o ix+0x17
 	ret			;a794
 mueve_objeto:		; la X (ix+4-5) mas su velocidad (ix+8-9) y la Y (ix+6-7) mas la suya (ix+0x0A-0x0B); con las banderas 1 y 3 (o 1 y 4) dan la vuelta al llegar a ix+0x16 o ix+0x17
-	ld h,(ix+005h)		;a795
-	ld l,(ix+004h)		;a798
-	ld d,(ix+009h)		;a79b
-	ld e,(ix+008h)		;a79e
+	ld h,(ix+005h)		;a795   ; lee la X del objeto
+	ld l,(ix+004h)		;a798   ; lee la X del objeto (fraccion)
+	ld d,(ix+009h)		;a79b   ; lee la velocidad en X del objeto (alta)
+	ld e,(ix+008h)		;a79e   ; lee la velocidad en X del objeto (baja)
 	add hl,de			;a7a1
-	ld (ix+005h),h		;a7a2
-	ld (ix+004h),l		;a7a5
-	ld a,(ix+00dh)		;a7a8
+	ld (ix+005h),h		;a7a2   ; guarda la X del objeto
+	ld (ix+004h),l		;a7a5   ; guarda la X del objeto (fraccion)
+	ld a,(ix+00dh)		;a7a8   ; lee las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	and 00ah		;a7ab
 	jr z,L_A7D6		;a7ad
-	bit 6,(ix+005h)		;a7af
+	bit 6,(ix+005h)		;a7af   ; mira el bit 6 de la X del objeto
 	jr z,L_A7C9		;a7b3
-	ld h,(ix+005h)		;a7b5
-	ld l,(ix+004h)		;a7b8
-	ld d,(ix+016h)		;a7bb
+	ld h,(ix+005h)		;a7b5   ; lee la X del objeto
+	ld l,(ix+004h)		;a7b8   ; lee la X del objeto (fraccion)
+	ld d,(ix+016h)		;a7bb   ; lee donde da la vuelta en X
 	ld e,000h		;a7be
 	add hl,de			;a7c0
-	ld (ix+005h),h		;a7c1
-	ld (ix+004h),l		;a7c4
+	ld (ix+005h),h		;a7c1   ; guarda la X del objeto
+	ld (ix+004h),l		;a7c4   ; guarda la X del objeto (fraccion)
 	jr L_A7D6		;a7c7
 L_A7C9:
-	ld a,(ix+005h)		;a7c9
-	sub (ix+016h)		;a7cc
+	ld a,(ix+005h)		;a7c9   ; lee la X del objeto
+	sub (ix+016h)		;a7cc   ; le resta donde da la vuelta en X
 	jr c,L_A7D6		;a7cf
-	ld (ix+005h),a		;a7d1
+	ld (ix+005h),a		;a7d1   ; guarda la X del objeto
 	jr L_A7C9		;a7d4
 L_A7D6:
-	ld h,(ix+007h)		;a7d6
-	ld l,(ix+006h)		;a7d9
-	ld d,(ix+00bh)		;a7dc
-	ld e,(ix+00ah)		;a7df
+	ld h,(ix+007h)		;a7d6   ; lee la Y del objeto
+	ld l,(ix+006h)		;a7d9   ; lee la Y del objeto (fraccion)
+	ld d,(ix+00bh)		;a7dc   ; lee la velocidad en Y del objeto (alta)
+	ld e,(ix+00ah)		;a7df   ; lee la velocidad en Y del objeto (baja)
 	add hl,de			;a7e2
-	ld (ix+007h),h		;a7e3
-	ld (ix+006h),l		;a7e6
-	ld a,(ix+00dh)		;a7e9
+	ld (ix+007h),h		;a7e3   ; guarda la Y del objeto
+	ld (ix+006h),l		;a7e6   ; guarda la Y del objeto (fraccion)
+	ld a,(ix+00dh)		;a7e9   ; lee las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	and 012h		;a7ec
 	jr z,L_A817		;a7ee
-	bit 6,(ix+007h)		;a7f0
+	bit 6,(ix+007h)		;a7f0   ; mira el bit 6 de la Y del objeto
 	jr z,L_A80A		;a7f4
-	ld h,(ix+007h)		;a7f6
-	ld l,(ix+006h)		;a7f9
-	ld d,(ix+017h)		;a7fc
+	ld h,(ix+007h)		;a7f6   ; lee la Y del objeto
+	ld l,(ix+006h)		;a7f9   ; lee la Y del objeto (fraccion)
+	ld d,(ix+017h)		;a7fc   ; lee donde da la vuelta en Y
 	ld e,000h		;a7ff
 	add hl,de			;a801
-	ld (ix+007h),h		;a802
-	ld (ix+006h),l		;a805
+	ld (ix+007h),h		;a802   ; guarda la Y del objeto
+	ld (ix+006h),l		;a805   ; guarda la Y del objeto (fraccion)
 	jr L_A817		;a808
 L_A80A:
-	ld a,(ix+007h)		;a80a
-	sub (ix+017h)		;a80d
+	ld a,(ix+007h)		;a80a   ; lee la Y del objeto
+	sub (ix+017h)		;a80d   ; le resta donde da la vuelta en Y
 	jr c,L_A817		;a810
-	ld (ix+007h),a		;a812
+	ld (ix+007h),a		;a812   ; guarda la Y del objeto
 	jr L_A80A		;a815
 L_A817:
 	ret			;a817
 paso_del_guion:		; si la espera (ix+1) ha acabado, la siguiente orden del guion (ix+2-3) por la tabla p03:A835 (17 ordenes)
-	ld a,(ix+001h)		;a818
+	ld a,(ix+001h)		;a818   ; lee la espera del guion del objeto (orden 3)
 	or a			;a81b
 	jr z,L_A823		;a81c
 	dec a			;a81e
-	ld (ix+001h),a		;a81f
+	ld (ix+001h),a		;a81f   ; guarda la espera del guion del objeto (orden 3)
 	ret nz			;a822
 L_A823:
-	ld l,(ix+002h)		;a823
-	ld h,(ix+003h)		;a826
+	ld l,(ix+002h)		;a823   ; lee por donde va el guion del objeto (bajo)
+	ld h,(ix+003h)		;a826   ; lee por donde va el guion del objeto (alto)
 	ld a,h			;a829
 	or l			;a82a
 	ret z			;a82b
@@ -377,12 +377,12 @@ DATA_tabla_A835:
 
 
 puntero_del_guion:		; HL = ix+2-3
-	ld l,(ix+002h)		;a857
-	ld h,(ix+003h)		;a85a
+	ld l,(ix+002h)		;a857   ; lee por donde va el guion del objeto (bajo)
+	ld h,(ix+003h)		;a85a   ; lee por donde va el guion del objeto (alto)
 	ret			;a85d
 guarda_puntero_del_guion:		; ix+2-3 = HL
-	ld (ix+002h),l		;a85e
-	ld (ix+003h),h		;a861
+	ld (ix+002h),l		;a85e   ; guarda por donde va el guion del objeto (bajo)
+	ld (ix+003h),h		;a861   ; guarda por donde va el guion del objeto (alto)
 	ret			;a864
 crea_objeto_en_linea:		; la orden 0 con sus datos detras del call
 	pop hl			;a865
@@ -427,24 +427,24 @@ crea_objeto:		; el objeto A (p03:AB61) con su guion, prioridad y sitio respecto 
 	pop bc			;a89d
 	pop de			;a89e
 	pop hl			;a89f
-	ld (ix+002h),c		;a8a0
-	ld (ix+003h),b		;a8a3
-	ld (ix+00ch),l		;a8a6
+	ld (ix+002h),c		;a8a0   ; guarda por donde va el guion del objeto (bajo)
+	ld (ix+003h),b		;a8a3   ; guarda por donde va el guion del objeto (alto)
+	ld (ix+00ch),l		;a8a6   ; guarda la prioridad del objeto al pintarlo
 	ld a,e			;a8a9
 	push de			;a8aa
 	call por_32_con_signo		;a8ab   ; por_32_con_signo: HL = A x 32 con signo
 	ld d,(iy+007h)		;a8ae
 	ld e,(iy+006h)		;a8b1
 	add hl,de			;a8b4
-	ld (ix+007h),h		;a8b5
-	ld (ix+006h),l		;a8b8
+	ld (ix+007h),h		;a8b5   ; guarda la Y del objeto
+	ld (ix+006h),l		;a8b8   ; guarda la Y del objeto (fraccion)
 	pop af			;a8bb
 	call por_32_con_signo		;a8bc   ; por_32_con_signo: HL = A x 32 con signo
 	ld d,(iy+005h)		;a8bf
 	ld e,(iy+004h)		;a8c2
 	add hl,de			;a8c5
-	ld (ix+005h),h		;a8c6
-	ld (ix+004h),l		;a8c9
+	ld (ix+005h),h		;a8c6   ; guarda la X del objeto
+	ld (ix+004h),l		;a8c9   ; guarda la X del objeto (fraccion)
 	ret			;a8cc
 caja_en_linea:		; la orden 1 con sus datos detras del call
 	pop hl			;a8cd
@@ -478,21 +478,21 @@ pon_caja:		; el rectangulo de origen (ix+0x0E-0x0F), su tamano (ix+0x12-0x13), e
 	call cuatro_bytes		;a8f2   ; cuatro_bytes: D, E, B y C de HL
 	ex de,hl			;a8f5
 	pop de			;a8f6
-	ld (ix+00eh),h		;a8f7
+	ld (ix+00eh),h		;a8f7   ; guarda la X del rectangulo de origen
 	ld a,b			;a8fa
 	sub h			;a8fb
 	inc a			;a8fc
-	ld (ix+012h),a		;a8fd
+	ld (ix+012h),a		;a8fd   ; guarda el ancho del rectangulo
 	ld a,c			;a900
 	sub l			;a901
 	inc a			;a902
-	ld (ix+013h),a		;a903
+	ld (ix+013h),a		;a903   ; guarda el alto del rectangulo
 	ld a,l			;a906
 	add a,040h		;a907
-	ld (ix+00fh),a		;a909
-	ld (ix+010h),d		;a90c
-	ld (ix+011h),e		;a90f
-	set 0,(ix+00dh)		;a912
+	ld (ix+00fh),a		;a909   ; guarda la Y del rectangulo de origen
+	ld (ix+010h),d		;a90c   ; guarda el desplazamiento en X del dibujo
+	ld (ix+011h),e		;a90f   ; guarda el desplazamiento en Y del dibujo
+	set 0,(ix+00dh)		;a912   ; pone a uno el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	ret			;a916
 cuatro_bytes:		; D, E, B y C de HL
 	ld d,(hl)			;a917
@@ -524,8 +524,8 @@ L_A932:
 	pop hl			;a93c
 	ret			;a93d
 pon_banderas:		; ix+0x0D or A
-	or (ix+00dh)		;a93e
-	ld (ix+00dh),a		;a941
+	or (ix+00dh)		;a93e   ; OR con las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
+	ld (ix+00dh),a		;a941   ; guarda las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	ret			;a944
 espera_en_linea:		; la orden 3 con su dato detras del call
 	pop hl			;a945
@@ -547,7 +547,7 @@ L_A955:
 	pop hl			;a95f
 	ret			;a960
 pon_espera:		; ix+1 = A
-	ld (ix+001h),a		;a961
+	ld (ix+001h),a		;a961   ; guarda la espera del guion del objeto (orden 3)
 	ret			;a964
 espera_senal_en_linea:		; la orden 4 con su dato detras del call
 	pop hl			;a965
@@ -754,13 +754,13 @@ L_AA96:
 	ld a,d			;aa96
 	rlca			;aa97
 	sbc a,a			;aa98
-	ld (ix+008h),d		;aa99
-	ld (ix+009h),a		;aa9c
+	ld (ix+008h),d		;aa99   ; guarda la velocidad en X del objeto (baja)
+	ld (ix+009h),a		;aa9c   ; guarda la velocidad en X del objeto (alta)
 	ld a,e			;aa9f
 	rlca			;aaa0
 	sbc a,a			;aaa1
-	ld (ix+00ah),e		;aaa2
-	ld (ix+00bh),a		;aaa5
+	ld (ix+00ah),e		;aaa2   ; guarda la velocidad en Y del objeto (baja)
+	ld (ix+00bh),a		;aaa5   ; guarda la velocidad en Y del objeto (alta)
 	ret			;aaa8
 desplazamiento_en_linea:		; la orden 0x0C con sus datos detras del call
 	pop hl			;aaa9
@@ -784,8 +784,8 @@ L_AABB:
 	pop hl			;aac7
 	ret			;aac8
 L_AAC9:
-	ld (ix+014h),d		;aac9
-	ld (ix+015h),e		;aacc
+	ld (ix+014h),d		;aac9   ; guarda el desplazamiento en X (orden 0x0C)
+	ld (ix+015h),e		;aacc   ; guarda el desplazamiento en Y (orden 0x0C)
 	ret			;aacf
 salta_en_linea:		; la orden 0x0D con su direccion detras del call
 	pop hl			;aad0
@@ -803,8 +803,8 @@ L_AAE2:
 	ld d,(hl)			;aae4
 	inc hl			;aae5
 	ex de,hl			;aae6
-	ld (ix+002h),l		;aae7
-	ld (ix+003h),h		;aaea
+	ld (ix+002h),l		;aae7   ; guarda por donde va el guion del objeto (bajo)
+	ld (ix+003h),h		;aaea   ; guarda por donde va el guion del objeto (alto)
 	ret			;aaed
 fin_en_linea:		; la orden 0x0E detras del call
 	pop hl			;aaee
@@ -939,34 +939,34 @@ parte_alta:		; A = los 3 bits altos de HL y HL x 8
 	adc a,a			;abb6
 	ret			;abb7
 pinta_objeto:		; si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
-	bit 0,(ix+00dh)		;abb8
+	bit 0,(ix+00dh)		;abb8   ; mira el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	ret z			;abbc
-	ld a,(ix+012h)		;abbd
-	and (ix+013h)		;abc0
+	ld a,(ix+012h)		;abbd   ; lee el ancho del rectangulo
+	and (ix+013h)		;abc0   ; AND con el alto del rectangulo
 	inc a			;abc3
 	ret z			;abc4
-	ld a,(ix+00dh)		;abc5
-	bit 1,(ix+00dh)		;abc8
+	ld a,(ix+00dh)		;abc5   ; lee las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
+	bit 1,(ix+00dh)		;abc8   ; mira el bit 1 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	jp nz,pinta_en_cuatro		;abcc   ; pinta_en_cuatro: partido en cuatro
-	bit 3,(ix+00dh)		;abcf
+	bit 3,(ix+00dh)		;abcf   ; mira el bit 3 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	jp nz,pinta_en_dos_x		;abd3   ; pinta_en_dos_x: partido en dos por el borde derecho
-	bit 4,(ix+00dh)		;abd6
+	bit 4,(ix+00dh)		;abd6   ; mira el bit 4 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	jp nz,pinta_en_dos_y		;abda   ; pinta_en_dos_y: partido en dos por el borde de abajo
 pinta_rectangulo:		; la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
-	ld a,(ix+005h)		;abdd
-	add a,(ix+014h)		;abe0
+	ld a,(ix+005h)		;abdd   ; lee la X del objeto
+	add a,(ix+014h)		;abe0   ; le suma el desplazamiento en X (orden 0x0C)
 	ld d,a			;abe3
-	ld e,(ix+004h)		;abe4
-	ld a,(ix+010h)		;abe7
+	ld e,(ix+004h)		;abe4   ; lee la X del objeto (fraccion)
+	ld a,(ix+010h)		;abe7   ; lee el desplazamiento en X del dibujo
 	call por_32_con_signo		;abea   ; por_32_con_signo: HL = A x 32 con signo
 	add hl,de			;abed
 	call parte_alta		;abee   ; parte_alta: A = los 3 bits altos de HL y HL x 8
 	push hl			;abf1
-	ld a,(ix+007h)		;abf2
-	add a,(ix+015h)		;abf5
+	ld a,(ix+007h)		;abf2   ; lee la Y del objeto
+	add a,(ix+015h)		;abf5   ; le suma el desplazamiento en Y (orden 0x0C)
 	ld d,a			;abf8
-	ld e,(ix+006h)		;abf9
-	ld a,(ix+011h)		;abfc
+	ld e,(ix+006h)		;abf9   ; lee la Y del objeto (fraccion)
+	ld a,(ix+011h)		;abfc   ; lee el desplazamiento en Y del dibujo
 	call por_32_con_signo		;abff   ; por_32_con_signo: HL = A x 32 con signo
 	add hl,de			;ac02
 	call parte_alta		;ac03   ; parte_alta: A = los 3 bits altos de HL y HL x 8
@@ -974,18 +974,18 @@ pinta_rectangulo:		; la posicion mas el desplazamiento, y copia del rectangulo d
 	ld e,h			;ac07
 	push de			;ac08
 	push af			;ac09
-	ld h,(ix+00eh)		;ac0a
-	ld l,(ix+00fh)		;ac0d
+	ld h,(ix+00eh)		;ac0a   ; lee la X del rectangulo de origen
+	ld l,(ix+00fh)		;ac0d   ; lee la Y del rectangulo de origen
 	pop af			;ac10
 	pop de			;ac11
-	ld b,(ix+012h)		;ac12
-	ld c,(ix+013h)		;ac15
-	bit 5,(ix+00dh)		;ac18
+	ld b,(ix+012h)		;ac12   ; lee el ancho del rectangulo
+	ld c,(ix+013h)		;ac15   ; lee el alto del rectangulo
+	bit 5,(ix+00dh)		;ac18   ; mira el bit 5 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	jr z,L_AC23		;ac1c
 	set 6,a		;ac1e
 	jp copia_del_vdp		;ac20   ; copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
 L_AC23:
-	bit 2,(ix+00dh)		;ac23
+	bit 2,(ix+00dh)		;ac23   ; mira el bit 2 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	jp nz,copia_del_vdp		;ac27   ; copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
 	set 7,a		;ac2a
 	jp copia_del_vdp		;ac2c   ; copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
@@ -997,21 +997,21 @@ pinta_en_dos_y:		; partido en dos por el borde de abajo
 	sub (iy+007h)		;ac39
 	inc a			;ac3c
 	inc a			;ac3d
-	ld (ix+013h),a		;ac3e
+	ld (ix+013h),a		;ac3e   ; guarda el alto del rectangulo
 	call pinta_rectangulo		;ac41   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	call copia_objeto_a_e0c0		;ac44   ; copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
 	ld a,(iy+007h)		;ac47
 	inc a			;ac4a
-	ld (ix+013h),a		;ac4b
+	ld (ix+013h),a		;ac4b   ; guarda el alto del rectangulo
 	ld a,(iy+00fh)		;ac4e
 	add a,(iy+013h)		;ac51
 	sub (iy+007h)		;ac54
 	dec a			;ac57
-	ld (ix+00fh),a		;ac58
+	ld (ix+00fh),a		;ac58   ; guarda la Y del rectangulo de origen
 	ld l,(iy+006h)		;ac5b
 	ld h,0ffh		;ac5e
-	ld (ix+007h),h		;ac60
-	ld (ix+006h),l		;ac63
+	ld (ix+007h),h		;ac60   ; guarda la Y del objeto
+	ld (ix+006h),l		;ac63   ; guarda la Y del objeto (fraccion)
 	call pinta_rectangulo		;ac66   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	push iy		;ac69
 	pop ix		;ac6b
@@ -1024,21 +1024,21 @@ pinta_en_dos_x:		; partido en dos por el borde derecho
 	sub (iy+005h)		;ac78
 	inc a			;ac7b
 	inc a			;ac7c
-	ld (ix+012h),a		;ac7d
+	ld (ix+012h),a		;ac7d   ; guarda el ancho del rectangulo
 	call pinta_rectangulo		;ac80   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	call copia_objeto_a_e0c0		;ac83   ; copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
 	ld a,(iy+005h)		;ac86
 	inc a			;ac89
-	ld (ix+012h),a		;ac8a
+	ld (ix+012h),a		;ac8a   ; guarda el ancho del rectangulo
 	ld a,(iy+00eh)		;ac8d
 	add a,(iy+012h)		;ac90
 	sub (iy+005h)		;ac93
 	dec a			;ac96
-	ld (ix+00eh),a		;ac97
+	ld (ix+00eh),a		;ac97   ; guarda la X del rectangulo de origen
 	ld l,(iy+004h)		;ac9a
 	ld h,0ffh		;ac9d
-	ld (ix+005h),h		;ac9f
-	ld (ix+004h),l		;aca2
+	ld (ix+005h),h		;ac9f   ; guarda la X del objeto
+	ld (ix+004h),l		;aca2   ; guarda la X del objeto (fraccion)
 	call pinta_rectangulo		;aca5   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	push iy		;aca8
 	pop ix		;acaa
@@ -1051,76 +1051,76 @@ pinta_en_cuatro:		; partido en cuatro
 	sub (iy+005h)		;acb7
 	inc a			;acba
 	inc a			;acbb
-	ld (ix+012h),a		;acbc
+	ld (ix+012h),a		;acbc   ; guarda el ancho del rectangulo
 	ld a,(iy+017h)		;acbf
 	sub (iy+007h)		;acc2
 	inc a			;acc5
 	inc a			;acc6
-	ld (ix+013h),a		;acc7
+	ld (ix+013h),a		;acc7   ; guarda el alto del rectangulo
 	call pinta_rectangulo		;acca   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	call copia_objeto_a_e0c0		;accd   ; copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
 	ld a,(iy+016h)		;acd0
 	sub (iy+005h)		;acd3
 	inc a			;acd6
 	inc a			;acd7
-	ld (ix+012h),a		;acd8
+	ld (ix+012h),a		;acd8   ; guarda el ancho del rectangulo
 	ld a,(iy+007h)		;acdb
 	inc a			;acde
-	ld (ix+013h),a		;acdf
+	ld (ix+013h),a		;acdf   ; guarda el alto del rectangulo
 	ld a,(iy+00fh)		;ace2
 	add a,(iy+013h)		;ace5
 	sub (iy+007h)		;ace8
 	dec a			;aceb
-	ld (ix+00fh),a		;acec
+	ld (ix+00fh),a		;acec   ; guarda la Y del rectangulo de origen
 	ld l,(iy+006h)		;acef
 	ld h,0ffh		;acf2
-	ld (ix+007h),h		;acf4
-	ld (ix+006h),l		;acf7
+	ld (ix+007h),h		;acf4   ; guarda la Y del objeto
+	ld (ix+006h),l		;acf7   ; guarda la Y del objeto (fraccion)
 	call pinta_rectangulo		;acfa   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	call copia_objeto_a_e0c0		;acfd   ; copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
 	ld a,(iy+005h)		;ad00
 	inc a			;ad03
-	ld (ix+012h),a		;ad04
+	ld (ix+012h),a		;ad04   ; guarda el ancho del rectangulo
 	ld a,(iy+00eh)		;ad07
 	add a,(iy+012h)		;ad0a
 	sub (iy+005h)		;ad0d
 	dec a			;ad10
-	ld (ix+00eh),a		;ad11
+	ld (ix+00eh),a		;ad11   ; guarda la X del rectangulo de origen
 	ld l,(iy+004h)		;ad14
 	ld h,0ffh		;ad17
-	ld (ix+005h),h		;ad19
-	ld (ix+004h),l		;ad1c
+	ld (ix+005h),h		;ad19   ; guarda la X del objeto
+	ld (ix+004h),l		;ad1c   ; guarda la X del objeto (fraccion)
 	ld a,(iy+017h)		;ad1f
 	sub (iy+007h)		;ad22
 	inc a			;ad25
 	inc a			;ad26
-	ld (ix+013h),a		;ad27
+	ld (ix+013h),a		;ad27   ; guarda el alto del rectangulo
 	call pinta_rectangulo		;ad2a   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	call copia_objeto_a_e0c0		;ad2d   ; copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
 	ld a,(iy+005h)		;ad30
 	inc a			;ad33
-	ld (ix+012h),a		;ad34
+	ld (ix+012h),a		;ad34   ; guarda el ancho del rectangulo
 	ld a,(iy+00eh)		;ad37
 	add a,(iy+012h)		;ad3a
 	sub (iy+005h)		;ad3d
 	dec a			;ad40
-	ld (ix+00eh),a		;ad41
+	ld (ix+00eh),a		;ad41   ; guarda la X del rectangulo de origen
 	ld l,(iy+004h)		;ad44
 	ld h,0ffh		;ad47
-	ld (ix+005h),h		;ad49
-	ld (ix+004h),l		;ad4c
+	ld (ix+005h),h		;ad49   ; guarda la X del objeto
+	ld (ix+004h),l		;ad4c   ; guarda la X del objeto (fraccion)
 	ld a,(iy+007h)		;ad4f
 	inc a			;ad52
-	ld (ix+013h),a		;ad53
+	ld (ix+013h),a		;ad53   ; guarda el alto del rectangulo
 	ld a,(iy+00fh)		;ad56
 	add a,(iy+013h)		;ad59
 	sub (iy+007h)		;ad5c
 	dec a			;ad5f
-	ld (ix+00fh),a		;ad60
+	ld (ix+00fh),a		;ad60   ; guarda la Y del rectangulo de origen
 	ld l,(iy+006h)		;ad63
 	ld h,0ffh		;ad66
-	ld (ix+007h),h		;ad68
-	ld (ix+006h),l		;ad6b
+	ld (ix+007h),h		;ad68   ; guarda la Y del objeto
+	ld (ix+006h),l		;ad6b   ; guarda la Y del objeto (fraccion)
 	call pinta_rectangulo		;ad6e   ; pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 	push iy		;ad71
 	pop ix		;ad73
@@ -1190,10 +1190,10 @@ L_ADBE:
 	pop ix		;adcd
 	ret			;adcf
 origen_del_grafico:		; la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	ld a,(ix+003h)		;add0
+	ld a,(ix+003h)		;add0   ; lee por donde va el guion del objeto (alto)
 	and 007h		;add3
 	ld h,a			;add5
-	ld a,(ix+004h)		;add6
+	ld a,(ix+004h)		;add6   ; lee la X del objeto (fraccion)
 	ld d,a			;add9
 	and 01fh		;adda
 	ld e,a			;addc
@@ -1209,15 +1209,15 @@ origen_del_grafico:		; la direccion de un grafico de la lista: banco, y su sitio
 	ld de,06000h		;ade7
 	add hl,de			;adea
 	ex de,hl			;adeb
-	ld h,(ix+002h)		;adec
-	ld l,(ix+001h)		;adef
-	ld a,(ix+000h)		;adf2
+	ld h,(ix+002h)		;adec   ; lee por donde va el guion del objeto (bajo)
+	ld l,(ix+001h)		;adef   ; lee la espera del guion del objeto (orden 3)
+	ld a,(ix+000h)		;adf2   ; lee el objeto esta en marcha
 	and 01fh		;adf5
 	call banco_del_grafico		;adf7   ; banco_del_grafico: el banco C y H, pasando al siguiente cada 0x2000
 	ld a,c			;adfa
 	call 04c0eh		;adfb   ; bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
-	ld a,(ix+005h)		;adfe
-	sub (ix+004h)		;ae01
+	ld a,(ix+005h)		;adfe   ; lee la X del objeto
+	sub (ix+004h)		;ae01   ; le resta la X del objeto (fraccion)
 	inc a			;ae04
 	ld b,a			;ae05
 	ret			;ae06
@@ -1236,7 +1236,7 @@ L_AE0C:
 carga_graficos:		; la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
 	call 047d2h		;ae15   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 L_AE18:
-	ld a,(ix+000h)		;ae18
+	ld a,(ix+000h)		;ae18   ; lee el objeto esta en marcha
 	or a			;ae1b
 	ret z			;ae1c
 	call un_grafico		;ae1d   ; un_grafico: segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
@@ -1244,7 +1244,7 @@ L_AE18:
 	add ix,de		;ae23
 	jr L_AE18		;ae25
 un_grafico:		; segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
-	ld a,(ix+000h)		;ae27
+	ld a,(ix+000h)		;ae27   ; lee el objeto esta en marcha
 	and 007h		;ae2a
 	ret z			;ae2c
 	dec a			;ae2d
@@ -1258,7 +1258,7 @@ un_grafico:		; segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03
 	ld de,00002h		;ae3d
 	add ix,de		;ae40
 	call origen_del_grafico		;ae42   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae45
+	bit 7,(ix+000h)		;ae45   ; mira el bit 7 de el objeto esta en marcha
 	jp nz,de_1_bit_alta		;ae49   ; de_1_bit_alta: lo mismo a la pagina alta
 	jp de_1_bit		;ae4c   ; de_1_bit: graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
 L_AE4F:
@@ -1267,7 +1267,7 @@ L_AE4F:
 	ld de,00003h		;ae54
 	add ix,de		;ae57
 	call origen_del_grafico		;ae59   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae5c
+	bit 7,(ix+000h)		;ae5c   ; mira el bit 7 de el objeto esta en marcha
 	jp nz,de_2_bits_alta		;ae60   ; de_2_bits_alta: lo mismo a la pagina alta
 	jp de_2_bits		;ae63   ; de_2_bits: graficos de 2 bits por punto a 4
 L_AE66:
@@ -1276,13 +1276,13 @@ L_AE66:
 	ld de,00005h		;ae6b
 	add ix,de		;ae6e
 	call origen_del_grafico		;ae70   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae73
+	bit 7,(ix+000h)		;ae73   ; mira el bit 7 de el objeto esta en marcha
 	jp nz,de_4_bits_alta		;ae77   ; de_4_bits_alta: lo mismo a la pagina alta
 	jp de_4_bits		;ae7a   ; de_4_bits: graficos de 4 bits por punto con paleta propia
 L_AE7D:
 	inc ix		;ae7d
 	call origen_del_grafico		;ae7f   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae82
+	bit 7,(ix+000h)		;ae82   ; mira el bit 7 de el objeto esta en marcha
 	jp nz,caracteres_volteados		;ae86   ; caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
 	jp 0493dh		;ae89   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 paleta_del_grafico:		; B bytes de colores de la lista a nibbles en 0xCA00

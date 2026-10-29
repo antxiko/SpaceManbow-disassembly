@@ -131,7 +131,8 @@ RAM = {
 RAM16 = {}
 
 # Los actores: 20 fichas de 0x40 bytes en 0xCE80 (p04:6056, p04:62CB), 18 de
-# 0x20 en 0xD460 (p04:6485) y la nave en 0xCA40; las mueve p04:64A2 por el
+# 0x20 en 0xD460 (p04:6485), la nave en 0xCA40, sus dos opciones en 0xCAC0 y
+# 0xCAE0 (p02:82B4) y sus 8 disparos de 0x20 en 0xCC40 (p02:878A); las mueve p04:64A2 por el
 # tipo (tablas p04:6360 y p04:64D1). Ejes medidos moviendo la nave en el
 # cartucho ejecutado (work/ejes.py): con la derecha sube 0xCA4A, con abajo
 # 0xCA48; y p09:72ED reparte los sprites por franjas mirando la Y, que es el
@@ -164,9 +165,98 @@ CAMPOS_ACTOR = {
     0x1A: "el primer sprite del actor (p04:793D)",
 }
 CARGAS_ACTOR = (tuple(0xCE80 + 0x40 * k for k in range(20)) + tuple(0xD460 + 0x20 * k for k in range(18))
-                + (0xCA40,))
+                + (0xCA40, 0xCAC0, 0xCAE0) + tuple(0xCC40 + 0x20 * k for k in range(8)))
 
-FICHAS = ((CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
+# Los canales del sonido: 3 del PSG en 0xC600, 0xC640, 0xC680 y 5 del SCC en
+# 0xC6C0-0xC7C0, de 0x40 bytes (p28:6AD6 los recorre). Campos leidos en
+# p28:69F2 (arranque), p28:6B76 (la partitura) y las ordenes de p28:728B.
+CAMPOS_CANAL = {
+    0x00: "el sonido que toca el canal (0 = callado)",
+    0x01: "la prioridad del sonido del canal",
+    0x02: "por donde va la partitura del canal (baja)",
+    0x03: "por donde va la partitura del canal (alta)",
+    0x04: "lo que le queda a la nota del canal",
+    0x05: "las vueltas de la orden 0xFB",
+    0x06: "las vueltas de la orden 0xFC",
+    0x07: "la vuelta de la orden 0xF9 (baja)",
+    0x08: "la vuelta de la orden 0xF9 (alta)",
+    0x09: "la clase del canal (orden 0xFE)",
+    0x0A: "el periodo que suena (bajo)",
+    0x0B: "el periodo que suena (alto)",
+    0x0C: "el volumen que suena",
+    0x0D: "la clase de la nota y sus banderas (orden 0xE0)",
+    0x0E: "las banderas de los efectos del canal",
+    0x0F: "las banderas de la envolvente de volumen",
+    0x10: "el periodo de la nota (bajo)",
+    0x11: "el periodo de la nota (alto)",
+    0x12: "el volumen de la nota",
+    0x13: "la duracion fija (orden 0xE0)",
+    0x14: "el tempo del canal (orden 0xE9)",
+    0x15: "el volumen del canal (orden 0xEA)",
+    0x16: "la octava del canal (ordenes 0xD0-0xD5)",
+    0x17: "por donde va la lista de la nota (baja)",
+    0x18: "por donde va la lista de la nota (alta)",
+    0x19: "lo que le queda a la nota de la lista",
+    0x1A: "el retardo del vibrato (orden 0xF2)",
+    0x1B: "la velocidad del vibrato (orden 0xF1)",
+    0x1C: "la amplitud del vibrato (orden 0xF1)",
+    0x1D: "hacia donde va el vibrato",
+    0x1E: "la cuenta del vibrato",
+    0x1F: "la cuenta de la envolvente de volumen",
+    0x21: "el ataque de la envolvente (orden 0xEB)",
+    0x22: "la caida de la envolvente (orden 0xEB)",
+    0x23: "el sosten de la envolvente (orden 0xEB)",
+    0x24: "el final de la envolvente (orden 0xEB)",
+    0x26: "el ajuste del periodo (orden 0xEE)",
+    0x27: "la forma de onda del SCC (baja, orden 0xF8)",
+    0x28: "la forma de onda del SCC (alta)",
+    0x29: "la octava (copia)",
+    0x2C: "lo que le queda a la nota (alta)",
+    0x2D: "la marca de repeticion (baja, orden 0xF5)",
+    0x2E: "la marca de repeticion (alta)",
+    0x2F: "la bajada de volumen al empezar la nota (orden 0xF7)",
+    0x34: "el volumen minimo (orden 0xDB)",
+    0x39: "el paso del deslizamiento (ordenes 0xD6 y 0xD7)",
+    0x3A: "los pasos que le quedan al deslizamiento",
+    0x3B: "los pasos del deslizamiento",
+    0x3C: "las banderas del deslizamiento",
+}
+CARGAS_CANAL = tuple(0xC600 + 0x40 * k for k in range(8))
+
+# Los objetos de las secuencias: 0x30 fichas de 0x20 bytes en 0xE100 (p03:A754),
+# y la copia de trabajo de 0xE0C0 (p03:AD76). Campos leidos en p03:A795 (el
+# movimiento), p03:A818 (el guion), p03:A8EF (la caja) y p03:ABDD (pintarlo).
+CAMPOS_OBJETO = {
+    0x00: "el objeto esta en marcha",
+    0x01: "la espera del guion del objeto (orden 3)",
+    0x02: "por donde va el guion del objeto (bajo)",
+    0x03: "por donde va el guion del objeto (alto)",
+    0x04: "la X del objeto (fraccion)",
+    0x05: "la X del objeto",
+    0x06: "la Y del objeto (fraccion)",
+    0x07: "la Y del objeto",
+    0x08: "la velocidad en X del objeto (baja)",
+    0x09: "la velocidad en X del objeto (alta)",
+    0x0A: "la velocidad en Y del objeto (baja)",
+    0x0B: "la velocidad en Y del objeto (alta)",
+    0x0C: "la prioridad del objeto al pintarlo",
+    0x0D: "las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)",
+    0x0E: "la X del rectangulo de origen",
+    0x0F: "la Y del rectangulo de origen",
+    0x10: "el desplazamiento en X del dibujo",
+    0x11: "el desplazamiento en Y del dibujo",
+    0x12: "el ancho del rectangulo",
+    0x13: "el alto del rectangulo",
+    0x14: "el desplazamiento en X (orden 0x0C)",
+    0x15: "el desplazamiento en Y (orden 0x0C)",
+    0x16: "donde da la vuelta en X",
+    0x17: "donde da la vuelta en Y",
+}
+CARGAS_OBJETO = tuple(0xE100 + 0x20 * k for k in range(0x30)) + (0xE0C0,)
+
+FICHAS = ((CARGAS_OBJETO, {3: ((0xA000, 0xC000),)}, CAMPOS_OBJETO),
+          (CARGAS_CANAL, {28: ((0x6000, 0x8000),)}, CAMPOS_CANAL),
+          (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 2: ((0x8000, 0xA000),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
                           6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR),)
 
 

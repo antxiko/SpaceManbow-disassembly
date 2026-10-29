@@ -1159,3 +1159,117 @@ p09 0x7EBD fila_de_arriba  una fila de 8 bloques arriba (p09:7EFC)
 p09 0x7ECE fila_de_arriba_b  lo mismo en la columna 0
 p09 0x7EDE fila_por_c0c1_c  una fila de 15 bloques segun 0xC0C1
 p09 0x7EFC fila_de_bloques_b  como p09:7E55 con la otra fila de los bloques
+p28 0x6000 vector_inicia_sonido  jp p28:6009
+p28 0x6003 vector_pide_sonido  jp p28:6929 (el sonido de A)
+p28 0x6006 vector_paso_del_sonido  jp p28:6AD6
+p28 0x6009 inicia_sonido  marca todos los registros del SCC como cambiados (0xC85F = 0xFFFF, 0xC861-0xC86F = 1), los manda (p28:6287) y el mezclador del PSG a 0xBF
+p28 0x6024 manda_todo  los registros del PSG (p28:602B) y los del SCC (p28:6123)
+p28 0x602B manda_psg  p28:603B, tonos y volumenes (p28:6053), ruido (p28:6088), envolvente (p28:60B5) y mezclador (p28:60E3)
+p28 0x603B psg_ab_libre  si los canales del PSG de 0xC60D y 0xC68D tienen el bit 0, quita los bits 0 y 1 de 0xC60D
+p28 0x6053 tonos_y_volumenes_psg  los tres canales del PSG (0xC60A, 0xC64A, 0xC68A) a los registros 0-5 y 8-10 (p28:606A)
+p28 0x606A canal_psg  el tono (dos registros) y el volumen del canal de HL; con el bit 2 de la casilla 3, la envolvente una vez (bit 3)
+p28 0x6088 ruido_psg  el registro 6 (ruido) con 0xC859 o 0xC85A segun las banderas de 0xC85B
+p28 0x60B5 envolvente_psg  los registros 11, 12 y 13 con 0xC85D, 0xC85E y 0xC85C si las banderas 7, 6 y 5 de 0xC85B lo piden
+p28 0x60E3 mezclador_psg  el registro 7 con los bits de las tablas p28:6117, p28:611B y p28:611F segun cada canal; copia en 0xC880
+p28 0x6106 pon_mezclador  el registro 7 = A (copia en 0xC880)
+p28 0x6110 entrada_de_4  HL + (A and 3)
+p28 0x6123 manda_scc  mira que ha cambiado (p28:6130), los canales encendidos (p28:6235), las frecuencias y volumenes (p28:6287) y las formas de onda (p28:6348)
+p28 0x6130 cambios_scc  compara la frecuencia y el volumen de los 5 canales del SCC (0xC6CA, 0xC70A, 0xC74A, 0xC78A, 0xC7CA) con sus copias de 0xC861 y 0xC86B y marca en 0xC85F-0xC860 los que han cambiado
+p28 0x6235 canales_encendidos_scc  los bits de los canales con volumen en 0xC870 y, si cambia, el bit 7 de 0xC860
+p28 0x6287 registros_scc  cada registro marcado de 0xC861 a su sitio del SCC (0x9880-0x988F, p28:633F)
+p28 0x633F escribe_registro_scc  con el SCC puesto (p28:642E), (DE) = (HL) y vuelve el banco 29
+p28 0x6348 formas_de_onda  las formas de onda nuevas de los canales 1 a 4 del SCC (0xC6C0, 0xC700, 0xC740, 0xC780; bit 7 de ix+0x0F): 32 bytes de ix+0x27 a 0x9800, 0x9820, 0x9840, 0x9860
+p28 0x63FD copia_onda  con los canales apagados mientras (0x988F), 32 bytes de HL a DE y vuelven los encendidos
+p28 0x6418 copia_onda_saltando  32 bytes de HL a DE avanzando ix+0x31 cada vez
+p28 0x642E enciende_scc  0x3F en 0x9000: los registros del SCC en 0x9800
+p28 0x6434 banco_29_en_8000  el banco 29 en 0x8000
+p28 0x643A escribe_psg  el registro A del PSG = E (puertos 0xA0 y 0xA1)
+p28 0x68FA banco_de_la_musica  a los sonidos 0x39-0x52 (las musicas) les toca el banco de la tabla p28:690F en 0xC8C8
+p28 0x6929 pide_sonido  sin interrupciones y guardando los registros, p28:693F
+p28 0x693F arranca_sonido  el sonido A (0xC87D): las ordenes 0x81 (sigue tras la pausa), 0x82 (pausa), 0x83 (quita el fundido), 0x84 y 0x85 (fundido); los demas, su cabecera de la tabla p28:7A00 + 2 x A ([que canales][prioridad] y una partitura por canal): 8 solo el SCC 1, 0x0C el PSG C y el SCC 1, 0xF3 todos menos esos dos, el resto los 8; un canal ocupado por un sonido de mas prioridad no se toca
+p28 0x69F2 arranca_canal  en la ficha del canal (HL = su casilla 1): la prioridad, el numero del sonido, su partitura, la cuenta a 1 y el resto (0x3A bytes) a 0
+p28 0x6A15 solo_scc_1  el canal 1 del SCC si la prioridad lo deja
+p28 0x6A1E quita_fundido  el bit 0 de 0xC840 a 0 y 0xC856 = 0
+p28 0x6A26 empieza_fundido  el bit 0 de 0xC840, 0xC854 = 0x0A25 y 0xC856 = 0
+p28 0x6A33 c856_a_0  0xC856 = 0
+p28 0x6A3A sigue_tras_pausa  quita la pausa (bit 1 de 0xC840), devuelve el canal 1 del SCC de 0xC800, el ruido de los canales del PSG y manda todo de nuevo
+p28 0x6A73 pausa_sonido  la pausa (bit 1 de 0xC840): guarda el canal 1 del SCC en 0xC800, calla los canales del PSG, el volumen de los SCC 4 y 5 a 0 y el sonido 1
+p28 0x6AD6 paso_del_sonido  el banco de la musica en 0xA000, el mezclador; en pausa solo el canal 1 del SCC (p28:6B5E); si no, el fundido (p28:71C6) y un paso de los 8 canales (3 del PSG en 0xC600, 0xC640, 0xC680 y 5 del SCC en 0xC6C0-0xC7C0; 0xC858 = el bit del canal) y manda los registros
+p28 0x6B56 canal_del_cuadro  si el canal suena, un paso (p28:6B76)
+p28 0x6B5E cuadro_en_pausa  solo el canal 1 del SCC, el mezclador a 0xBF, p28:7372 y manda los registros
+p28 0x6B76 avanza_canal  baja la duracion (ix+4, con ix+0x2C); al acabar lee la partitura (ix+2-3): 0xFF acaba o vuelve (p28:724A), 0xD0 o mas son ordenes (p28:728B) y lo demas una nota segun la clase del canal (ix+9: PSG, ruido o SCC)
+p28 0x6BC2 nota_psg  la duracion (nibble bajo x el tempo ix+0x14) y la nota (nibble alto, p28:6D3C) de un canal del PSG; su periodo de la tabla p28:6C2B por la octava (ix+0x16)
+p28 0x6C22 nota_silencio  la nota 12 o mas: silencio (la clase del canal a 0)
+p28 0x6C38 nota_de_ruido  la nota del canal de ruido o de periodo directo: segun ix+0x0E, el periodo y el volumen de la partitura (ix+0x10-0x12); luego la duracion (ix+0x13)
+p28 0x6CB1 nota_con_tabla  la nota (p28:6BC2) y su lista de la tabla del instrumento (p28:6CE8): la toca como una partitura corta (p28:6CC7)
+p28 0x6CC7 toca_lista  la lista de HL como partitura, guardando por donde va (ix+0x17-0x18) y su duracion (ix+0x19)
+p28 0x6CE8 tabla_del_instrumento  HL = 0x9B00 o 0x9BF3 segun la clase del canal (ix+9) y ix+0x29
+p28 0x6D3C avanza_partitura  ix+2-3 = HL + 1
+p28 0x6D44 empieza_nota  el periodo con su ajuste (p28:6E28), las banderas de los efectos a 0 y el volumen de partida (con su bajada de ix+0x2F)
+p28 0x6DD3 a_cero  A = 0
+p28 0x6DD5 efectos_del_cuadro  mientras suena la nota: la lista de la nota (p28:6E00), el deslizamiento (p28:6FAC), el vibrato (p28:6E43), la envolvente de volumen (p28:6E91), p28:7059 y p28:7168
+p28 0x6E00 sigue_lista  baja la duracion de la lista y, al acabar, su siguiente nota (o el fin con 0xFF)
+p28 0x6E17 fin_de_lista  la lista acaba: volumen a 0 y la clase a 0
+p28 0x6E28 periodo_ajustado  el periodo de la nota (ix+0x10-0x11) mas el ajuste ix+0x26 si toca, a ix+0x0A-0x0B
+p28 0x6E43 vibrato  cada ix+0x1A o ix+0x1B cuadros, el periodo sube o baja ix+0x1C
+p28 0x6E91 envolvente  el volumen del cuadro (p28:6EA4) en ix+0x0C (en el PSG, salvo con el bit 2 de ix+0x0D)
+p28 0x6EA4 volumen_del_cuadro  los tramos de la envolvente de volumen (ataque, caida, sosten y final, ix+0x21-0x25 y ix+0x34-0x36) segun las banderas de ix+0x0F e ix+0x30
+p28 0x6FA7 pasa_al_final  el bit 5 de ix+0x0F: el ultimo tramo de la envolvente
+p28 0x6FAC deslizamiento  el periodo que se desliza hacia la nota (ix+0x39, ix+0x3A) segun las banderas de ix+0x3C
+p28 0x7000 desliza_hacia_abajo  el periodo baja ix+0x39 por paso hasta la nota
+p28 0x701D pon_periodo_deslizado  el periodo de HL en ix+0x0A-0x0B y el bit 5 de ix+0x3C
+p28 0x7028 desliza_paso  el periodo sube ix+0x39; al acabar los pasos, p28:7042
+p28 0x7042 fin_del_deslizamiento  el periodo de la nota y la cuenta de pasos de nuevo
+p28 0x7059 envolvente_calculada  el volumen del cuadro con la envolvente de la orden 0xDD (p28:706C)
+p28 0x706C volumen_calculado  los tramos de la envolvente de 0xDD (ix+0x20-0x24, ix+0x37-0x38)
+p28 0x7168 onda_que_cambia  avanza el desplazamiento de la forma de onda (ix+0x31-0x33) con el paso de ix+0x32
+p28 0x71C6 paso_del_fundido  cuenta 0xC856 hasta 0xC854 y 0xC857 hasta 0xC855; al acabar, el fundido termina y se callan todos los canales (p28:724A)
+p28 0x7226 volumen_con_fundido  E = el volumen menos el del fundido (0xC857), sin bajar de 0
+p28 0x724A calla_canal  la ficha del canal a 0 (fin de su partitura) y, en el PSG, el ruido y la envolvente que usaba
+p28 0x728B orden_de_partitura  las ordenes de las partituras: 0xE0-0xFE por la tabla p28:72A0 y 0xD0-0xDF por la de p28:758C
+p28 0x72DE orden_E0  ordenes 0xE0 y 0xE2: la clase del canal (ix+0x0D, bits 0-1) y la duracion (ix+0x13)
+p28 0x72DF clase_y_duracion  la clase del canal y la duracion de los bytes de HL
+p28 0x72F4 orden_E1  ordenes 0xE1 y 0xE3: el ruido encendido en este canal del PSG y lo de 0xE0
+p28 0x7311 orden_E4  orden 0xE4: el periodo del ruido (0xC859 o 0xC85A)
+p28 0x733B orden_E5  orden 0xE5: la forma de la envolvente del PSG (0xC85C, registro 13) y sigue con 0xE6
+p28 0x734F orden_E6  orden 0xE6: el periodo de la envolvente, byte alto (0xC85E, registro 12) y sigue con 0xE7
+p28 0x735F orden_E7  orden 0xE7: el byte bajo (0xC85D, registro 11) y el volumen del canal con la envolvente
+p28 0x7371 orden_E8  orden 0xE8: sin envolvente del PSG
+p28 0x7372 sin_envolvente_psg  0xC85B = 0 y el canal sin envolvente
+p28 0x7380 orden_E9  orden 0xE9: el tempo (ix+0x14)
+p28 0x738B orden_EA  orden 0xEA: el nibble alto a ix+0x36 (con el bit 0 de ix+0x30) y el bajo a ix+0x15
+p28 0x73AA orden_EB  orden 0xEB: la envolvente de volumen: ataque y caida (ix+0x21, ix+0x22) y sosten y final (ix+0x23, ix+0x24)
+p28 0x73FD orden_EC  orden 0xEC: sin envolvente de volumen
+p28 0x7407 orden_ED  orden 0xED: ix+0x35 y ix+0x25
+p28 0x742A orden_EE  orden 0xEE: el ajuste del periodo (ix+0x26)
+p28 0x7435 orden_EF  orden 0xEF: sin ajuste del periodo
+p28 0x743B orden_F0  orden 0xF0: sin vibrato
+p28 0x7445 orden_F1  orden 0xF1: el vibrato, su amplitud (ix+0x1C) y su velocidad (ix+0x1B)
+p28 0x7460 orden_F2  orden 0xF2: el retardo del vibrato (ix+0x1A)
+p28 0x746F orden_F3  orden 0xF3: el bit 3 de ix+0x0E a 0
+p28 0x7475 orden_F4  orden 0xF4: el bit 6 de ix+0x0E (las notas traen el periodo)
+p28 0x747B orden_F5  orden 0xF5: la marca de repeticion aqui (ix+0x2D-0x2E)
+p28 0x747C pon_marca  ix+0x2D-0x2E = HL
+p28 0x7485 orden_F6  orden 0xF6: los bits 5 y 6 de ix+0x0E a 0
+p28 0x748F orden_F7  orden 0xF7: la bajada de volumen al empezar la nota (ix+0x2F)
+p28 0x749A orden_F8  orden 0xF8: la forma de onda del SCC (tabla p28:6442) y, con el bit 7, que cambie (p28:7168)
+p28 0x74B1 forma_de_onda  ix+0x27-0x28 = la palabra A de p28:6442
+p28 0x74FE orden_F9  orden 0xF9: llama a otro trozo de partitura (vuelta en ix+7-8)
+p28 0x7509 orden_FA  orden 0xFA: vuelve de la llamada
+p28 0x7511 orden_FB  orden 0xFB: repite desde la marca N veces (ix+5)
+p28 0x7529 orden_FC  orden 0xFC: salta N veces (ix+6) a la direccion que lleva
+p28 0x7535 salta_partitura  HL = la direccion de detras - 1
+p28 0x7543 orden_FD  orden 0xFD: salta a la direccion que lleva
+p28 0x7546 orden_FE  orden 0xFE: la clase del canal (ix+9), guardando o devolviendo las banderas al pasar por la 1
+p28 0x757C orden_D  las ordenes 0xD0-0xDF por la tabla p28:758C
+p28 0x75AC orden_D0  ordenes 0xD0-0xD5: la octava (ix+0x16 e ix+0x29)
+p28 0x75B7 orden_D6  orden 0xD6: deslizamiento hacia arriba (paso ix+0x39, pasos ix+0x3A)
+p28 0x75D2 orden_D7  orden 0xD7: deslizamiento hacia abajo
+p28 0x75E9 orden_D8  orden 0xD8: sin deslizamiento
+p28 0x75F3 orden_D9  orden 0xD9: no hace nada
+p28 0x75F5 orden_DA  orden 0xDA: no hace nada
+p28 0x75F7 orden_DB  orden 0xDB: el volumen minimo (ix+0x34)
+p28 0x75FE orden_DC  orden 0xDC: el volumen minimo a 0
+p28 0x7604 orden_DD  orden 0xDD: una envolvente de volumen con los pasos calculados
+p28 0x76E7 orden_DE  orden 0xDE: la marca de repeticion o, en una lista, el bit 5 de ix+0x0E
+p28 0x76F4 orden_DF  orden 0xDF: el bit 7 de ix+0x0E a 0

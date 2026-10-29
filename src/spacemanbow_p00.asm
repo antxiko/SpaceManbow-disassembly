@@ -1519,7 +1519,7 @@ avanza_8_puntos:		; D + 8 y, si da la vuelta, E + 8
 prepara_arranque:		; el sonido (p28:6000 con A = 0xB8), la musica 0x55, el borde, los registros del VDP de p00:4A30, la paleta, borra las dos paginas de la VRAM y enciende la pantalla
 	call bancos_28_29_30		;49e3   ; bancos_28_29_30: pone el 28, el 29 y el 30 (el sonido)
 	ld a,0b8h		;49e6
-	call 06000h		;49e8
+	call 06000h		;49e8   ; vector_inicia_sonido: jp p28:6009
 	call bancos_1_2_3		;49eb   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	ld a,055h		;49ee
 	call pide_musica		;49f0   ; pide_musica: lo mismo con hasta 0x17 en la cola
@@ -1789,7 +1789,7 @@ sonido_ahora:		; con 0xC906 puesto: bancos 28-29-30, manda la cola (p00:4B5B) y 
 	ld hl,0c942h		;4b39   ; apunta a 1: hay que mandar la cola de sonidos
 	ld (hl),000h		;4b3c
 	call manda_cola_de_sonidos		;4b3e   ; manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
-	call 06006h		;4b41
+	call 06006h		;4b41   ; vector_paso_del_sonido: jp p28:6AD6
 	ld hl,0c906h		;4b44   ; apunta a 1 mientras se atiende un cuadro: la interrupcion no vuelve a entrar
 	ld (hl),000h		;4b47
 	ret			;4b49
@@ -1800,7 +1800,7 @@ sonido_del_cuadro:		; bancos 28-29-30, la cola si 0xC942 (p00:4B5B) y un paso de
 	or a			;4b51
 	ld (hl),000h		;4b52
 	call nz,manda_cola_de_sonidos		;4b54   ; manda_cola_de_sonidos: cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
-	call 06006h		;4b57
+	call 06006h		;4b57   ; vector_paso_del_sonido: jp p28:6AD6
 	ret			;4b5a
 manda_cola_de_sonidos:		; cada sonido de la cola de 0xC882 a p28:6003 y vacia la cola
 	ld hl,0c882h		;4b5b   ; apunta a cuantos sonidos hay en la cola (detras, los numeros)

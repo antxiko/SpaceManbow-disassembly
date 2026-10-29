@@ -551,7 +551,7 @@ vector_scroll_del_cuadro:		; jp p09:6D95
 vector_prepara_registros:		; jp p09:6D69
 	jp prepara_registros		;6d18   ; prepara_registros: los registros, las tablas de registros, sprites y lineas
 vector_nada:		; jp p09:707D, que es un ret
-	jp nada_707D		;6d1b   ; nada_707D: ret
+	jp nada_707D		;6d1b
 
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_6D1E: ninguna partida de la campana lo lee
@@ -2380,7 +2380,7 @@ pon_tramo_de_scroll:		; de la tabla p09:78FF (12 bytes por tramo): la velocidad 
 	inc hl			;78de
 	ld (0c0d5h),a		;78df
 	ld a,(hl)			;78e2
-	call nada_78EC		;78e3   ; nada_78EC: ret
+	call nada_78EC		;78e3
 	pop de			;78e6
 	xor a			;78e7
 	ld (0c0dah),a		;78e8
@@ -2649,7 +2649,7 @@ avanza_scroll:		; 0xC0B6 + 0xC0B8; las velocidades (p09:7B09) y la casilla (p09:
 	bit 3,a		;7adf
 	push af			;7ae1
 	call velocidades_del_scroll		;7ae2   ; velocidades_del_scroll: la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas sus velocidades; de ellas, lo que se suma a los actores (0xCA12, 0xCA14), el scroll fino (0xCA1A, 0xCA1C), 0xCA36, 0xCA38, 0xCA18, 0xCA31 y el registro de scroll vertical (0xC0D2)
-	call casilla_del_scroll		;7ae5   ; casilla_del_scroll: 0xC0CD y 0xC0CC = la columna y la fila del mapa en las que va el scroll
+	call casilla_del_scroll		;7ae5   ; casilla_del_scroll: la casilla de 0xC0CD, 0xC0CC
 	pop af			;7ae8
 	ret z			;7ae9
 	call siguiente_del_mapa		;7aea   ; siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
@@ -3243,14 +3243,14 @@ menos_40_b:		; L - 0x40
 	ret			;7ebc
 fila_de_arriba:		; una fila de 8 bloques arriba (p09:7EFC)
 	ld e,001h		;7ebd
-	call nada_7C71		;7ebf   ; nada_7C71: ret
+	call nada_7C71		;7ebf
 	ld a,008h		;7ec2
 	ld de,00018h		;7ec4
 	call fila_de_bloques_b		;7ec7   ; fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
 	ld de,00008h		;7eca
 	ret			;7ecd
 fila_de_arriba_b:		; lo mismo en la columna 0
-	call nada_7C71		;7ece   ; nada_7C71: ret
+	call nada_7C71		;7ece
 	ld d,000h		;7ed1
 	ld e,0ffh		;7ed3
 	ld a,008h		;7ed5
@@ -3258,7 +3258,7 @@ fila_de_arriba_b:		; lo mismo en la columna 0
 	ld de,00008h		;7eda
 	ret			;7edd
 fila_por_c0c1_c:		; una fila de 15 bloques segun 0xC0C1
-	call nada_7C71		;7ede   ; nada_7C71: ret
+	call nada_7C71		;7ede
 	ld a,(0c0c1h)		;7ee1
 	and 018h		;7ee4
 	rrca			;7ee6

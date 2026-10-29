@@ -245,7 +245,6 @@ C 0x6D0F prepara_pantalla_de_fase: los registros (p09:6D75), los graficos de la 
 C 0x6D12 pantalla_del_cuadro: p09:7070, los registros del scroll en la tabla que toca (p09:6F43), p09:707E, las estrellas de la fase 0 o 2, p09:7683, 0xC09C = 1 (cambiar de tablas) y el fundido pendiente (bits 7 y 6 de 0xEF60)
 C 0x6D15 scroll_del_cuadro: en la fase 4 (y cada 4 cuadros en la 8) cambia de pagina (p09:6DC3); p09:7203 y p09:7AB5; y segun 0xC0D4: 0 el scroll (p09:7AC4, p09:7755), 1 los graficos de p10:800F, 2 para el scroll, 3 o mas p09:6E08
 C 0x6D18 prepara_registros: los registros, las tablas de registros, sprites y lineas
-C 0x6D1B nada_707D: ret
 C 0x6D30 registros_de_pantalla: los 9 registros de p09:705C, el registro 8 (copia 0xFFE7 and 8, or 0x22) y, con el V9958, el 25 = 2
 C 0x6D33 lee la fase (0 a 8; 9 el final)
 C 0x6D36 vector_graficos_de_fase: jp p10:801F (los graficos de la fase A)
@@ -477,7 +476,6 @@ C 0x7871 despachador: salta a la entrada A de la tabla de direcciones que va det
 C 0x7894 pon_tramo_de_scroll: de la tabla p09:78FF (12 bytes por tramo): la velocidad en Y (0xC0C3) y en X (0xC0BD) con su signo, 0xC0B8, 0xC0B6, el modo de columnas (0xC0CE) y la direccion (0xC0D5)
 C 0x7897 cuenta_adelanto: si 0xCA33 es 0xFF, 0xCA33 = D
 C 0x78D9 guarda el modo de columnas del tramo de scroll
-C 0x78E3 nada_78EC: ret
 C 0x78FA guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x798F lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7996 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
@@ -533,7 +531,7 @@ C 0x7AC4 lee 1: el scroll esta quieto
 C 0x7ACA avanza_scroll: 0xC0B6 + 0xC0B8; las velocidades (p09:7B09) y la casilla (p09:7C72); al pasar de 8, una columna nueva del mapa (p09:7BED, p09:7C08), y otra si el mapa trae 0xFE
 C 0x7ACE scroll_parado: las velocidades del scroll y lo que se suma a los actores a 0
 C 0x7AE2 velocidades_del_scroll: la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas sus velocidades; de ellas, lo que se suma a los actores (0xCA12, 0xCA14), el scroll fino (0xCA1A, 0xCA1C), 0xCA36, 0xCA38, 0xCA18, 0xCA31 y el registro de scroll vertical (0xC0D2)
-C 0x7AE5 casilla_del_scroll: 0xC0CD y 0xC0CC = la columna y la fila del mapa en las que va el scroll
+C 0x7AE5 casilla_del_scroll: la casilla de 0xC0CD, 0xC0CC
 C 0x7AEA siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
 C 0x7AEE pinta_columna: una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
 C 0x7AF3 banco_en_A000: pone el banco A en 0xA000
@@ -599,11 +597,8 @@ C 0x7E90 menos_40: L - 0x40
 C 0x7E9A menos_40: L - 0x40
 C 0x7EA4 menos_40: L - 0x40
 C 0x7EAE menos_40: L - 0x40
-C 0x7EBF nada_7C71: ret
 C 0x7EC7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
-C 0x7ECE nada_7C71: ret
 C 0x7ED7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
-C 0x7EDE nada_7C71: ret
 C 0x7EF4 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
 C 0x7EFD casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 C 0x7F0E lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
