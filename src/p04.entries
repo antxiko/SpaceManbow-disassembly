@@ -11,101 +11,108 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
-0x6000   # p00:43C9 call
-0x6003   # p00:450E call
-0x6006   # p00:43BF call
-0x6009   # p00:4501 call
-0x600C   # p07:815A call
-0x6012   # p00:4591 call
-0x6015   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6015
-0x6018   # p00:457A call
-0x601B   # p00:4584 call
+0x6000   # jp 0 del vector de p04:6000
+0x6003   # jp 1 del vector de p04:6000
+0x6006   # jp 2 del vector de p04:6000
+0x6009   # jp 3 del vector de p04:6000
+0x600C   # jp 4 del vector de p04:6000
+0x600F   # jp 5 del vector de p04:6000
+0x6012   # jp 6 del vector de p04:6000
+0x6015   # jp 7 del vector de p04:6000
+0x6018   # jp 8 del vector de p04:6000
+0x601B   # jp 9 del vector de p04:6000
 0x6074   # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6074
 0x60E9   # p04:60E0 entrada 0 de la tabla de 0x60E3 (call 0x461A en 0x60E0)
 0x60F4   # p04:60E0 entrada 2 de la tabla de 0x60E3 (call 0x461A en 0x60E0)
 0x62C4   # codigo huerfano: 7 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x62C4
 0x6458   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
+0x66C1   # entrada 86 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
 0x66C2   # se ejecuta jugando (tools/cobertura.py): se llega desde p06:BDDA (ret)
 0x66DF   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
 0x66E3   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6753 (ret)
 0x66EE   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
 0x66F1   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6753 (ret)
-0x6754   # p06:BF29 call
+0x6754   # p06:B555 call
+0x6796   # p06:B782 call
 0x67DD   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:67FD (ret)
 0x67FE   # p06:B3AD call
 0x680E   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
-0x6814   # p06:BA86 call
+0x6814   # p06:A015 call
 0x6824   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0x682A   # p06:B7CA call
 0x6846   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
-0x684C   # p05:9A65 call
+0x684C   # p05:9C62 call
 0x6859   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0x685D   # codigo huerfano: 20 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x685D
 0x6886   # p06:B117 call
 0x688B   # p06:B112 call
+0x68D4   # dos entradas que cargan (ix+0x36) o (iy+0x36) y saltan hacia delante a codigo trazado
+0x68D9   # la segunda entrada, con iy
+0x690F   # rutina: p04:68DE con BC=0 y suma C y B a la posicion de IY para ponerla en IX
 0x6926   # p06:A01B call
-0x6929   # p06:BED5 call
+0x6929   # p05:9C69 jp
 0x6988   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:690E (ret)
-0x699E   # p06:BED8 call
+0x699E   # p06:A01E call
 0x699F   # p05:9902 call
-0x69BF   # p06:A77B call
+0x69BF   # p05:8B0D call
 0x69C2   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:69BE (ret)
+0x69D7   # p06:B568 call
 0x69F2   # p06:BF2C call
 0x69FB   # p06:BF94 call
-0x6A13   # p06:BF14 call
+0x6A13   # p06:B513 call
 0x6A16   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BC7 (ret)
 0x6A1C   # p06:AC2C call
 0x6A4B   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:478F (ret)
 0x6A7B   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:478F (ret)
 0x6A7F   # p02:887A call
-0x6A9A   # p06:BB1A call
+0x6A9A   # p00:512B call
 0x6AAA   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6A99 (ret)
 0x6AAC   # p00:5502 call
 0x6AB8   # p06:AACA call
-0x6AC2   # p00:5B55 call
-0x6AD2   # p00:5B4C call
+0x6AC2   # p05:9701 call
+0x6AD2   # p02:80E8 call
 0x6ADB   # p05:9F66 jp
-0x6ADF   # p06:BF62 call
-0x6AE8   # p06:BA57 call
+0x6ADF   # p06:A052 call
+0x6AE8   # p05:9981 jp
 0x6AEC   # p06:AC9C call
 0x6B07   # p00:5531 call
 0x6B15   # codigo huerfano: 14 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6B15
 0x6B2C   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4619 (ret)
 0x6B3C   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4619 (ret)
-0x6B43   # p06:BD8F call cc
+0x6B43   # p05:935E call
 0x6B4C   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4619 (ret)
-0x6B53   # p06:BD97 call cc
+0x6B53   # p05:8BD3 jp
 0x6B5C   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4619 (ret)
 0x6B63   # p06:B2C9 call
 0x6B6C   # p05:8FFA call
-0x6B6F   # p06:A5E0 call
+0x6B6F   # p05:9D75 call
 0x6B7F   # p05:9FEF call
-0x6B85   # p06:BCC4 call
+0x6B85   # p05:9D97 call
 0x6B8E   # codigo huerfano: 6 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6B8E
 0x6B94   # p05:830D call
 0x6BE6   # p05:9EA1 call
 0x6BE9   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6C03 (ret)
 0x6BEB   # p02:8EFF call
-0x6BF0   # p06:BBE5 call
-0x6BFA   # p06:BBB7 call
 0x6BFD   # p02:88DE call
 0x6C04   # p05:93B7 call
-0x6C0C   # p06:BACE call
+0x6C0C   # p00:5121 call
 0x6C16   # p05:9C7B call
-0x6C1D   # p06:BF3C jp
+0x6C1D   # p06:B7B9 jp
 0x6C26   # p05:938B call
 0x6C29   # p02:8EC3 call
-0x6C4B   # p06:B54B call
+0x6C4B   # p06:A02A call
 0x6C57   # tras los 5 bytes de la llamada lejana de p04:6C4F
-0x6C5C   # p06:A30D call
+0x6C5C   # p00:5E48 jp
 0x6C68   # tras los 5 bytes de la llamada lejana de p04:6C60
-0x6C6D   # p06:AEF6 jp
-0x6C75   # p06:AE15 call
+0x6C6D   # p06:A0C9 jp
+0x6C75   # p06:AA1E call
 0x6C7D   # p06:B290 call
 0x6CAE   # p05:93F5 call
 0x6CB4   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6A99 (ret)
 0x6CE9   # p05:9511 call
+0x6CEE   # rutina: guarda AF, p04:6D2C y salta segun Z
 0x6CF5   # p05:9514 jp
+0x6D0E   # rutina: si (ix+0x2A) no es 0xFF copia (ix+0x28..0x2B) a (ix+0x0A,9,8,7)
 0x6D2C   # p05:9544 call
 0x6D4F   # p06:B29F call
 0x6D96   # codigo huerfano: 61 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D96
@@ -128,12 +135,12 @@
 0x6E7E   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7C40 (salto)
 0x6E81   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:9E8F (salto)
 0x6E84   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6F42 (ret)
-0x6E91   # p06:AE10 call
+0x6E91   # p06:A003 call
 0x6F55   # p05:9B6C jp
 0x6F5B   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
 0x6F60   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6753 (ret)
 0x6F67   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
-0x6F8C   # p00:5101 call
+0x6F8C   # p02:8462 call
 0x6FCD   # p00:50ED call
 0x6FDC   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4602 (salto)
 0x7058   # p02:8946 call
@@ -153,19 +160,18 @@
 0x72D4   # p05:8301 jp
 0x72F6   # p05:87E8 jp
 0x7300   # p05:9678 call
-0x7306   # p06:AA0F call
+0x7306   # p06:A0A1 jp
 0x7339   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0x7362   # p05:9CE8 call
 0x7371   # p05:9CF1 call
-0x737C   # p06:BCA7 jp
 0x74ED   # p06:B843 call
 0x74EF   # p06:B84C call
 0x7512   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:468D (ret)
 0x751A   # p06:AEA8 jp
 0x751E   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0x7523   # p02:8943 call
-0x753C   # p06:A644 jp
-0x755D   # p06:BE9D call
+0x753C   # p05:8BCB call
+0x755D   # p05:86B1 call
 0x756C   # p02:82F2 call
 0x7595   # p05:8897 call
 0x759A   # p05:93E9 call
@@ -173,20 +179,22 @@
 0x75A1   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7B4D (ret)
 0x75AA   # p02:8F06 call
 0x75C2   # p02:88F3 call
+0x75DE   # rutina: posicion de IX mas el desplazamiento de 0xCA1A/0xCA1C
 0x76F0   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x76F0
 0x76F1   # p02:86CB call
 0x76FF   # p02:82EE call
 0x7747   # p02:803B call
 0x77D0   # p02:8881 jp cc
-0x78E1   # codigo huerfano: 5 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x78E1
 0x78E6   # p07:8132 call
-0x7A43   # p06:BDD1 call
+0x7A43   # p06:AC93 jp
 0x7A47   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BC7 (ret)
 0x7A59   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7A95 (ret)
 0x7A5C   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7ABF (salto)
 0x7A96   # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x7A96
 0x7B06   # p02:8E12 call
-0x7B65   # p00:5B49 call
+0x7B51   # rutina con HL = 0xDDA0
+0x7B56   # la misma con HL = 0xD950
+0x7B65   # p06:B609 jp
 0x7B76   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BC7 (ret)
 0x7BCE   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7ABF (salto)
 0x7BFA   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7ABF (salto)
@@ -195,12 +203,12 @@
 0x7C37   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7B4D (ret)
 0x7C44   # p02:8099 call
 0x7C63   # p05:96E5 call
-0x7C6B   # p06:BF44 call
+0x7C6B   # p06:AC39 call
 0x7CA5   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4B2F (ret)
 0x7CA7   # p06:A150 call
 0x7CAC   # p05:9533 call
-0x7CBE   # p06:BF52 call
-0x7CC3   # p06:BCF2 jp cc
+0x7CBE   # p05:96F0 call
+0x7CC3   # p06:B770 jp cc
 0x7CDF   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4B2F (ret)
 0x7D1E   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6ECA (ret)
 0x7D6C   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7DAE (salto)

@@ -9,8 +9,14 @@
 	org 0x08000
 
 
+; ----------------------------------------------------------------------
+; Etiquetas que no caen en ninguna posicion emitida del listado
+; (destinos fuera del binario o dentro de una instruccion).
+; ----------------------------------------------------------------------
+L_8F13:	equ 0x08f13
+
 ; ======================================================================
-; CODIGO 0x8000..0x8009  (9 bytes)
+; CODIGO 0x8000..0x817d  (381 bytes)
 ; ======================================================================
 
 
@@ -20,20 +26,12 @@ L_8003:
 	jp L_8224		;8003
 L_8006:
 	jp L_878A		;8006
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8009: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0x8009..0x8012  (9 bytes)
-DATA_sin_leer_8009:
-	defb 0c3h,011h,08fh,0c3h,064h,08fh,0c3h,0c5h,08fh	; 8009  ....d....
-
-; ======================================================================
-; CODIGO 0x8012..0x817d  (363 bytes)
-; ======================================================================
-
-
+L_8009:
+	jp L_8F11		;8009   ; jp 3, 4 y 5 del vector de p02:8000 (p02:8F11, 8F64, 8FC5): ninguna partida de la campana los llama
+L_800C:
+	jp L_8F64		;800c
+L_800F:
+	jp L_8FC5		;800f
 L_8012:
 	jp L_8238		;8012
 L_8015:
@@ -1759,7 +1757,7 @@ DATA_leido_8E06:
 	defb 000h,000h,000h,002h,0ffh,000h	; 8e06
 
 ; ======================================================================
-; CODIGO 0x8e0c..0x8f11  (261 bytes)
+; CODIGO 0x8e0c..0x8fde  (466 bytes)
 ; ======================================================================
 
 
@@ -1907,45 +1905,143 @@ L_8F06:
 	ret z			;8f0e
 	or a			;8f0f
 	ret			;8f10
+L_8F11:
+	ret			;8f11
+L_8F12:
+	ld a,0afh		;8f12   ; con A=0xAF, o con A=0 entrando en 0x8F13 (el byte 0xAF es `xor a`): pone la RAM en la pagina 1 (ENASLT con 0xF342) y cambia 0x4000-0x4FFF por 0xC000-0xCFFF (A distinto de 0) o 0x5000-0x70EF por 0xD000-0xF0EF (A=0); luego devuelve el cartucho a la pagina 1
+	push hl			;8f14
+	push af			;8f15
+	call 0465fh		;8f16
+	pop bc			;8f19
+	pop hl			;8f1a
+	push af			;8f1b
+	push hl			;8f1c
+	push bc			;8f1d
+	ld a,(0f342h)		;8f1e
+	ld h,040h		;8f21
+	call 00024h		;8f23   ; BIOS ENASLT - Switches to specified slot and page definitively
+	pop af			;8f26
+	pop hl			;8f27
+	call L_8F34		;8f28
+	pop af			;8f2b
+	push hl			;8f2c
+	ld h,040h		;8f2d
+	call 00024h		;8f2f   ; BIOS ENASLT - Switches to specified slot and page definitively
+	pop hl			;8f32
+	ret			;8f33
+L_8F34:
+	or a			;8f34
+	jr z,L_8F4D		;8f35
+	push hl			;8f37
+	ld hl,0c000h		;8f38
+	ld de,04000h		;8f3b
+	ld bc,01000h		;8f3e
+	call L_8F56		;8f41
+	ld hl,(070f0h)		;8f44
+	pop de			;8f47
+	ld (070f0h),de		;8f48
+	ret			;8f4c
+L_8F4D:
+	ld hl,0d000h		;8f4d
+	ld de,05000h		;8f50
+	ld bc,020f0h		;8f53
+L_8F56:
+	ld a,(hl)			;8f56
+	ex af,af'			;8f57
+	ld a,(de)			;8f58
+	ld (hl),a			;8f59
+	ex af,af'			;8f5a
+	ld (de),a			;8f5b
+	inc hl			;8f5c
+	inc de			;8f5d
+	dec bc			;8f5e
+	ld a,b			;8f5f
+	or c			;8f60
+	jr nz,L_8F56		;8f61
+	ret			;8f63
+L_8F64:
+	ld a,(0ffa7h)		;8f64   ; solo con disco: si el gancho H.PHYD (0xFFA7) es `ret` vuelve; si no, deja el gancho H.KEYI en `ret`, cambia la RAM con p02:8F12 y p02:8F13, pone el banco 31 en 0x6000 y salta a 0x6000 (p02:8FAA, que el trazado no sigue: cartucho.LLAMADAS_AJENAS)
+	cp 0c9h		;8f67
+	ret z			;8f69
+	ld a,(0fd9ah)		;8f6a
+	ld bc,(0fd9bh)		;8f6d
+	push af			;8f71
+	push bc			;8f72
+	ld a,0c9h		;8f73
+	ld (0fd9ah),a		;8f75
+	call L_8F86		;8f78
+	di			;8f7b
+	pop bc			;8f7c
+	pop af			;8f7d
+	ld (0fd9ah),a		;8f7e
+	ld (0fd9bh),bc		;8f81
+	ret			;8f85
+L_8F86:
+	call L_8FB7		;8f86
+	di			;8f89
+	ld de,(0c000h)		;8f8a
+	ld (0c000h),sp		;8f8e
+	ld hl,(0c000h)		;8f92
+	ld (0c000h),de		;8f95
+	call L_8F12		;8f99
+	ld sp,0d000h		;8f9c
+	call L_8F12+1		;8f9f
+	ld a,01fh		;8fa2
+	call 04c07h		;8fa4
+	ld sp,0d200h		;8fa7
+	jp 06000h		;8faa
+L_8FAD:
+	call 04b8fh		;8fad
+	ld a,(0f3e0h)		;8fb0
+	set 5,a		;8fb3
+	jr L_8FBF		;8fb5
+L_8FB7:
+	call 04b78h		;8fb7
+	ld a,(0f3e0h)		;8fba
+	res 5,a		;8fbd
+L_8FBF:
+	ld b,a			;8fbf
+	ld c,001h		;8fc0
+	jp 00047h		;8fc2   ; BIOS WRTVDP - Writes data in the VDP-register
+L_8FC5:
+	di			;8fc5
+	call L_8F12		;8fc6
+	ld sp,0d000h		;8fc9
+	push hl			;8fcc
+	call L_8F12+1		;8fcd
+	pop hl			;8fd0
+	ld sp,hl			;8fd1
+	call 06003h		;8fd2
+	ld a,001h		;8fd5
+	call 04c07h		;8fd7
+	call L_8FAD		;8fda
+	ret			;8fdd
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_8F11: ninguna partida de la campana lo lee
+; DATOS sin_leer_8FDE: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (499 bytes)
-;   0x8f11..0x9104  (499 bytes)
-DATA_sin_leer_8F11:
-	defb 0c9h,03eh,0afh,0e5h,0f5h,0cdh,05fh,046h,0c1h,0e1h,0f5h,0e5h,0c5h,03ah,042h,0f3h	; 8f11  .>...._F.....:B.
-	defb 026h,040h,0cdh,024h,000h,0f1h,0e1h,0cdh,034h,08fh,0f1h,0e5h,026h,040h,0cdh,024h	; 8f21  &@.$....4...&@.$
-	defb 000h,0e1h,0c9h,0b7h,028h,016h,0e5h,021h,000h,0c0h,011h,000h,040h,001h,000h,010h	; 8f31  ....(..!....@...
-	defb 0cdh,056h,08fh,02ah,0f0h,070h,0d1h,0edh,053h,0f0h,070h,0c9h,021h,000h,0d0h,011h	; 8f41  .V.*.p..S.p.!...
-	defb 000h,050h,001h,0f0h,020h,07eh,008h,01ah,077h,008h,012h,023h,013h,00bh,078h,0b1h	; 8f51  .P.. ~..w..#..x.
-	defb 020h,0f3h,0c9h,03ah,0a7h,0ffh,0feh,0c9h,0c8h,03ah,09ah,0fdh,0edh,04bh,09bh,0fdh	; 8f61   ..:.....:...K..
-	defb 0f5h,0c5h,03eh,0c9h,032h,09ah,0fdh,0cdh,086h,08fh,0f3h,0c1h,0f1h,032h,09ah,0fdh	; 8f71  ..>.2........2..
-	defb 0edh,043h,09bh,0fdh,0c9h,0cdh,0b7h,08fh,0f3h,0edh,05bh,000h,0c0h,0edh,073h,000h	; 8f81  .C........[...s.
-	defb 0c0h,02ah,000h,0c0h,0edh,053h,000h,0c0h,0cdh,012h,08fh,031h,000h,0d0h,0cdh,013h	; 8f91  .*...S.....1....
-	defb 08fh,03eh,01fh,0cdh,007h,04ch,031h,000h,0d2h,0c3h,000h,060h,0cdh,08fh,04bh,03ah	; 8fa1  .>...L1....`..K:
-	defb 0e0h,0f3h,0cbh,0efh,018h,008h,0cdh,078h,04bh,03ah,0e0h,0f3h,0cbh,0afh,047h,00eh	; 8fb1  .......xK:....G.
-	defb 001h,0c3h,047h,000h,0f3h,0cdh,012h,08fh,031h,000h,0d0h,0e5h,0cdh,013h,08fh,0e1h	; 8fc1  ..G.....1.......
-	defb 0f9h,0cdh,003h,060h,03eh,001h,0cdh,007h,04ch,0cdh,0adh,08fh,0c9h,008h,060h,002h	; 8fd1  ...`>...L.....`.
-	defb 0a6h,011h,060h,005h,0a6h,004h,060h,002h,0a6h,002h,0eah,003h,060h,003h,0a6h,081h	; 8fe1  ..`...`.....`...
-	defb 060h,003h,0a6h,004h,060h,015h,0a6h,005h,060h,004h,0a6h,004h,060h,08bh,0a6h,0e6h	; 8ff1  `...`...`...`...
-	defb 0aeh,0aeh,0a6h,0a6h,060h,060h,0e6h,0a6h,0a6h,005h,0eah,083h,0e6h,0a6h,0a6h,005h	; 9001  ....``..........
-	defb 0eah,002h,0a6h,004h,0eah,002h,0a6h,018h,0eah,008h,0a6h,000h,008h,06fh,002h,0a6h	; 9011  .............o..
-	defb 011h,06fh,005h,0a6h,004h,06fh,002h,0a6h,002h,0eah,003h,06fh,003h,0a6h,081h,06fh	; 9021  .o...o.....o...o
-	defb 003h,0a6h,004h,06fh,015h,0a6h,005h,06fh,004h,0a6h,004h,06fh,08bh,0a6h,0e6h,0aeh	; 9031  ...o...o...o....
-	defb 0aeh,0a6h,0a6h,06fh,06fh,0e6h,0a6h,0a6h,005h,0eah,083h,0e6h,0a6h,0a6h,005h,0eah	; 9041  ...oo...........
-	defb 002h,0a6h,004h,0eah,002h,0a6h,018h,0eah,008h,0a6h,000h,081h,001h,005h,003h,002h	; 9051  ................
-	defb 001h,084h,040h,080h,0feh,0f8h,004h,000h,002h,080h,004h,0c0h,0fbh,080h,000h,000h	; 9061  ..@.............
-	defb 03ch,07fh,00eh,019h,010h,021h,023h,000h,000h,03ch,0ffh,038h,0feh,018h,07eh,000h	; 9071  <....!#..<.8..~.
-	defb 038h,0feh,038h,00ch,004h,0feh,040h,003h,004h,07fh,03fh,07fh,07fh,003h,027h,04fh	; 9081  8.8...@...?...'O
-	defb 04fh,02fh,00fh,027h,027h,023h,031h,0e4h,0f2h,072h,072h,064h,0e0h,0fch,0feh,018h	; 9091  O/.''#1..rrd....
-	defb 00fh,003h,07fh,07fh,03fh,007h,000h,07fh,0f7h,0c3h,001h,0f3h,0e3h,001h,000h,03ch	; 90a1  ....?..........<
-	defb 081h,081h,0c7h,0feh,038h,0feh,07ch,001h,01eh,07fh,01ch,033h,027h,06fh,04fh,083h	; 90b1  ....8.|....3'oO.
-	defb 038h,07eh,03ch,00fh,0c3h,0f1h,0f9h,0feh,0feh,004h,00ch,018h,0f0h,0feh,0f8h,0b9h	; 90c1  8~<.............
-	defb 07eh,07fh,0ffh,0ffh,0feh,07eh,09dh,04fh,02fh,027h,023h,031h,01ch,000h,000h,0f6h	; 90d1  ~....~.O/'#1....
-	defb 0ech,0d9h,0ffh,0feh,078h,000h,000h,0c8h,003h,0e4h,084h,0ech,0cch,098h,0f0h,000h	; 90e1  ....x...........
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,004h	; 90f1  ................
-	defb 092h,008h,092h	; 9101
+;   nadie (294 bytes)
+;   0x8fde..0x9104  (294 bytes)
+DATA_sin_leer_8FDE:
+	defb 008h,060h,002h,0a6h,011h,060h,005h,0a6h,004h,060h,002h,0a6h,002h,0eah,003h,060h	; 8fde  .`...`...`.....`
+	defb 003h,0a6h,081h,060h,003h,0a6h,004h,060h,015h,0a6h,005h,060h,004h,0a6h,004h,060h	; 8fee  ...`...`...`...`
+	defb 08bh,0a6h,0e6h,0aeh,0aeh,0a6h,0a6h,060h,060h,0e6h,0a6h,0a6h,005h,0eah,083h,0e6h	; 8ffe  .......``.......
+	defb 0a6h,0a6h,005h,0eah,002h,0a6h,004h,0eah,002h,0a6h,018h,0eah,008h,0a6h,000h,008h	; 900e  ................
+	defb 06fh,002h,0a6h,011h,06fh,005h,0a6h,004h,06fh,002h,0a6h,002h,0eah,003h,06fh,003h	; 901e  o...o...o.....o.
+	defb 0a6h,081h,06fh,003h,0a6h,004h,06fh,015h,0a6h,005h,06fh,004h,0a6h,004h,06fh,08bh	; 902e  ..o...o...o...o.
+	defb 0a6h,0e6h,0aeh,0aeh,0a6h,0a6h,06fh,06fh,0e6h,0a6h,0a6h,005h,0eah,083h,0e6h,0a6h	; 903e  ......oo........
+	defb 0a6h,005h,0eah,002h,0a6h,004h,0eah,002h,0a6h,018h,0eah,008h,0a6h,000h,081h,001h	; 904e  ................
+	defb 005h,003h,002h,001h,084h,040h,080h,0feh,0f8h,004h,000h,002h,080h,004h,0c0h,0fbh	; 905e  .....@..........
+	defb 080h,000h,000h,03ch,07fh,00eh,019h,010h,021h,023h,000h,000h,03ch,0ffh,038h,0feh	; 906e  ...<....!#..<.8.
+	defb 018h,07eh,000h,038h,0feh,038h,00ch,004h,0feh,040h,003h,004h,07fh,03fh,07fh,07fh	; 907e  .~.8.8...@...?..
+	defb 003h,027h,04fh,04fh,02fh,00fh,027h,027h,023h,031h,0e4h,0f2h,072h,072h,064h,0e0h	; 908e  .'OO/.''#1..rrd.
+	defb 0fch,0feh,018h,00fh,003h,07fh,07fh,03fh,007h,000h,07fh,0f7h,0c3h,001h,0f3h,0e3h	; 909e  .......?........
+	defb 001h,000h,03ch,081h,081h,0c7h,0feh,038h,0feh,07ch,001h,01eh,07fh,01ch,033h,027h	; 90ae  ..<....8.|....3'
+	defb 06fh,04fh,083h,038h,07eh,03ch,00fh,0c3h,0f1h,0f9h,0feh,0feh,004h,00ch,018h,0f0h	; 90be  oO.8~<..........
+	defb 0feh,0f8h,0b9h,07eh,07fh,0ffh,0ffh,0feh,07eh,09dh,04fh,02fh,027h,023h,031h,01ch	; 90ce  ...~....~.O/'#1.
+	defb 000h,000h,0f6h,0ech,0d9h,0ffh,0feh,078h,000h,000h,0c8h,003h,0e4h,084h,0ech,0cch	; 90de  .......x........
+	defb 098h,0f0h,000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 90ee  ................
+	defb 0ffh,0ffh,004h,092h,008h,092h	; 90fe
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_9104: lo leen p00:4629, p00:462B jugando (tools/cobertura.py) (2

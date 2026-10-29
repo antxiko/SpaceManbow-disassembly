@@ -630,52 +630,377 @@ p28 0x7604 28 29 23  # se ejecuta jugando (tools/cobertura.py): se llega desde p
 p28 0x76E7 28 29 30  # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 p28 0x76F4 28 29 24  # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 # --- fin de las semillas medidas ---
+# --- A MANO: rutinas enteras que ni la campana ni el trazado alcanzan y ningun puntero nombra (leidas una a una) ---
+p00 0x4952 4 5 6  # rutina: 16 veces p00:46AC con 8 bytes, DE + 0x80 cada vez
+p00 0x4967 4 5 6  # rutina con C=0xFF: lee D y E y una cadena acabada en 0xFF (0xFE = otra posicion D, E) y pasa cada letra (and C) a p00:4983, D + 8 por letra
+p00 0x496B 4 5 6  # la misma con C=0: cada letra sale como 0
+p00 0x4995 4 5 6  # rutina gemela de p00:4983 (p00:49CB y p00:4838 con BC=0x0808, A=1)
+p00 0x49A7 4 5 6  # rutina gemela de p00:4983 con p00:487C y A=0x48
+p00 0x4C1C 4 5 6  # rutina de banco de 0x9000 y 0xB000 (cartucho.RUTINAS_BANCO); ninguna partida la llama
+p01 0x64F6 1 2 3  # rutina: con 0xFAF6=1 pasa 16 veces por p01:6960 y p00:49D9 y copia la fuente de 37 letras de p01:653C con p01:692E
+p04 0x68D4 4 5 6  # dos entradas que cargan (ix+0x36) o (iy+0x36) y saltan hacia delante a codigo trazado
+p04 0x68D9 4 5 6  # la segunda entrada, con iy
+p04 0x690F 4 5 6  # rutina: p04:68DE con BC=0 y suma C y B a la posicion de IY para ponerla en IX
+p04 0x6CEE 4 5 6  # rutina: guarda AF, p04:6D2C y salta segun Z
+p04 0x6D0E 4 5 6  # rutina: si (ix+0x2A) no es 0xFF copia (ix+0x28..0x2B) a (ix+0x0A,9,8,7)
+p04 0x75DE 4 5 6  # rutina: posicion de IX mas el desplazamiento de 0xCA1A/0xCA1C
+p04 0x7B51 4 5 6  # rutina con HL = 0xDDA0
+p04 0x7B56 4 5 6  # la misma con HL = 0xD950
+p05 0x8426 4 5 6  # rutina: p04:7186 con la tabla de p05:842F y salta a p04:7306
+p05 0x8581 4 5 6  # rutina: palabra numero (ix+0x20) de la tabla de p05:858F
+p07 0x802E 4 7 8  # rutina: la misma llamada con IY = 0xCAC0 y 0xCAE0
+p07 0x8275 4 7 8  # rutina: la misma llamada con IY = 0xCAC0 y 0xCAE0
+p09 0x7085 9 10 11  # rutina: borra 0x7F bytes en 0xC000, 0xC180 y 0xC280 con p00:4648
+p10 0x8073 9 10 11  # rutina: escribe 0xFF 65536 veces en el puerto que da el byte 0x0007 de la BIOS
+p10 0x8085 9 10 11  # rutina: escribe 0..255 en el mismo puerto
+p10 0x808F 9 10 11  # rutina: llama a p10:8157 con A=8, mira los bits 5 y 6 y escribe el registro 23 del VDP con la BIOS (0x0047)
+# --- fin de lo puesto a mano ---
+# --- TABLAS DE SALTOS (las reescribe tools/tablas_saltos.py desde cartucho.TABLAS_SALTO) ---
+p00 0x5104 4 5 6  # entrada 0 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x50CD 4 5 6  # entrada 2 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x4F0D 4 5 6  # entrada 12 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x4F1C 4 5 6  # entrada 13 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x4F00 4 5 6  # entrada 14 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5291 4 5 6  # entrada 15 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5305 4 5 6  # entrada 16 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x535A 4 5 6  # entrada 17 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x53BB 4 5 6  # entrada 18 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xAE2A 4 5 6  # entrada 19 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8009 4 5 6  # entrada 20 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5438 4 5 6  # entrada 21 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x808F 4 5 6  # entrada 22 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x54C9 4 5 6  # entrada 23 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5592 4 5 6  # entrada 24 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x576C 4 5 6  # entrada 25 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5BB5 4 5 6  # entrada 26 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBA41 4 5 6  # entrada 27 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBAAB 4 5 6  # entrada 28 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBB75 4 5 6  # entrada 29 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBC53 4 5 6  # entrada 30 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBCFE 4 5 6  # entrada 31 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x500A 4 5 6  # entrada 32 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBD18 4 5 6  # entrada 33 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBD7A 4 5 6  # entrada 34 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBDA1 4 5 6  # entrada 35 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBDE7 4 5 6  # entrada 36 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBE6B 4 5 6  # entrada 37 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8150 4 5 6  # entrada 38 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8229 4 5 6  # entrada 39 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x82D0 4 5 6  # entrada 40 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8337 4 5 6  # entrada 41 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8347 4 5 6  # entrada 42 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x83B5 4 5 6  # entrada 43 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8431 4 5 6  # entrada 44 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8512 4 5 6  # entrada 45 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x86A4 4 5 6  # entrada 46 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x875F 4 5 6  # entrada 47 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5CDF 4 5 6  # entrada 48 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x87BB 4 5 6  # entrada 49 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8809 4 5 6  # entrada 50 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x890F 4 5 6  # entrada 51 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x891F 4 5 6  # entrada 52 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8AAE 4 5 6  # entrada 53 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5161 4 5 6  # entrada 54 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8BF9 4 5 6  # entrada 55 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8C3A 4 5 6  # entrada 56 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8D2B 4 5 6  # entrada 57 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA191 4 5 6  # entrada 58 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA2B7 4 5 6  # entrada 59 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA536 4 5 6  # entrada 60 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA667 4 5 6  # entrada 61 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA853 4 5 6  # entrada 62 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA58B 4 5 6  # entrada 63 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8D3B 4 5 6  # entrada 64 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5A8A 4 5 6  # entrada 65 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8E94 4 5 6  # entrada 66 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8FA7 4 5 6  # entrada 67 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9024 4 5 6  # entrada 68 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x903F 4 5 6  # entrada 69 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5B31 4 5 6  # entrada 70 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x91C9 4 5 6  # entrada 71 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x92F5 4 5 6  # entrada 72 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x939A 4 5 6  # entrada 73 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9476 4 5 6  # entrada 74 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9480 4 5 6  # entrada 75 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x94FA 4 5 6  # entrada 76 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9647 4 5 6  # entrada 77 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x96A0 4 5 6  # entrada 78 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5AA8 4 5 6  # entrada 79 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p04 0x6458 4 5 6  # entrada 80 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9940 4 5 6  # entrada 81 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x994C 4 5 6  # entrada 82 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x99A3 4 5 6  # entrada 83 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5911 4 5 6  # entrada 84 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBF29 4 5 6  # entrada 85 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB06F 4 5 6  # entrada 87 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB6C8 4 5 6  # entrada 88 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x980B 4 5 6  # entrada 89 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xBA28 4 5 6  # entrada 91 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB6E7 4 5 6  # entrada 93 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5B2A 4 5 6  # entrada 95 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9BFA 4 5 6  # entrada 96 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9A40 4 5 6  # entrada 97 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9FFF 4 5 6  # entrada 98 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA300 4 5 6  # entrada 99 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x5D8A 4 5 6  # entrada 100 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9C72 4 5 6  # entrada 101 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9D1D 4 5 6  # entrada 102 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p00 0x511E 4 5 6  # entrada 103 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9A82 4 5 6  # entrada 104 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9F4D 4 5 6  # entrada 109 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9FBE 4 5 6  # entrada 110 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9D1E 4 5 6  # entrada 111 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB0C1 4 5 6  # entrada 112 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x8AF1 4 5 6  # entrada 113 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9461 4 5 6  # entrada 114 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9E7A 4 5 6  # entrada 115 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x9E7B 4 5 6  # entrada 116 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB42A 4 5 6  # entrada 117 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB0E3 4 5 6  # entrada 118 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xAA48 4 5 6  # entrada 119 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p05 0x96C1 4 5 6  # entrada 120 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xA00F 4 5 6  # entrada 121 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB54B 4 5 6  # entrada 122 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p06 0xB782 4 5 6  # entrada 123 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
+p04 0x6DF5 4 5 6  # entrada 0 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5111 4 5 6  # entrada 0 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x50D0 4 5 6  # entrada 2 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x4F0D 4 5 6  # entrada 12 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E35 4 5 6  # entrada 13 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x4F33 4 5 6  # entrada 13 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x4F00 4 5 6  # entrada 14 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5288 4 5 6  # entrada 15 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x52F4 4 5 6  # entrada 16 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x534E 4 5 6  # entrada 17 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x53C4 4 5 6  # entrada 18 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E44 4 5 6  # entrada 19 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xAE0A 4 5 6  # entrada 19 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8000 4 5 6  # entrada 20 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x542C 4 5 6  # entrada 21 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x807F 4 5 6  # entrada 22 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x54C1 4 5 6  # entrada 23 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x557C 4 5 6  # entrada 24 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5763 4 5 6  # entrada 25 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6DD3 4 5 6  # entrada 26 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5BC2 4 5 6  # entrada 26 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6DE1 4 5 6  # entrada 27 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBA3B 4 5 6  # entrada 27 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBA9F 4 5 6  # entrada 28 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBB69 4 5 6  # entrada 29 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x66C2 4 5 6  # entrada 30 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBC3A 4 5 6  # entrada 30 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBCEC 4 5 6  # entrada 31 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x4FF1 4 5 6  # entrada 32 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBD0F 4 5 6  # entrada 33 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBD74 4 5 6  # entrada 34 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBD9B 4 5 6  # entrada 35 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBDDB 4 5 6  # entrada 36 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBE5F 4 5 6  # entrada 37 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8170 4 5 6  # entrada 38 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x821D 4 5 6  # entrada 39 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x82CA 4 5 6  # entrada 40 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E09 4 5 6  # entrada 41 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8338 4 5 6  # entrada 41 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8341 4 5 6  # entrada 42 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x83BF 4 5 6  # entrada 43 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x844D 4 5 6  # entrada 44 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x84F9 4 5 6  # entrada 45 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8694 4 5 6  # entrada 46 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x879B 4 5 6  # entrada 47 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5CF3 4 5 6  # entrada 48 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x87C1 4 5 6  # entrada 49 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x87F1 4 5 6  # entrada 50 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x890F 4 5 6  # entrada 51 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8910 4 5 6  # entrada 52 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8AAE 4 5 6  # entrada 53 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x514C 4 5 6  # entrada 54 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8BF3 4 5 6  # entrada 55 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8C34 4 5 6  # entrada 56 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8D2B 4 5 6  # entrada 57 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA17B 4 5 6  # entrada 58 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA2B1 4 5 6  # entrada 59 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA530 4 5 6  # entrada 60 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA647 4 5 6  # entrada 61 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA853 4 5 6  # entrada 62 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA57F 4 5 6  # entrada 63 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8D2C 4 5 6  # entrada 64 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5A84 4 5 6  # entrada 65 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8E81 4 5 6  # entrada 66 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8F94 4 5 6  # entrada 67 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x903C 4 5 6  # entrada 68 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E1D 4 5 6  # entrada 69 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9054 4 5 6  # entrada 69 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5B2B 4 5 6  # entrada 70 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x91AC 4 5 6  # entrada 71 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x92E4 4 5 6  # entrada 72 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x937B 4 5 6  # entrada 73 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9476 4 5 6  # entrada 74 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9477 4 5 6  # entrada 75 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9508 4 5 6  # entrada 76 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9655 4 5 6  # entrada 77 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9658 4 5 6  # entrada 78 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5AA2 4 5 6  # entrada 79 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x983D 4 5 6  # entrada 80 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9940 4 5 6  # entrada 81 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x999A 4 5 6  # entrada 83 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x58F0 4 5 6  # entrada 84 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBF14 4 5 6  # entrada 85 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x66C1 4 5 6  # entrada 86 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB066 4 5 6  # entrada 87 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB6C8 4 5 6  # entrada 88 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9805 4 5 6  # entrada 89 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xBA28 4 5 6  # entrada 91 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB6DE 4 5 6  # entrada 93 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E6D 4 5 6  # entrada 94 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9A39 4 5 6  # entrada 94 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E6E 4 5 6  # entrada 95 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5B19 4 5 6  # entrada 95 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9C3B 4 5 6  # entrada 96 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9A41 4 5 6  # entrada 97 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9FFF 4 5 6  # entrada 98 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA2D8 4 5 6  # entrada 99 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5DA0 4 5 6  # entrada 100 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9C6C 4 5 6  # entrada 101 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9D1D 4 5 6  # entrada 102 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p00 0x5112 4 5 6  # entrada 103 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9A7C 4 5 6  # entrada 104 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9AD7 4 5 6  # entrada 105 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9B38 4 5 6  # entrada 106 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9F47 4 5 6  # entrada 109 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9FB0 4 5 6  # entrada 110 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9D60 4 5 6  # entrada 111 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB0C1 4 5 6  # entrada 112 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x8AD7 4 5 6  # entrada 113 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9473 4 5 6  # entrada 114 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9E7A 4 5 6  # entrada 115 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p04 0x6E81 4 5 6  # entrada 116 de la tabla de p04:64D1 (palabra +0), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x9E7C 4 5 6  # entrada 116 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB423 4 5 6  # entrada 117 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB0CC 4 5 6  # entrada 118 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xAA19 4 5 6  # entrada 119 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p05 0x96AC 4 5 6  # entrada 120 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xA000 4 5 6  # entrada 121 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB513 4 5 6  # entrada 122 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p06 0xB76C 4 5 6  # entrada 123 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+p28 0x72DE 28 29 23  # entrada 0 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x72F4 28 29 23  # entrada 1 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7311 28 29 23  # entrada 4 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x733B 28 29 23  # entrada 5 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x734F 28 29 23  # entrada 6 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x735F 28 29 23  # entrada 7 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7371 28 29 23  # entrada 8 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7380 28 29 23  # entrada 9 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x738B 28 29 23  # entrada 10 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x73AA 28 29 23  # entrada 11 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x73FD 28 29 23  # entrada 12 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7407 28 29 23  # entrada 13 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x742A 28 29 23  # entrada 14 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7435 28 29 23  # entrada 15 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x743B 28 29 23  # entrada 16 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7445 28 29 23  # entrada 17 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7460 28 29 23  # entrada 18 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x746F 28 29 23  # entrada 19 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7475 28 29 23  # entrada 20 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x747B 28 29 23  # entrada 21 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7485 28 29 23  # entrada 22 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x748F 28 29 23  # entrada 23 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x749A 28 29 23  # entrada 24 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x74FE 28 29 23  # entrada 25 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7509 28 29 23  # entrada 26 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7511 28 29 23  # entrada 27 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7529 28 29 23  # entrada 28 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7543 28 29 23  # entrada 29 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x7546 28 29 23  # entrada 30 de la tabla de p28:72A0 (palabra +0), la usa el salto p28:729F; reparto con que corre jugando
+p28 0x75AC 28 29 23  # entrada 0 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75B7 28 29 23  # entrada 6 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75D2 28 29 23  # entrada 7 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75E9 28 29 23  # entrada 8 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75F3 28 29 23  # entrada 9 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75F5 28 29 23  # entrada 10 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75F7 28 29 23  # entrada 11 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x75FE 28 29 23  # entrada 12 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x7604 28 29 23  # entrada 13 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x76E7 28 29 23  # entrada 14 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p28 0x76F4 28 29 23  # entrada 15 de la tabla de p28:758C (palabra +0), la usa el salto p28:758B; reparto con que corre jugando
+p01 0x6000 1 2 3  # jp 0 del vector de p01:6000
+p01 0x6003 1 2 3  # jp 1 del vector de p01:6000
+p01 0x6006 1 2 3  # jp 2 del vector de p01:6000
+p01 0x6009 1 2 3  # jp 3 del vector de p01:6000
+p01 0x600C 1 2 3  # jp 4 del vector de p01:6000
+p01 0x600F 1 2 3  # jp 5 del vector de p01:6000
+p01 0x6012 1 2 3  # jp 6 del vector de p01:6000
+p01 0x6015 1 2 3  # jp 7 del vector de p01:6000
+p01 0x6018 1 2 3  # jp 8 del vector de p01:6000
+p01 0x601B 1 2 3  # jp 9 del vector de p01:6000
+p01 0x601E 1 2 3  # jp 10 del vector de p01:6000
+p02 0x8000 4 2 3  # jp 0 del vector de p02:8000
+p02 0x8003 4 2 3  # jp 1 del vector de p02:8000
+p02 0x8006 4 2 3  # jp 2 del vector de p02:8000
+p02 0x8009 4 2 3  # jp 3 del vector de p02:8000
+p02 0x800C 4 2 3  # jp 4 del vector de p02:8000
+p02 0x800F 4 2 3  # jp 5 del vector de p02:8000
+p02 0x8012 4 2 3  # jp 6 del vector de p02:8000
+p02 0x8015 4 2 3  # jp 7 del vector de p02:8000
+p02 0x8018 4 2 3  # jp 8 del vector de p02:8000
+p04 0x6000 4 5 6  # jp 0 del vector de p04:6000
+p04 0x6003 4 5 6  # jp 1 del vector de p04:6000
+p04 0x6006 4 5 6  # jp 2 del vector de p04:6000
+p04 0x6009 4 5 6  # jp 3 del vector de p04:6000
+p04 0x600C 4 5 6  # jp 4 del vector de p04:6000
+p04 0x600F 4 5 6  # jp 5 del vector de p04:6000
+p04 0x6012 4 5 6  # jp 6 del vector de p04:6000
+p04 0x6015 4 5 6  # jp 7 del vector de p04:6000
+p04 0x6018 4 5 6  # jp 8 del vector de p04:6000
+p04 0x601B 4 5 6  # jp 9 del vector de p04:6000
+p09 0x6D00 9 10 11  # jp 0 del vector de p09:6D00
+p09 0x6D03 9 10 11  # jp 1 del vector de p09:6D00
+p09 0x6D06 9 10 11  # jp 2 del vector de p09:6D00
+p09 0x6D09 9 10 11  # jp 3 del vector de p09:6D00
+p09 0x6D0C 9 10 11  # jp 4 del vector de p09:6D00
+p09 0x6D0F 9 10 11  # jp 5 del vector de p09:6D00
+p09 0x6D12 9 10 11  # jp 6 del vector de p09:6D00
+p09 0x6D15 9 10 11  # jp 7 del vector de p09:6D00
+p09 0x6D18 9 10 11  # jp 8 del vector de p09:6D00
+p09 0x6D1B 9 10 11  # jp 9 del vector de p09:6D00
+p28 0x6000 28 29 23  # jp 0 del vector de p28:6000
+p28 0x6003 28 29 23  # jp 1 del vector de p28:6000
+p28 0x6006 28 29 23  # jp 2 del vector de p28:6000
+# --- fin de las tablas de saltos ---
 # --- CODIGO HUERFANO (tools/huerfanas.py --semillas): rutinas enteras en tramos que ni el trazado ni la campana alcanzan ---
 p00 0x4432 28 29 0  # codigo huerfano: 32 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x4432
 p00 0x448B 28 29 0  # codigo huerfano: 7 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x448B
-p00 0x462E 28 29 0  # codigo huerfano: 11 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x462E
-p00 0x465F 28 29 0  # codigo huerfano: 25 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x465F
-p00 0x46A2 28 29 0  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x46A2
-p00 0x46C0 28 29 0  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x46C0
-p00 0x4713 9 10 11  # codigo huerfano: 18 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x4713
-p00 0x474A 9 10 11  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x474A
-p00 0x48C8 9 10 11  # codigo huerfano: 67 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x48C8
-p00 0x4C07 9 10 11  # codigo huerfano: 7 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x4C07
-p00 0x50CD 4 5 6  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x50CD
-p00 0x5101 4 5 6  # codigo huerfano: 16 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5101
-p00 0x5111 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5111
-p00 0x53BB 4 5 6  # codigo huerfano: 9 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x53BB
+p00 0x462E 4 5 6  # codigo huerfano: 11 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x462E
+p00 0x46A2 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x46A2
+p00 0x46C0 4 5 6  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x46C0
+p00 0x4713 4 5 6  # codigo huerfano: 18 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x4713
+p00 0x474A 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x474A
+p00 0x48C8 4 5 6  # codigo huerfano: 67 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x48C8
 p00 0x54B8 4 5 6  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x54B8
-p00 0x5B46 4 5 6  # codigo huerfano: 28 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5B46
 p00 0x5C68 4 5 6  # codigo huerfano: 28 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x5C68
-p01 0x6015 1 2 3  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6015
 p01 0x604B 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x604B
 p01 0x6249 1 2 3  # codigo huerfano: 13 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x6249
-p02 0x8015 1 2 3  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8015
-p02 0x828A 1 2 3  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x828A
-p02 0x844A 1 2 3  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x844A
-p02 0x8451 1 2 3  # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8451
-p02 0x8637 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8637
-p02 0x8D29 1 2 3  # codigo huerfano: 37 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8D29
-p03 0xA865 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA865
-p03 0xA8CD 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA8CD
-p03 0xA920 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA920
-p03 0xA945 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA945
-p03 0xA965 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA965
-p03 0xA98E 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA98E
-p03 0xA9B6 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA9B6
-p03 0xA9EA 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA9EA
-p03 0xAA09 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA09
-p03 0xAA2E 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA2E
-p03 0xAA56 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA56
-p03 0xAA78 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA78
-p03 0xAAA9 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAA9
-p03 0xAAD0 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAD0
-p03 0xAAEE 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAEE
-p03 0xAB14 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB14
-p03 0xAB36 21 22 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB36
-p03 0xAB94 21 22 3  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB94
-p04 0x6015 4 5 6  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6015
+p02 0x844A 4 2 3  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x844A
+p02 0x8451 4 2 3  # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8451
+p02 0x8637 4 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8637
+p02 0x8D29 4 2 3  # codigo huerfano: 37 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8D29
+p03 0xA865 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA865
+p03 0xA8CD 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA8CD
+p03 0xA920 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA920
+p03 0xA945 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA945
+p03 0xA965 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA965
+p03 0xA98E 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA98E
+p03 0xA9B6 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA9B6
+p03 0xA9EA 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xA9EA
+p03 0xAA09 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA09
+p03 0xAA2E 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA2E
+p03 0xAA56 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA56
+p03 0xAA78 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAA78
+p03 0xAAA9 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAA9
+p03 0xAAD0 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAD0
+p03 0xAAEE 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAAEE
+p03 0xAB14 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB14
+p03 0xAB36 1 2 3  # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB36
+p03 0xAB94 1 2 3  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0xAB94
 p04 0x6074 4 5 6  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6074
 p04 0x62C4 4 5 6  # codigo huerfano: 7 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x62C4
 p04 0x685D 4 5 6  # codigo huerfano: 20 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x685D
@@ -683,28 +1008,13 @@ p04 0x6B15 4 5 6  # codigo huerfano: 14 bytes que acaban en un salto; el trazado
 p04 0x6B8E 4 5 6  # codigo huerfano: 6 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6B8E
 p04 0x6D96 4 5 6  # codigo huerfano: 61 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D96
 p04 0x76F0 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x76F0
-p04 0x78E1 4 7 8  # codigo huerfano: 5 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x78E1
 p04 0x7A96 4 7 8  # codigo huerfano: 9 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x7A96
 p04 0x7C0F 4 7 8  # codigo huerfano: 23 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x7C0F
 p04 0x7C26 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x7C26
 p05 0x8416 4 5 6  # codigo huerfano: 10 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8416
 p05 0x88C6 4 5 6  # codigo huerfano: 9 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x88C6
-p05 0x890F 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x890F
 p05 0x8923 4 5 6  # codigo huerfano: 4 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8923
 p05 0x8BBF 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8BBF
 p05 0x8BD6 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8BD6
-p05 0x9476 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x9476
-p05 0x9A40 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x9A40
-p05 0x9E7B 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x9E7B
-p05 0x9FFF 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x9FFF
-p06 0xB0C1 4 5 6  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xB0C1
-p09 0x6D03 9 10 11  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D03
-p09 0x6D06 9 10 11  # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D06
-p09 0x6D69 9 10 11  # codigo huerfano: 12 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D69
-p09 0x707D 9 10 11  # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x707D
 p09 0x7EBD 9 10 11  # codigo huerfano: 17 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x7EBD
-p28 0x75F3 28 29 23  # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x75F3
-p28 0x75F5 28 29 23  # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x75F5
-p10 0x80F8 9 10 11  # codigo huerfano: 87 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x80F8
 p10 0x814F 9 10 11  # codigo huerfano: 8 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x814F
-p10 0x8157 9 10 11  # codigo huerfano: 8 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8157

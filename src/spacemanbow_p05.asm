@@ -20,6 +20,7 @@ L_8000:
 	jr z,L_803F		;8004
 	dec a			;8006
 	jr z,L_804E		;8007
+L_8009:
 	call 06796h		;8009
 	rrca			;800c
 	rrca			;800d
@@ -489,19 +490,13 @@ L_8322:
 DATA_leido_8327:
 	defb 000h,001h,002h,003h,003h,003h,000h,000h,004h,004h,007h,007h,007h,006h,005h,004h	; 8327  ................
 
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8337: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x8337..0x8338  (1 bytes)
-DATA_sin_leer_8337:
-	defb 0c9h	; 8337
-
 ; ======================================================================
-; CODIGO 0x8338..0x83b5  (125 bytes)
+; CODIGO 0x8337..0x842f  (248 bytes)
 ; ======================================================================
 
 
+L_8337:
+	ret			;8337
 L_8338:
 	ld hl,00040h		;8338
 	call 06bf3h		;833b
@@ -564,20 +559,9 @@ L_83A9:
 	ret c			;83b0
 	inc (iy+03dh)		;83b1
 	ret			;83b4
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_83B5: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (6 bytes)
-;   0x83b5..0x83bb  (6 bytes)
-DATA_sin_leer_83B5:
-	defb 0cdh,054h,067h,021h,060h,000h	; 83b5
-
-; ======================================================================
-; CODIGO 0x83bb..0x8426  (107 bytes)
-; ======================================================================
-
-
+L_83B5:
+	call 06754h		;83b5
+	ld hl,00060h		;83b8
 L_83BB:
 	call 06bf3h		;83bb
 L_83BE:
@@ -637,14 +621,18 @@ L_8416:
 L_8420:
 	ld bc,00000h		;8420
 	jp L_9CB5		;8423
+L_8426:
+	ld hl,0842fh		;8426
+	call 07186h		;8429
+	jp 07306h		;842c
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_8426: ninguna partida de la campana lo lee
+; DATOS sin_leer_842F: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (11 bytes)
-;   0x8426..0x8431  (11 bytes)
-DATA_sin_leer_8426:
-	defb 021h,02fh,084h,0cdh,086h,071h,0c3h,006h,073h,000h,0ffh	; 8426  !/...q..s..
+;   nadie (2 bytes)
+;   0x842f..0x8431  (2 bytes)
+DATA_sin_leer_842F:
+	defb 000h,0ffh	; 842f
 
 ; ======================================================================
 ; CODIGO 0x8431..0x84f1  (192 bytes)
@@ -779,7 +767,7 @@ DATA_leido_850C:
 	defb 040h,085h,067h,085h,080h,085h	; 850c
 
 ; ======================================================================
-; CODIGO 0x8512..0x8581  (111 bytes)
+; CODIGO 0x8512..0x858f  (125 bytes)
 ; ======================================================================
 
 
@@ -835,14 +823,16 @@ L_856E:
 	ld (ix+001h),003h		;857c
 L_8580:
 	ret			;8580
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8581: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (14 bytes)
-;   0x8581..0x858f  (14 bytes)
-DATA_sin_leer_8581:
-	defb 0ddh,06eh,020h,026h,000h,011h,08fh,085h,029h,019h,05eh,023h,056h,0c9h	; 8581  .n &....).^#V.
+L_8581:
+	ld l,(ix+020h)		;8581
+	ld h,000h		;8584
+	ld de,0858fh		;8586
+	add hl,hl			;8589
+	add hl,de			;858a
+	ld e,(hl)			;858b
+	inc hl			;858c
+	ld d,(hl)			;858d
+	ret			;858e
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_858F: lo leen p04:7B6C, p04:7B6E, p04:7C01, p04:7C09 jugando
@@ -1039,24 +1029,53 @@ DATA_leido_873F:
 	defb 000h,0ffh,0ffh,0ffh,0ffh,000h,0ffh,003h,000h,003h,003h,003h,003h,000h,003h,0ffh	; 873f  ................
 	defb 000h,0a0h,0a0h,0a0h,0a0h,000h,0a0h,060h,000h,060h,060h,060h,060h,000h,060h,0a0h	; 874f  .......`.````.`.
 
-; ----------------------------------------------------------------------
-; DATOS sin_leer_875F: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (92 bytes)
-;   0x875f..0x87bb  (92 bytes)
-DATA_sin_leer_875F:
-	defb 0cdh,054h,067h,0ddh,0e5h,011h,0a0h,0ffh,0cdh,077h,087h,0ddh,0e1h,0ddh,0e5h,011h	; 875f  .Tg......w......
-	defb 060h,000h,0cdh,077h,087h,0ddh,0e1h,0c9h,03eh,02ch,0d5h,0cdh,0bfh,069h,0e1h,0d8h	; 876f  `..w....>,...i..
-	defb 0cdh,0bbh,083h,0fdh,066h,00ah,0fdh,06eh,009h,011h,000h,0feh,019h,0ddh,074h,00ah	; 877f  ....f..n......t.
-	defb 0ddh,075h,009h,0fdh,07eh,008h,0c6h,005h,0ddh,077h,008h,0c9h,0ddh,07eh,00ah,0feh	; 878f  .u..~....w...~..
-	defb 0f6h,0cah,098h,06eh,0ddh,07eh,037h,0b7h,0c0h,0ddh,0cbh,015h,0f6h,0ddh,0cbh,001h	; 879f  ...n.~7.........
-	defb 046h,0c0h,03eh,013h,0cdh,0f5h,04ah,0ddh,0cbh,001h,0c6h,0c9h	; 87af  F.>...J.....
-
 ; ======================================================================
-; CODIGO 0x87bb..0x87eb  (48 bytes)
+; CODIGO 0x875f..0x87eb  (140 bytes)
 ; ======================================================================
 
 
+L_875F:
+	call 06754h		;875f
+	push ix		;8762
+	ld de,0ffa0h		;8764
+	call L_8777		;8767
+	pop ix		;876a
+	push ix		;876c
+	ld de,00060h		;876e
+	call L_8777		;8771
+	pop ix		;8774
+	ret			;8776
+L_8777:
+	ld a,02ch		;8777
+	push de			;8779
+	call 069bfh		;877a
+	pop hl			;877d
+	ret c			;877e
+	call L_83BB		;877f
+	ld h,(iy+00ah)		;8782
+	ld l,(iy+009h)		;8785
+	ld de,0fe00h		;8788
+	add hl,de			;878b
+	ld (ix+00ah),h		;878c
+	ld (ix+009h),l		;878f
+	ld a,(iy+008h)		;8792
+	add a,005h		;8795
+	ld (ix+008h),a		;8797
+	ret			;879a
+L_879B:
+	ld a,(ix+00ah)		;879b
+	cp 0f6h		;879e
+	jp z,06e98h		;87a0
+	ld a,(ix+037h)		;87a3
+	or a			;87a6
+	ret nz			;87a7
+	set 6,(ix+015h)		;87a8
+	bit 0,(ix+001h)		;87ac
+	ret nz			;87b0
+	ld a,013h		;87b1
+	call 04af5h		;87b3
+	set 0,(ix+001h)		;87b6
+	ret			;87ba
 L_87BB:
 	inc (ix+018h)		;87bb
 	jp L_82D0		;87be
@@ -1273,7 +1292,7 @@ DATA_leido_891B:
 	defb 01fh,089h,027h,089h	; 891b
 
 ; ======================================================================
-; CODIGO 0x891f..0x8aae  (399 bytes)
+; CODIGO 0x891f..0x8aaf  (400 bytes)
 ; ======================================================================
 
 
@@ -1521,14 +1540,8 @@ L_8A68:
 L_8AAB:
 	pop ix		;8aab
 	ret			;8aad
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8AAE: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x8aae..0x8aaf  (1 bytes)
-DATA_sin_leer_8AAE:
-	defb 0c9h	; 8aae
+L_8AAE:
+	ret			;8aae
 
 ; ----------------------------------------------------------------------
 ; DATOS leido_8AAF: lo leen p05:8BA5, p05:8BAA, p05:8BAF, p05:8BB4, p05:8BB9
@@ -1882,19 +1895,13 @@ DATA_leido_8CFB:
 	defb 038h,001h,030h,001h,02ch,002h,028h,002h,030h,002h,02ch,003h,030h,003h,02ch,004h	; 8d0b  8.0.,.(.0.,.0.,.
 	defb 0ffh,000h,0ffh,005h,007h,000h,007h,005h,000h,007h,006h,007h,000h,0feh,006h,0feh	; 8d1b  ................
 
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8D2B: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x8d2b..0x8d2c  (1 bytes)
-DATA_sin_leer_8D2B:
-	defb 0c9h	; 8d2b
-
 ; ======================================================================
-; CODIGO 0x8d2c..0x8da4  (120 bytes)
+; CODIGO 0x8d2b..0x8da4  (121 bytes)
 ; ======================================================================
 
 
+L_8D2B:
+	ret			;8d2b
 L_8D2C:
 	ld de,08dbch		;8d2c
 	call 07b65h		;8d2f
@@ -3570,7 +3577,7 @@ DATA_leido_99DC:
 	defb 01dh,015h,00dh,005h	; 99dc
 
 ; ======================================================================
-; CODIGO 0x99e0..0x9a7c  (156 bytes)
+; CODIGO 0x99e0..0x9aad  (205 bytes)
 ; ======================================================================
 
 
@@ -3643,19 +3650,39 @@ L_9A62:
 	ld (iy+00ah),h		;9a74
 	ld (iy+001h),001h		;9a77
 	ret			;9a7b
+L_9A7C:
+	ld a,(ix+001h)		;9a7c
+	dec a			;9a7f
+	jr z,L_9A98		;9a80
+L_9A82:
+	call 06796h		;9a82
+	ld (ix+008h),a		;9a85
+	call 06796h		;9a88
+	ld (ix+00ah),a		;9a8b
+	ld a,(0ce4ch)		;9a8e
+	and a			;9a91
+	jp z,06e98h		;9a92
+	jp 06c1dh		;9a95
+L_9A98:
+	ld de,09aadh		;9a98
+	call 07b65h		;9a9b
+	ld b,006h		;9a9e
+	call 06ac2h		;9aa0
+	jp z,06e98h		;9aa3
+	dec a			;9aa6
+	ret nz			;9aa7
+	ld a,033h		;9aa8
+	jp 04af0h		;9aaa
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_9A7C: ninguna partida de la campana lo lee
+; DATOS sin_leer_9AAD: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (91 bytes)
-;   0x9a7c..0x9ad7  (91 bytes)
-DATA_sin_leer_9A7C:
-	defb 0ddh,07eh,001h,03dh,028h,016h,0cdh,096h,067h,0ddh,077h,008h,0cdh,096h,067h,0ddh	; 9a7c  .~.=(...g.w...g.
-	defb 077h,00ah,03ah,04ch,0ceh,0a7h,0cah,098h,06eh,0c3h,01dh,06ch,011h,0adh,09ah,0cdh	; 9a8c  w.:L....n..l....
-	defb 065h,07bh,006h,006h,0cdh,0c2h,06ah,0cah,098h,06eh,03dh,0c0h,03eh,033h,0c3h,0f0h	; 9a9c  e{....j..n=.>3..
-	defb 04ah,0b9h,09ah,0bfh,09ah,0c5h,09ah,0cbh,09ah,0d1h,09ah,0c5h,09ah,006h,000h,000h	; 9aac  J...............
-	defb 001h,000h,0ffh,006h,000h,000h,001h,001h,0ffh,006h,000h,000h,001h,002h,0ffh,006h	; 9abc  ................
-	defb 000h,000h,001h,003h,0ffh,006h,000h,000h,001h,004h,0ffh	; 9acc  ...........
+;   nadie (42 bytes)
+;   0x9aad..0x9ad7  (42 bytes)
+DATA_sin_leer_9AAD:
+	defb 0b9h,09ah,0bfh,09ah,0c5h,09ah,0cbh,09ah,0d1h,09ah,0c5h,09ah,006h,000h,000h,001h	; 9aad  ................
+	defb 000h,0ffh,006h,000h,000h,001h,001h,0ffh,006h,000h,000h,001h,002h,0ffh,006h,000h	; 9abd  ................
+	defb 000h,001h,003h,0ffh,006h,000h,000h,001h,004h,0ffh	; 9acd  ..........
 
 ; ======================================================================
 ; CODIGO 0x9ad7..0x9b0a  (51 bytes)
@@ -3850,6 +3877,7 @@ L_9C6C:
 	ld a,(ix+001h)		;9c6c
 	dec a			;9c6f
 	jr z,L_9CAA		;9c70
+L_9C72:
 	ld de,0ff80h		;9c72
 	call 06bfdh		;9c75
 L_9C78:
@@ -4293,6 +4321,7 @@ L_9F47:
 	ld a,(ix+001h)		;9f47
 	dec a			;9f4a
 	jr z,L_9F57		;9f4b
+L_9F4D:
 	call L_9F69		;9f4d
 L_9F50:
 	ld (ix+017h),008h		;9f50
@@ -4362,6 +4391,7 @@ L_9FB0:
 	jr z,L_9FD0		;9fb9
 	dec a			;9fbb
 	jr z,L_9FDA		;9fbc
+L_9FBE:
 	ld a,(ix+020h)		;9fbe
 	ld hl,00080h		;9fc1
 	or a			;9fc4

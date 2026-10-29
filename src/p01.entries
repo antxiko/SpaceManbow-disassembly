@@ -11,11 +11,17 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
-0x6000   # p00:436B call
-0x6003   # p00:439B call
-0x6006   # p00:4521 call
-0x6009   # p03:BDE1 call
-0x6015   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6015
+0x6000   # jp 0 del vector de p01:6000
+0x6003   # jp 1 del vector de p01:6000
+0x6006   # jp 2 del vector de p01:6000
+0x6009   # jp 3 del vector de p01:6000
+0x600C   # jp 4 del vector de p01:6000
+0x600F   # jp 5 del vector de p01:6000
+0x6012   # jp 6 del vector de p01:6000
+0x6015   # jp 7 del vector de p01:6000
+0x6018   # jp 8 del vector de p01:6000
+0x601B   # jp 9 del vector de p01:6000
+0x601E   # jp 10 del vector de p01:6000
 0x603E   # p01:602F entrada 0 de la tabla de 0x6032 (call 0x461A en 0x602F)
 0x604B   # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x604B
 0x6050   # p01:602F entrada 1 de la tabla de 0x6032 (call 0x461A en 0x602F)
@@ -52,3 +58,4 @@
 0x63C7   # p01:6333 entrada 3 de la tabla de 0x6336 (call 0x461A en 0x6333)
 0x63D5   # p01:6333 entrada 4 de la tabla de 0x6336 (call 0x461A en 0x6333)
 0x6440   # p01:6264 entrada 4 de la tabla de 0x6267 (call 0x461A en 0x6264)
+0x64F6   # rutina: con 0xFAF6=1 pasa 16 veces por p01:6960 y p00:49D9 y copia la fuente de 37 letras de p01:653C con p01:692E

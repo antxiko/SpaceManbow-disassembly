@@ -14,7 +14,7 @@ D 0x6336 0x633E leido_6336  lo leen p00:461F, p00:4621 jugando (tools/cobertura.
 D 0x633E 0x6340 sin_leer_633E  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (2 bytes)
 D 0x6405 0x6437 leido_6405  lo leen p00:4A23, p00:4A25, p00:4CE8, p00:4D5F, p01:6C6F jugando (tools/cobertura.py) (50 bytes)
 D 0x6437 0x6440 sin_leer_6437  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (9 bytes)
-D 0x64F6 0x6664 sin_leer_64F6  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (366 bytes)
+D 0x653C 0x6664 sin_leer_653C  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (296 bytes)
 D 0x66D6 0x6707 leido_66D6  lo leen p00:47C4, p00:47C9, p00:47CB jugando (tools/cobertura.py) (49 bytes)
 D 0x674D 0x692E leido_674D  lo leen p01:672E, p01:6738, p01:6942 jugando (tools/cobertura.py) (481 bytes)
 D 0x6A2C 0x6A84 leido_6A2C  lo leen p00:4C9C, p00:4CE8, p00:4D5F, p01:6C6F jugando (tools/cobertura.py) (88 bytes)

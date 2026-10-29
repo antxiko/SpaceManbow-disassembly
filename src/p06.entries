@@ -36,7 +36,9 @@
 0xA380   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4623 (jp (hl))
 0xA3FC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6ADA (ret)
 0xA530   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xA536   # entrada 60 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xA57F   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xA58B   # entrada 63 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xA59E   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6BF9 (ret)
 0xA5AA   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6A99 (ret)
 0xA5AD   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6ADA (ret)
@@ -100,20 +102,23 @@
 0xAFF4   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xAFFD   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xB066   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xB06F   # entrada 87 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xB077   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:468D (ret)
 0xB0B9   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6A99 (ret)
 0xB0BC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6ADA (ret)
-0xB0C1   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xB0C1
+0xB0C1   # entrada 112 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xB0CB   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xB0CC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xB0E3   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
 0xB0E6   # p06:B0D4 entrada 0 de la tabla de 0xB0D7 (call 0x461A en 0xB0D4)
 0xB0FB   # p06:B0D4 entrada 1 de la tabla de 0xB0D7 (call 0x461A en 0xB0D4)
+0xB10F   # p06:B0D4 entrada 2 de la tabla de 0xB0D7 (call 0x461A en 0xB0D4)
 0xB123   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6C39 (ret)
 0xB12B   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4623 (jp (hl))
 0xB141   # p06:B0D4 entrada 4 de la tabla de 0xB0D7 (call 0x461A en 0xB0D4)
 0xB164   # p06:B0D4 entrada 5 de la tabla de 0xB0D7 (call 0x461A en 0xB0D4)
 0xB423   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xB42A   # entrada 117 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xB513   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xB516   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xB521   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
@@ -131,8 +136,10 @@
 0xB5EE   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4B2F (ret)
 0xB633   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xB650   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:69BE (ret)
+0xB6C8   # entrada 88 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xB6C9   # p05:972A jp
 0xB6DE   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xB6E7   # entrada 93 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xB6EF   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:468D (ret)
 0xB6FC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6BF9 (ret)
 0xB70B   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4619 (ret)
@@ -180,11 +187,14 @@
 0xBD18   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
 0xBD62   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4B2F (ret)
 0xBD74   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xBD7A   # entrada 34 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xBD7D   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:468D (ret)
 0xBD85   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6BF9 (ret)
 0xBD9B   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xBDA1   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
 0xBDD4   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
+0xBDDB   # entrada 36 de la tabla de p04:64D1 (palabra +2), la usa el salto p04:64D0; reparto con que corre jugando
+0xBDE7   # entrada 36 de la tabla de p04:6360 (palabra +0), la usa el salto p04:635F; reparto con que corre jugando
 0xBE5F   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xBE6B   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
 0xBF14   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))

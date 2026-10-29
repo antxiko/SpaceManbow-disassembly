@@ -702,6 +702,7 @@ L_A530:
 	ld a,(ix+001h)		;a530
 	and a			;a533
 	jr nz,L_A53D		;a534
+L_A536:
 	ld (ix+020h),000h		;a536
 	jp 06c1dh		;a53a
 L_A53D:
@@ -744,6 +745,7 @@ L_A57F:
 	jr z,L_A5B1		;a586
 	dec a			;a588
 	jr z,$+127		;a589
+L_A58B:
 	ld a,(ix+024h)		;a58b
 	and a			;a58e
 	ld a,00bh		;a58f
@@ -2076,6 +2078,7 @@ L_B066:
 	jr z,L_B0B6		;b06a
 	dec a			;b06c
 	jr z,L_B0C0		;b06d
+L_B06F:
 	ld a,00ah		;b06f
 	ld (0ca26h),a		;b071
 	call 04678h		;b074
@@ -2565,6 +2568,7 @@ L_B423:
 	dec a			;b426
 	jr z,L_B43F		;b427
 	ret p			;b429
+L_B42A:
 	ld (ix+001h),002h		;b42a
 	ld a,(ix+005h)		;b42e
 	cp 002h		;b431
@@ -2855,19 +2859,13 @@ DATA_leido_B670:
 	defb 006h,004h,006h,001h,007h,0ffh,006h,004h,006h,001h,008h,0ffh,006h,004h,006h,001h	; b6b0  ................
 	defb 009h,0ffh,006h,004h,006h,001h,00ah,0ffh	; b6c0  ........
 
-; ----------------------------------------------------------------------
-; DATOS sin_leer_B6C8: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0xb6c8..0xb6c9  (1 bytes)
-DATA_sin_leer_B6C8:
-	defb 0c9h	; b6c8
-
 ; ======================================================================
-; CODIGO 0xb6c9..0xb77e  (181 bytes)
+; CODIGO 0xb6c8..0xb77e  (182 bytes)
 ; ======================================================================
 
 
+L_B6C8:
+	ret			;b6c8
 L_B6C9:
 	ld a,05eh		;b6c9
 	call 0684ch		;b6cb
@@ -2885,6 +2883,7 @@ L_B6DE:
 	jr z,L_B748		;b6e2
 	dec a			;b6e4
 	jr z,L_B758		;b6e5
+L_B6E7:
 	ld a,00eh		;b6e7
 	ld (0ca26h),a		;b6e9
 	call 04678h		;b6ec
@@ -3759,7 +3758,7 @@ DATA_leido_BD6B:
 	defb 01bh,003h,018h,000h,010h,005h,004h,008h,000h	; bd6b  .........
 
 ; ======================================================================
-; CODIGO 0xbd74..0xbddb  (103 bytes)
+; CODIGO 0xbd74..0xbefd  (393 bytes)
 ; ======================================================================
 
 
@@ -3767,6 +3766,7 @@ L_BD74:
 	ld a,(ix+001h)		;bd74
 	dec a			;bd77
 	jr z,L_BD88		;bd78
+L_BD7A:
 	call 04678h		;bd7a
 L_BD7D:
 	ld d,018h		;bd7d
@@ -3821,28 +3821,65 @@ L_BDD4:
 	add a,008h		;bdd6
 	djnz L_BDCE		;bdd8
 	ret			;bdda
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_BDDB: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (132 bytes)
-;   0xbddb..0xbe5f  (132 bytes)
-DATA_sin_leer_BDDB:
-	defb 0ddh,07eh,001h,03dh,028h,015h,03dh,028h,052h,03dh,028h,06bh,0cdh,054h,067h,07ah	; bddb  .~.=(.=(R=(k.Tgz
-	defb 0cbh,07fh,028h,004h,0ddh,036h,00ah,000h,0c3h,01dh,06ch,0fdh,021h,040h,0cah,03eh	; bdeb  ..(..6....l.!@.>
-	defb 008h,0cdh,07fh,06bh,0cbh,02ch,0cbh,01dh,0cbh,02ch,0cbh,01dh,0ddh,075h,00bh,0ddh	; bdfb  ...k.,...,...u..
-	defb 074h,00ch,0cbh,02ch,0cbh,01dh,0ddh,075h,00fh,0ddh,074h,010h,0cbh,02ah,0cbh,01bh	; be0b  t..,...u..t..*..
-	defb 0cbh,02ah,0cbh,01bh,0ddh,073h,00dh,0ddh,072h,00eh,0cbh,02ah,0cbh,01bh,0ddh,073h	; be1b  .*...s..r..*...s
-	defb 011h,0ddh,072h,012h,0ddh,036h,017h,010h,0c3h,01dh,06ch,0ddh,036h,005h,001h,0cdh	; be2b  ..r..6....l.6...
-	defb 0d2h,06ah,028h,003h,0c3h,09ah,06ah,021h,020h,000h,011h,000h,000h,0cdh,0ebh,06bh	; be3b  .j(...j! ......k
-	defb 0ddh,036h,017h,008h,0c3h,01dh,06ch,0ddh,036h,005h,000h,0cdh,0d2h,06ah,0c0h,0ddh	; be4b  .6....l.6....j..
-	defb 036h,001h,001h,0c9h	; be5b
-
-; ======================================================================
-; CODIGO 0xbe5f..0xbefd  (158 bytes)
-; ======================================================================
-
-
+L_BDDB:
+	ld a,(ix+001h)		;bddb
+	dec a			;bdde
+	jr z,L_BDF6		;bddf
+	dec a			;bde1
+	jr z,L_BE36		;bde2
+	dec a			;bde4
+	jr z,L_BE52		;bde5
+L_BDE7:
+	call 06754h		;bde7
+	ld a,d			;bdea
+	bit 7,a		;bdeb
+	jr z,L_BDF3		;bded
+	ld (ix+00ah),000h		;bdef
+L_BDF3:
+	jp 06c1dh		;bdf3
+L_BDF6:
+	ld iy,0ca40h		;bdf6
+	ld a,008h		;bdfa
+	call 06b7fh		;bdfc
+	sra h		;bdff
+	rr l		;be01
+	sra h		;be03
+	rr l		;be05
+	ld (ix+00bh),l		;be07
+	ld (ix+00ch),h		;be0a
+	sra h		;be0d
+	rr l		;be0f
+	ld (ix+00fh),l		;be11
+	ld (ix+010h),h		;be14
+	sra d		;be17
+	rr e		;be19
+	sra d		;be1b
+	rr e		;be1d
+	ld (ix+00dh),e		;be1f
+	ld (ix+00eh),d		;be22
+	sra d		;be25
+	rr e		;be27
+	ld (ix+011h),e		;be29
+	ld (ix+012h),d		;be2c
+	ld (ix+017h),010h		;be2f
+	jp 06c1dh		;be33
+L_BE36:
+	ld (ix+005h),001h		;be36
+	call 06ad2h		;be3a
+	jr z,L_BE42		;be3d
+	jp 06a9ah		;be3f
+L_BE42:
+	ld hl,00020h		;be42
+	ld de,00000h		;be45
+	call 06bebh		;be48
+	ld (ix+017h),008h		;be4b
+	jp 06c1dh		;be4f
+L_BE52:
+	ld (ix+005h),000h		;be52
+	call 06ad2h		;be56
+	ret nz			;be59
+	ld (ix+001h),001h		;be5a
+	ret			;be5e
 L_BE5F:
 	ld a,(ix+001h)		;be5f
 	dec a			;be62

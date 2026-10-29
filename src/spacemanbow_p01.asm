@@ -687,7 +687,7 @@ DATA_sin_leer_6437:
 	defb 043h,04fh,04eh,054h,049h,04eh,055h,045h,000h	; 6437  CONTINUE.
 
 ; ======================================================================
-; CODIGO 0x6440..0x64f6  (182 bytes)
+; CODIGO 0x6440..0x653c  (252 bytes)
 ; ======================================================================
 
 
@@ -786,36 +786,68 @@ L_64D9:
 	ret z			;64f2
 	set 0,(hl)		;64f3
 	ret			;64f5
+L_64F6:
+	ld a,001h		;64f6
+	ld (0faf6h),a		;64f8
+	ld de,00000h		;64fb
+	ld bc,01000h		;64fe
+L_6501:
+	push bc			;6501
+	push de			;6502
+	ld hl,0665ch		;6503
+	call L_6960		;6506
+	pop de			;6509
+	call 049d9h		;650a
+	pop bc			;650d
+	inc c			;650e
+	djnz L_6501		;650f
+	ld de,00008h		;6511
+	ld a,020h		;6514
+	call L_6530		;6516
+	ld bc,0600fh		;6519
+	call L_692E		;651c
+	ld de,08000h		;651f
+	ld hl,0653ch		;6522
+	ld bc,02b0fh		;6525
+	call L_692E		;6528
+	xor a			;652b
+	ld (0faf6h),a		;652c
+	ret			;652f
+L_6530:
+	ld l,a			;6530
+	ld h,000h		;6531
+	ld bc,(00004h)		;6533
+	add hl,hl			;6537
+	add hl,hl			;6538
+	add hl,hl			;6539
+	add hl,bc			;653a
+	ret			;653b
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_64F6: ninguna partida de la campana lo lee
+; DATOS sin_leer_653C: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (366 bytes)
-;   0x64f6..0x6664  (366 bytes)
-DATA_sin_leer_64F6:
-	defb 03eh,001h,032h,0f6h,0fah,011h,000h,000h,001h,000h,010h,0c5h,0d5h,021h,05ch,066h	; 64f6  >.2..........!\f
-	defb 0cdh,060h,069h,0d1h,0cdh,0d9h,049h,0c1h,00ch,010h,0f0h,011h,008h,000h,03eh,020h	; 6506  .`i...I.......>
-	defb 0cdh,030h,065h,001h,00fh,060h,0cdh,02eh,069h,011h,000h,080h,021h,03ch,065h,001h	; 6516  .0e..`..i...!<e.
-	defb 00fh,02bh,0cdh,02eh,069h,0afh,032h,0f6h,0fah,0c9h,06fh,026h,000h,0edh,04bh,004h	; 6526  .+..i.2...o&..K.
-	defb 000h,029h,029h,029h,009h,0c9h,000h,01ch,022h,063h,063h,063h,022h,01ch,000h,018h	; 6536  .)))...."ccc"...
-	defb 038h,018h,018h,018h,018h,07eh,000h,03eh,063h,003h,00eh,03ch,070h,07fh,000h,03eh	; 6546  8....~.>c..<p..>
-	defb 063h,003h,00eh,003h,063h,03eh,000h,00eh,01eh,036h,066h,066h,07fh,006h,000h,07fh	; 6556  c...c>...6ff....
-	defb 060h,07eh,063h,003h,063h,03eh,000h,03eh,063h,060h,07eh,063h,063h,03eh,000h,07fh	; 6566  `~c.c>.>c`~cc>..
-	defb 063h,006h,00ch,018h,018h,018h,000h,03eh,063h,063h,03eh,063h,063h,03eh,000h,03eh	; 6576  c......>cc>cc>.>
-	defb 063h,063h,03fh,003h,063h,03eh,000h,01ch,036h,063h,063h,07fh,063h,063h,000h,07eh	; 6586  cc?.c>..6cc.cc.~
-	defb 063h,063h,07eh,063h,063h,07eh,000h,03eh,063h,060h,060h,060h,063h,03eh,000h,07ch	; 6596  cc~cc~.>c```c>.|
-	defb 066h,063h,063h,063h,066h,07ch,000h,07fh,060h,060h,07eh,060h,060h,07fh,000h,07fh	; 65a6  fcccf|..``~``...
-	defb 060h,060h,07eh,060h,060h,060h,000h,03eh,063h,060h,067h,063h,063h,03fh,000h,063h	; 65b6  ``~```.>c`gcc?.c
-	defb 063h,063h,07fh,063h,063h,063h,000h,03ch,018h,018h,018h,018h,018h,03ch,000h,01fh	; 65c6  cc.ccc.<.....<..
-	defb 006h,006h,006h,006h,066h,03ch,000h,063h,066h,06ch,078h,07ch,06eh,067h,000h,060h	; 65d6  ....f<.cflx|ng.`
-	defb 060h,060h,060h,060h,060h,07fh,000h,063h,077h,07fh,07fh,06bh,063h,063h,000h,063h	; 65e6  `````..cw..kcc.c
-	defb 073h,07bh,07fh,06fh,067h,063h,000h,03eh,063h,063h,063h,063h,063h,03eh,000h,07eh	; 65f6  s{.ogc.>ccccc>.~
-	defb 063h,063h,063h,07eh,060h,060h,000h,03eh,063h,063h,063h,06fh,066h,03dh,000h,07eh	; 6606  ccc~``.>cccof=.~
-	defb 063h,063h,062h,07ch,066h,063h,000h,03eh,063h,060h,03eh,003h,063h,03eh,000h,07eh	; 6616  ccb|fc.>c`>.c>.~
-	defb 018h,018h,018h,018h,018h,018h,000h,063h,063h,063h,063h,063h,063h,03eh,000h,063h	; 6626  .......cccccc>.c
-	defb 063h,063h,063h,036h,01ch,008h,000h,063h,063h,06bh,06bh,07fh,077h,022h,000h,063h	; 6636  ccc6...cckk.w".c
-	defb 076h,03ch,01ch,01eh,037h,063h,000h,066h,066h,07eh,03ch,018h,018h,018h,000h,07fh	; 6646  v<..7c.ff~<.....
-	defb 007h,00eh,01ch,038h,070h,07fh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 6656  ...8p.........
+;   nadie (296 bytes)
+;   0x653c..0x6664  (296 bytes)
+DATA_sin_leer_653C:
+	defb 000h,01ch,022h,063h,063h,063h,022h,01ch,000h,018h,038h,018h,018h,018h,018h,07eh	; 653c  .."ccc"...8....~
+	defb 000h,03eh,063h,003h,00eh,03ch,070h,07fh,000h,03eh,063h,003h,00eh,003h,063h,03eh	; 654c  .>c..<p..>c...c>
+	defb 000h,00eh,01eh,036h,066h,066h,07fh,006h,000h,07fh,060h,07eh,063h,003h,063h,03eh	; 655c  ...6ff....`~c.c>
+	defb 000h,03eh,063h,060h,07eh,063h,063h,03eh,000h,07fh,063h,006h,00ch,018h,018h,018h	; 656c  .>c`~cc>..c.....
+	defb 000h,03eh,063h,063h,03eh,063h,063h,03eh,000h,03eh,063h,063h,03fh,003h,063h,03eh	; 657c  .>cc>cc>.>cc?.c>
+	defb 000h,01ch,036h,063h,063h,07fh,063h,063h,000h,07eh,063h,063h,07eh,063h,063h,07eh	; 658c  ..6cc.cc.~cc~cc~
+	defb 000h,03eh,063h,060h,060h,060h,063h,03eh,000h,07ch,066h,063h,063h,063h,066h,07ch	; 659c  .>c```c>.|fcccf|
+	defb 000h,07fh,060h,060h,07eh,060h,060h,07fh,000h,07fh,060h,060h,07eh,060h,060h,060h	; 65ac  ..``~``...``~```
+	defb 000h,03eh,063h,060h,067h,063h,063h,03fh,000h,063h,063h,063h,07fh,063h,063h,063h	; 65bc  .>c`gcc?.ccc.ccc
+	defb 000h,03ch,018h,018h,018h,018h,018h,03ch,000h,01fh,006h,006h,006h,006h,066h,03ch	; 65cc  .<.....<......f<
+	defb 000h,063h,066h,06ch,078h,07ch,06eh,067h,000h,060h,060h,060h,060h,060h,060h,07fh	; 65dc  .cflx|ng.``````.
+	defb 000h,063h,077h,07fh,07fh,06bh,063h,063h,000h,063h,073h,07bh,07fh,06fh,067h,063h	; 65ec  .cw..kcc.cs{.ogc
+	defb 000h,03eh,063h,063h,063h,063h,063h,03eh,000h,07eh,063h,063h,063h,07eh,060h,060h	; 65fc  .>ccccc>.~ccc~``
+	defb 000h,03eh,063h,063h,063h,06fh,066h,03dh,000h,07eh,063h,063h,062h,07ch,066h,063h	; 660c  .>cccof=.~ccb|fc
+	defb 000h,03eh,063h,060h,03eh,003h,063h,03eh,000h,07eh,018h,018h,018h,018h,018h,018h	; 661c  .>c`>.c>.~......
+	defb 000h,063h,063h,063h,063h,063h,063h,03eh,000h,063h,063h,063h,063h,036h,01ch,008h	; 662c  .cccccc>.cccc6..
+	defb 000h,063h,063h,06bh,06bh,07fh,077h,022h,000h,063h,076h,03ch,01ch,01eh,037h,063h	; 663c  .cckk.w".cv<..7c
+	defb 000h,066h,066h,07eh,03ch,018h,018h,018h,000h,07fh,007h,00eh,01ch,038h,070h,07fh	; 664c  .ff~<........8p.
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 665c  ........
 
 ; ======================================================================
 ; CODIGO 0x6664..0x66d6  (114 bytes)

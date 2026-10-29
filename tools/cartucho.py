@@ -56,6 +56,42 @@ LLAMADAS_CON_DATOS = {0x4C2A: 5}
 # Las rutinas de banco no tocan HL ni DE.
 NO_TOCAN_HL = tuple(REPARTOS) + tuple(RUTINAS_BANCO)
 
+# Tablas de saltos que no son del despachador: (banco, tabla, entradas, paso,
+# desplazamientos de las palabras que son destinos, salto que las usa). Las
+# lee tools/tablas_saltos.py y siembra cada destino con el reparto con que
+# ese salto corre jugando.
+TABLAS_SALTO = [
+    # p04:6344 tipo de enemigo (ix+0) - 1 < 0x7C: `ld de,6360 / add hl,de /
+    # ld e,(hl) / inc hl / ld d,(hl) / ex de,hl / jp (hl)` - la puesta en marcha
+    (4, 0x6360, 0x7C, 2, (0,), 0x635F),
+    # p04:64B9 A < 0x7C, cuatro bytes: la primera palabra se empuja (`push de`,
+    # a donde vuelve) y a la segunda se salta - el movimiento de cada tipo
+    (4, 0x64D1, 0x7C, 4, (0, 2), 0x64D0),
+    # p28:728B ordenes 0xE0-0xFE de las partituras (and 0x1F): la tabla acaba
+    # donde empieza el codigo, en 0x72DE, asi que son 31 (0xFF no llega)
+    (28, 0x72A0, 31, 2, (0,), 0x729F),
+    # p28:757C A and 0x0F
+    (28, 0x758C, 16, 2, (0,), 0x758B),
+]
+
+# Saltos que el trazador no sigue: {(banco, pc)}. p02:8FAA `jp 6000` con el
+# banco 31 recien puesto en 0x6000 (p02:8FA4): solo se llega con disco (mira
+# el gancho H.PHYD, p02:8F64) y tras cambiar la RAM de pagina 1 por la de
+# 0xD000; los bytes de p31:6000 no tienen forma de codigo, asi que no se
+# siguen hasta saber que hay ahi.
+LLAMADAS_AJENAS = {(2, 0x8FAA)}
+
+# Vectores de `jp` seguidos: (banco, primer jp, cuantos, reparto). Al
+# principio de varios bancos y en p09:6D00; los que ninguna partida usa
+# (p02:8009-800F, que llevan a p02:8F11-8FE1) entran asi en el trazado.
+VECTORES = [
+    (1, 0x6000, 11, (1, 2, 3)),
+    (2, 0x8000, 9, (4, 2, 3)),     # p02 corre con p04 en 0x6000 (p00:4BEF)
+    (4, 0x6000, 10, (4, 5, 6)),
+    (9, 0x6D00, 10, (9, 10, 11)),
+    (28, 0x6000, 3, (28, 29, 23)),
+]
+
 # Los bancos que llevan codigo y el reparto con el que corre (para
 # tools/huerfanas.py). Se rellena con lo que mida el trazado.
 CODIGO = {0: (1, 2, 3)}

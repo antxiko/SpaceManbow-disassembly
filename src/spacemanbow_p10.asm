@@ -10,7 +10,7 @@
 
 
 ; ======================================================================
-; CODIGO 0x8000..0x8073  (115 bytes)
+; CODIGO 0x8000..0x808e  (142 bytes)
 ; ======================================================================
 
 
@@ -75,28 +75,106 @@ L_8069:
 	push hl			;806f
 	pop ix		;8070
 	ret			;8072
+L_8073:
+	ld a,(00007h)		;8073
+	ld c,a			;8076
+	ld de,00000h		;8077
+	ld a,0ffh		;807a
+L_807C:
+	out (c),a		;807c
+	dec e			;807e
+	jr nz,L_807C		;807f
+	dec d			;8081
+	jr nz,L_807C		;8082
+	ret			;8084
+L_8085:
+	xor a			;8085
+	ld b,000h		;8086
+L_8088:
+	out (c),a		;8088
+	inc a			;808a
+	djnz L_8088		;808b
+	ret			;808d
 
 ; ----------------------------------------------------------------------
-; DATOS sin_leer_8073: ninguna partida de la campana lo lee
+; DATOS sin_leer_808E: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (129 bytes)
-;   0x8073..0x80f4  (129 bytes)
-DATA_sin_leer_8073:
-	defb 03ah,007h,000h,04fh,011h,000h,000h,03eh,0ffh,0edh,079h,01dh,020h,0fbh,015h,020h	; 8073  :..O...>..y. ..
-	defb 0f8h,0c9h,0afh,006h,000h,0edh,079h,03ch,010h,0fbh,0c9h,03eh,008h,0cdh,057h,081h	; 8083  ......y<...>..W.
-	defb 0cbh,06fh,028h,018h,0cbh,077h,028h,00bh,0cdh,0d6h,080h,0c8h,0cdh,0ech,080h,0cdh	; 8093  .o(..w(.........
-	defb 0f8h,080h,0c9h,03ah,0b2h,0c0h,03dh,0e6h,003h,0c8h,018h,007h,03ah,0b2h,0c0h,0e6h	; 80a3  ...:..=.....:...
-	defb 003h,0c8h,03ch,0cbh,0ffh,032h,0b2h,0c0h,0e6h,003h,00fh,00fh,0ddh,0e5h,0c5h,0f5h	; 80b3  ..<..2..........
-	defb 047h,00eh,017h,0cdh,047h,000h,0f1h,0c1h,0ddh,0e1h,03eh,008h,0cdh,057h,081h,03ch	; 80c3  G...G.....>..W.<
-	defb 0c8h,018h,0f7h,03eh,002h,0cdh,057h,081h,0f5h,03eh,003h,0cdh,057h,081h,0c1h,0cbh	; 80d3  ...>..W..>..W...
-	defb 010h,017h,0cbh,010h,017h,02fh,0e6h,07fh,0c9h,00eh,0ffh,00fh,00ch,030h,0fch,079h	; 80e3  ...../.......0.y
-	defb 0c9h	; 80f3
+;   nadie (1 bytes)
+;   0x808e..0x808f  (1 bytes)
+DATA_sin_leer_808E:
+	defb 03eh	; 808e
 
 ; ======================================================================
-; CODIGO 0x80f4..0x8165  (113 bytes)
+; CODIGO 0x808f..0x8165  (214 bytes)
 ; ======================================================================
 
 
+L_808F:
+	ex af,af'			;808f
+	call L_8157		;8090
+	bit 5,a		;8093
+	jr z,L_80AF		;8095
+	bit 6,a		;8097
+	jr z,L_80A6		;8099
+	call L_80D6		;809b
+	ret z			;809e
+	call L_80EC		;809f
+	call L_80F8		;80a2
+	ret			;80a5
+L_80A6:
+	ld a,(0c0b2h)		;80a6
+	dec a			;80a9
+	and 003h		;80aa
+	ret z			;80ac
+	jr L_80B6		;80ad
+L_80AF:
+	ld a,(0c0b2h)		;80af
+	and 003h		;80b2
+	ret z			;80b4
+	inc a			;80b5
+L_80B6:
+	set 7,a		;80b6
+	ld (0c0b2h),a		;80b8
+	and 003h		;80bb
+	rrca			;80bd
+	rrca			;80be
+	push ix		;80bf
+	push bc			;80c1
+	push af			;80c2
+	ld b,a			;80c3
+	ld c,017h		;80c4
+	call 00047h		;80c6   ; BIOS WRTVDP - Writes data in the VDP-register
+	pop af			;80c9
+	pop bc			;80ca
+	pop ix		;80cb
+L_80CD:
+	ld a,008h		;80cd
+	call L_8157		;80cf
+	inc a			;80d2
+	ret z			;80d3
+	jr L_80CD		;80d4
+L_80D6:
+	ld a,002h		;80d6
+	call L_8157		;80d8
+	push af			;80db
+	ld a,003h		;80dc
+	call L_8157		;80de
+	pop bc			;80e1
+	rl b		;80e2
+	rla			;80e4
+	rl b		;80e5
+	rla			;80e7
+	cpl			;80e8
+	and 07fh		;80e9
+	ret			;80eb
+L_80EC:
+	ld c,0ffh		;80ec
+L_80EE:
+	rrca			;80ee
+	inc c			;80ef
+	jr nc,L_80EE		;80f0
+	ld a,c			;80f2
+	ret			;80f3
 L_80F4:
 	ld (0c0b5h),a		;80f4
 	ret			;80f7

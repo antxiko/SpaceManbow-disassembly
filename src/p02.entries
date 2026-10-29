@@ -11,13 +11,15 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
-0x8000   # p00:43D6 call
-0x8003   # p00:4547 call
-0x8006   # p00:43DD call cc
-0x8012   # p00:455F call
-0x8015   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8015
-0x8018   # p00:4570 call
-0x828A   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x828A
+0x8000   # jp 0 del vector de p02:8000
+0x8003   # jp 1 del vector de p02:8000
+0x8006   # jp 2 del vector de p02:8000
+0x8009   # jp 3 del vector de p02:8000
+0x800C   # jp 4 del vector de p02:8000
+0x800F   # jp 5 del vector de p02:8000
+0x8012   # jp 6 del vector de p02:8000
+0x8015   # jp 7 del vector de p02:8000
+0x8018   # jp 8 del vector de p02:8000
 0x844A   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x844A
 0x8451   # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8451
 0x861E   # p02:8605 entrada 0 de la tabla de 0x8608 (call 0x461A en 0x8605)

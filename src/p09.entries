@@ -11,14 +11,17 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
-0x6D03   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D03
-0x6D06   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D06
-0x6D0C   # p04:6C60 llamada lejana (call 0x4C2A con los bancos 9-10-11 detras)
-0x6D0F   # p00:451B call
-0x6D12   # p00:43F7 call
-0x6D15   # p00:43A8 call
-0x6D69   # codigo huerfano: 12 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D69
-0x707D   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x707D
+0x6D00   # jp 0 del vector de p09:6D00
+0x6D03   # jp 1 del vector de p09:6D00
+0x6D06   # jp 2 del vector de p09:6D00
+0x6D09   # jp 3 del vector de p09:6D00
+0x6D0C   # jp 4 del vector de p09:6D00
+0x6D0F   # jp 5 del vector de p09:6D00
+0x6D12   # jp 6 del vector de p09:6D00
+0x6D15   # jp 7 del vector de p09:6D00
+0x6D18   # jp 8 del vector de p09:6D00
+0x6D1B   # jp 9 del vector de p09:6D00
+0x7085   # rutina: borra 0x7F bytes en 0xC000, 0xC180 y 0xC280 con p00:4648
 0x798F   # p09:7871 entrada 0 de la tabla de 0x7874 (call 0x461A en 0x7871)
 0x79A4   # p09:7871 entrada 1 de la tabla de 0x7874 (call 0x461A en 0x7871)
 0x79DA   # p09:7871 entrada 2 de la tabla de 0x7874 (call 0x461A en 0x7871)

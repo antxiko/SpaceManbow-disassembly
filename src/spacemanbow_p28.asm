@@ -2011,7 +2011,7 @@ DATA_leido_72A0:
 	defb 09ah,074h,0feh,074h,009h,075h,011h,075h,029h,075h,043h,075h,046h,075h	; 72d0  .t.t.u.u)uCuFu
 
 ; ======================================================================
-; CODIGO 0x72de..0x734f  (113 bytes)
+; CODIGO 0x72de..0x758c  (686 bytes)
 ; ======================================================================
 
 
@@ -2080,20 +2080,8 @@ L_733B:
 	set 5,a		;7349
 	ld (de),a			;734b
 	jp L_7350		;734c
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_734F: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x734f..0x7350  (1 bytes)
-DATA_sin_leer_734F:
-	defb 0e1h	; 734f
-
-; ======================================================================
-; CODIGO 0x7350..0x735f  (15 bytes)
-; ======================================================================
-
-
+L_734F:
+	pop hl			;734f
 L_7350:
 	inc hl			;7350
 	ld a,(hl)			;7351
@@ -2103,20 +2091,8 @@ L_7350:
 	set 6,a		;7359
 	ld (de),a			;735b
 	jp L_7360		;735c
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_735F: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x735f..0x7360  (1 bytes)
-DATA_sin_leer_735F:
-	defb 0e1h	; 735f
-
-; ======================================================================
-; CODIGO 0x7360..0x7529  (457 bytes)
-; ======================================================================
-
-
+L_735F:
+	pop hl			;735f
 L_7360:
 	inc hl			;7360
 	ld a,(hl)			;7361
@@ -2385,20 +2361,14 @@ L_7511:
 L_7524:
 	ld (ix+005h),000h		;7524
 	ret			;7528
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_7529: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (12 bytes)
-;   0x7529..0x7535  (12 bytes)
-DATA_sin_leer_7529:
-	defb 0e1h,023h,0ddh,07eh,006h,03ch,0beh,028h,00ah,0ddh,077h,006h	; 7529  .#.~.<.(..w.
-
-; ======================================================================
-; CODIGO 0x7535..0x753c  (7 bytes)
-; ======================================================================
-
-
+L_7529:
+	pop hl			;7529
+	inc hl			;752a
+	ld a,(ix+006h)		;752b
+	inc a			;752e
+	cp (hl)			;752f
+	jr z,L_753C		;7530
+	ld (ix+006h),a		;7532
 L_7535:
 	inc hl			;7535
 	ld e,(hl)			;7536
@@ -2407,23 +2377,14 @@ L_7535:
 	ex de,hl			;7539
 	dec hl			;753a
 	ret			;753b
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_753C: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (7 bytes)
-;   0x753c..0x7543  (7 bytes)
-DATA_sin_leer_753C:
-	defb 023h,023h,0ddh,036h,006h,000h,0c9h	; 753c
-
-; ======================================================================
-; CODIGO 0x7543..0x758c  (73 bytes)
-; ======================================================================
-
-
+L_753C:
+	inc hl			;753c
+	inc hl			;753d
+	ld (ix+006h),000h		;753e
+	ret			;7542
 L_7543:
 	pop hl			;7543
-	jr $-15		;7544
+	jr L_7535		;7544
 L_7546:
 	pop hl			;7546
 	inc hl			;7547

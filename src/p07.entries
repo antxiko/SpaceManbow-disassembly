@@ -12,3 +12,5 @@
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x8000   # p00:43EA call
+0x802E   # rutina: la misma llamada con IY = 0xCAC0 y 0xCAE0
+0x8275   # rutina: la misma llamada con IY = 0xCAC0 y 0xCAE0
