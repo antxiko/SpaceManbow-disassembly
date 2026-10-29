@@ -357,7 +357,7 @@ L_6293:
 	push hl			;6293
 	call es_orden_5F		;6294
 	jr z,L_62AA		;6297
-	ld a,(0ca33h)		;6299
+	ld a,(0ca33h)		;6299   ; lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 	or a			;629c
 	call nz,tipo_en_la_lista		;629d   ; tipo_en_la_lista: Z si B esta en la lista de p04:6315 (acaba en 0xFF); acarreo si no
 	jr c,L_62AA		;62a0
@@ -1649,7 +1649,7 @@ L_6C9F:
 	rlca			;6ca7
 	rlca			;6ca8
 	or d			;6ca9
-	ld (0c0d2h),a		;6caa
+	ld (0c0d2h),a		;6caa   ; guarda el valor del scroll vertical (registro 23)
 	ret			;6cad
 vaiven_y_acelera:		; p04:6CB5 y la velocidad mas la aceleracion
 	call vaiven_de_velocidad		;6cae   ; vaiven_de_velocidad: si el valor absoluto de la velocidad en Y pasa de DE, o el de la X de HL, cambia de signo esa aceleracion

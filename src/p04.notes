@@ -392,6 +392,7 @@ C 0x6261 lee por donde va el guion de la fase y el byte siguiente (16 bits)
 C 0x627A lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x627D compara_hl_de: Z si HL = DE
 C 0x628C lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x6299 lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x629D tipo_en_la_lista: Z si B esta en la lista de p04:6315 (acaba en 0xFF); acarreo si no
 C 0x62A2 crea_actor_del_guion: ficha libre, borrada, tipo y lista desde HL (p04:67B0) y los datos del tipo (p04:66F4)
 C 0x62A7 arranca_actor: la puesta en marcha del actor por su tipo (tabla p04:6360, tipo - 1); nada si la ficha esta libre o el tipo lleva el bit 7
@@ -614,6 +615,7 @@ C 0x6C80 lee la X del actor (fraccion: 32 por punto)
 C 0x6C89 guarda el scroll fino en X: se suma a la fraccion de la X de los actores
 C 0x6C92 lee la Y del actor (fraccion: 32 por punto)
 C 0x6CA3 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores
+C 0x6CAA guarda el valor del scroll vertical (registro 23)
 C 0x6CAE vaiven_de_velocidad: si el valor absoluto de la velocidad en Y pasa de DE, o el de la X de HL, cambia de signo esa aceleracion
 C 0x6CB1 acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
 C 0x6CB8 vaiven_y: si el valor absoluto de la velocidad en Y pasa de BC, cambia de signo la aceleracion en Y

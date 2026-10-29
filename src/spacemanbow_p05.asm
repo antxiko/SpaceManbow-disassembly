@@ -2221,7 +2221,7 @@ mueve_tipo_46:		; lo que hace en cada cuadro el actor del tipo 0x46 (tabla p04:6
 	dec a			;905a
 	jr z,L_90A6		;905b
 	jp p,L_90BF		;905d
-	ld a,(0c0d4h)		;9060
+	ld a,(0c0d4h)		;9060   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
 	or a			;9063
 	jr nz,L_906A		;9064
 	dec (ix+017h)		;9066   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -2326,7 +2326,7 @@ L_910F:
 	djnz L_910F		;911b
 	ret			;911d
 L_911E:
-	ld a,(0c0d4h)		;911e
+	ld a,(0c0d4h)		;911e   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
 	or a			;9121
 	ld d,0cbh		;9122
 	ret z			;9124

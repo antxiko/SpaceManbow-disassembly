@@ -567,6 +567,7 @@ C 0x9044 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su 
 C 0x9047 la X del actor (en caracteres de 8 puntos) = 0x1F
 C 0x9051 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0x9054 lee el paso del actor
+C 0x9060 lee el estado del scroll (0 avanza, 1 y 2 parado)
 C 0x9066 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x906A una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
 C 0x906E la aceleracion en X del actor (alta) = 0x01
@@ -594,6 +595,7 @@ C 0x90EA lee la Y del actor (en caracteres de 8 puntos)
 C 0x90ED casilla_bajo_el_actor: la casilla del mapa en la posicion del actor mas D, E (y el scroll fino)
 C 0x90F2 lee la aceleracion en X del actor (baja)
 C 0x9107 libera_ficha: el tipo y las banderas del actor a 0
+C 0x911E lee el estado del scroll (0 avanza, 1 y 2 parado)
 C 0x9125 lee la aceleracion en Y del actor (baja)
 C 0x913A lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x913E guarda otra cuenta del actor (p04:6ADF la baja hasta 1)

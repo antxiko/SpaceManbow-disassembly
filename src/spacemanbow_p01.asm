@@ -23,19 +23,19 @@ vector_6B33:		; jp p01:6B33
 vector_6C6A:		; jp p01:6C6A
 	jp escribe_cadena		;6009   ; escribe_cadena: 0xC91C = A xor 0xF0 (los colores) y la cadena de HL en DE hasta un 0 (p01:6C7F y p01:6BAC)
 L_600C:
-	jp 0a65bh		;600c
+	jp 0a65bh		;600c   ; secuencia_historia: el mapa del banco 0x0A en 0x5500 con el guion p03:B520, p03:BDC3, enciende y borra la segunda pagina
 L_600F:
-	jp 0a6a5h		;600f
+	jp 0a6a5h		;600f   ; paso_de_secuencia: los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
 L_6012:
-	jp 0a600h		;6012
+	jp 0a600h		;6012   ; secuencia_titulo: borra la pagina, carga los graficos de la lista p03:B40A (p03:AE15), el mapa del banco 0x15 (21) en 0x5A02 con el guion p03:B9A3 (p03:A68F) y borra el resto
 L_6015:
-	jp 0a6a5h		;6015
+	jp 0a6a5h		;6015   ; paso_de_secuencia: los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
 L_6018:
-	jp 0a62ah		;6018
+	jp 0a62ah		;6018   ; secuencia_entre_fases: los graficos de p03:B37E, el mapa del banco 21 en 0x5000 con el guion p03:BA7B, p03:BDC8, el registro 23 a 0 y enciende la pantalla
 L_601B:
-	jp 0a69fh		;601b
+	jp 0a69fh		;601b   ; secuencia_del_cuadro: los mandos, las teclas de funcion y un paso de la secuencia (p03:A6A5)
 L_601E:
-	jp 0a651h		;601e
+	jp 0a651h		;601e   ; graficos_del_titulo: los graficos de la lista p03:B260 y los bancos 1-2-3
 programa:		; cuenta 0xC903 y salta por el estado 0xC900 (tabla p01:6032): 0 arranque, 1 logotipo, 2 titulo, 3 historia, 4 partida, 5 demostracion; 0xC901 es el paso dentro del estado
 	ld hl,0c903h		;6021
 	inc (hl)			;6024
@@ -1273,12 +1273,12 @@ por_3:		; HL = HL x 3
 prepara_marcador:		; 0xC91C = 0xFE, la VRAM de 0xE000-0xEFFF a 0xFF, las tres filas del marcador (p01:6CA9) y las copias de 0xDF90-0xDFFF a 0xFF
 	ld a,0feh		;6b33
 	ld (0c91ch),a		;6b35   ; guarda los dos colores con los que p01:6ADD pinta las letras
-	ld hl,0e000h		;6b38
+	ld hl,0e000h		;6b38   ; apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 	ld bc,01000h		;6b3b
 	ld a,0ffh		;6b3e
 	call 046c5h		;6b40   ; llena_vram_baja: pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
 	ld hl,06ca9h		;6b43
-	ld de,0e000h		;6b46
+	ld de,0e000h		;6b46   ; apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 	call fila_del_marcador		;6b49   ; fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
 	call fila_del_marcador		;6b4c   ; fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
 	call fila_del_marcador		;6b4f   ; fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
@@ -1335,7 +1335,7 @@ pinta_cifra:		; la cifra A (p01:7135 + 32 x A) en DE
 	ld de,07135h		;6b9f
 	add hl,de			;6ba2
 	pop de			;6ba3
-	call copia_caracter		;6ba4   ; copia_caracter: copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
+	call copia_caracter		;6ba4   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 	pop af			;6ba7
 	pop bc			;6ba8
 	pop de			;6ba9
@@ -1367,7 +1367,7 @@ pinta_caracter_del_marcador:		; el caracter A de p01:6D09 en DE
 	ld de,06d09h		;6bc9
 	add hl,de			;6bcc
 	pop de			;6bcd
-	call copia_caracter		;6bce   ; copia_caracter: copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
+	call copia_caracter		;6bce   ; copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 	pop af			;6bd1
 	pop bc			;6bd2
 	pop de			;6bd3
@@ -1882,7 +1882,7 @@ siguiente_demostracion:		; la fase, 0xCA1E y el puntero a las entradas (0xC91D) 
 	ld (0ca10h),a		;7852   ; guarda la fase (0 a 8; 9 el final)
 	ld a,(hl)			;7855
 	inc hl			;7856
-	ld (0ca1eh),a		;7857
+	ld (0ca1eh),a		;7857   ; guarda el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 	ld e,(hl)			;785a
 	inc hl			;785b
 	ld d,(hl)			;785c

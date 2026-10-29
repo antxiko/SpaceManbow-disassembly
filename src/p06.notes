@@ -129,6 +129,7 @@ C 0xA02A llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
 C 0xA037 guarda la vida del actor (p04:7C44 le resta los golpes)
 C 0xA03A prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 C 0xA03D siguiente_paso: el paso del actor + 1
+C 0xA040 lee el estado del scroll (0 avanza, 1 y 2 parado)
 C 0xA046 siguiente_paso: el paso del actor + 1
 C 0xA04C baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0xA052 baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
@@ -520,6 +521,7 @@ C 0xB529 despachador: salta a la entrada A de la tabla de direcciones que va det
 C 0xB53A marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 C 0xB53D la vida del actor (p04:7C44 le resta los golpes) = 0x00
 C 0xB541 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x01
+C 0xB547 guarda el estado del scroll (0 avanza, 1 y 2 parado)
 C 0xB54B llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
 C 0xB555 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0xB558 lee la Y del actor (en caracteres de 8 puntos)

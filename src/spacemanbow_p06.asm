@@ -47,7 +47,7 @@ L_A037:
 	call 069d7h		;a03a   ; prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 	jp 06c1dh		;a03d   ; siguiente_paso: el paso del actor + 1
 L_A040:
-	ld a,(0c0d4h)		;a040
+	ld a,(0c0d4h)		;a040   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
 	cp 003h		;a043
 	ret nz			;a045
 	jp 06c1dh		;a046   ; siguiente_paso: el paso del actor + 1
@@ -2680,7 +2680,7 @@ L_B53A:
 	ld (ix+016h),000h		;b53d   ; la vida del actor (p04:7C44 le resta los golpes) = 0x00
 	ld (ix+004h),001h		;b541   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x01
 	ld a,002h		;b545
-	ld (0c0d4h),a		;b547
+	ld (0c0d4h),a		;b547   ; guarda el estado del scroll (0 avanza, 1 y 2 parado)
 	ret			;b54a
 arranca_tipo_7B:		; la puesta en marcha del actor del tipo 0x7B (tabla p04:6360, desde p04:6344)
 	call 06c4bh		;b54b   ; llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras

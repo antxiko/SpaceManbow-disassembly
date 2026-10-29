@@ -162,7 +162,7 @@ L_80EE:
 	ld a,c			;80f2
 	ret			;80f3
 L_80F4:
-	ld (0c0b5h),a		;80f4
+	ld (0c0b5h),a		;80f4   ; guarda la pagina pedida (bit 7: hay que ponerla)
 	ret			;80f7
 L_80F8:
 	ld (0c0b4h),a		;80f8

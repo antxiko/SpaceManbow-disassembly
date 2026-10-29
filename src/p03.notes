@@ -19,51 +19,288 @@ D 0xBDE7 0xBF2E leido_BDE7  lo leen p01:6C6F, p03:BDD8, p03:BDDA jugando (tools/
 # --- fin de los datos de datos_leidos.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0xA600 secuencia_titulo borra la pagina, carga los graficos de la lista p03:B40A (p03:AE15), el mapa del banco 0x15 (21) en 0x5A02 con el guion p03:B9A3 (p03:A68F) y borra el resto
+L 0xA62A secuencia_entre_fases los graficos de p03:B37E, el mapa del banco 21 en 0x5000 con el guion p03:BA7B, p03:BDC8, el registro 23 a 0 y enciende la pantalla
+L 0xA651 graficos_del_titulo los graficos de la lista p03:B260 y los bancos 1-2-3
+L 0xA65B secuencia_historia el mapa del banco 0x0A en 0x5500 con el guion p03:B520, p03:BDC3, enciende y borra la segunda pagina
+L 0xA67F borra_pagina rellena de 0 la VRAM desde la linea 0xC0 (orden del VDP)
+L 0xA68F prepara_secuencia los registros del VDP (p03:A6AE), el mapa del banco A desde HL (p03:AEA6) y el primer objeto con el guion de DE (p03:A713)
+L 0xA69F secuencia_del_cuadro los mandos, las teclas de funcion y un paso de la secuencia (p03:A6A5)
+L 0xA6A5 paso_de_secuencia los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
+L 0xA6AE registros_de_secuencia los 8 registros del VDP de p03:A6BD y sin sprites
+L 0xA713 primer_objeto borra 0xE000-0xE6FF y pone el objeto 0 (0xE100) con el guion de HL y su caja por defecto
+L 0xA749 objetos_del_cuadro mueve los 0x30 objetos (p03:A754), los pinta por su prioridad (p03:A767) y A = 0xE0FF
+L 0xA754 mueve_objetos los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
+L 0xA767 pinta_objetos las 16 prioridades, de la 15 a la 0 (p03:A771)
+L 0xA771 pinta_prioridad los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
+L 0xA78E objeto su guion (p03:A818) y su movimiento (p03:A795)
+L 0xA795 mueve_objeto la X (ix+4-5) mas su velocidad (ix+8-9) y la Y (ix+6-7) mas la suya (ix+0x0A-0x0B); con las banderas 1 y 3 (o 1 y 4) dan la vuelta al llegar a ix+0x16 o ix+0x17
+L 0xA818 paso_del_guion si la espera (ix+1) ha acabado, la siguiente orden del guion (ix+2-3) por la tabla p03:A835 (17 ordenes)
+L 0xA857 puntero_del_guion HL = ix+2-3
+L 0xA85E guarda_puntero_del_guion ix+2-3 = HL
+L 0xA865 crea_objeto_en_linea la orden 0 con sus datos detras del call
+L 0xA86A orden_crea_objeto orden 0: [objeto][guion][Y][X] crea otro objeto con ese guion junto al que la manda
+L 0xA877 lee_crea_objeto lee los datos de la orden 0 y crea el objeto (p03:A88E)
+L 0xA88E crea_objeto el objeto A (p03:AB61) con su guion, prioridad y sitio respecto al de IY; si no hay, vuelve cuatro niveles atras
+L 0xA8CD caja_en_linea la orden 1 con sus datos detras del call
+L 0xA8D2 orden_caja orden 1: el rectangulo de graficos que pinta el objeto (p03:A8DD)
+L 0xA8DD lee_caja lee los 4 bytes y pone la caja (p03:A8EF)
+L 0xA8EF pon_caja el rectangulo de origen (ix+0x0E-0x0F), su tamano (ix+0x12-0x13), el desplazamiento (ix+0x10-0x11) y lo deja visible
+L 0xA917 cuatro_bytes D, E, B y C de HL
+L 0xA920 banderas_en_linea la orden 2 con su dato detras del call
+L 0xA925 orden_banderas orden 2: ix+0x0D or el dato
+L 0xA93E pon_banderas ix+0x0D or A
+L 0xA945 espera_en_linea la orden 3 con su dato detras del call
+L 0xA94A orden_espera orden 3: espera N cuadros (ix+1)
+L 0xA961 pon_espera ix+1 = A
+L 0xA965 espera_senal_en_linea la orden 4 con su dato detras del call
+L 0xA96A orden_espera_senal orden 4: se queda hasta que la senal N (0xE0F0 + N) se pone
+L 0xA982 mira_senal acarreo si la senal A de 0xE0F0 no esta puesta
+L 0xA98E senal_en_linea la orden 5 con su dato detras del call
+L 0xA993 orden_senal orden 5: pone la senal N
+L 0xA9AC pon_senal 0xE0F0 + A = 1
+L 0xA9B6 borra_en_linea la orden 6 detras del call
+L 0xA9BB orden_borra orden 6: borra la pantalla (orden del VDP), los objetos menos el 0 y las senales
+L 0xA9EA para_en_linea la orden 7 detras del call
+L 0xA9EF orden_para orden 7: el guion se queda en esta orden
+L 0xAA07 acarreo scf
+L 0xAA09 colores_ya_en_linea la orden 8 con su puntero detras del call
+L 0xAA0E orden_colores_ya orden 8: los colores de la lista tal cual (p00:4C94)
+L 0xAA2E fundido_en_linea la orden 9 con su puntero detras del call
+L 0xAA33 orden_fundido orden 9: fundido a los colores de la lista (p00:4CE0, p00:4CF5)
+L 0xAA56 llama_en_linea la orden 0x0A con su direccion detras del call
+L 0xAA5B orden_llama orden 0x0A: llama a la direccion que lleva
+L 0xAA78 velocidad_en_linea la orden 0x0B con sus datos detras del call
+L 0xAA7D orden_velocidad orden 0x0B: la velocidad del objeto en X (D) y en Y (E), con signo
+L 0xAAA9 desplazamiento_en_linea la orden 0x0C con sus datos detras del call
+L 0xAAAE orden_desplazamiento orden 0x0C: ix+0x14 = D, ix+0x15 = E
+L 0xAAD0 salta_en_linea la orden 0x0D con su direccion detras del call
+L 0xAAD5 orden_salta orden 0x0D: el guion sigue en la direccion que lleva
+L 0xAAEE fin_en_linea la orden 0x0E detras del call
+L 0xAAF3 orden_fin orden 0x0E: borra el objeto
+L 0xAB14 sonido_en_linea la orden 0x0F con su dato detras del call
+L 0xAB19 orden_sonido orden 0x0F: pide el sonido N (p00:4AF5)
+L 0xAB36 color_en_linea la orden 0x10 con sus datos detras del call
+L 0xAB3B orden_color orden 0x10: el color (nibble alto de E) con los bytes D y E (p00:4776)
+L 0xAB61 objeto_nuevo el objeto A (p03:AB83) borrado, en marcha (ix+0 = 1) y con sus limites por defecto
+L 0xAB83 ficha_de_objeto HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
+L 0xAB94 borra_objetos 0xE100-0xE6FF a 0
+L 0xAB9D borra_objetos_menos_0 0xE120-0xE6FF a 0
+L 0xABA6 por_32_con_signo HL = A x 32 con signo
+L 0xABB0 parte_alta A = los 3 bits altos de HL y HL x 8
+L 0xABB8 pinta_objeto si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
+L 0xABDD pinta_rectangulo la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+L 0xAC2F pinta_en_dos_y partido en dos por el borde de abajo
+L 0xAC6E pinta_en_dos_x partido en dos por el borde derecho
+L 0xACAD pinta_en_cuatro partido en cuatro
+L 0xAD76 copia_objeto_a_e0c0 copia la ficha de IY a 0xE0C0 y la usa como IX
+L 0xAD86 copia_del_vdp de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+L 0xADD0 origen_del_grafico la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+L 0xAE07 banco_del_grafico el banco C y H, pasando al siguiente cada 0x2000
+L 0xAE15 carga_graficos la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
+L 0xAE27 un_grafico segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
+L 0xAE8C paleta_del_grafico B bytes de colores de la lista a nibbles en 0xCA00
+L 0xAEA6 mapa_de_secuencia con el banco A (p00:4C0E): el mapa de HL + 0x2000, palabras por casilla de 32 columnas; 0xFFFF acaba y 0xFFFE salta
+L 0xAECE casilla_de_secuencia el sitio del caracter (p03:AED7) y lo copia (p03:AEF0)
+L 0xAED7 sitio_del_caracter de la palabra B, C: H y L en la pagina de los graficos
+L 0xAEF0 copia_caracter_8 un caracter de 8 x 8 a la casilla D, E (p03:AD86)
+L 0xAF0E de_1_bit graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
+L 0xAF24 de_1_bit_alta lo mismo a la pagina alta
+L 0xAF3A filas_de_1_bit 8 filas
+L 0xAF46 fila_de_1_bit un byte de 1 bit por punto a 4 bytes con los colores de 0xCA00
+L 0xAF67 de_2_bits graficos de 2 bits por punto a 4
+L 0xAF7D de_2_bits_alta lo mismo a la pagina alta
+L 0xAF93 filas_de_2_bits 8 filas
+L 0xAF9D fila_de_2_bits dos bytes de 2 bits por punto a 4 bytes con los colores de 0xCA00
+L 0xAFC8 de_4_bits graficos de 4 bits por punto con paleta propia
+L 0xAFDE de_4_bits_alta lo mismo a la pagina alta
+L 0xAFF4 filas_de_4_bits 8 filas
+L 0xAFFE fila_de_4_bits tres bytes a 4 bytes de 4 bits por punto con los colores de 0xCA00
+L 0xB031 caracter_volteado un caracter de 8 x 8 volteado de izquierda a derecha a la VRAM en DE
+L 0xB058 caracteres_volteados B caracteres volteados (p03:B05B) desde HL + 3
+L 0xB05B caracteres_volteados_b B caracteres volteados seguidos, bajando al llegar al borde
+L 0xBDC3 textos_historia los textos de p03:BEE9 (p03:BDCB)
+L 0xBDC8 textos_entre_fases los textos de p03:BDE7
+L 0xBDCB textos_en_pagina_alta con 0xC91B = 1 (la pagina alta), los textos de la lista (p03:BDD8)
+L 0xBDD8 lista_de_textos por cada palabra de HL distinta de 0: la cadena que sigue, en ese sitio, con los colores 0xFE (p01:6009)
 C 0xA600 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:4760)
 C 0xA60D orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 C 0xA610 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA617 carga_graficos: la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
 C 0xA61A bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA625 prepara_secuencia: los registros del VDP (p03:A6AE), el mapa del banco A desde HL (p03:AEA6) y el primer objeto con el guion de DE (p03:A713)
+C 0xA62E carga_graficos: la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
 C 0xA631 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA63C prepara_secuencia: los registros del VDP (p03:A6AE), el mapa del banco A desde HL (p03:AEA6) y el primer objeto con el guion de DE (p03:A713)
+C 0xA63F borra_pagina: rellena de 0 la VRAM desde la linea 0xC0 (orden del VDP)
 C 0xA642 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA645 textos_entre_fases: los textos de p03:BDE7
 C 0xA64E enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
+C 0xA655 carga_graficos: la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
 C 0xA658 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
+C 0xA663 prepara_secuencia: los registros del VDP (p03:A6AE), el mapa del banco A desde HL (p03:AEA6) y el primer objeto con el guion de DE (p03:A713)
 C 0xA666 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xA669 borra_pagina: rellena de 0 la VRAM desde la linea 0xC0 (orden del VDP)
+C 0xA66C textos_historia: los textos de p03:BEE9 (p03:BDCB)
 C 0xA66F espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0xA672 enciende_pantalla: el bit 6 del registro 1 (copia en 0xF3E0)
 C 0xA67C orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
 C 0xA67F bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 C 0xA682 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0xA68C orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA692 registros_de_secuencia: los 8 registros del VDP de p03:A6BD y sin sprites
+C 0xA697 mapa_de_secuencia: con el banco A (p00:4C0E): el mapa de HL + 0x2000, palabras por casilla de 32 columnas; 0xFFFF acaba y 0xFFFE salta
+C 0xA69B primer_objeto: borra 0xE000-0xE6FF y pone el objeto 0 (0xE100) con el guion de HL y su caja por defecto
 C 0xA69F copia_mandos: 0xC909 a 0xC908 y 0xC90B a 0xC907, que se vacia
 C 0xA6A2 teclas_de_funcion: F1-F5 (p00:4AC8) en 0xC90D y las recien pulsadas en 0xC90C (bit 0 F1 ... bit 4 F5)
+C 0xA6A5 objetos_del_cuadro: mueve los 0x30 objetos (p03:A754), los pinta por su prioridad (p03:A767) y A = 0xE0FF
 C 0xA6A9 bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 C 0xA6AE espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0xA6B9 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
+C 0xA714 apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 C 0xA71A borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xA749 mueve_objetos: los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
+C 0xA74C pinta_objetos: las 16 prioridades, de la 15 a la 0 (p03:A771)
+C 0xA75B objeto: su guion (p03:A818) y su movimiento (p03:A795)
+C 0xA76A pinta_prioridad: los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
+C 0xA780 pinta_objeto: si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
+C 0xA78E paso_del_guion: si la espera (ix+1) ha acabado, la siguiente orden del guion (ix+2-3) por la tabla p03:A835 (17 ordenes)
+C 0xA791 mueve_objeto: la X (ix+4-5) mas su velocidad (ix+8-9) y la Y (ix+6-7) mas la suya (ix+0x0A-0x0B); con las banderas 1 y 3 (o 1 y 4) dan la vuelta al llegar a ix+0x16 o ix+0x17
 C 0xA82F nada_4AE0: ret
 C 0xA832 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0xA866 lee_crea_objeto: lee los datos de la orden 0 y crea el objeto (p03:A88E)
+C 0xA86A puntero_del_guion: HL = ix+2-3
+C 0xA86E lee_crea_objeto: lee los datos de la orden 0 y crea el objeto (p03:A88E)
+C 0xA871 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA887 crea_objeto: el objeto A (p03:AB61) con su guion, prioridad y sitio respecto al de IY; si no hay, vuelve cuatro niveles atras
+C 0xA895 objeto_nuevo: el objeto A (p03:AB83) borrado, en marcha (ix+0 = 1) y con sus limites por defecto
 C 0xA898 vuelve_quitando_4: quita 4 palabras de la pila y vuelve: no vuelve a quien llama sino mas atras
+C 0xA8AB por_32_con_signo: HL = A x 32 con signo
+C 0xA8BC por_32_con_signo: HL = A x 32 con signo
+C 0xA8CE lee_caja: lee los 4 bytes y pone la caja (p03:A8EF)
+C 0xA8D2 puntero_del_guion: HL = ix+2-3
+C 0xA8D6 lee_caja: lee los 4 bytes y pone la caja (p03:A8EF)
+C 0xA8D9 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA8E8 pon_caja: el rectangulo de origen (ix+0x0E-0x0F), su tamano (ix+0x12-0x13), el desplazamiento (ix+0x10-0x11) y lo deja visible
+C 0xA8F2 cuatro_bytes: D, E, B y C de HL
+C 0xA925 puntero_del_guion: HL = ix+2-3
+C 0xA92C guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA937 pon_banderas: ix+0x0D or A
+C 0xA94A puntero_del_guion: HL = ix+2-3
+C 0xA951 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA95A pon_espera: ix+1 = A
+C 0xA96A puntero_del_guion: HL = ix+2-3
+C 0xA972 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA97B mira_senal: acarreo si la senal A de 0xE0F0 no esta puesta
+C 0xA993 puntero_del_guion: HL = ix+2-3
+C 0xA99A guarda_puntero_del_guion: ix+2-3 = HL
+C 0xA9A5 pon_senal: 0xE0F0 + A = 1
+C 0xA9BB puntero_del_guion: HL = ix+2-3
+C 0xA9C2 guarda_puntero_del_guion: ix+2-3 = HL
 C 0xA9DA orden_rellena: orden HMMV del VDP (0xC0): rellena un rectangulo de la VRAM desde H, L con D y el valor de A
+C 0xA9DD borra_objetos_menos_0: 0xE120-0xE6FF a 0
 C 0xA9E6 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xA9EF puntero_del_guion: HL = ix+2-3
+C 0xA9F7 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xAA00 acarreo: scf
+C 0xAA0E puntero_del_guion: HL = ix+2-3
+C 0xAA15 guarda_puntero_del_guion: ix+2-3 = HL
 C 0xAA2A pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
+C 0xAA33 puntero_del_guion: HL = ix+2-3
+C 0xAA3A guarda_puntero_del_guion: ix+2-3 = HL
 C 0xAA4F prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 C 0xAA52 empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
+C 0xAA5B puntero_del_guion: HL = ix+2-3
+C 0xAA62 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xAA7D puntero_del_guion: HL = ix+2-3
+C 0xAA84 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xAAAE puntero_del_guion: HL = ix+2-3
+C 0xAAB5 guarda_puntero_del_guion: ix+2-3 = HL
+C 0xAAD5 puntero_del_guion: HL = ix+2-3
+C 0xAADC guarda_puntero_del_guion: ix+2-3 = HL
+C 0xAAF3 puntero_del_guion: HL = ix+2-3
+C 0xAAFB guarda_puntero_del_guion: ix+2-3 = HL
 C 0xAB0F borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xAB19 puntero_del_guion: HL = ix+2-3
+C 0xAB20 guarda_puntero_del_guion: ix+2-3 = HL
 C 0xAB32 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0xAB3B puntero_del_guion: HL = ix+2-3
+C 0xAB42 guarda_puntero_del_guion: ix+2-3 = HL
 C 0xAB5D pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0xAB61 ficha_de_objeto: HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
 C 0xAB6B borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0xAB9A borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0xABA3 borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xABCC pinta_en_cuatro: partido en cuatro
+C 0xABD3 pinta_en_dos_x: partido en dos por el borde derecho
+C 0xABDA pinta_en_dos_y: partido en dos por el borde de abajo
+C 0xABEA por_32_con_signo: HL = A x 32 con signo
+C 0xABEE parte_alta: A = los 3 bits altos de HL y HL x 8
+C 0xABFF por_32_con_signo: HL = A x 32 con signo
+C 0xAC03 parte_alta: A = los 3 bits altos de HL y HL x 8
+C 0xAC20 copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+C 0xAC27 copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+C 0xAC2C copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+C 0xAC33 copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xAC41 pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xAC44 copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xAC66 pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xAC72 copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xAC80 pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xAC83 copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xACA5 pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xACB1 copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xACCA pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xACCD copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xACFA pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xACFD copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xAD2A pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+C 0xAD2D copia_objeto_a_e0c0: copia la ficha de IY a 0xE0C0 y la usa como IX
+C 0xAD6E pinta_rectangulo: la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
 C 0xADB6 orden_copia_logica: orden LMMM del VDP (0x90 y la operacion logica): copia un rectangulo con transparencia u otra operacion
 C 0xADC8 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
+C 0xADF7 banco_del_grafico: el banco C y H, pasando al siguiente cada 0x2000
 C 0xADFB bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
 C 0xAE15 espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
+C 0xAE1D un_grafico: segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
+C 0xAE3A paleta_del_grafico: B bytes de colores de la lista a nibbles en 0xCA00
+C 0xAE42 origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+C 0xAE49 de_1_bit_alta: lo mismo a la pagina alta
+C 0xAE4C de_1_bit: graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
+C 0xAE51 paleta_del_grafico: B bytes de colores de la lista a nibbles en 0xCA00
+C 0xAE59 origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+C 0xAE60 de_2_bits_alta: lo mismo a la pagina alta
+C 0xAE63 de_2_bits: graficos de 2 bits por punto a 4
+C 0xAE68 paleta_del_grafico: B bytes de colores de la lista a nibbles en 0xCA00
+C 0xAE70 origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+C 0xAE77 de_4_bits_alta: lo mismo a la pagina alta
+C 0xAE7A de_4_bits: graficos de 4 bits por punto con paleta propia
+C 0xAE7F origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+C 0xAE86 caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
 C 0xAE89 copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 C 0xAE90 apunta a el estado de la partida
 C 0xAEA6 bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
+C 0xAEBD casilla_de_secuencia: el sitio del caracter (p03:AED7) y lo copia (p03:AEF0)
+C 0xAECF sitio_del_caracter: de la palabra B, C: H y L en la pagina de los graficos
+C 0xAED3 copia_caracter_8: un caracter de 8 x 8 a la casilla D, E (p03:AD86)
+C 0xAF0A copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+C 0xAF16 filas_de_1_bit: 8 filas
 C 0xAF21 copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAF2C filas_de_1_bit: 8 filas
+C 0xAF37 caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
+C 0xAF3F fila_de_1_bit: un byte de 1 bit por punto a 4 bytes con los colores de 0xCA00
+C 0xAF6F filas_de_2_bits: 8 filas
 C 0xAF7A copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAF85 filas_de_2_bits: 8 filas
+C 0xAF90 caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
+C 0xAF96 fila_de_2_bits: dos bytes de 2 bits por punto a 4 bytes con los colores de 0xCA00
+C 0xAFD0 filas_de_4_bits: 8 filas
 C 0xAFDB copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
+C 0xAFE6 filas_de_4_bits: 8 filas
+C 0xAFF1 caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
+C 0xAFF7 fila_de_4_bits: tres bytes a 4 bytes de 4 bits por punto con los colores de 0xCA00
 C 0xB03B direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0xB05C caracter_volteado: un caracter de 8 x 8 volteado de izquierda a derecha a la VRAM en DE
+C 0xBDD0 lista_de_textos: por cada palabra de HL distinta de 0: la cadena que sigue, en ese sitio, con los colores 0xFE (p01:6009)
 C 0xBDE1 vector_6C6A: jp p01:6C6A
 # --- fin de las anotaciones de anota.py ---

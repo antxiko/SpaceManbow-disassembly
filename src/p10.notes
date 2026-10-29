@@ -113,6 +113,7 @@ C 0x8018 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x8029 apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores
 C 0x8032 apunta a lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores
 C 0x806C prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x80F4 guarda la pagina pedida (bit 7: hay que ponerla)
 C 0x80FB trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
 C 0x8162 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x826A trozo_de_vram: HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)

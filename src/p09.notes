@@ -79,63 +79,468 @@ D 0x7D76 0x7D88 leido_7D76  lo leen p00:4694, p00:4696 jugando (tools/cobertura.
 # --- fin de los datos de datos_leidos.py ---
 
 # --- ANOTACIONES AUTOMATICAS (seccion que reescribe tools/anota.py; no editar a mano) ---
+L 0x6D00 vector_graficos_de_fase jp p10:801F (los graficos de la fase A)
+L 0x6D03 vector_80F4 jp p10:80F4
+L 0x6D06 vector_reinicio jp 0x0000
+L 0x6D09 vector_graficos_b jp p10:800F
+L 0x6D0C vector_graficos_a jp p10:8000
+L 0x6D0F vector_prepara_pantalla jp p09:6D30
+L 0x6D12 vector_pantalla_del_cuadro jp p09:6E44
+L 0x6D15 vector_scroll_del_cuadro jp p09:6D95
+L 0x6D18 vector_prepara_registros jp p09:6D69
+L 0x6D1B vector_nada jp p09:707D, que es un ret
+L 0x6D30 prepara_pantalla_de_fase los registros (p09:6D75), los graficos de la fase (p10:801F), sprites, borra 0xC000-0xC5FF; si el VDP es un V9958 (estado 1, bits 1-5 = 2) 0xC0EB = 4 y el registro 25 = 2; luego p09:77FC, p09:7683, las tablas de registros (p09:6F99), las lineas y las estrellas (p09:6E77)
+L 0x6D69 prepara_registros los registros, las tablas de registros, sprites y lineas
+L 0x6D75 registros_de_pantalla los 9 registros de p09:705C, el registro 8 (copia 0xFFE7 and 8, or 0x22) y, con el V9958, el 25 = 2
+L 0x6D95 scroll_del_cuadro en la fase 4 (y cada 4 cuadros en la 8) cambia de pagina (p09:6DC3); p09:7203 y p09:7AB5; y segun 0xC0D4: 0 el scroll (p09:7AC4, p09:7755), 1 los graficos de p10:800F, 2 para el scroll, 3 o mas p09:6E08
+L 0x6DBD cada_4_cuadros p09:6DC3 solo cuando la cuenta de cuadros and 3 es 0
+L 0x6DC3 pagina_siguiente si no hay un cambio pendiente (0xC0B5) y 0xC0B4 es menor que 4: 0xC0DB pasa de 0 a 5 y pide la pagina (0, 1, 2, 3, 2, 1) en 0xC0B5 con el bit 7
+L 0x6DEB graficos_y_para los graficos de p10:800F y p09:6DEE
+L 0x6DEE para_scroll el scroll fino y lo que se suma a los actores (0xCA12-0xCA1C) a 0, 0xC0D5 = 0 y 0xC0D4 + 1
+L 0x6E08 scroll_de_c0dc_y_borra 0xCA12 y 0xCA14 de 0xC0DC (p09:6E37) y borra el trozo de mapa de 0xD988 (p09:6E0B)
+L 0x6E0B borra_mapa_d988 24 filas de 32 bytes (de 0x30 en 0x30) desde 0xD988 a 0
+L 0x6E2D borra_e000 0xE000-0xE7FF a 0
+L 0x6E37 scroll_de_c0dc 0xCA12 = 0xC0DC y 0xCA14 = 0xC0DE
+L 0x6E44 pantalla_del_cuadro p09:7070, los registros del scroll en la tabla que toca (p09:6F43), p09:707E, las estrellas de la fase 0 o 2, p09:7683, 0xC09C = 1 (cambiar de tablas) y el fundido pendiente (bits 7 y 6 de 0xEF60)
+L 0x6E77 estrellas_al_azar 0xC0EA = 0 y 24 columnas al azar (0-31) en 0xE800-0xE817
+L 0x6E8A estrellas_fase_0 las estrellas (p09:6E9C) hacia la derecha con el caracter 0xCD
+L 0x6E91 sin_estrellas 0xC0EA = 1
+L 0x6E97 estrellas_fase_2 las estrellas hacia la izquierda con el caracter 0x5F
+L 0x6E9C estrellas_del_cuadro mueve las estrellas con el scroll (0xC0E6, 0xC0E8) y pone el caracter B en las 24 filas del mapa de 0xD988 donde esta vacio, dos por fila
+L 0x6F20 rota_estrellas las 24 columnas de 0xE800 giran una posicion (segun 0xC0D5, hacia un lado o hacia el otro)
+L 0x6F43 registros_de_scroll con 0xC0D2 y 0xC0BB, los valores del scroll en una de las dos tablas de registros (0xC9C5-0xC9CF o 0xC9F1-0xC9FB); con el V9958, de otra forma
+L 0x6F99 tablas_de_registros copia las listas de registros de p09:7002-705B a las seis tablas de 0xC948-0xC9FF (las que mandan las interrupciones de linea) con el registro 8 de 0xFFE7 y, con el V9958, el 0x9B
+L 0x7070 paleta_retrasada baja 0xC0D8 y, al llegar a 0, manda la paleta (p00:4DA9)
+L 0x707D nada_707D ret
+L 0x707E sprites_del_cuadro reparte los sprites por franjas (p09:7221) y manda sus atributos a la VRAM (p09:70E4)
+L 0x7085 borra_sprites_ram 0xC000-0xC07F, 0xC180-0xC1FF y 0xC280-0xC2FF a 0
+L 0x70E4 manda_sprites segun la tabla del cuadro (0xC09B): los atributos de 0xC4B9 y 0xC5B9 a 0xFA00 y 0xFE00 de la VRAM, o los de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600 (p09:713F)
+L 0x70F7 manda_atributos_a apunta la VRAM a HL y manda los atributos de DE (p09:7106); HL + 0x400
+L 0x7106 manda_atributos_a_b dos tandas de p09:7117
+L 0x7117 manda_atributos_a_c 4 veces 8 + 8 bytes con otir, saltando 16 hacia atras entre ellas
+L 0x713F manda_sprites_b los atributos de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600
+L 0x714B manda_atributos_b apunta la VRAM a HL y manda los atributos de DE (p09:715A); HL + 0x400
+L 0x715A manda_atributos_b_b dos tandas de p09:7165
+L 0x7165 manda_atributos_b_c 4 veces 16 bytes con otir
+L 0x718B pon_patron guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
+L 0x71C3 manda_patron los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
+L 0x7203 pagina_de_sprites 0xC0AA, 0xC0A6 y 0xC0A8 = 0xC0-0xC2 o 0xC3-0xC5, segun la tabla de este cuadro
+L 0x7221 reparte_sprites los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
+L 0x7255 sprites_fuera la Y de 0xC099 (la del scroll menos 0x18) en todos los sprites de la tabla del cuadro
+L 0x72D5 reparte_grupo_c009 los 25 sprites del grupo de 0xC009: cada uno en su franja (p09:72ED)
+L 0x72ED franja_del_sprite segun su Y, a cual de las cuatro franjas de las interrupciones de linea va el sprite
+L 0x72FF franja_1 el sprite en la franja 1
+L 0x7310 franja_2 el sprite en la franja 2 (y en la 1 si la toca)
+L 0x7325 franja_3 el sprite en la franja 3
+L 0x7336 franja_4 el sprite en la franja 4
+L 0x7345 cambia_a_franja_1 el sprite cambia a la franja 1: suelta o pide sus planos
+L 0x735B cambia_a_franja_2 lo mismo a la franja 2
+L 0x7371 cambia_a_franja_3 lo mismo a la franja 3
+L 0x7387 cambia_a_franja_4 lo mismo a la franja 4
+L 0x739D suelta_sprite suelta los planos del sprite (p09:7442) y vuelve mas atras
+L 0x73A3 a_ff A = 0xFF
+L 0x73A6 plano_franja_a el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
+L 0x73BD plano_franja_b lo mismo en la franja de 0xC0A8
+L 0x73D4 atributos_del_plano la Y y la X del sprite mas el scroll (sin dejar la Y en 0xD8), el patron y el color en el plano DE
+L 0x73EE y_fuera la Y con el scroll que da la vuelta
+L 0x73FA patron_distinto si el patron ha cambiado lo manda (p09:718B); si no hay, el sprite se queda sin plano
+L 0x741A pide_plano un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+L 0x7423 sin_plano E = 0 y la marca 0x0E
+L 0x742D plano_libre el primer plano libre de los 32 de 4 en 4; acarreo si no hay
+L 0x7442 suelta_planos suelta los planos del sprite en las paginas 0xC0-0xC5
+L 0x7462 suelta_plano el plano A queda libre y con la Y de 0xC099
+L 0x746E mas_1 A + 1
+L 0x7470 reparte_grupo_c03b los 12 sprites del grupo de 0xC03B (de dos planos): cada uno en su franja (p09:7488)
+L 0x7488 franja_del_sprite_doble lo mismo para un sprite de dos planos
+L 0x749A franja_doble_1 franja 1
+L 0x74AB franja_doble_2 franja 2
+L 0x74C0 franja_doble_3 franja 3
+L 0x74D1 franja_doble_4 franja 4
+L 0x74E0 cambia_doble_a_1 cambia a la franja 1
+L 0x74F6 cambia_doble_a_2 cambia a la franja 2
+L 0x750C cambia_doble_a_3 cambia a la franja 3
+L 0x7522 cambia_doble_a_4 cambia a la franja 4
+L 0x7538 suelta_sprite_doble suelta sus planos y vuelve mas atras
+L 0x753E planos_dobles_a los dos planos en la franja de 0xC0A6
+L 0x7566 planos_dobles_b los dos planos en la franja de 0xC0A8
+L 0x758E atributos_plano_1 la Y, la X y el patron del primer plano
+L 0x75A8 atributos_plano_2 los del segundo plano (patron + 4)
+L 0x75C4 patron_doble_distinto como p09:73FA para los de dos planos
+L 0x75E4 pide_planos_dobles dos planos libres seguidos (p09:7617)
+L 0x75ED sin_planos_dobles E = 0 y la marca 0x0E
+L 0x75F7 suelta_planos_dobles suelta los planos del sprite doble
+L 0x7617 planos_dobles_libres dos planos libres seguidos de los 16 de arriba; si hace falta, quita uno a un sprite sencillo (p09:7644)
+L 0x7644 quita_plano_b quita el plano de un sprite sencillo
+L 0x7649 quita_plano_a lo mismo con el plano de al lado
+L 0x764D quita_plano p09:7655 guardando HL y DE
+L 0x7655 busca_dueno busca en los 25 de 0xC009 el sprite que usa el plano A y lo deja sin plano
+L 0x766D suelta_plano_doble los dos planos quedan libres con la Y de 0xC099
+L 0x7683 manda_mapa las 24 filas de 32 caracteres de 0xD988 a la tabla de nombres de la VRAM (0xC000 o 0xC400 segun el cuadro), empezando por la fila del scroll (0xC0D2) y dando la vuelta; con 0xC0B3, de otra forma (p09:771E)
+L 0x76BB manda_mapa_24 las 24 filas desde el principio
+L 0x76BD manda_mapa_desde A filas desde 0xD988
+L 0x771E manda_mapa_depuracion con 0xC0B3: cada caracter con p09:773D
+L 0x772B fila_de_depuracion 32 caracteres de una fila con p09:773D
+L 0x773D nibble_por_tecla el nibble bajo del caracter o, con TAB pulsado (fila 7, bit 3), el alto
+L 0x7755 copia_mapa_visible las 24 filas de 32 del mapa de 64 x 32 de 0xE000 en la posicion del scroll (p00:4E4A) a 0xD988, partiendo la fila si da la vuelta (p09:777C)
+L 0x777C copia_mapa_partido lo mismo con las filas partidas en dos trozos
+L 0x77B6 salta_a_iy jp (iy)
+L 0x77B8 salta_a_ix jp (ix)
+L 0x77BA copia_32 copia 32 bytes de HL a DE (31 ldi y uno mas): se entra a mitad para copiar menos
+L 0x77FC prepara_mapa_de_fase los bloques de la fase (0xC0C8, tabla p09:7D76), el mapa y la posicion del punto de salida 0xCA1E (0xC0CA y 0xCA34, tabla p09:7C8C), el scroll a 0 y adelanta el mapa hasta llenar la pantalla (p09:7848)
+L 0x7848 adelanta_mapa pasos de scroll (p09:7AC4) y del guion de la fase (p00:4109) mientras 0xCA33 no llega a 0
+L 0x7858 orden_del_mapa con el banco 27 en 0xA000, el siguiente byte del mapa: menor que 0x10, un tramo de scroll (p09:7894); de 0x10 a 0x1F, una orden (tabla p09:7874)
+L 0x7894 tramo_de_scroll el tramo A (p09:789C) y p09:7AA1
+L 0x789C pon_tramo_de_scroll de la tabla p09:78FF (12 bytes por tramo): la velocidad en Y (0xC0C3) y en X (0xC0BD) con su signo, 0xC0B8, 0xC0B6, el modo de columnas (0xC0CE) y la direccion (0xC0D5)
+L 0x78EC nada_78EC ret
+L 0x78F0 scroll_a_la_columna 0xCA34 = el siguiente multiplo de 0x1000
+L 0x798F orden_salto lee una direccion; si 0xCE4C no es 0, el mapa sigue en ella
+L 0x79A4 orden_scroll_vertical lee una palabra y la pone en 0xC0D2 (p09:79AE)
+L 0x79AE pon_scroll_vertical los bits altos de E con los 3 bajos de 0xC0D2, despues de p09:79C2 con D
+L 0x79C2 pide_pagina espera a que se cambie de tabla y, si A es menor que 7, pide la pagina A (0xC0B5); si no, 0xC0D1 = su bit 7
+L 0x79DA orden_salta_24 el mapa avanza 0x24 bytes y 0xC0CE = 2
+L 0x79EB orden_paleta los colores de la direccion que lleva como destino (p00:4CE0)
+L 0x79FD orden_para para el scroll, 0xC0D4 = 1 (p00:4E73) y la posicion al siguiente multiplo
+L 0x7A08 orden_espera_fundido si hay un fundido en marcha, la orden se repite con el tramo 7
+L 0x7A1C orden_quieto 0xC0D6 = 1: el scroll se para
+L 0x7A23 orden_patrones el registro 6 con el byte que lleva (p00:4E6B)
+L 0x7A30 orden_borra_mapa borra 0xE000-0xE7FF y el mapa de 0xD988
+L 0x7A38 orden_sonido el sonido del byte que lleva; con 0, el sonido 0x84 y 0xC0D7 = 0x30 (p09:7AB5 pide el 0x39 despues)
+L 0x7A54 orden_punto_de_salida la fase pasa por un punto de salida: 0xCA1E + 1 (salvo si se empezo en el, 0xC0E1)
+L 0x7A65 orden_a_la_columna la posicion al siguiente multiplo (p09:78F0)
+L 0x7A6A orden_paleta_ya lee una direccion y, mientras se adelanta el mapa, pone esos colores tal cual (p00:4CDC)
+L 0x7A80 orden_espera_adelanto acarreo si ya no se adelanta el mapa
+L 0x7A87 orden_para_2 para el scroll, 0xC0D4 = 2 y la posicion al siguiente multiplo
+L 0x7A94 orden_c0e5 0xC0E5 = el byte que lleva
+L 0x7AA1 cuenta_adelanto si 0xCA33 es 0xFF, 0xCA33 = D
+L 0x7AAB baja_adelanto 0xCA33 - 1 si no es 0
+L 0x7AB5 sonido_retrasado baja 0xC0D7 y, al llegar a 0, el sonido 0x39
+L 0x7AC4 scroll_un_paso si el scroll esta quieto (0xC0D6 = 1) lo para; si no, avanza (p09:7AD2)
+L 0x7AD2 avanza_scroll 0xC0B6 + 0xC0B8; las velocidades (p09:7B09) y la casilla (p09:7C72); al pasar de 8, una columna nueva del mapa (p09:7BED, p09:7C08), y otra si el mapa trae 0xFE
+L 0x7B09 velocidades_del_scroll la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas sus velocidades; de ellas, lo que se suma a los actores (0xCA12, 0xCA14), el scroll fino (0xCA1A, 0xCA1C), 0xCA36, 0xCA38, 0xCA18, 0xCA31 y el registro de scroll vertical (0xC0D2)
+L 0x7BC4 scroll_vertical_fino 0xC0D2 con solo los 3 bits bajos cambiados
+L 0x7BD6 scroll_parado las velocidades del scroll y lo que se suma a los actores a 0
+L 0x7BED siguiente_del_mapa con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+L 0x7C08 pinta_columna una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
+L 0x7C2B avanza_posicion 0xCA34 + 1
+L 0x7C33 cuenta_c0e5 baja 0xC0E5 y, al llegar a 0, el scroll vertical a 0x3801 (p09:79AE)
+L 0x7C3E columna_por_modo 0xC0E5, la posicion + 1, el banco 25 en 0x8000, p09:7AAB y la columna por el modo 0xC0CE (tabla p09:7C59)
+L 0x7C6D de_a_0 DE = 0
+L 0x7C71 nada_7C71 ret
+L 0x7C72 casilla_del_scroll 0xC0CD y 0xC0CC = la columna y la fila del mapa en las que va el scroll
+L 0x7D88 columna_doble dos columnas de bloques en el mapa de la RAM (p09:7DB8)
+L 0x7DA7 columna_derecha una columna de bloques a la derecha (p09:7DB8)
+L 0x7DB4 de_a_6 DE = 6
+L 0x7DB8 columna_de_bloques 6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
+L 0x7E17 menos_40 L - 0x40
+L 0x7E1C fila_de_abajo una fila de 8 bloques abajo (p09:7E55)
+L 0x7E28 fila_por_c0c1_a una fila de 15 bloques segun 0xC0C1
+L 0x7E3F fila_por_c0c1_b lo mismo con otra posicion
+L 0x7E55 fila_de_bloques A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
+L 0x7EB8 menos_40_b L - 0x40
+L 0x7EBD fila_de_arriba una fila de 8 bloques arriba (p09:7EFC)
+L 0x7ECE fila_de_arriba_b lo mismo en la columna 0
+L 0x7EDE fila_por_c0c1_c una fila de 15 bloques segun 0xC0C1
+L 0x7EFC fila_de_bloques_b como p09:7E55 con la otra fila de los bloques
+C 0x6D0F prepara_pantalla_de_fase: los registros (p09:6D75), los graficos de la fase (p10:801F), sprites, borra 0xC000-0xC5FF; si el VDP es un V9958 (estado 1, bits 1-5 = 2) 0xC0EB = 4 y el registro 25 = 2; luego p09:77FC, p09:7683, las tablas de registros (p09:6F99), las lineas y las estrellas (p09:6E77)
+C 0x6D12 pantalla_del_cuadro: p09:7070, los registros del scroll en la tabla que toca (p09:6F43), p09:707E, las estrellas de la fase 0 o 2, p09:7683, 0xC09C = 1 (cambiar de tablas) y el fundido pendiente (bits 7 y 6 de 0xEF60)
+C 0x6D15 scroll_del_cuadro: en la fase 4 (y cada 4 cuadros en la 8) cambia de pagina (p09:6DC3); p09:7203 y p09:7AB5; y segun 0xC0D4: 0 el scroll (p09:7AC4, p09:7755), 1 los graficos de p10:800F, 2 para el scroll, 3 o mas p09:6E08
+C 0x6D18 prepara_registros: los registros, las tablas de registros, sprites y lineas
+C 0x6D1B nada_707D: ret
+C 0x6D30 registros_de_pantalla: los 9 registros de p09:705C, el registro 8 (copia 0xFFE7 and 8, or 0x22) y, con el V9958, el 25 = 2
 C 0x6D33 lee la fase (0 a 8; 9 el final)
+C 0x6D36 vector_graficos_de_fase: jp p10:801F (los graficos de la fase A)
 C 0x6D39 enciende_sprites: quita el bit 1 del registro 8
 C 0x6D42 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6D47 lee_estado_vdp_a: lee el registro de estado A del VDP y deja el 0 puesto
+C 0x6D50 guarda 4 si el VDP es un V9958 (MSX2+)
+C 0x6D59 prepara_mapa_de_fase: los bloques de la fase (0xC0C8, tabla p09:7D76), el mapa y la posicion del punto de salida 0xCA1E (0xC0CA y 0xCA34, tabla p09:7C8C), el scroll a 0 y adelanta el mapa hasta llenar la pantalla (p09:7848)
+C 0x6D5C manda_mapa: las 24 filas de 32 caracteres de 0xD988 a la tabla de nombres de la VRAM (0xC000 o 0xC400 segun el cuadro), empezando por la fila del scroll (0xC0D2) y dando la vuelta; con 0xC0B3, de otra forma (p09:771E)
+C 0x6D5F tablas_de_registros: copia las listas de registros de p09:7002-705B a las seis tablas de 0xC948-0xC9FF (las que mandan las interrupciones de linea) con el registro 8 de 0xFFE7 y, con el V9958, el 0x9B
 C 0x6D62 enciende_lineas: 0xC940 = 1
+C 0x6D65 estrellas_al_azar: 0xC0EA = 0 y 24 columnas al azar (0-31) en 0xE800-0xE817
+C 0x6D69 registros_de_pantalla: los 9 registros de p09:705C, el registro 8 (copia 0xFFE7 and 8, or 0x22) y, con el V9958, el 25 = 2
+C 0x6D6C tablas_de_registros: copia las listas de registros de p09:7002-705B a las seis tablas de 0xC948-0xC9FF (las que mandan las interrupciones de linea) con el registro 8 de 0xFFE7 y, con el V9958, el 0x9B
 C 0x6D6F enciende_sprites: quita el bit 1 del registro 8
 C 0x6D72 enciende_lineas: 0xC940 = 1
+C 0x6D8A lee 4 si el VDP es un V9958 (MSX2+)
 C 0x6D95 lee la fase (0 a 8; 9 el final)
+C 0x6D9B pagina_siguiente: si no hay un cambio pendiente (0xC0B5) y 0xC0B4 es menor que 4: 0xC0DB pasa de 0 a 5 y pide la pagina (0, 1, 2, 3, 2, 1) en 0xC0B5 con el bit 7
+C 0x6DA1 cada_4_cuadros: p09:6DC3 solo cuando la cuenta de cuadros and 3 es 0
+C 0x6DA4 pagina_de_sprites: 0xC0AA, 0xC0A6 y 0xC0A8 = 0xC0-0xC2 o 0xC3-0xC5, segun la tabla de este cuadro
+C 0x6DA7 sonido_retrasado: baja 0xC0D7 y, al llegar a 0, el sonido 0x39
+C 0x6DAA lee el estado del scroll (0 avanza, 1 y 2 parado)
+C 0x6DB3 scroll_de_c0dc_y_borra: 0xCA12 y 0xCA14 de 0xC0DC (p09:6E37) y borra el trozo de mapa de 0xD988 (p09:6E0B)
+C 0x6DB6 scroll_un_paso: si el scroll esta quieto (0xC0D6 = 1) lo para; si no, avanza (p09:7AD2)
+C 0x6DB9 copia_mapa_visible: las 24 filas de 32 del mapa de 64 x 32 de 0xE000 en la posicion del scroll (p00:4E4A) a 0xD988, partiendo la fila si da la vuelta (p09:777C)
 C 0x6DBD lee la cuenta de cuadros de la partida
+C 0x6DC4 lee la pagina pedida (bit 7: hay que ponerla)
+C 0x6DE6 guarda la pagina pedida (bit 7: hay que ponerla)
+C 0x6DEB vector_graficos_b: jp p10:800F
 C 0x6DF1 guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 C 0x6DF5 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x6DF9 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6DFD guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E04 apunta a el estado del scroll (0 avanza, 1 y 2 parado)
+C 0x6E08 scroll_de_c0dc: 0xCA12 = 0xC0DC y 0xCA14 = 0xC0DE
+C 0x6E10 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
+C 0x6E2D apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 C 0x6E33 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6E3A guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6E40 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E44 paleta_retrasada: baja 0xC0D8 y, al llegar a 0, manda la paleta (p00:4DA9)
+C 0x6E47 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x6E4B registros_de_scroll: con 0xC0D2 y 0xC0BB, los valores del scroll en una de las dos tablas de registros (0xC9C5-0xC9CF o 0xC9F1-0xC9FB); con el V9958, de otra forma
+C 0x6E4E sprites_del_cuadro: reparte los sprites por franjas (p09:7221) y manda sus atributos a la VRAM (p09:70E4)
 C 0x6E51 lee la fase (0 a 8; 9 el final)
+C 0x6E55 estrellas_fase_0: las estrellas (p09:6E9C) hacia la derecha con el caracter 0xCD
 C 0x6E58 lee la fase (0 a 8; 9 el final)
+C 0x6E5D estrellas_fase_2: las estrellas hacia la izquierda con el caracter 0x5F
+C 0x6E60 manda_mapa: las 24 filas de 32 caracteres de 0xD988 a la tabla de nombres de la VRAM (0xC000 o 0xC400 segun el cuadro), empezando por la fila del scroll (0xC0D2) y dando la vuelta; con 0xC0B3, de otra forma (p09:771E)
+C 0x6E65 guarda 1: hay que cambiar de tablas en el borde
 C 0x6E68 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
 C 0x6E6E empieza_fundido: 0xEF60 = 0x20: 32 pasos de fundido
 C 0x6E73 guarda los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x6E7B apunta a las columnas de las 24 estrellas
 C 0x6E80 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x6E9C lee el estado del scroll (0 avanza, 1 y 2 parado)
 C 0x6EAD lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6EB0 niega_hl: HL = -HL
+C 0x6EB9 rota_estrellas: las 24 columnas de 0xE800 giran una posicion (segun 0xC0D5, hacia un lado o hacia el otro)
 C 0x6EBF lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6EC9 lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
+C 0x6EE4 apunta a las columnas de las 24 estrellas
+C 0x6EE7 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
+C 0x6F35 apunta a las columnas de las 24 estrellas
+C 0x6F45 lee el valor del scroll vertical (registro 23)
+C 0x6F52 lee 4 si el VDP es un V9958 (MSX2+)
+C 0x6F6F lee el valor del scroll vertical (registro 23)
+C 0x6F7C lee 4 si el VDP es un V9958 (MSX2+)
+C 0x6FEE lee 4 si el VDP es un V9958 (MSX2+)
 C 0x707A manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
+C 0x707E reparte_sprites: los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
+C 0x7081 manda_sprites: segun la tabla del cuadro (0xC09B): los atributos de 0xC4B9 y 0xC5B9 a 0xFA00 y 0xFE00 de la VRAM, o los de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600 (p09:713F)
 C 0x708B borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x7094 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x709D borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0x70E4 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x70E8 manda_sprites_b: los atributos de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600
+C 0x70F2 manda_atributos_a: apunta la VRAM a HL y manda los atributos de DE (p09:7106); HL + 0x400
 C 0x70F8 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x70FD manda_atributos_a_b: dos tandas de p09:7117
+C 0x710D manda_atributos_a_c: 4 veces 8 + 8 bytes con otir, saltando 16 hacia atras entre ellas
+C 0x7146 manda_atributos_b: apunta la VRAM a HL y manda los atributos de DE (p09:715A); HL + 0x400
 C 0x714C direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x7151 manda_atributos_b_b: dos tandas de p09:7165
+C 0x715E manda_atributos_b_c: 4 veces 16 bytes con otir
+C 0x71A7 manda_patron: los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
+C 0x71BD manda_patron: los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
+C 0x7204 apunta a 1: hay que cambiar de tablas en el borde
+C 0x7207 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x7222 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x7238 lee 4 si el VDP es un V9958 (MSX2+)
+C 0x7244 lee el valor del scroll vertical (registro 23)
+C 0x724B sprites_fuera: la Y de 0xC099 (la del scroll menos 0x18) en todos los sprites de la tabla del cuadro
+C 0x724E reparte_grupo_c03b: los 12 sprites del grupo de 0xC03B (de dos planos): cada uno en su franja (p09:7488)
+C 0x7251 reparte_grupo_c009: los 25 sprites del grupo de 0xC009: cada uno en su franja (p09:72ED)
+C 0x7261 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x72E0 franja_del_sprite: segun su Y, a cual de las cuatro franjas de las interrupciones de linea va el sprite
+C 0x72F9 franja_1: el sprite en la franja 1
+C 0x72FC franja_4: el sprite en la franja 4
+C 0x7308 cambia_a_franja_1: el sprite cambia a la franja 1: suelta o pide sus planos
+C 0x730D plano_franja_a: el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
+C 0x7319 cambia_a_franja_2: lo mismo a la franja 2
+C 0x731E plano_franja_a: el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
+C 0x7322 plano_franja_b: lo mismo en la franja de 0xC0A8
+C 0x732E cambia_a_franja_3: lo mismo a la franja 3
+C 0x7333 plano_franja_b: lo mismo en la franja de 0xC0A8
+C 0x733F cambia_a_franja_4: lo mismo a la franja 4
+C 0x7347 suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
+C 0x734F pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+C 0x7355 suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x735D suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
+C 0x7365 pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+C 0x736B pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+C 0x7373 suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
+C 0x737B suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x7381 pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+C 0x7389 suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
+C 0x7391 suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x7397 suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x739D suelta_planos: suelta los planos del sprite en las paginas 0xC0-0xC5
+C 0x73AE a_ff: A = 0xFF
+C 0x73B5 patron_distinto: si el patron ha cambiado lo manda (p09:718B); si no hay, el sprite se queda sin plano
+C 0x73BA atributos_del_plano: la Y y la X del sprite mas el scroll (sin dejar la Y en 0xD8), el patron y el color en el plano DE
+C 0x73C5 a_ff: A = 0xFF
+C 0x73CC patron_distinto: si el patron ha cambiado lo manda (p09:718B); si no hay, el sprite se queda sin plano
+C 0x73D1 atributos_del_plano: la Y y la X del sprite mas el scroll (sin dejar la Y en 0xD8), el patron y el color en el plano DE
+C 0x73DA mas_1: A + 1
+C 0x73E3 y_fuera: la Y con el scroll que da la vuelta
+C 0x73F3 mas_1: A + 1
+C 0x73FC pon_patron: guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
+C 0x7417 franja_4: el sprite en la franja 4
+C 0x741B plano_libre: el primer plano libre de los 32 de 4 en 4; acarreo si no hay
+C 0x741E sin_plano: E = 0 y la marca 0x0E
+C 0x7449 suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x744F suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x7458 suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x745E suelta_plano: el plano A queda libre y con la Y de 0xC099
+C 0x747B franja_del_sprite_doble: lo mismo para un sprite de dos planos
+C 0x7494 franja_doble_1: franja 1
+C 0x7497 franja_doble_4: franja 4
+C 0x74A3 cambia_doble_a_1: cambia a la franja 1
+C 0x74A8 planos_dobles_a: los dos planos en la franja de 0xC0A6
+C 0x74B4 cambia_doble_a_2: cambia a la franja 2
+C 0x74B9 planos_dobles_a: los dos planos en la franja de 0xC0A6
+C 0x74BD planos_dobles_b: los dos planos en la franja de 0xC0A8
+C 0x74C9 cambia_doble_a_3: cambia a la franja 3
+C 0x74CE planos_dobles_b: los dos planos en la franja de 0xC0A8
+C 0x74DA cambia_doble_a_4: cambia a la franja 4
+C 0x74E2 suelta_sprite_doble: suelta sus planos y vuelve mas atras
+C 0x74EA pide_planos_dobles: dos planos libres seguidos (p09:7617)
+C 0x74F0 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x74F8 suelta_sprite_doble: suelta sus planos y vuelve mas atras
+C 0x7500 pide_planos_dobles: dos planos libres seguidos (p09:7617)
+C 0x7506 pide_planos_dobles: dos planos libres seguidos (p09:7617)
+C 0x750E suelta_sprite_doble: suelta sus planos y vuelve mas atras
+C 0x7516 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x751C pide_planos_dobles: dos planos libres seguidos (p09:7617)
+C 0x7524 suelta_sprite_doble: suelta sus planos y vuelve mas atras
+C 0x752C suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x7532 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x7538 suelta_planos_dobles: suelta los planos del sprite doble
+C 0x7546 a_ff: A = 0xFF
+C 0x754D patron_doble_distinto: como p09:73FA para los de dos planos
+C 0x7552 atributos_plano_1: la Y, la X y el patron del primer plano
+C 0x7558 a_ff: A = 0xFF
+C 0x755E patron_doble_distinto: como p09:73FA para los de dos planos
+C 0x7563 atributos_plano_2: los del segundo plano (patron + 4)
+C 0x756E a_ff: A = 0xFF
+C 0x7575 patron_doble_distinto: como p09:73FA para los de dos planos
+C 0x757A atributos_plano_1: la Y, la X y el patron del primer plano
+C 0x7580 a_ff: A = 0xFF
+C 0x7586 patron_doble_distinto: como p09:73FA para los de dos planos
+C 0x758B atributos_plano_2: los del segundo plano (patron + 4)
+C 0x7594 mas_1: A + 1
+C 0x759D y_fuera: la Y con el scroll que da la vuelta
+C 0x75AE mas_1: A + 1
+C 0x75B7 y_fuera: la Y con el scroll que da la vuelta
+C 0x75C6 pon_patron: guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
+C 0x75E1 franja_doble_4: franja 4
+C 0x75E5 planos_dobles_libres: dos planos libres seguidos de los 16 de arriba; si hace falta, quita uno a un sprite sencillo (p09:7644)
+C 0x75E8 sin_planos_dobles: E = 0 y la marca 0x0E
+C 0x75FE suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x7604 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x760D suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x7613 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
+C 0x7639 quita_plano_a: lo mismo con el plano de al lado
+C 0x763E quita_plano_b: quita el plano de un sprite sencillo
+C 0x764F busca_dueno: busca en los 25 de 0xC009 el sprite que usa el plano A y lo deja sin plano
+C 0x7683 lee el valor del scroll vertical (registro 23)
+C 0x7691 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
+C 0x76AB manda_mapa_desde: A filas desde 0xD988
 C 0x76B0 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 C 0x76BF direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
+C 0x76C6 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
+C 0x771F fila_de_depuracion: 32 caracteres de una fila con p09:773D
+C 0x7731 nibble_por_tecla: el nibble bajo del caracter o, con TAB pulsado (fila 7, bit 3), el alto
 C 0x7755 casilla_del_scroll: la casilla de 0xC0CD, 0xC0CC
+C 0x7761 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
+C 0x7767 copia_32: copia 32 bytes de HL a DE (31 ldi y uno mas): se entra a mitad para copiar menos
+C 0x7794 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
+C 0x779A salta_a_ix: jp (ix)
+C 0x77A1 salta_a_iy: jp (iy)
 C 0x7806 lee la fase (0 a 8; 9 el final)
 C 0x7809 entrada_de_tabla: HL = la palabra A de la tabla de HL
+C 0x780C guarda la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
 C 0x7812 lee la fase (0 a 8; 9 el final)
 C 0x7815 entrada_de_tabla: HL = la palabra A de la tabla de HL
+C 0x7818 lee el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 C 0x781C dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = la primera palabra de la entrada A, HL = la segunda
+C 0x781F guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7823 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7826 lee el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
+C 0x7835 guarda las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7838 siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+C 0x783B siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+C 0x783E pinta_columna: una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
 C 0x7841 lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x7845 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7848 scroll_un_paso: si el scroll esta quieto (0xC0D6 = 1) lo para; si no, avanza (p09:7AD2)
 C 0x784B vector_4109: jp p00:458B
+C 0x784E lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7854 scroll_un_paso: si el scroll esta quieto (0xC0D6 = 1) lo para; si no, avanza (p09:7AD2)
 C 0x785A banco_en_A000: pone el banco A en 0xA000
+C 0x785D lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7863 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x786E nada_4AE0: ret
 C 0x7871 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x7894 pon_tramo_de_scroll: de la tabla p09:78FF (12 bytes por tramo): la velocidad en Y (0xC0C3) y en X (0xC0BD) con su signo, 0xC0B8, 0xC0B6, el modo de columnas (0xC0CE) y la direccion (0xC0D5)
+C 0x7897 cuenta_adelanto: si 0xCA33 es 0xFF, 0xCA33 = D
+C 0x78D9 guarda el modo de columnas del tramo de scroll
+C 0x78E3 nada_78EC: ret
 C 0x78FA guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x798F lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7996 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x799E guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79A4 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79AB guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79B0 pide_pagina: espera a que se cambie de tabla y, si A es menor que 7, pide la pagina A (0xC0B5); si no, 0xC0D1 = su bit 7
+C 0x79B3 lee el valor del scroll vertical (registro 23)
+C 0x79BD guarda el valor del scroll vertical (registro 23)
+C 0x79C4 lee 1: hay que cambiar de tablas en el borde
+C 0x79D6 guarda la pagina pedida (bit 7: hay que ponerla)
+C 0x79DA lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79E1 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79E6 guarda el modo de columnas del tramo de scroll
+C 0x79EB lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x79F4 prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+C 0x79F8 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x79FD scroll_parado: las velocidades del scroll y lo que se suma a los actores a 0
 C 0x7A00 pon_c0d4_1: 0xC0D4 = 1
+C 0x7A03 scroll_a_la_columna: 0xCA34 = el siguiente multiplo de 0x1000
 C 0x7A08 lee los pasos que le quedan al fundido de la paleta (bits 0-5)
+C 0x7A0D lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A12 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A17 pon_tramo_de_scroll: de la tabla p09:78FF (12 bytes por tramo): la velocidad en Y (0xC0C3) y en X (0xC0BD) con su signo, 0xC0B8, 0xC0B6, el modo de columnas (0xC0CE) y la direccion (0xC0D5)
+C 0x7A1E guarda 1: el scroll esta quieto
+C 0x7A23 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A28 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7A2B registro_6: el registro 6 del VDP (patrones de los sprites) = A + 0x19
+C 0x7A30 borra_e000: 0xE000-0xE7FF a 0
+C 0x7A33 borra_mapa_d988: 24 filas de 32 bytes (de 0x30 en 0x30) desde 0xD988 a 0
+C 0x7A38 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A3D guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7A4A pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 C 0x7A4F pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7A5A apunta a el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
+C 0x7A65 scroll_a_la_columna: 0xCA34 = el siguiente multiplo de 0x1000
+C 0x7A6A lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A73 lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x7A77 prepara_paleta_ya: 0xEF60 a 0 y p00:4CE0
+C 0x7A7B guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A80 lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7A87 scroll_parado: las velocidades del scroll y lo que se suma a los actores a 0
+C 0x7A8C guarda el estado del scroll (0 avanza, 1 y 2 parado)
+C 0x7A8F scroll_a_la_columna: 0xCA34 = el siguiente multiplo de 0x1000
+C 0x7A94 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7A99 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7AA1 lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7AA7 guarda las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7AAB lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
+C 0x7AB1 guarda las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x7AC1 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
+C 0x7AC4 lee 1: el scroll esta quieto
+C 0x7ACA avanza_scroll: 0xC0B6 + 0xC0B8; las velocidades (p09:7B09) y la casilla (p09:7C72); al pasar de 8, una columna nueva del mapa (p09:7BED, p09:7C08), y otra si el mapa trae 0xFE
+C 0x7ACE scroll_parado: las velocidades del scroll y lo que se suma a los actores a 0
+C 0x7AE2 velocidades_del_scroll: la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas sus velocidades; de ellas, lo que se suma a los actores (0xCA12, 0xCA14), el scroll fino (0xCA1A, 0xCA1C), 0xCA36, 0xCA38, 0xCA18, 0xCA31 y el registro de scroll vertical (0xC0D2)
+C 0x7AE5 casilla_del_scroll: 0xC0CD y 0xC0CC = la columna y la fila del mapa en las que va el scroll
+C 0x7AEA siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+C 0x7AEE pinta_columna: una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
 C 0x7AF3 banco_en_A000: pone el banco A en 0xA000
+C 0x7AF6 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7AFE guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7B01 siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+C 0x7B05 pinta_columna: una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
 C 0x7B20 niega_de: DE = -DE
 C 0x7B2F guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7B43 guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
@@ -144,24 +549,69 @@ C 0x7B6F niega_de: DE = -DE
 C 0x7B7E guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7B92 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x7B98 niega_de: DE = -DE
+C 0x7BBB lee el valor del scroll vertical (registro 23)
+C 0x7BC0 guarda el valor del scroll vertical (registro 23)
+C 0x7BC4 lee el valor del scroll vertical (registro 23)
+C 0x7BCA lee el valor del scroll vertical (registro 23)
+C 0x7BD2 guarda el valor del scroll vertical (registro 23)
 C 0x7BE1 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7BE5 guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7BEF banco_en_A000: pone el banco A en 0xA000
+C 0x7BF2 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7BFD guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7C02 orden_del_mapa: con el banco 27 en 0xA000, el siguiente byte del mapa: menor que 0x10, un tramo de scroll (p09:7894); de 0x10 a 0x1F, una orden (tabla p09:7874)
+C 0x7C08 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7C0E banco_en_A000: pone el banco A en 0xA000
+C 0x7C11 columna_por_modo: 0xC0E5, la posicion + 1, el banco 25 en 0x8000, p09:7AAB y la columna por el modo 0xC0CE (tabla p09:7C59)
+C 0x7C1E guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7C27 guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7C2B lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x7C2F guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x7C3B pon_scroll_vertical: los bits altos de E con los 3 bajos de 0xC0D2, despues de p09:79C2 con D
+C 0x7C42 cuenta_c0e5: baja 0xC0E5 y, al llegar a 0, el scroll vertical a 0x3801 (p09:79AE)
+C 0x7C45 avanza_posicion: 0xCA34 + 1
 C 0x7C4A banco_en_8000: pone el banco A en 0x8000
+C 0x7C4D baja_adelanto: 0xCA33 - 1 si no es 0
+C 0x7C50 lee el modo de columnas del tramo de scroll
 C 0x7C55 nada_4AE0: ret
 C 0x7C58 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x7D8B casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7D8E lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7D92 columna_de_bloques: 6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
+C 0x7D95 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7D9E casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+C 0x7DA2 columna_de_bloques: 6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
 C 0x7DAA casilla_del_borde: la casilla del mapa de la RAM con D = 0x1F, E = 0 mas el scroll (p00:4E3A)
+C 0x7DAD lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
+C 0x7DB1 columna_de_bloques: 6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
+C 0x7DC5 lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
 C 0x7DD4 banco_en_A000: pone el banco A en 0xA000
 C 0x7DDE banco_en_A000: pone el banco A en 0xA000
+C 0x7E21 fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
+C 0x7E38 fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
+C 0x7E4E fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
 C 0x7E56 casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7E63 lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
+C 0x7E6C lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7E74 banco_en_A000: pone el banco A en 0xA000
 C 0x7E7E banco_en_A000: pone el banco A en 0xA000
+C 0x7E90 menos_40: L - 0x40
+C 0x7E9A menos_40: L - 0x40
+C 0x7EA4 menos_40: L - 0x40
+C 0x7EAE menos_40: L - 0x40
+C 0x7EBF nada_7C71: ret
+C 0x7EC7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
+C 0x7ECE nada_7C71: ret
+C 0x7ED7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
+C 0x7EDE nada_7C71: ret
+C 0x7EF4 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
 C 0x7EFD casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
+C 0x7F0E lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
+C 0x7F17 lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7F1F banco_en_A000: pone el banco A en 0xA000
 C 0x7F29 banco_en_A000: pone el banco A en 0xA000
+C 0x7F3B menos_40_b: L - 0x40
+C 0x7F45 menos_40_b: L - 0x40
+C 0x7F4F menos_40_b: L - 0x40
+C 0x7F59 menos_40_b: L - 0x40
 # --- fin de las anotaciones de anota.py ---

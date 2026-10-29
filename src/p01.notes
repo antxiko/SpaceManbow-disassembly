@@ -172,6 +172,13 @@ C 0x6000 programa: cuenta 0xC903 y salta por el estado 0xC900 (tabla p01:6032): 
 C 0x6003 marcador_del_cuadro: las cifras que han cambiado (p01:6C12) y los iconos de 0xCB08 (p01:6BDD)
 C 0x6006 prepara_marcador: 0xC91C = 0xFE, la VRAM de 0xE000-0xEFFF a 0xFF, las tres filas del marcador (p01:6CA9) y las copias de 0xDF90-0xDFFF a 0xFF
 C 0x6009 escribe_cadena: 0xC91C = A xor 0xF0 (los colores) y la cadena de HL en DE hasta un 0 (p01:6C7F y p01:6BAC)
+C 0x600C secuencia_historia: el mapa del banco 0x0A en 0x5500 con el guion p03:B520, p03:BDC3, enciende y borra la segunda pagina
+C 0x600F paso_de_secuencia: los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
+C 0x6012 secuencia_titulo: borra la pagina, carga los graficos de la lista p03:B40A (p03:AE15), el mapa del banco 0x15 (21) en 0x5A02 con el guion p03:B9A3 (p03:A68F) y borra el resto
+C 0x6015 paso_de_secuencia: los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
+C 0x6018 secuencia_entre_fases: los graficos de p03:B37E, el mapa del banco 21 en 0x5000 con el guion p03:BA7B, p03:BDC8, el registro 23 a 0 y enciende la pantalla
+C 0x601B secuencia_del_cuadro: los mandos, las teclas de funcion y un paso de la secuencia (p03:A6A5)
+C 0x601E graficos_del_titulo: los graficos de la lista p03:B260 y los bancos 1-2-3
 C 0x6025 lee el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida) y el byte siguiente (16 bits)
 C 0x602C nada_4AE0: ret
 C 0x602F despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -424,7 +431,9 @@ C 0x6B0F lee los dos colores con los que p01:6ADD pinta las letras
 C 0x6B1C por_3: HL = HL x 3
 C 0x6B1F por_3: HL = HL x 3
 C 0x6B35 guarda los dos colores con los que p01:6ADD pinta las letras
+C 0x6B38 apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 C 0x6B40 llena_vram_baja: pone A en BC bytes de la VRAM desde HL, en los 64 KB bajos
+C 0x6B46 apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 C 0x6B49 fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
 C 0x6B4C fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
 C 0x6B4F fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila siguiente
@@ -434,11 +443,11 @@ C 0x6B70 pinta_caracter_del_marcador: el caracter A de p01:6D09 en DE
 C 0x6B87 por_36: HL = A x 36
 C 0x6B8F copia_6x6: copia 6 filas de 6 bytes a la VRAM (p00:4921)
 C 0x6B9C por_32: HL = A x 32
-C 0x6BA4 copia_caracter: copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
+C 0x6BA4 copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 C 0x6BB1 por_32: HL = A x 32
 C 0x6BB9 copia_caracter_coloreado: lo mismo con los colores 0x0E y 0x0F cambiados por los de 0xC91C (p01:6ACC)
 C 0x6BC6 por_32: HL = A x 32
-C 0x6BCE copia_caracter: copia 8 filas de 4 bytes (un caracter de 8 x 8) a la VRAM
+C 0x6BCE copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 C 0x6BD6 cifras_del_marcador: las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el record (0xC922-0xC924): solo las que han cambiado desde sus copias de 0xDF90
 C 0x6BD9 iconos_de_cb08: 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
 C 0x6BE9 sitio_del_icono: DE = 0xE21C + 6 x A en la VRAM
@@ -492,6 +501,7 @@ C 0x7840 apaga_pantalla: quita el bit 6 del registro 1 y apaga los sprites (p00:
 C 0x7845 pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 C 0x784D demostracion_numero: 0xC919 pasa por 0, 1 y 2; HL = su entrada de 4 bytes en p01:7877
 C 0x7852 guarda la fase (0 a 8; 9 el final)
+C 0x7857 guarda el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 C 0x785E guarda por donde van las entradas de la demostracion y el byte siguiente (16 bits)
 C 0x7863 lee la demostracion que toca (0-2)
 C 0x786C guarda la demostracion que toca (0-2)

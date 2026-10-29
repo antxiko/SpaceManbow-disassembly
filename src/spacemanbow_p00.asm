@@ -194,7 +194,7 @@ lineas_del_vdp:		; en el borde: manda la lista de registros de 0xC0AE (cuantos y
 	dec a			;418c
 	ret m			;418d
 	jr z,L_41A7		;418e
-	ld a,(0c09ch)		;4190
+	ld a,(0c09ch)		;4190   ; lee 1: hay que cambiar de tablas en el borde
 	or a			;4193
 	call nz,cambia_tablas		;4194   ; cambia_tablas: cambia de pagina (p00:41FA si 0xC0B5), sube 0xC09B y, segun su bit 0, apunta 0xC0A4, 0xC0AC y 0xC0AE a un juego de tablas o al otro
 manda_registros:		; la lista de 0xC0AE al puerto de registros del VDP: un byte con cuantos y los bytes (otir)
@@ -224,16 +224,16 @@ L_41A7:
 	inc (hl)			;41c0
 	ret			;41c1
 tablas_actuales:		; las tablas de registros que tocan con 0xC09B
-	ld a,(0c09bh)		;41c2
+	ld a,(0c09bh)		;41c2   ; lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
 	jr L_41D7		;41c5
 cambia_tablas:		; cambia de pagina (p00:41FA si 0xC0B5), sube 0xC09B y, segun su bit 0, apunta 0xC0A4, 0xC0AC y 0xC0AE a un juego de tablas o al otro
-	ld a,(0c0b5h)		;41c7
+	ld a,(0c0b5h)		;41c7   ; lee la pagina pedida (bit 7: hay que ponerla)
 	or a			;41ca
 	call nz,pon_pagina_vdp		;41cb   ; pon_pagina_vdp: con 0xC0B4 escribe los registros 10, 3 y 4 del VDP (las tablas de colores y de patrones)
-	ld hl,0c09bh		;41ce
+	ld hl,0c09bh		;41ce   ; apunta a cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
 	inc (hl)			;41d1
 	xor a			;41d2
-	ld (0c09ch),a		;41d3
+	ld (0c09ch),a		;41d3   ; guarda 1: hay que cambiar de tablas en el borde
 	ld a,(hl)			;41d6
 L_41D7:
 	push de			;41d7
@@ -305,7 +305,7 @@ L_423A:
 	ld a,084h		;4249
 	out (c),a		;424b
 	xor a			;424d
-	ld (0c0b5h),a		;424e
+	ld (0c0b5h),a		;424e   ; guarda la pagina pedida (bit 7: hay que ponerla)
 	pop ix		;4251
 	pop de			;4253
 	ret			;4254
@@ -500,7 +500,7 @@ L_4391:
 	ld (hl),001h		;43a2
 	pop hl			;43a4
 	call bancos_9_10		;43a5   ; bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
-	call 06d15h		;43a8
+	call 06d15h		;43a8   ; vector_scroll_del_cuadro: jp p09:6D95
 	push hl			;43ab
 	ld hl,0f0fah		;43ac   ; apunta a por que paso va el cuadro de partida (p00:438E)
 	ld (hl),002h		;43af
@@ -522,10 +522,10 @@ L_4391:
 	ld hl,0f0fah		;43d0   ; apunta a por que paso va el cuadro de partida (p00:438E)
 	ld (hl),003h		;43d3
 	pop hl			;43d5
-	call 08000h		;43d6
+	call 08000h		;43d6   ; vector_nave: jp p02:801B
 	ld a,(0ca41h)		;43d9
 	or a			;43dc
-	call z,08006h		;43dd
+	call z,08006h		;43dd   ; vector_878A: jp p02:878A
 	push hl			;43e0
 	ld hl,0f0fah		;43e1   ; apunta a por que paso va el cuadro de partida (p00:438E)
 	ld (hl),008h		;43e4
@@ -537,7 +537,7 @@ L_4391:
 	ld (hl),009h		;43f1
 	pop hl			;43f3
 	call bancos_9_10		;43f4   ; bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
-	call 06d12h		;43f7
+	call 06d12h		;43f7   ; vector_pantalla_del_cuadro: jp p09:6E44
 	push hl			;43fa
 	ld hl,0f0fah		;43fb   ; apunta a por que paso va el cuadro de partida (p00:438E)
 	ld (hl),00ah		;43fe
@@ -574,13 +574,13 @@ depuracion_vida:		; con el bit 2 de 0xC90C sube 0xCA1E (0 a 5) y una vida
 	ld a,(0c90ch)		;4432   ; lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 	bit 2,a		;4435
 	ret z			;4437
-	ld a,(0ca1eh)		;4438
+	ld a,(0ca1eh)		;4438   ; lee el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 	inc a			;443b
 	cp 006h		;443c
 	jr c,L_4441		;443e
 	xor a			;4440
 L_4441:
-	ld (0ca1eh),a		;4441
+	ld (0ca1eh),a		;4441   ; guarda el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 	ld a,(0cb0fh)		;4444   ; lee las vidas, en BCD
 	add a,001h		;4447
 	daa			;4449
@@ -694,7 +694,7 @@ L_44F4:
 	ld (hl),002h		;4515
 	pop hl			;4517
 	call bancos_9_10		;4518   ; bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
-	call 06d0fh		;451b
+	call 06d0fh		;451b   ; vector_prepara_pantalla: jp p09:6D30
 	call bancos_1_2_3		;451e   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	call 06006h		;4521   ; vector_6B33: jp p01:6B33
 	ld a,055h		;4524
@@ -713,7 +713,7 @@ prepara_banco_2:		; p02:8003 con los bancos 4-2-3
 	ld (hl),003h		;4541
 	pop hl			;4543
 	call bancos_4_2_3		;4544   ; bancos_4_2_3: pone el 4, el 2 y el 3
-	call 08003h		;4547
+	call 08003h		;4547   ; vector_prepara_nave: jp p02:8224
 	call bancos_1_2_3		;454a   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	push hl			;454d
 	ld hl,0f0fah		;454e   ; apunta a por que paso va el cuadro de partida (p00:438E)
@@ -726,7 +726,7 @@ prepara_banco_2_b:		; p02:8012 con los bancos 4-2-3
 	ld (hl),003h		;4559
 	pop hl			;455b
 	call bancos_4_2_3		;455c   ; bancos_4_2_3: pone el 4, el 2 y el 3
-	call 08012h		;455f
+	call 08012h		;455f   ; vector_nave_nueva: jp p02:8238
 	call bancos_1_2_3		;4562   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	push hl			;4565
 	ld hl,0f0fah		;4566   ; apunta a por que paso va el cuadro de partida (p00:438E)
@@ -735,7 +735,7 @@ prepara_banco_2_b:		; p02:8012 con los bancos 4-2-3
 	ret			;456c
 llama_8018:		; p02:8018 con los bancos 4-2-3
 	call bancos_4_2_3		;456d   ; bancos_4_2_3: pone el 4, el 2 y el 3
-	call 08018h		;4570
+	call 08018h		;4570   ; vector_prepara_nave_b: jp p02:8220
 	call bancos_1_2_3		;4573   ; bancos_1_2_3: pone el 1 en 0x6000, el 2 en 0x8000 y el 3 en 0xA000 (con su copia en 0xF0F1-0xF0F3)
 	ret			;4576
 llama_6018:		; p04:6018 con los bancos 4-2-3
@@ -759,7 +759,7 @@ borra_ca1e:		; fuera del estado 5, 0xCA1E a 0
 	cp 005h		;459b
 	ret z			;459d
 	xor a			;459e
-	ld (0ca1eh),a		;459f
+	ld (0ca1eh),a		;459f   ; guarda el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 	ret			;45a2
 
 ; ----------------------------------------------------------------------
@@ -2306,7 +2306,7 @@ sitio_en_el_mapa:		; HL = 0xE000 + 64 x (E and 0x1F) + (D and 0x3F): la casilla 
 	add hl,hl			;4e5d
 	add hl,hl			;4e5e
 	add hl,bc			;4e5f
-	ld bc,0e000h		;4e60
+	ld bc,0e000h		;4e60   ; apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 	add hl,bc			;4e63
 	ret			;4e64
 pon_c0d8_4:		; 0xC0D8 = 4
@@ -2320,7 +2320,7 @@ registro_6:		; el registro 6 del VDP (patrones de los sprites) = A + 0x19
 	jp 00047h		;4e70   ; BIOS WRTVDP - Writes data in the VDP-register
 pon_c0d4_1:		; 0xC0D4 = 1
 	ld a,001h		;4e73
-	ld (0c0d4h),a		;4e75
+	ld (0c0d4h),a		;4e75   ; guarda el estado del scroll (0 avanza, 1 y 2 parado)
 	ret			;4e78
 tramo_de_a:		; A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	or a			;4e79
@@ -4481,7 +4481,7 @@ L_5D83:
 L_5D89:
 	ret			;5d89
 arranca_tipo_65:		; la puesta en marcha del actor del tipo 0x65 (tabla p04:6360, desde p04:6344)
-	ld a,(0ca33h)		;5d8a
+	ld a,(0ca33h)		;5d8a   ; lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 	or a			;5d8d
 	jp z,06e98h		;5d8e
 	ld hl,05e4bh		;5d91
@@ -4493,7 +4493,7 @@ L_5D99:
 	ld (ix+012h),h		;5d9c   ; guarda la aceleracion en X del actor (alta)
 	ret			;5d9f
 mueve_tipo_65:		; lo que hace en cada cuadro el actor del tipo 0x65 (tabla p04:64D1, desde p04:64B9)
-	ld a,(0c0d4h)		;5da0
+	ld a,(0c0d4h)		;5da0   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
 	or a			;5da3
 	jr z,L_5DBC		;5da4
 	call 06c3ah		;5da6
@@ -4516,7 +4516,7 @@ L_5DBC:
 	ld a,(0c0b4h)		;5dc8
 	cp 006h		;5dcb
 	call z,L_5D96		;5dcd
-	ld a,(0c0b5h)		;5dd0
+	ld a,(0c0b5h)		;5dd0   ; lee la pagina pedida (bit 7: hay que ponerla)
 	cp 006h		;5dd3
 	call z,L_5D96		;5dd5
 	ld hl,0ca1dh		;5dd8

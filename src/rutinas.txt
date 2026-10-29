@@ -759,3 +759,403 @@ p01 0x78D4 byte_de_demostracion  el byte de HL con el banco 31 en 0xA000 (las de
 p01 0x78F3 graba_byte  el byte A en HL del slot 0x88 con WRSLT
 p01 0x78FE grabacion_en_4000  0xC91D = 0x4000
 p01 0x7905 graba_entradas  cuenta los cuadros con las mismas entradas; cuando cambian (o a los 255), graba el trio [cuadros][mandos][recien pulsados] en el slot 0x88 (p01:78F3)
+p02 0x8000 vector_nave  jp p02:801B
+p02 0x8003 vector_prepara_nave  jp p02:8224
+p02 0x8006 vector_878A  jp p02:878A
+p02 0x8012 vector_nave_nueva  jp p02:8238
+p02 0x8015 vector_nada  jp p02:828A, que es un ret
+p02 0x8018 vector_prepara_nave_b  jp p02:8220
+p02 0x801B nave_del_cuadro  la nave (p02:8031), las dos opciones (p02:82B4), el disparo si se acaba de pulsar (bit 4 de 0xC907, p02:8599) y, si 0xCA43 es 0, p02:84F6
+p02 0x8031 nave  la mueve (p02:8060) y la dibuja (p04:77D0 o p04:7747); si se quedo sin sprites (0xC0EC), la vuelve a dibujar
+p02 0x8060 mueve_nave  IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); si no, p02:80F4, la inclinacion (p02:820D) y los mandos (p02:8108); el choque (p02:8099) salvo con el bit 0 de 0xCA03 (depuracion), con 0xCE75 o 0xCE76, o mientras ix+0x18 cuenta al aparecer
+p02 0x8099 choque_de_la_nave  si el golpe le quita la vida (p04:7C44): paso 1, ya no se le puede dar, el dibujo 6, sin sprites, el sonido 0x4C, no se aceptan mas sonidos (bit 0 de 0xC947) e ix+0x17 = 0x28
+p02 0x80DA explosion_de_la_nave  los dibujos 6 a 9 en bucle mientras baja ix+0x17; luego paso 2
+p02 0x80EF nave_muerta  el tipo de la nave a 0 (p00:440F lo ve)
+p02 0x80F4 baja_cb02  0xCB02 - 1 si no es 0
+p02 0x80FE nave_quieta  0xCA4B y 0xCA4D (las velocidades de la nave) a 0
+p02 0x8108 mueve_nave_con_mandos  los mandos (0xC909 jugando, 0xC908 en la demostracion): por la direccion, de la tabla p02:817D el dibujo (0xCB18) y las dos velocidades, multiplicadas por 0xCB01 (p02:8177); la Y (0xCA47) solo si no pasa de 0x14 y la X (0xCA49) entre 0x80 y 0x1D80
+p02 0x8177 suma_bc_a_veces  HL + BC, A - 1 veces
+p02 0x820D inclinacion  0xCA45 = 0 sin arriba ni abajo, 1 arriba, 2 abajo
+p02 0x8220 prepara_nave_b  p02:8224
+p02 0x8224 prepara_nave  borra 0xCB40 (p02:8279) y las opciones (p02:829F); 0xC0EC, la velocidad 0xCB01 y el nivel 0xCA19 a 0, 0xCB02 = 0xFF; y una nave nueva (p02:8238)
+p02 0x8238 nave_nueva  0xCC01 y 0xCB1D a 0, sin sprites de las opciones, la ficha de la nave (p02:8254), p02:83E7 y p02:8704
+p02 0x8254 ficha_de_la_nave  tipo 1 en Y = 8 y X = 5, banderas 0x39, caja de 3 x 3, se le puede dar, e ix+0x18 = 0x0F cuadros sin choques
+p02 0x8279 borra_cb40  0xCB40-0xCB67 a 0, 0xCB1A = 0 y p02:84A5
+p02 0x828A nada_828A  ret
+p02 0x828B sin_sprites_opciones  ix+0x19 e ix+0x1A de las dos opciones (0xCAC0, 0xCAE0) a 0
+p02 0x8296 sin_sprites_ix  ix+0x19 e ix+0x1A a 0
+p02 0x829F borra_opciones  0xCB03 = 0, las fichas de 0xCAC0-0xCAFF a 0 y 0xCB1B = 0xFF80
+p02 0x82B4 opciones_del_cuadro  el paso de cuadro de las opciones (p02:82C6) y cada una (p02:82D2)
+p02 0x82C6 paso_de_las_opciones  0xCAC5 y 0xCAE5 = la cuenta de cuadros and 3
+p02 0x82D2 opcion  si la nave no esta explotando y la opcion existe: la mueve (p02:82E2) y la dibuja (p04:77D0)
+p02 0x82E2 mueve_opcion  paso 0: si la nave pasa cerca (p04:76FF con BC = 0x0300), toma su sitio respecto a ella (p02:834C), su arma (p02:84AC) y paso 1; luego la sigue (p02:8324)
+p02 0x82F8 opcion_engancha  el desplazamiento respecto a la nave (p02:834C) y el arma de la tabla p02:831A o p02:831D por 0xCB05
+p02 0x8320 opcion_sigue  p02:8324
+p02 0x8324 opcion_junto_a_la_nave  la X de la nave mas 0xCB1B y la Y mas 0xE0 y el desplazamiento de ix+0x17-0x18
+p02 0x834C sitio_de_la_opcion  el desplazamiento en Y de la opcion respecto a la nave (tabla p02:839C por ix+3), arriba o abajo segun la otra opcion
+p02 0x837A otra_opcion  IY = la otra opcion que ya esta enganchada y A = su ix+0x18; acarreo si no hay
+p02 0x8392 opcion_enganchada  NZ si la opcion de IY existe y esta enganchada
+p02 0x83A4 recoge_capsula  0xCB1A = el tipo de la capsula de IY (iy+3) y su efecto (p02:83B2)
+p02 0x83B2 efecto_y_nivel  el efecto de la capsula (p02:83B8) y el nivel de nuevo (p02:83E7)
+p02 0x83B8 efecto_de_capsula  por el tipo de 0xCB1A: 2 mas velocidad, 3, 7 una opcion, 0x0A, 0x0B, 0x0C, 0x0D (el sonido 0x0A), 0x0E (0xCB07); los demas ponen ese nivel a las armas (p02:84DD)
+p02 0x83E7 calcula_nivel  0xCA19 = la suma de los niveles de las armas (tabla p02:842D) / 16 + 4 x 0xCA04 + el tramo de 0xCB08 (p00:4E79), hasta 15
+p02 0x8437 capsula_0C  p02:8716 y A = 1
+p02 0x843D capsula_0A  p02:871A y A = 0x0A
+p02 0x8443 capsula_3  el arma 0x80 con C = 3 (p02:84AC)
+p02 0x844A nada_844A  ret
+p02 0x844B capsula_0D  el sonido 0x0A
+p02 0x8451 sonido_0F  el sonido 0x0F
+p02 0x8457 capsula_0B  0xCB1D = 1
+p02 0x845D capsula_7  una opcion nueva (p04:6F8C) enganchada (paso 2); si no hay ficha, nada
+p02 0x8470 capsula_0E  sube 0xCB07 (p02:8484) y el sonido 0x0A
+p02 0x8479 mas_velocidad  0xCB01 + 1, hasta 4
+p02 0x8484 sube_cb07  0xCB08 + 1 (hasta 0x10) con 0xCB07 = 0xFF; si cambia de tramo (p00:4E79), p02:871E
+p02 0x84A5 arma_inicial  0xCB05 = 0 y el arma 0 con nivel 1 (p02:84AC)
+p02 0x84AC pon_arma  el arma B con el nivel C en su casilla (p02:84C0; B = 0 pasa a ser 1)
+p02 0x84C0 casilla_del_arma  IX = la casilla del arma B: 0 en 0xCB40, 2-4 en 0xCB58, 5-7 en 0xCB50, el resto en 0xCB48
+p02 0x84DD nivel_a_las_armas  a las 5 casillas de 0xCB40 cuyo arma es menor que 9, el nivel C
+p02 0x84F6 boton_2  baja 0xCB07 (p02:8530); con el boton 2 recien pulsado y armas en 0xCB50 o 0xCB58: el sonido 8, la formacion siguiente de las opciones (p02:8569) y cada arma cambia por la de la tabla p02:8590
+p02 0x8526 hay_armas_2  NZ si hay arma en 0xCB50 o en 0xCB58
+p02 0x8530 baja_cb07  cada 16 cuadros (32 desde la fase 5) y salvo con 0xCB02 menor que 0x2E, 0xCB07 - 3 sin bajar de 0xCB08; si cambia de tramo, p02:871E
+p02 0x8569 formacion_siguiente  0xCB05 pasa por 0, 1 y 2, y 0xCB1B (la X de las opciones respecto a la nave) a 0, 0x0080 o 0xFF80
+p02 0x8588 arma_cambiada  A = la entrada A de la tabla p02:8590
+p02 0x8599 disparos  con la nave entera (0xCA43 a 0): el arma de 0xCB40 dispara a 0xCC40 (3 disparos), la de 0xCB50 a 0xCCA0 (2), la de 0xCB58 a 0xCCE0 (2) y la de 0xCB48 a 0xCD20 (1) (p02:85E7)
+p02 0x85E7 dispara_arma  el arma de IY: 0x80 cuenta como 1; la 5 dispara como la 1 y vuelve a ser 5
+p02 0x85FD disparo_por_nivel  salta por el nivel del arma (iy+1, hasta 0x0A; tabla p02:8608)
+p02 0x861E nada_861E  ret
+p02 0x861F datos_del_disparo  de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
+p02 0x8637 origen_del_disparo_ix3  el sitio de salida (p02:8644) con ix+3
+p02 0x863C origen_del_disparo  el sitio de salida con el arma de IY (0 cuenta como 1)
+p02 0x8644 sale_desde  la posicion de quien dispara (p02:8661) mas el desplazamiento L, H x 32: BC (Y) y DE (X)
+p02 0x8661 quien_dispara  BC, DE = la posicion de la nave (0xCA47, 0xCA49) o la de una de las opciones (0xCAC7, 0xCAE7), segun la casilla del arma y el bit 7 de 0xCAD8 y 0xCAF8
+p02 0x86A5 tipo_del_disparo  ix+0 = A e ix+3 = el arma de IY
+p02 0x86AF disparo_contra_fondo  si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
+p02 0x86BE disparo_contra_fondo_b  lo mismo sin quitarlo si el caracter rompe
+p02 0x86CB rompe_bloque  el caracter del mapa de 0xA7 a 0xAE pasa al siguiente (el sonido 0x1E) y el 0xAE se borra (el sonido 0x1F); el disparo se quita
+p02 0x86EC disparo_fuera  se quita si ha dado (ix+4), si la Y pasa de 0x18 o si la X pasa de 0x20
+p02 0x8704 borra_disparos  0xCC40-0xCD3F a 0 y los patrones del disparo (p02:871E)
+p02 0x8716 patrones_disparo_0  los patrones del disparo de la tabla 0 (p02:873D)
+p02 0x871A patrones_disparo_6  los patrones del disparo de la tabla 6
+p02 0x871E patrones_del_disparo  los patrones de los disparos segun el tramo de 0xCB08 (p00:4E79) de p02:89B0 a la VRAM (0xC9A0 y, con p02:8732, 0xCA00)
+p02 0x8732 patrones_disparo_cb41  la tabla 6 si el arma de 0xCB41 es 0x0A, si no la 0
+p02 0x873D patrones_disparo_c  los patrones del tramo de 0xCB08 y la tabla C a 0xCA00
+p02 0x8749 copia_patrones_disparo  HL = p02:89B0 + 32 x (2 x A + C) y tres tiras a la VRAM (p02:87FB)
+p02 0x875F nave_contra_fondo_en  el caracter bajo la nave mas DE, HL (p04:75C2): con el bit 5 recoge una capsula (p02:87BF); con el bit 1, la nave se destruye (ix+4 = 0xFF)
+p02 0x876F nave_contra_fondo  p02:875F en dos puntos de la nave
+p02 0x878A disparos_del_cuadro  la nave contra el fondo y los 8 disparos de 0x20 bytes de 0xCC40 (p02:87A4)
+p02 0x87A4 disparo_por_tipo  salta por el tipo del disparo (hasta 8; tabla p02:87AE)
+p02 0x87BE nada_87BE  ret
+p02 0x87BF recoge_capsula_tocada  si el actor de IY es una capsula (tipo 3, paso 1): su efecto (p02:83A4), se quita y el sonido 9
+p02 0x87DB quita_disparo  ix+0 = 0
+p02 0x87E1 disparo_libre  IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
+p02 0x87FB copia_tres_tiras  BC bytes de DE a la VRAM en HL, en HL + 0x800 y en HL + 0x1000
+p02 0x880D copia_a_vram_hl  BC bytes de DE a la VRAM en HL (p00:46AC)
+p02 0x8816 lanza_bomba  si las tres fichas de IX estan libres, dos bombas (p02:883B) con ix+3 = 5 e ix+5 = 4 en la segunda
+p02 0x883B bomba  0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180, sus patrones (p02:8950) y el sonido 0x0C
+p02 0x8877 bomba_del_cuadro  su paso (p02:8885), la mueve y la dibuja
+p02 0x8885 paso_de_la_bomba  salta por ix+1 (hasta 5; tabla p02:8890)
+p02 0x889C bomba_0  hasta tocar algo (p02:88E6): cada 5 cuadros, velocidad en X 0xC0 y siguiente paso
+p02 0x88B0 bomba_1  lo mismo con 0x40
+p02 0x88C4 bomba_2  hasta tocar algo
+p02 0x88CB bomba_estalla  el dibujo siguiente (de 4 en 4), sus patrones, quieta y paso 3
+p02 0x88E6 bomba_toca  estalla si la X pasa de 0x1D o si toca fondo (p04:75C2)
+p02 0x88F9 bomba_3  cada 5 cuadros el dibujo siguiente; al cuarto, la paleta oscura (p02:8973), el sonido 0x0D y siguiente paso
+p02 0x891C bomba_4  al acabar la cuenta, si ix+3 es impar: destello (p00:4E65, p00:4DD7), borra las balas (p04:7523) y da a todos los actores (p04:7058)
+p02 0x8934 bomba_5  si ix+3 es impar: p04:708B, el sonido 0x0E, borra las balas y da a todos los actores; se quita
+p02 0x894C siguiente_paso_ix  ix+1 + 1
+p02 0x8950 patrones_de_la_bomba  los patrones del dibujo ix+5 (hasta 2) de p02:8B30 a la VRAM (0xCA20)
+p02 0x8973 paleta_oscura  los 16 colores con cada componente 2 pasos mas oscuro (p02:89AA)
+p02 0x89AA oscurece  A - 0x40 sin bajar de 0
+p02 0x8BF1 disparo_principal  el arma 1: con 0xCB1D lanza bombas (p02:8816); si no, si las tres fichas estan libres, tres disparos (p02:8C35), el segundo y el tercero hacia arriba y hacia abajo (velocidad en Y 0x100 y 0xFF00)
+p02 0x8C2E pon_velocidad_y_disparo  ix+0x0B-0x0C = HL
+p02 0x8C35 un_disparo  crea el disparo (p02:8C47), lo mueve (p02:8D51) y el sonido 3
+p02 0x8C47 crea_disparo  en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), el arma, la velocidad de p02:8DDC, el sitio de salida, caja de 3 x 3, tipo 4 y el dibujo (p02:8D0B)
+p02 0x8C9C disparo_de_arma  el arma de IY: la 1 con 0xCB1D lanza bombas; si no, un disparo (p02:8CCD) con la potencia del tramo de 0xCB08 y el sonido 4 (tramo 2) o 2
+p02 0x8CCD crea_disparo_b  lo mismo que p02:8C47 sin la potencia
+p02 0x8D0B dibujo_del_disparo  ix+5 = 1 si se mueve en Y, 0 si no
+p02 0x8D1C dibujo_del_disparo_1  ix+5 = el tramo de 0xCB08 + 0x0C
+p02 0x8D29 velocidad_del_disparo  la velocidad de la entrada A de p02:8DDC y el dibujo por el tramo de 0xCB08
+p02 0x8D4E mueve_disparo  lo mueve y p02:8D51
+p02 0x8D51 disparo_del_cuadro  si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira el choque contra el fondo por delante y en el centro (p02:86AF); lo dibuja
+p02 0x8DA1 disparo_grande  lo mismo mirando cuatro puntos y el centro
+p02 0x8E0C fondo_alrededor  Z si los 9 caracteres alrededor del disparo estan vacios en la tabla 0xDE00 (NZ tambien si se sale)
+p02 0x8E4D fuera_nz  A = 0xFF, NZ
+p02 0x8E50 disparo_por_el_suelo  un disparo de tipo 7 (uno solo, 0xCC0E) que sale de la nave hacia abajo (velocidad en Y 0x100)
+p02 0x8E9B disparo_por_el_suelo_cuadro  lo mueve pegado al fondo (p02:8EBB), mira el fondo y lo dibuja
+p02 0x8EBB pegado_al_fondo  salvo en la fase 4: con el scroll, mira el fondo en cuatro sitios (p02:8F06) y elige la velocidad para seguir el suelo
+p02 0x8F06 mira_fondo  p04:75AA: acarreo si hay fondo y no es el 3
+p02 0x8F11 nada_8F11  ret
+p02 0x8F12 cambia_ram  con A = 0xAF: la RAM de la pagina 1 por la de 0xC000-0xCFFF (p02:8F34); entrando en 0x8F13 (`xor a`), 0x5000-0x70EF por 0xD000-0xF0EF
+p02 0x8F34 cambia_bloques  intercambia los bytes de HL y DE (BC bytes): 0xC000 y 0x4000, o 0xD000 y 0x5000
+p02 0x8F56 intercambia  intercambia BC bytes de HL y DE
+p02 0x8F64 con_disco  solo si hay disquetera (H.PHYD no es `ret`): sin el gancho H.KEYI, p02:8F86 y lo devuelve
+p02 0x8F86 al_banco_31  sin interrupciones del VDP, guarda la pila, cambia la RAM (p02:8F12, p02:8F13), el banco 31 en 0x6000 y salta a 0x6000 (que el trazado no sigue)
+p02 0x8FAD enciende_interrupcion  el bit 5 del registro 1 y las lineas (p00:4B8F)
+p02 0x8FB7 apaga_interrupcion  sin lineas (p00:4B78) y sin el bit 5 del registro 1
+p02 0x8FC5 vuelta_del_banco_31  devuelve la RAM, llama a 0x6003, pone el banco 1 en 0x6000 y enciende la interrupcion
+p03 0xA600 secuencia_titulo  borra la pagina, carga los graficos de la lista p03:B40A (p03:AE15), el mapa del banco 0x15 (21) en 0x5A02 con el guion p03:B9A3 (p03:A68F) y borra el resto
+p03 0xA62A secuencia_entre_fases  los graficos de p03:B37E, el mapa del banco 21 en 0x5000 con el guion p03:BA7B, p03:BDC8, el registro 23 a 0 y enciende la pantalla
+p03 0xA651 graficos_del_titulo  los graficos de la lista p03:B260 y los bancos 1-2-3
+p03 0xA65B secuencia_historia  el mapa del banco 0x0A en 0x5500 con el guion p03:B520, p03:BDC3, enciende y borra la segunda pagina
+p03 0xA67F borra_pagina  rellena de 0 la VRAM desde la linea 0xC0 (orden del VDP)
+p03 0xA68F prepara_secuencia  los registros del VDP (p03:A6AE), el mapa del banco A desde HL (p03:AEA6) y el primer objeto con el guion de DE (p03:A713)
+p03 0xA69F secuencia_del_cuadro  los mandos, las teclas de funcion y un paso de la secuencia (p03:A6A5)
+p03 0xA6A5 paso_de_secuencia  los objetos (p03:A749) y los bancos 1-2-3; NZ cuando la secuencia acaba (0xE0FF)
+p03 0xA6AE registros_de_secuencia  los 8 registros del VDP de p03:A6BD y sin sprites
+p03 0xA713 primer_objeto  borra 0xE000-0xE6FF y pone el objeto 0 (0xE100) con el guion de HL y su caja por defecto
+p03 0xA749 objetos_del_cuadro  mueve los 0x30 objetos (p03:A754), los pinta por su prioridad (p03:A767) y A = 0xE0FF
+p03 0xA754 mueve_objetos  los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
+p03 0xA767 pinta_objetos  las 16 prioridades, de la 15 a la 0 (p03:A771)
+p03 0xA771 pinta_prioridad  los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
+p03 0xA78E objeto  su guion (p03:A818) y su movimiento (p03:A795)
+p03 0xA795 mueve_objeto  la X (ix+4-5) mas su velocidad (ix+8-9) y la Y (ix+6-7) mas la suya (ix+0x0A-0x0B); con las banderas 1 y 3 (o 1 y 4) dan la vuelta al llegar a ix+0x16 o ix+0x17
+p03 0xA818 paso_del_guion  si la espera (ix+1) ha acabado, la siguiente orden del guion (ix+2-3) por la tabla p03:A835 (17 ordenes)
+p03 0xA857 puntero_del_guion  HL = ix+2-3
+p03 0xA85E guarda_puntero_del_guion  ix+2-3 = HL
+p03 0xA865 crea_objeto_en_linea  la orden 0 con sus datos detras del call
+p03 0xA86A orden_crea_objeto  orden 0: [objeto][guion][Y][X] crea otro objeto con ese guion junto al que la manda
+p03 0xA877 lee_crea_objeto  lee los datos de la orden 0 y crea el objeto (p03:A88E)
+p03 0xA88E crea_objeto  el objeto A (p03:AB61) con su guion, prioridad y sitio respecto al de IY; si no hay, vuelve cuatro niveles atras
+p03 0xA8CD caja_en_linea  la orden 1 con sus datos detras del call
+p03 0xA8D2 orden_caja  orden 1: el rectangulo de graficos que pinta el objeto (p03:A8DD)
+p03 0xA8DD lee_caja  lee los 4 bytes y pone la caja (p03:A8EF)
+p03 0xA8EF pon_caja  el rectangulo de origen (ix+0x0E-0x0F), su tamano (ix+0x12-0x13), el desplazamiento (ix+0x10-0x11) y lo deja visible
+p03 0xA917 cuatro_bytes  D, E, B y C de HL
+p03 0xA920 banderas_en_linea  la orden 2 con su dato detras del call
+p03 0xA925 orden_banderas  orden 2: ix+0x0D or el dato
+p03 0xA93E pon_banderas  ix+0x0D or A
+p03 0xA945 espera_en_linea  la orden 3 con su dato detras del call
+p03 0xA94A orden_espera  orden 3: espera N cuadros (ix+1)
+p03 0xA961 pon_espera  ix+1 = A
+p03 0xA965 espera_senal_en_linea  la orden 4 con su dato detras del call
+p03 0xA96A orden_espera_senal  orden 4: se queda hasta que la senal N (0xE0F0 + N) se pone
+p03 0xA982 mira_senal  acarreo si la senal A de 0xE0F0 no esta puesta
+p03 0xA98E senal_en_linea  la orden 5 con su dato detras del call
+p03 0xA993 orden_senal  orden 5: pone la senal N
+p03 0xA9AC pon_senal  0xE0F0 + A = 1
+p03 0xA9B6 borra_en_linea  la orden 6 detras del call
+p03 0xA9BB orden_borra  orden 6: borra la pantalla (orden del VDP), los objetos menos el 0 y las senales
+p03 0xA9EA para_en_linea  la orden 7 detras del call
+p03 0xA9EF orden_para  orden 7: el guion se queda en esta orden
+p03 0xAA07 acarreo  scf
+p03 0xAA09 colores_ya_en_linea  la orden 8 con su puntero detras del call
+p03 0xAA0E orden_colores_ya  orden 8: los colores de la lista tal cual (p00:4C94)
+p03 0xAA2E fundido_en_linea  la orden 9 con su puntero detras del call
+p03 0xAA33 orden_fundido  orden 9: fundido a los colores de la lista (p00:4CE0, p00:4CF5)
+p03 0xAA56 llama_en_linea  la orden 0x0A con su direccion detras del call
+p03 0xAA5B orden_llama  orden 0x0A: llama a la direccion que lleva
+p03 0xAA78 velocidad_en_linea  la orden 0x0B con sus datos detras del call
+p03 0xAA7D orden_velocidad  orden 0x0B: la velocidad del objeto en X (D) y en Y (E), con signo
+p03 0xAAA9 desplazamiento_en_linea  la orden 0x0C con sus datos detras del call
+p03 0xAAAE orden_desplazamiento  orden 0x0C: ix+0x14 = D, ix+0x15 = E
+p03 0xAAD0 salta_en_linea  la orden 0x0D con su direccion detras del call
+p03 0xAAD5 orden_salta  orden 0x0D: el guion sigue en la direccion que lleva
+p03 0xAAEE fin_en_linea  la orden 0x0E detras del call
+p03 0xAAF3 orden_fin  orden 0x0E: borra el objeto
+p03 0xAB14 sonido_en_linea  la orden 0x0F con su dato detras del call
+p03 0xAB19 orden_sonido  orden 0x0F: pide el sonido N (p00:4AF5)
+p03 0xAB36 color_en_linea  la orden 0x10 con sus datos detras del call
+p03 0xAB3B orden_color  orden 0x10: el color (nibble alto de E) con los bytes D y E (p00:4776)
+p03 0xAB61 objeto_nuevo  el objeto A (p03:AB83) borrado, en marcha (ix+0 = 1) y con sus limites por defecto
+p03 0xAB83 ficha_de_objeto  HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
+p03 0xAB94 borra_objetos  0xE100-0xE6FF a 0
+p03 0xAB9D borra_objetos_menos_0  0xE120-0xE6FF a 0
+p03 0xABA6 por_32_con_signo  HL = A x 32 con signo
+p03 0xABB0 parte_alta  A = los 3 bits altos de HL y HL x 8
+p03 0xABB8 pinta_objeto  si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
+p03 0xABDD pinta_rectangulo  la posicion mas el desplazamiento, y copia del rectangulo de origen con el VDP (p03:AD86): transparente o no segun las banderas
+p03 0xAC2F pinta_en_dos_y  partido en dos por el borde de abajo
+p03 0xAC6E pinta_en_dos_x  partido en dos por el borde derecho
+p03 0xACAD pinta_en_cuatro  partido en cuatro
+p03 0xAD76 copia_objeto_a_e0c0  copia la ficha de IY a 0xE0C0 y la usa como IX
+p03 0xAD86 copia_del_vdp  de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
+p03 0xADD0 origen_del_grafico  la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
+p03 0xAE07 banco_del_grafico  el banco C y H, pasando al siguiente cada 0x2000
+p03 0xAE15 carga_graficos  la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
+p03 0xAE27 un_grafico  segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
+p03 0xAE8C paleta_del_grafico  B bytes de colores de la lista a nibbles en 0xCA00
+p03 0xAEA6 mapa_de_secuencia  con el banco A (p00:4C0E): el mapa de HL + 0x2000, palabras por casilla de 32 columnas; 0xFFFF acaba y 0xFFFE salta
+p03 0xAECE casilla_de_secuencia  el sitio del caracter (p03:AED7) y lo copia (p03:AEF0)
+p03 0xAED7 sitio_del_caracter  de la palabra B, C: H y L en la pagina de los graficos
+p03 0xAEF0 copia_caracter_8  un caracter de 8 x 8 a la casilla D, E (p03:AD86)
+p03 0xAF0E de_1_bit  graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
+p03 0xAF24 de_1_bit_alta  lo mismo a la pagina alta
+p03 0xAF3A filas_de_1_bit  8 filas
+p03 0xAF46 fila_de_1_bit  un byte de 1 bit por punto a 4 bytes con los colores de 0xCA00
+p03 0xAF67 de_2_bits  graficos de 2 bits por punto a 4
+p03 0xAF7D de_2_bits_alta  lo mismo a la pagina alta
+p03 0xAF93 filas_de_2_bits  8 filas
+p03 0xAF9D fila_de_2_bits  dos bytes de 2 bits por punto a 4 bytes con los colores de 0xCA00
+p03 0xAFC8 de_4_bits  graficos de 4 bits por punto con paleta propia
+p03 0xAFDE de_4_bits_alta  lo mismo a la pagina alta
+p03 0xAFF4 filas_de_4_bits  8 filas
+p03 0xAFFE fila_de_4_bits  tres bytes a 4 bytes de 4 bits por punto con los colores de 0xCA00
+p03 0xB031 caracter_volteado  un caracter de 8 x 8 volteado de izquierda a derecha a la VRAM en DE
+p03 0xB058 caracteres_volteados  B caracteres volteados (p03:B05B) desde HL + 3
+p03 0xB05B caracteres_volteados_b  B caracteres volteados seguidos, bajando al llegar al borde
+p03 0xBDC3 textos_historia  los textos de p03:BEE9 (p03:BDCB)
+p03 0xBDC8 textos_entre_fases  los textos de p03:BDE7
+p03 0xBDCB textos_en_pagina_alta  con 0xC91B = 1 (la pagina alta), los textos de la lista (p03:BDD8)
+p03 0xBDD8 lista_de_textos  por cada palabra de HL distinta de 0: la cadena que sigue, en ese sitio, con los colores 0xFE (p01:6009)
+p09 0x6D00 vector_graficos_de_fase  jp p10:801F (los graficos de la fase A)
+p09 0x6D03 vector_80F4  jp p10:80F4
+p09 0x6D06 vector_reinicio  jp 0x0000
+p09 0x6D09 vector_graficos_b  jp p10:800F
+p09 0x6D0C vector_graficos_a  jp p10:8000
+p09 0x6D0F vector_prepara_pantalla  jp p09:6D30
+p09 0x6D12 vector_pantalla_del_cuadro  jp p09:6E44
+p09 0x6D15 vector_scroll_del_cuadro  jp p09:6D95
+p09 0x6D18 vector_prepara_registros  jp p09:6D69
+p09 0x6D1B vector_nada  jp p09:707D, que es un ret
+p09 0x6D30 prepara_pantalla_de_fase  los registros (p09:6D75), los graficos de la fase (p10:801F), sprites, borra 0xC000-0xC5FF; si el VDP es un V9958 (estado 1, bits 1-5 = 2) 0xC0EB = 4 y el registro 25 = 2; luego p09:77FC, p09:7683, las tablas de registros (p09:6F99), las lineas y las estrellas (p09:6E77)
+p09 0x6D69 prepara_registros  los registros, las tablas de registros, sprites y lineas
+p09 0x6D75 registros_de_pantalla  los 9 registros de p09:705C, el registro 8 (copia 0xFFE7 and 8, or 0x22) y, con el V9958, el 25 = 2
+p09 0x6D95 scroll_del_cuadro  en la fase 4 (y cada 4 cuadros en la 8) cambia de pagina (p09:6DC3); p09:7203 y p09:7AB5; y segun 0xC0D4: 0 el scroll (p09:7AC4, p09:7755), 1 los graficos de p10:800F, 2 para el scroll, 3 o mas p09:6E08
+p09 0x6DBD cada_4_cuadros  p09:6DC3 solo cuando la cuenta de cuadros and 3 es 0
+p09 0x6DC3 pagina_siguiente  si no hay un cambio pendiente (0xC0B5) y 0xC0B4 es menor que 4: 0xC0DB pasa de 0 a 5 y pide la pagina (0, 1, 2, 3, 2, 1) en 0xC0B5 con el bit 7
+p09 0x6DEB graficos_y_para  los graficos de p10:800F y p09:6DEE
+p09 0x6DEE para_scroll  el scroll fino y lo que se suma a los actores (0xCA12-0xCA1C) a 0, 0xC0D5 = 0 y 0xC0D4 + 1
+p09 0x6E08 scroll_de_c0dc_y_borra  0xCA12 y 0xCA14 de 0xC0DC (p09:6E37) y borra el trozo de mapa de 0xD988 (p09:6E0B)
+p09 0x6E0B borra_mapa_d988  24 filas de 32 bytes (de 0x30 en 0x30) desde 0xD988 a 0
+p09 0x6E2D borra_e000  0xE000-0xE7FF a 0
+p09 0x6E37 scroll_de_c0dc  0xCA12 = 0xC0DC y 0xCA14 = 0xC0DE
+p09 0x6E44 pantalla_del_cuadro  p09:7070, los registros del scroll en la tabla que toca (p09:6F43), p09:707E, las estrellas de la fase 0 o 2, p09:7683, 0xC09C = 1 (cambiar de tablas) y el fundido pendiente (bits 7 y 6 de 0xEF60)
+p09 0x6E77 estrellas_al_azar  0xC0EA = 0 y 24 columnas al azar (0-31) en 0xE800-0xE817
+p09 0x6E8A estrellas_fase_0  las estrellas (p09:6E9C) hacia la derecha con el caracter 0xCD
+p09 0x6E91 sin_estrellas  0xC0EA = 1
+p09 0x6E97 estrellas_fase_2  las estrellas hacia la izquierda con el caracter 0x5F
+p09 0x6E9C estrellas_del_cuadro  mueve las estrellas con el scroll (0xC0E6, 0xC0E8) y pone el caracter B en las 24 filas del mapa de 0xD988 donde esta vacio, dos por fila
+p09 0x6F20 rota_estrellas  las 24 columnas de 0xE800 giran una posicion (segun 0xC0D5, hacia un lado o hacia el otro)
+p09 0x6F43 registros_de_scroll  con 0xC0D2 y 0xC0BB, los valores del scroll en una de las dos tablas de registros (0xC9C5-0xC9CF o 0xC9F1-0xC9FB); con el V9958, de otra forma
+p09 0x6F99 tablas_de_registros  copia las listas de registros de p09:7002-705B a las seis tablas de 0xC948-0xC9FF (las que mandan las interrupciones de linea) con el registro 8 de 0xFFE7 y, con el V9958, el 0x9B
+p09 0x7070 paleta_retrasada  baja 0xC0D8 y, al llegar a 0, manda la paleta (p00:4DA9)
+p09 0x707D nada_707D  ret
+p09 0x707E sprites_del_cuadro  reparte los sprites por franjas (p09:7221) y manda sus atributos a la VRAM (p09:70E4)
+p09 0x7085 borra_sprites_ram  0xC000-0xC07F, 0xC180-0xC1FF y 0xC280-0xC2FF a 0
+p09 0x70E4 manda_sprites  segun la tabla del cuadro (0xC09B): los atributos de 0xC4B9 y 0xC5B9 a 0xFA00 y 0xFE00 de la VRAM, o los de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600 (p09:713F)
+p09 0x70F7 manda_atributos_a  apunta la VRAM a HL y manda los atributos de DE (p09:7106); HL + 0x400
+p09 0x7106 manda_atributos_a_b  dos tandas de p09:7117
+p09 0x7117 manda_atributos_a_c  4 veces 8 + 8 bytes con otir, saltando 16 hacia atras entre ellas
+p09 0x713F manda_sprites_b  los atributos de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600
+p09 0x714B manda_atributos_b  apunta la VRAM a HL y manda los atributos de DE (p09:715A); HL + 0x400
+p09 0x715A manda_atributos_b_b  dos tandas de p09:7165
+p09 0x7165 manda_atributos_b_c  4 veces 16 bytes con otir
+p09 0x718B pon_patron  guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
+p09 0x71C3 manda_patron  los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
+p09 0x7203 pagina_de_sprites  0xC0AA, 0xC0A6 y 0xC0A8 = 0xC0-0xC2 o 0xC3-0xC5, segun la tabla de este cuadro
+p09 0x7221 reparte_sprites  los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
+p09 0x7255 sprites_fuera  la Y de 0xC099 (la del scroll menos 0x18) en todos los sprites de la tabla del cuadro
+p09 0x72D5 reparte_grupo_c009  los 25 sprites del grupo de 0xC009: cada uno en su franja (p09:72ED)
+p09 0x72ED franja_del_sprite  segun su Y, a cual de las cuatro franjas de las interrupciones de linea va el sprite
+p09 0x72FF franja_1  el sprite en la franja 1
+p09 0x7310 franja_2  el sprite en la franja 2 (y en la 1 si la toca)
+p09 0x7325 franja_3  el sprite en la franja 3
+p09 0x7336 franja_4  el sprite en la franja 4
+p09 0x7345 cambia_a_franja_1  el sprite cambia a la franja 1: suelta o pide sus planos
+p09 0x735B cambia_a_franja_2  lo mismo a la franja 2
+p09 0x7371 cambia_a_franja_3  lo mismo a la franja 3
+p09 0x7387 cambia_a_franja_4  lo mismo a la franja 4
+p09 0x739D suelta_sprite  suelta los planos del sprite (p09:7442) y vuelve mas atras
+p09 0x73A3 a_ff  A = 0xFF
+p09 0x73A6 plano_franja_a  el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
+p09 0x73BD plano_franja_b  lo mismo en la franja de 0xC0A8
+p09 0x73D4 atributos_del_plano  la Y y la X del sprite mas el scroll (sin dejar la Y en 0xD8), el patron y el color en el plano DE
+p09 0x73EE y_fuera  la Y con el scroll que da la vuelta
+p09 0x73FA patron_distinto  si el patron ha cambiado lo manda (p09:718B); si no hay, el sprite se queda sin plano
+p09 0x741A pide_plano  un plano libre de los 32 (p09:742D) o ninguno (0x0E)
+p09 0x7423 sin_plano  E = 0 y la marca 0x0E
+p09 0x742D plano_libre  el primer plano libre de los 32 de 4 en 4; acarreo si no hay
+p09 0x7442 suelta_planos  suelta los planos del sprite en las paginas 0xC0-0xC5
+p09 0x7462 suelta_plano  el plano A queda libre y con la Y de 0xC099
+p09 0x746E mas_1  A + 1
+p09 0x7470 reparte_grupo_c03b  los 12 sprites del grupo de 0xC03B (de dos planos): cada uno en su franja (p09:7488)
+p09 0x7488 franja_del_sprite_doble  lo mismo para un sprite de dos planos
+p09 0x749A franja_doble_1  franja 1
+p09 0x74AB franja_doble_2  franja 2
+p09 0x74C0 franja_doble_3  franja 3
+p09 0x74D1 franja_doble_4  franja 4
+p09 0x74E0 cambia_doble_a_1  cambia a la franja 1
+p09 0x74F6 cambia_doble_a_2  cambia a la franja 2
+p09 0x750C cambia_doble_a_3  cambia a la franja 3
+p09 0x7522 cambia_doble_a_4  cambia a la franja 4
+p09 0x7538 suelta_sprite_doble  suelta sus planos y vuelve mas atras
+p09 0x753E planos_dobles_a  los dos planos en la franja de 0xC0A6
+p09 0x7566 planos_dobles_b  los dos planos en la franja de 0xC0A8
+p09 0x758E atributos_plano_1  la Y, la X y el patron del primer plano
+p09 0x75A8 atributos_plano_2  los del segundo plano (patron + 4)
+p09 0x75C4 patron_doble_distinto  como p09:73FA para los de dos planos
+p09 0x75E4 pide_planos_dobles  dos planos libres seguidos (p09:7617)
+p09 0x75ED sin_planos_dobles  E = 0 y la marca 0x0E
+p09 0x75F7 suelta_planos_dobles  suelta los planos del sprite doble
+p09 0x7617 planos_dobles_libres  dos planos libres seguidos de los 16 de arriba; si hace falta, quita uno a un sprite sencillo (p09:7644)
+p09 0x7644 quita_plano_b  quita el plano de un sprite sencillo
+p09 0x7649 quita_plano_a  lo mismo con el plano de al lado
+p09 0x764D quita_plano  p09:7655 guardando HL y DE
+p09 0x7655 busca_dueno  busca en los 25 de 0xC009 el sprite que usa el plano A y lo deja sin plano
+p09 0x766D suelta_plano_doble  los dos planos quedan libres con la Y de 0xC099
+p09 0x7683 manda_mapa  las 24 filas de 32 caracteres de 0xD988 a la tabla de nombres de la VRAM (0xC000 o 0xC400 segun el cuadro), empezando por la fila del scroll (0xC0D2) y dando la vuelta; con 0xC0B3, de otra forma (p09:771E)
+p09 0x76BB manda_mapa_24  las 24 filas desde el principio
+p09 0x76BD manda_mapa_desde  A filas desde 0xD988
+p09 0x771E manda_mapa_depuracion  con 0xC0B3: cada caracter con p09:773D
+p09 0x772B fila_de_depuracion  32 caracteres de una fila con p09:773D
+p09 0x773D nibble_por_tecla  el nibble bajo del caracter o, con TAB pulsado (fila 7, bit 3), el alto
+p09 0x7755 copia_mapa_visible  las 24 filas de 32 del mapa de 64 x 32 de 0xE000 en la posicion del scroll (p00:4E4A) a 0xD988, partiendo la fila si da la vuelta (p09:777C)
+p09 0x777C copia_mapa_partido  lo mismo con las filas partidas en dos trozos
+p09 0x77B6 salta_a_iy  jp (iy)
+p09 0x77B8 salta_a_ix  jp (ix)
+p09 0x77BA copia_32  copia 32 bytes de HL a DE (31 ldi y uno mas): se entra a mitad para copiar menos
+p09 0x77FC prepara_mapa_de_fase  los bloques de la fase (0xC0C8, tabla p09:7D76), el mapa y la posicion del punto de salida 0xCA1E (0xC0CA y 0xCA34, tabla p09:7C8C), el scroll a 0 y adelanta el mapa hasta llenar la pantalla (p09:7848)
+p09 0x7848 adelanta_mapa  pasos de scroll (p09:7AC4) y del guion de la fase (p00:4109) mientras 0xCA33 no llega a 0
+p09 0x7858 orden_del_mapa  con el banco 27 en 0xA000, el siguiente byte del mapa: menor que 0x10, un tramo de scroll (p09:7894); de 0x10 a 0x1F, una orden (tabla p09:7874)
+p09 0x7894 tramo_de_scroll  el tramo A (p09:789C) y p09:7AA1
+p09 0x789C pon_tramo_de_scroll  de la tabla p09:78FF (12 bytes por tramo): la velocidad en Y (0xC0C3) y en X (0xC0BD) con su signo, 0xC0B8, 0xC0B6, el modo de columnas (0xC0CE) y la direccion (0xC0D5)
+p09 0x78EC nada_78EC  ret
+p09 0x78F0 scroll_a_la_columna  0xCA34 = el siguiente multiplo de 0x1000
+p09 0x798F orden_salto  lee una direccion; si 0xCE4C no es 0, el mapa sigue en ella
+p09 0x79A4 orden_scroll_vertical  lee una palabra y la pone en 0xC0D2 (p09:79AE)
+p09 0x79AE pon_scroll_vertical  los bits altos de E con los 3 bajos de 0xC0D2, despues de p09:79C2 con D
+p09 0x79C2 pide_pagina  espera a que se cambie de tabla y, si A es menor que 7, pide la pagina A (0xC0B5); si no, 0xC0D1 = su bit 7
+p09 0x79DA orden_salta_24  el mapa avanza 0x24 bytes y 0xC0CE = 2
+p09 0x79EB orden_paleta  los colores de la direccion que lleva como destino (p00:4CE0)
+p09 0x79FD orden_para  para el scroll, 0xC0D4 = 1 (p00:4E73) y la posicion al siguiente multiplo
+p09 0x7A08 orden_espera_fundido  si hay un fundido en marcha, la orden se repite con el tramo 7
+p09 0x7A1C orden_quieto  0xC0D6 = 1: el scroll se para
+p09 0x7A23 orden_patrones  el registro 6 con el byte que lleva (p00:4E6B)
+p09 0x7A30 orden_borra_mapa  borra 0xE000-0xE7FF y el mapa de 0xD988
+p09 0x7A38 orden_sonido  el sonido del byte que lleva; con 0, el sonido 0x84 y 0xC0D7 = 0x30 (p09:7AB5 pide el 0x39 despues)
+p09 0x7A54 orden_punto_de_salida  la fase pasa por un punto de salida: 0xCA1E + 1 (salvo si se empezo en el, 0xC0E1)
+p09 0x7A65 orden_a_la_columna  la posicion al siguiente multiplo (p09:78F0)
+p09 0x7A6A orden_paleta_ya  lee una direccion y, mientras se adelanta el mapa, pone esos colores tal cual (p00:4CDC)
+p09 0x7A80 orden_espera_adelanto  acarreo si ya no se adelanta el mapa
+p09 0x7A87 orden_para_2  para el scroll, 0xC0D4 = 2 y la posicion al siguiente multiplo
+p09 0x7A94 orden_c0e5  0xC0E5 = el byte que lleva
+p09 0x7AA1 cuenta_adelanto  si 0xCA33 es 0xFF, 0xCA33 = D
+p09 0x7AAB baja_adelanto  0xCA33 - 1 si no es 0
+p09 0x7AB5 sonido_retrasado  baja 0xC0D7 y, al llegar a 0, el sonido 0x39
+p09 0x7AC4 scroll_un_paso  si el scroll esta quieto (0xC0D6 = 1) lo para; si no, avanza (p09:7AD2)
+p09 0x7AD2 avanza_scroll  0xC0B6 + 0xC0B8; las velocidades (p09:7B09) y la casilla (p09:7C72); al pasar de 8, una columna nueva del mapa (p09:7BED, p09:7C08), y otra si el mapa trae 0xFE
+p09 0x7B09 velocidades_del_scroll  la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas sus velocidades; de ellas, lo que se suma a los actores (0xCA12, 0xCA14), el scroll fino (0xCA1A, 0xCA1C), 0xCA36, 0xCA38, 0xCA18, 0xCA31 y el registro de scroll vertical (0xC0D2)
+p09 0x7BC4 scroll_vertical_fino  0xC0D2 con solo los 3 bits bajos cambiados
+p09 0x7BD6 scroll_parado  las velocidades del scroll y lo que se suma a los actores a 0
+p09 0x7BED siguiente_del_mapa  con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
+p09 0x7C08 pinta_columna  una columna nueva (p09:7C3E); cada 4, el mapa avanza DE bytes
+p09 0x7C2B avanza_posicion  0xCA34 + 1
+p09 0x7C33 cuenta_c0e5  baja 0xC0E5 y, al llegar a 0, el scroll vertical a 0x3801 (p09:79AE)
+p09 0x7C3E columna_por_modo  0xC0E5, la posicion + 1, el banco 25 en 0x8000, p09:7AAB y la columna por el modo 0xC0CE (tabla p09:7C59)
+p09 0x7C6D de_a_0  DE = 0
+p09 0x7C71 nada_7C71  ret
+p09 0x7C72 casilla_del_scroll  0xC0CD y 0xC0CC = la columna y la fila del mapa en las que va el scroll
+p09 0x7D88 columna_doble  dos columnas de bloques en el mapa de la RAM (p09:7DB8)
+p09 0x7DA7 columna_derecha  una columna de bloques a la derecha (p09:7DB8)
+p09 0x7DB4 de_a_6  DE = 6
+p09 0x7DB8 columna_de_bloques  6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
+p09 0x7E17 menos_40  L - 0x40
+p09 0x7E1C fila_de_abajo  una fila de 8 bloques abajo (p09:7E55)
+p09 0x7E28 fila_por_c0c1_a  una fila de 15 bloques segun 0xC0C1
+p09 0x7E3F fila_por_c0c1_b  lo mismo con otra posicion
+p09 0x7E55 fila_de_bloques  A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
+p09 0x7EB8 menos_40_b  L - 0x40
+p09 0x7EBD fila_de_arriba  una fila de 8 bloques arriba (p09:7EFC)
+p09 0x7ECE fila_de_arriba_b  lo mismo en la columna 0
+p09 0x7EDE fila_por_c0c1_c  una fila de 15 bloques segun 0xC0C1
+p09 0x7EFC fila_de_bloques_b  como p09:7E55 con la otra fila de los bloques
