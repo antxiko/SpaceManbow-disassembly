@@ -54,12 +54,12 @@ nave:		; la mueve (p02:8060) y la dibuja (p04:77D0 o p04:7747); si se quedo sin 
 	or a			;8037
 	jp z,077d0h		;8038   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	call 07747h		;803b   ; dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
-	ld a,(0c0ech)		;803e
+	ld a,(0c0ech)		;803e   ; lee 1: a la nave le han faltado sprites
 	or a			;8041
 	ret z			;8042
 	call 077d0h		;8043   ; sprites_del_dibujo_b: lo mismo guardando los bancos y con p04:794E
 	xor a			;8046
-	ld (0c0ech),a		;8047
+	ld (0c0ech),a		;8047   ; guarda 1: a la nave le han faltado sprites
 	ld (ix+019h),a		;804a   ; guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 	ld (ix+01ah),a		;804d   ; guarda el primer sprite del actor (p04:793D)
 	ld (ix+01bh),a		;8050
@@ -84,7 +84,7 @@ mueve_nave:		; IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); 
 	ld a,(0ca03h)		;807b
 	rrca			;807e
 	ret c			;807f
-	ld a,(0ce76h)		;8080
+	ld a,(0ce76h)		;8080   ; lee 1: a la nave la empuja algo (p04:6E50)
 	or a			;8083
 	ret nz			;8084
 	ld a,(0ce75h)		;8085
@@ -179,7 +179,7 @@ L_8117:
 	inc hl			;8134
 	ld b,(hl)			;8135
 	inc hl			;8136
-	ld a,(0cb01h)		;8137
+	ld a,(0cb01h)		;8137   ; lee la velocidad de la nave (0 a 4)
 	or a			;813a
 	push af			;813b
 	push hl			;813c
@@ -280,15 +280,15 @@ prepara_nave:		; borra 0xCB40 (p02:8279) y las opciones (p02:829F); 0xC0EC, la v
 	call borra_cb40		;8224   ; borra_cb40: 0xCB40-0xCB67 a 0, 0xCB1A = 0 y p02:84A5
 	call borra_opciones		;8227   ; borra_opciones: 0xCB03 = 0, las fichas de 0xCAC0-0xCAFF a 0 y 0xCB1B = 0xFF80
 	xor a			;822a
-	ld (0c0ech),a		;822b
-	ld (0cb01h),a		;822e
+	ld (0c0ech),a		;822b   ; guarda 1: a la nave le han faltado sprites
+	ld (0cb01h),a		;822e   ; guarda la velocidad de la nave (0 a 4)
 	ld (0ca19h),a		;8231   ; guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	dec a			;8234
 	ld (0cb02h),a		;8235
 nave_nueva:		; 0xCC01 y 0xCB1D a 0, sin sprites de las opciones, la ficha de la nave (p02:8254), p02:83E7 y p02:8704
 	xor a			;8238
 	ld (0cc01h),a		;8239
-	ld (0cb1dh),a		;823c
+	ld (0cb1dh),a		;823c   ; guarda 1: el arma principal lanza bombas
 	call sin_sprites_opciones		;823f   ; sin_sprites_opciones: ix+0x19 e ix+0x1A de las dos opciones (0xCAC0, 0xCAE0) a 0
 	ld hl,0ca40h		;8242   ; apunta a la nave: su ficha de actor (0 = muerta)
 	ld bc,0003fh		;8245
@@ -308,7 +308,7 @@ ficha_de_la_nave:		; tipo 1 en Y = 8 y X = 5, banderas 0x39, caja de 3 x 3, se l
 	set 7,(ix+014h)		;8274   ; pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ret			;8278
 borra_cb40:		; 0xCB40-0xCB67 a 0, 0xCB1A = 0 y p02:84A5
-	ld hl,0cb40h		;8279
+	ld hl,0cb40h		;8279   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
 	ld bc,00027h		;827c
 	call 04648h		;827f   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	xor a			;8282
@@ -318,9 +318,9 @@ borra_cb40:		; 0xCB40-0xCB67 a 0, 0xCB1A = 0 y p02:84A5
 nada_828A:		; ret
 	ret			;828a
 sin_sprites_opciones:		; ix+0x19 e ix+0x1A de las dos opciones (0xCAC0, 0xCAE0) a 0
-	ld ix,0cac0h		;828b
+	ld ix,0cac0h		;828b   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	call sin_sprites_ix		;828f   ; sin_sprites_ix: ix+0x19 e ix+0x1A a 0
-	ld ix,0cae0h		;8292
+	ld ix,0cae0h		;8292   ; apunta a la segunda opcion de la nave
 sin_sprites_ix:		; ix+0x19 e ix+0x1A a 0
 	ld (ix+019h),000h		;8296   ; cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6) = 0x00
 	ld (ix+01ah),000h		;829a   ; el primer sprite del actor (p04:793D) = 0x00
@@ -328,7 +328,7 @@ sin_sprites_ix:		; ix+0x19 e ix+0x1A a 0
 borra_opciones:		; 0xCB03 = 0, las fichas de 0xCAC0-0xCAFF a 0 y 0xCB1B = 0xFF80
 	xor a			;829f
 	ld (0cb03h),a		;82a0
-	ld hl,0cac0h		;82a3
+	ld hl,0cac0h		;82a3   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	ld bc,0003fh		;82a6
 	call 04648h		;82a9   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ld bc,0ff80h		;82ac
@@ -336,9 +336,9 @@ borra_opciones:		; 0xCB03 = 0, las fichas de 0xCAC0-0xCAFF a 0 y 0xCB1B = 0xFF80
 	ret			;82b3
 opciones_del_cuadro:		; el paso de cuadro de las opciones (p02:82C6) y cada una (p02:82D2)
 	call paso_de_las_opciones		;82b4   ; paso_de_las_opciones: 0xCAC5 y 0xCAE5 = la cuenta de cuadros and 3
-	ld ix,0cac0h		;82b7
+	ld ix,0cac0h		;82b7   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	call opcion		;82bb   ; opcion: si la nave no esta explotando y la opcion existe: la mueve (p02:82E2) y la dibuja (p04:77D0)
-	ld ix,0cae0h		;82be
+	ld ix,0cae0h		;82be   ; apunta a la segunda opcion de la nave
 	call opcion		;82c2   ; opcion: si la nave no esta explotando y la opcion existe: la mueve (p02:82E2) y la dibuja (p04:77D0)
 	ret			;82c5
 paso_de_las_opciones:		; 0xCAC5 y 0xCAE5 = la cuenta de cuadros and 3
@@ -348,7 +348,7 @@ paso_de_las_opciones:		; 0xCAC5 y 0xCAE5 = la cuenta de cuadros and 3
 	ld (0cae5h),a		;82ce
 	ret			;82d1
 opcion:		; si la nave no esta explotando y la opcion existe: la mueve (p02:82E2) y la dibuja (p04:77D0)
-	ld a,(0ca41h)		;82d2
+	ld a,(0ca41h)		;82d2   ; lee el paso de la nave (1 explotando, 2 muerta)
 	or a			;82d5
 	ret nz			;82d6
 	ld a,(ix+000h)		;82d7   ; lee el tipo del actor (0 = libre)
@@ -371,7 +371,7 @@ opcion_engancha:		; el desplazamiento respecto a la nave (p02:834C) y el arma de
 	ld a,(0cb41h)		;82fb
 	ld c,a			;82fe
 	ld hl,0831ah		;82ff
-	ld a,(0cb05h)		;8302
+	ld a,(0cb05h)		;8302   ; lee la formacion de las opciones (0 a 2)
 	bit 7,(ix+018h)		;8305   ; mira el bit 7 de otra cuenta del actor (p04:6ADF la baja hasta 1)
 	jr nz,L_830E		;8309
 	ld hl,0831dh		;830b
@@ -459,10 +459,10 @@ L_8361:
 	ld (ix+017h),l		;8376   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret			;8379
 otra_opcion:		; IY = la otra opcion que ya esta enganchada y A = su ix+0x18; acarreo si no hay
-	ld iy,0cac0h		;837a
+	ld iy,0cac0h		;837a   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	call opcion_enganchada		;837e   ; opcion_enganchada: NZ si la opcion de IY existe y esta enganchada
 	jr nz,L_838E		;8381
-	ld iy,0cae0h		;8383
+	ld iy,0cae0h		;8383   ; apunta a la segunda opcion de la nave
 	call opcion_enganchada		;8387   ; opcion_enganchada: NZ si la opcion de IY existe y esta enganchada
 	jr nz,L_838E		;838a
 	scf			;838c
@@ -530,7 +530,7 @@ efecto_de_capsula:		; por el tipo de 0xCB1A: 2 mas velocidad, 3, 7 una opcion, 0
 	ret			;83e6
 calcula_nivel:		; 0xCA19 = la suma de los niveles de las armas (tabla p02:842D) / 16 + 4 x 0xCA04 + el tramo de 0xCB08 (p00:4E79), hasta 15
 	ld c,000h		;83e7
-	ld ix,0cb40h		;83e9
+	ld ix,0cb40h		;83e9   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
 	ld b,005h		;83ed
 L_83EF:
 	ld a,(ix+000h)		;83ef
@@ -556,12 +556,12 @@ L_8406:
 	rrca			;8412
 	rrca			;8413
 	ld c,a			;8414
-	ld a,(0ca04h)		;8415
+	ld a,(0ca04h)		;8415   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	add a,a			;8418
 	add a,a			;8419
 	add a,c			;841a
 	ld c,a			;841b
-	ld a,(0cb08h)		;841c
+	ld a,(0cb08h)		;841c   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;841f   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,c			;8422
 	cp 010h		;8423
@@ -606,7 +606,7 @@ sonido_0F:		; el sonido 0x0F
 	ret			;8456
 capsula_0B:		; 0xCB1D = 1
 	ld a,001h		;8457
-	ld (0cb1dh),a		;8459
+	ld (0cb1dh),a		;8459   ; guarda 1: el arma principal lanza bombas
 	ret			;845c
 capsula_7:		; una opcion nueva (p04:6F8C) enganchada (paso 2); si no hay ficha, nada
 	ld a,(ix+017h)		;845d   ; lee una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -623,14 +623,14 @@ capsula_0E:		; sube 0xCB07 (p02:8484) y el sonido 0x0A
 	call 04af5h		;8475   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	ret			;8478
 mas_velocidad:		; 0xCB01 + 1, hasta 4
-	ld a,(0cb01h)		;8479
+	ld a,(0cb01h)		;8479   ; lee la velocidad de la nave (0 a 4)
 	inc a			;847c
 	cp 005h		;847d
 	ret nc			;847f
-	ld (0cb01h),a		;8480
+	ld (0cb01h),a		;8480   ; guarda la velocidad de la nave (0 a 4)
 	ret			;8483
 sube_cb07:		; 0xCB08 + 1 (hasta 0x10) con 0xCB07 = 0xFF; si cambia de tramo (p00:4E79), p02:871E
-	ld de,(0cb07h)		;8484
+	ld de,(0cb07h)		;8484   ; lee la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 	ld b,d			;8488
 	ld e,0ffh		;8489
 	inc d			;848b
@@ -639,7 +639,7 @@ sube_cb07:		; 0xCB08 + 1 (hasta 0x10) con 0xCB07 = 0xFF; si cambia de tramo (p00
 	jr nc,L_8492		;848f
 	ld d,a			;8491
 L_8492:
-	ld (0cb07h),de		;8492
+	ld (0cb07h),de		;8492   ; guarda la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 	ex de,hl			;8496
 	ld a,h			;8497
 	call 04e79h		;8498   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
@@ -651,7 +651,7 @@ L_8492:
 	jp patrones_del_disparo		;84a2   ; patrones_del_disparo: los patrones de los disparos segun el tramo de 0xCB08 (p00:4E79) de p02:89B0 a la VRAM (0xC9A0 y, con p02:8732, 0xCA00)
 arma_inicial:		; 0xCB05 = 0 y el arma 0 con nivel 1 (p02:84AC)
 	xor a			;84a5
-	ld (0cb05h),a		;84a6
+	ld (0cb05h),a		;84a6   ; guarda la formacion de las opciones (0 a 2)
 	ld b,a			;84a9
 	ld c,a			;84aa
 	inc c			;84ab
@@ -670,22 +670,22 @@ L_84B7:
 casilla_del_arma:		; IX = la casilla del arma B: 0 en 0xCB40, 2-4 en 0xCB58, 5-7 en 0xCB50, el resto en 0xCB48
 	ld a,b			;84c0
 	or a			;84c1
-	ld ix,0cb40h		;84c2
+	ld ix,0cb40h		;84c2   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
 	ret z			;84c6
 	sub 002h		;84c7
 	sub 003h		;84c9
-	ld ix,0cb58h		;84cb
+	ld ix,0cb58h		;84cb   ; apunta a la casilla de las armas 2 a 4
 	ret c			;84cf
 	dec a			;84d0
 	sub 003h		;84d1
-	ld ix,0cb50h		;84d3
+	ld ix,0cb50h		;84d3   ; apunta a la casilla de las armas 5 a 7
 	ret c			;84d7
-	ld ix,0cb48h		;84d8
+	ld ix,0cb48h		;84d8   ; apunta a la casilla de las armas 8 en adelante
 	ret			;84dc
 nivel_a_las_armas:		; a las 5 casillas de 0xCB40 cuyo arma es menor que 9, el nivel C
 	ld c,a			;84dd
 	ld b,005h		;84de
-	ld ix,0cb40h		;84e0
+	ld ix,0cb40h		;84e0   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
 L_84E4:
 	ld a,(ix+000h)		;84e4
 	cp 009h		;84e7
@@ -707,7 +707,7 @@ boton_2:		; baja 0xCB07 (p02:8530); con el boton 2 recien pulsado y armas en 0xC
 	call 04af5h		;8505   ; pide_musica: lo mismo con hasta 0x17 en la cola
 	call formacion_siguiente		;8508   ; formacion_siguiente: 0xCB05 pasa por 0, 1 y 2, y 0xCB1B (la X de las opciones respecto a la nave) a 0, 0x0080 o 0xFF80
 	ld b,005h		;850b
-	ld ix,0cb40h		;850d
+	ld ix,0cb40h		;850d   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
 L_8511:
 	ld a,(ix+000h)		;8511
 	and 00fh		;8514
@@ -720,10 +720,10 @@ L_851E:
 	djnz L_8511		;8523
 	ret			;8525
 hay_armas_2:		; NZ si hay arma en 0xCB50 o en 0xCB58
-	ld a,(0cb50h)		;8526
+	ld a,(0cb50h)		;8526   ; lee la casilla de las armas 5 a 7
 	or a			;8529
 	ret nz			;852a
-	ld a,(0cb58h)		;852b
+	ld a,(0cb58h)		;852b   ; lee la casilla de las armas 2 a 4
 	or a			;852e
 	ret			;852f
 baja_cb07:		; cada 16 cuadros (32 desde la fase 5) y salvo con 0xCB02 menor que 0x2E, 0xCB07 - 3 sin bajar de 0xCB08; si cambia de tramo, p02:871E
@@ -739,7 +739,7 @@ baja_cb07:		; cada 16 cuadros (32 desde la fase 5) y salvo con 0xCB02 menor que 
 L_8544:
 	and (hl)			;8544
 	ret nz			;8545
-	ld hl,(0cb07h)		;8546
+	ld hl,(0cb07h)		;8546   ; lee la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 	ld b,h			;8549
 	ld de,00003h		;854a
 	or a			;854d
@@ -750,7 +750,7 @@ L_8544:
 	or a			;8554
 	sbc hl,de		;8555
 	ret c			;8557
-	ld (0cb07h),hl		;8558
+	ld (0cb07h),hl		;8558   ; guarda la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 	ld a,b			;855b
 	call 04e79h		;855c   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	ld b,a			;855f
@@ -760,13 +760,13 @@ L_8544:
 	ret z			;8565
 	jp patrones_del_disparo		;8566   ; patrones_del_disparo: los patrones de los disparos segun el tramo de 0xCB08 (p00:4E79) de p02:89B0 a la VRAM (0xC9A0 y, con p02:8732, 0xCA00)
 formacion_siguiente:		; 0xCB05 pasa por 0, 1 y 2, y 0xCB1B (la X de las opciones respecto a la nave) a 0, 0x0080 o 0xFF80
-	ld a,(0cb05h)		;8569
+	ld a,(0cb05h)		;8569   ; lee la formacion de las opciones (0 a 2)
 	inc a			;856c
 	cp 003h		;856d
 	jr c,L_8572		;856f
 	xor a			;8571
 L_8572:
-	ld (0cb05h),a		;8572
+	ld (0cb05h),a		;8572   ; guarda la formacion de las opciones (0 a 2)
 	rrca			;8575
 	ld bc,00000h		;8576
 	jr c,L_8583		;8579
@@ -801,25 +801,25 @@ disparos:		; con la nave entera (0xCA43 a 0): el arma de 0xCB40 dispara a 0xCC40
 	ret nz			;859d
 	xor a			;859e
 	ld (0cc0eh),a		;859f
-	ld iy,0cb40h		;85a2
-	ld ix,0cc40h		;85a6
+	ld iy,0cb40h		;85a2   ; apunta a la casilla del arma principal (8 bytes: arma y nivel)
+	ld ix,0cc40h		;85a6   ; apunta a los 8 disparos de la nave, fichas de 0x20
 	ld a,(iy+000h)		;85aa
 	or a			;85ad
 	ld b,003h		;85ae
 	call nz,dispara_arma		;85b0   ; dispara_arma: el arma de IY: 0x80 cuenta como 1; la 5 dispara como la 1 y vuelve a ser 5
-	ld iy,0cb50h		;85b3
+	ld iy,0cb50h		;85b3   ; apunta a la casilla de las armas 5 a 7
 	ld ix,0cca0h		;85b7
 	ld a,(iy+000h)		;85bb
 	or a			;85be
 	ld b,002h		;85bf
 	call nz,dispara_arma		;85c1   ; dispara_arma: el arma de IY: 0x80 cuenta como 1; la 5 dispara como la 1 y vuelve a ser 5
-	ld iy,0cb58h		;85c4
+	ld iy,0cb58h		;85c4   ; apunta a la casilla de las armas 2 a 4
 	ld ix,0cce0h		;85c8
 	ld a,(iy+000h)		;85cc
 	or a			;85cf
 	ld b,002h		;85d0
 	call nz,dispara_arma		;85d2   ; dispara_arma: el arma de IY: 0x80 cuenta como 1; la 5 dispara como la 1 y vuelve a ser 5
-	ld iy,0cb48h		;85d5
+	ld iy,0cb48h		;85d5   ; apunta a la casilla de las armas 8 en adelante
 	ld ix,0cd20h		;85d9
 	ld a,(iy+000h)		;85dd
 	or a			;85e0
@@ -1006,7 +1006,7 @@ borra_disparos:		; 0xCC40-0xCD3F a 0 y los patrones del disparo (p02:871E)
 	ld hl,0f0f9h		;8705   ; apunta a por que paso va la partida (p01:6256)
 	ld (hl),000h		;8708
 	pop hl			;870a
-	ld hl,0cc40h		;870b
+	ld hl,0cc40h		;870b   ; apunta a los 8 disparos de la nave, fichas de 0x20
 	ld bc,000ffh		;870e
 	call 04648h		;8711   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	jr patrones_del_disparo		;8714
@@ -1018,7 +1018,7 @@ patrones_disparo_6:		; los patrones del disparo de la tabla 6
 	jr patrones_disparo_c		;871c
 patrones_del_disparo:		; los patrones de los disparos segun el tramo de 0xCB08 (p00:4E79) de p02:89B0 a la VRAM (0xC9A0 y, con p02:8732, 0xCA00)
 	call patrones_disparo_cb41		;871e   ; patrones_disparo_cb41: la tabla 6 si el arma de 0xCB41 es 0x0A, si no la 0
-	ld a,(0cb08h)		;8721
+	ld a,(0cb08h)		;8721   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8724   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	xor a			;8727
 	ld c,000h		;8728
@@ -1032,7 +1032,7 @@ patrones_disparo_cb41:		; la tabla 6 si el arma de 0xCB41 es 0x0A, si no la 0
 	jr nz,patrones_disparo_c		;8739
 	ld c,006h		;873b
 patrones_disparo_c:		; los patrones del tramo de 0xCB08 y la tabla C a 0xCA00
-	ld a,(0cb08h)		;873d
+	ld a,(0cb08h)		;873d   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8740   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	ld hl,00020h		;8743
 	ld de,0ca00h		;8746   ; apunta a el estado de la partida
@@ -1074,7 +1074,7 @@ nave_contra_fondo:		; p02:875F en dos puntos de la nave
 	ret			;8789
 disparos_del_cuadro:		; la nave contra el fondo y los 8 disparos de 0x20 bytes de 0xCC40 (p02:87A4)
 	call nave_contra_fondo		;878a   ; nave_contra_fondo: p02:875F en dos puntos de la nave
-	ld ix,0cc40h		;878d
+	ld ix,0cc40h		;878d   ; apunta a los 8 disparos de la nave, fichas de 0x20
 	ld b,008h		;8791
 L_8793:
 	ld a,(ix+000h)		;8793   ; lee el tipo del actor (0 = libre)
@@ -1185,7 +1185,7 @@ lanza_bomba:		; si las tres fichas de IX estan libres, dos bombas (p02:883B) con
 	call disparo_libre		;8838   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 bomba:		; 0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180, sus patrones (p02:8950) y el sonido 0x0C
 	xor a			;883b
-	ld (0cb1dh),a		;883c
+	ld (0cb1dh),a		;883c   ; guarda 1: el arma principal lanza bombas
 	ld a,008h		;883f
 	call tipo_del_disparo		;8841   ; tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
 	ld (ix+014h),003h		;8844
@@ -1488,7 +1488,7 @@ disparo_principal:		; el arma 1: con 0xCB1D lanza bombas (p02:8816); si no, si l
 	ld a,(iy+000h)		;8bf1
 	dec a			;8bf4
 	jp nz,disparo_de_arma		;8bf5   ; disparo_de_arma: el arma de IY: la 1 con 0xCB1D lanza bombas; si no, un disparo (p02:8CCD) con la potencia del tramo de 0xCB08 y el sonido 4 (tramo 2) o 2
-	ld a,(0cb1dh)		;8bf8
+	ld a,(0cb1dh)		;8bf8   ; lee 1: el arma principal lanza bombas
 	or a			;8bfb
 	jp nz,lanza_bomba		;8bfc   ; lanza_bomba: si las tres fichas de IX estan libres, dos bombas (p02:883B) con ix+3 = 5 e ix+5 = 4 en la segunda
 	push ix		;8bff
@@ -1534,7 +1534,7 @@ un_disparo:		; crea el disparo (p02:8C47), lo mueve (p02:8D51) y el sonido 3
 crea_disparo:		; en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), el arma, la velocidad de p02:8DDC, el sitio de salida, caja de 3 x 3, tipo 4 y el dibujo (p02:8D0B)
 	call disparo_libre		;8c47   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 	ret c			;8c4a
-	ld a,(0cb08h)		;8c4b
+	ld a,(0cb08h)		;8c4b   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8c4e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8c51
 	add a,a			;8c52
@@ -1559,7 +1559,7 @@ crea_disparo:		; en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), 
 	ld a,(iy+000h)		;8c8a
 	dec a			;8c8d
 	jr nz,dibujo_del_disparo		;8c8e
-	ld a,(0cb08h)		;8c90
+	ld a,(0cb08h)		;8c90   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8c93   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00fh		;8c96
 	ld (ix+005h),a		;8c98   ; guarda el dibujo del actor (p04:7791)
@@ -1568,13 +1568,13 @@ disparo_de_arma:		; el arma de IY: la 1 con 0xCB1D lanza bombas; si no, un dispa
 	ld a,(iy+000h)		;8c9c
 	dec a			;8c9f
 	jr nz,L_8CA9		;8ca0
-	ld a,(0cb1dh)		;8ca2
+	ld a,(0cb1dh)		;8ca2   ; lee 1: el arma principal lanza bombas
 	or a			;8ca5
 	jp nz,lanza_bomba		;8ca6   ; lanza_bomba: si las tres fichas de IX estan libres, dos bombas (p02:883B) con ix+3 = 5 e ix+5 = 4 en la segunda
 L_8CA9:
 	call crea_disparo_b		;8ca9   ; crea_disparo_b: lo mismo que p02:8C47 sin la potencia
 	ret c			;8cac
-	ld a,(0cb08h)		;8cad
+	ld a,(0cb08h)		;8cad   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8cb0   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8cb3
 	ld (ix+006h),a		;8cb4   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
@@ -1628,7 +1628,7 @@ L_8D16:
 	or a			;8d1a
 	ret			;8d1b
 dibujo_del_disparo_1:		; ix+5 = el tramo de 0xCB08 + 0x0C
-	ld a,(0cb08h)		;8d1c
+	ld a,(0cb08h)		;8d1c   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8d1f   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,00ch		;8d22
 	ld (ix+005h),a		;8d24   ; guarda el dibujo del actor (p04:7791)
@@ -1641,7 +1641,7 @@ velocidad_del_disparo:		; la velocidad de la entrada A de p02:8DDC y el dibujo p
 	ld (ix+00ch),d		;8d32   ; guarda la velocidad en Y del actor (alta)
 	ld (ix+00dh),c		;8d35   ; guarda la velocidad en X del actor (baja)
 	ld (ix+00eh),b		;8d38   ; guarda la velocidad en X del actor (alta)
-	ld a,(0cb08h)		;8d3b
+	ld a,(0cb08h)		;8d3b   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	call 04e79h		;8d3e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	add a,a			;8d41
 	ld c,a			;8d42

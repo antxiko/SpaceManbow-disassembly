@@ -699,10 +699,10 @@ secuencia_entre_fases:		; guarda 0xCA00-0xCFFF en 0xC000, hace la secuencia de p
 	ldir		;6460
 	xor a			;6462
 	ld (0ca10h),a		;6463   ; guarda la fase (0 a 8; 9 el final)
-	ld a,(0ca04h)		;6466
+	ld a,(0ca04h)		;6466   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	inc a			;6469
 	jr z,L_646F		;646a
-	ld (0ca04h),a		;646c
+	ld (0ca04h),a		;646c   ; guarda la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 L_646F:
 	ld a,003h		;646f
 	call 04103h		;6471   ; vector_empieza_fase: jp p00:4492
@@ -1378,7 +1378,7 @@ marcador_del_cuadro:		; las cifras que han cambiado (p01:6C12) y los iconos de 0
 	call iconos_de_cb08		;6bd9   ; iconos_de_cb08: 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
 	ret			;6bdc
 iconos_de_cb08:		; 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
-	ld a,(0cb08h)		;6bdd
+	ld a,(0cb08h)		;6bdd   ; lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 	ld hl,0df9eh		;6be0
 	cp (hl)			;6be3
 	ret z			;6be4
@@ -1820,7 +1820,7 @@ prepara_demostracion:		; el gancho normal (o, si 0xC91F es 0, el que salta al ti
 	ld (0c91ah),a		;77e3   ; guarda los cuadros que le quedan al trio de entradas de la demostracion
 	call prepara_entradas		;77e6   ; prepara_entradas: segun 0xC91F: 0, se leen del banco 31; 1, se graban en 0x4000 del slot 0x88; 2, se leen de ahi
 	ld hl,00b80h		;77e9
-	ld (0cb07h),hl		;77ec
+	ld (0cb07h),hl		;77ec   ; guarda la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 	ret			;77ef
 cuadro_de_demostracion:		; las entradas grabadas de este cuadro (p01:789C) y un cuadro de partida (p01:6256); al llegar a la marca de fin (tres 0xFF detras), el sonido 0x84 y fundido a negro, y diez cuadros despues acaba (Z)
 	ld a,(0c92dh)		;77f0   ; lee los cuadros del final de la demostracion

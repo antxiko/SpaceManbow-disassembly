@@ -587,6 +587,7 @@ C 0x8C3A pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su 
 C 0x8C41 suma 1 a un dato propio de cada tipo de actor (ix+0x23)
 C 0x8C44 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 C 0x8C47 guarda un dato propio de cada tipo de actor (ix+0x21)
+C 0x8C54 lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0x8C5A la vida del actor (p04:7C44 le resta los golpes) = 0x18
 C 0x8C5E siguiente_paso: el paso del actor + 1
 C 0x8C64 lee un dato propio de cada tipo de actor (ix+0x21)
@@ -663,6 +664,7 @@ C 0x8F0D las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x6F
 C 0x8F11 suma 1 a el paso del actor
 C 0x8F14 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x28
 C 0x8F18 marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
+C 0x8F1D guarda 1: a la nave la empuja algo (p04:6E50)
 C 0x8F24 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x8F2A pide_sonido: mete A en la cola de sonidos de 0xC882 (hasta 0x1F); si ya estaba, lo pasa al final; nada si el bit 0 de 0xC947
 C 0x8F2D fundido_a_blanco: los 16 colores con destino 7 y empieza el fundido
@@ -865,6 +867,7 @@ C 0x93A4 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x93A8 suma 1 a el paso del actor
 C 0x93AE pon_velocidad_y: la velocidad en Y = HL
 C 0x93B7 pon_aceleracion: la aceleracion en X = DE y en Y = HL
+C 0x93BE lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0x93C4 lee la cuenta de cuadros de la partida
 C 0x93C7 XOR con el numero de la ficha del actor (1-20, p04:69A3)
 C 0x93CA suma 1 a la X del actor (en caracteres de 8 puntos)
@@ -1010,6 +1013,7 @@ C 0x96E1 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le pued
 C 0x96E5 resta_golpe_jefe: lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
 C 0x96EA pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x96F0 puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
+C 0x96F5 guarda 1: a la nave la empuja algo (p04:6E50)
 C 0x96F8 la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x03
 C 0x96FC siguiente_paso: el paso del actor + 1
 C 0x9701 siguiente_ix6: ix+6 + 1, a 0 al llegar a B
@@ -1210,6 +1214,7 @@ C 0x9C09 ficha_pequena_libre: HL = la primera de las 18 fichas de 0xD460 que est
 C 0x9C0D borra_ficha_pequena: los 0x20 bytes de HL a 0
 C 0x9C21 lee la Y del actor (en caracteres de 8 puntos)
 C 0x9C28 lee la X del actor (en caracteres de 8 puntos)
+C 0x9C35 los datos de los tipos estan en el banco 2 (0x8000) (p04:66F7)
 C 0x9C3B lee el paso del actor
 C 0x9C41 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0x9C45 velocidad_y_a_0: la velocidad en Y a 0
@@ -1257,9 +1262,12 @@ C 0x9D8A lee la cuenta de cuadros de la partida
 C 0x9D90 lee la aceleracion en X del actor (alta)
 C 0x9D93 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x9D97 direccion_hacia: 0xCA26 = A, la direccion hacia el de IY (p04:71D6) y p04:7270
+C 0x9DAA lee el signo de la velocidad en X de p04:7240
+C 0x9DAE lee el signo de la velocidad en Y de p04:7240
 C 0x9DD2 lee la aceleracion en X del actor (baja)
 C 0x9DD5 lee la aceleracion en Y del actor (baja)
 C 0x9DE4 guarda la aceleracion en Y del actor (baja)
+C 0x9E08 apunta a el signo de la velocidad en X de p04:7240
 C 0x9E11 crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 C 0x9E15 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 C 0x9E26 guarda la velocidad en X del actor (baja)

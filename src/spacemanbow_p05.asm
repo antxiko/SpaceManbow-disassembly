@@ -1751,7 +1751,7 @@ L_8C44:
 	call L_8C9B		;8c4a
 	ld (ix+03eh),00eh		;8c4d
 	call L_8CDF		;8c51
-	ld a,(0ca04h)		;8c54
+	ld a,(0ca04h)		;8c54   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;8c57
 	jr z,L_8C5E		;8c58
 	ld (ix+016h),018h		;8c5a   ; la vida del actor (p04:7C44 le resta los golpes) = 0x18
@@ -2044,7 +2044,7 @@ L_8F0B:
 	call 07058h		;8f18   ; marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 L_8F1B:
 	ld a,001h		;8f1b
-	ld (0ce76h),a		;8f1d
+	ld (0ce76h),a		;8f1d   ; guarda 1: a la nave la empuja algo (p04:6E50)
 	ret			;8f20
 L_8F21:
 	call L_8F5F		;8f21
@@ -2708,7 +2708,7 @@ L_93B1:
 	call L_93F9		;93ba
 	ret			;93bd
 L_93BE:
-	ld a,(0ca04h)		;93be
+	ld a,(0ca04h)		;93be   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	or a			;93c1
 	jr z,L_93DB		;93c2
 	ld a,(0ca02h)		;93c4   ; lee la cuenta de cuadros de la partida
@@ -3126,7 +3126,7 @@ L_96EA:
 L_96F0:
 	call 07cbeh		;96f0   ; puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
 	ld a,001h		;96f3
-	ld (0ce76h),a		;96f5
+	ld (0ce76h),a		;96f5   ; guarda 1: a la nave la empuja algo (p04:6E50)
 	ld (ix+006h),003h		;96f8   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x03
 	jp 06c1dh		;96fc   ; siguiente_paso: el paso del actor + 1
 L_96FF:
@@ -3780,7 +3780,7 @@ L_9C07:
 	ld a,l			;9c31
 	and 0e0h		;9c32
 	ld l,a			;9c34
-	call 066f7h		;9c35
+	call 066f7h		;9c35   ; los datos de los tipos estan en el banco 2 (0x8000) (p04:66F7)
 L_9C38:
 	ld (hl),006h		;9c38
 	ret			;9c3a
@@ -4004,9 +4004,9 @@ L_9DA1:
 	jr L_9DE8		;9da7
 L_9DA9:
 	ld d,a			;9da9
-	ld a,(0ca23h)		;9daa
+	ld a,(0ca23h)		;9daa   ; lee el signo de la velocidad en X de p04:7240
 	ld b,a			;9dad
-	ld a,(0ca24h)		;9dae
+	ld a,(0ca24h)		;9dae   ; lee el signo de la velocidad en Y de p04:7240
 	and a			;9db1
 	rlca			;9db2
 	add a,b			;9db3
@@ -4069,7 +4069,7 @@ L_9DFE:
 L_9E04:
 	ld a,d			;9e04
 	ld (0ca20h),a		;9e05
-	ld hl,0ca23h		;9e08
+	ld hl,0ca23h		;9e08   ; apunta a el signo de la velocidad en X de p04:7240
 	ld (hl),c			;9e0b
 	inc hl			;9e0c
 	ld (hl),b			;9e0d

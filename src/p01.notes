@@ -344,6 +344,8 @@ C 0x644E apunta a el estado de la partida
 C 0x6454 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6457 apunta a el estado de la partida
 C 0x6463 guarda la fase (0 a 8; 9 el final)
+C 0x6466 lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
+C 0x646C guarda la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0x6471 vector_empieza_fase: jp p00:4492
 C 0x6477 guarda el estado de la partida y el byte siguiente (16 bits)
 C 0x647C apunta a bit 0: no se aceptan sonidos
@@ -448,6 +450,7 @@ C 0x6BC6 por_32: HL = A x 32
 C 0x6BCE copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 C 0x6BD6 cifras_del_marcador: las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el record (0xC922-0xC924): solo las que han cambiado desde sus copias de 0xDF90
 C 0x6BD9 iconos_de_cb08: 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
+C 0x6BDD lee la potencia del disparo (0 a 0x10; su tramo elige el disparo, p02:871E)
 C 0x6BE9 sitio_del_icono: DE = 0xE21C + 6 x A en la VRAM
 C 0x6BED pinta_icono: el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
 C 0x6BF2 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
@@ -478,6 +481,7 @@ C 0x77DD guarda los mandos del trio de la demostracion
 C 0x77E0 guarda lo recien pulsado del trio de la demostracion
 C 0x77E3 guarda los cuadros que le quedan al trio de entradas de la demostracion
 C 0x77E6 prepara_entradas: segun 0xC91F: 0, se leen del banco 31; 1, se graban en 0x4000 del slot 0x88; 2, se leen de ahi
+C 0x77EC guarda la parte baja de la potencia del disparo y el byte siguiente (16 bits)
 C 0x77F0 lee los cuadros del final de la demostracion
 C 0x77F4 fin_de_demostracion: cuenta diez cuadros en 0xC92D y deja la pantalla limpia con el sonido 0x55; Z
 C 0x77F7 entradas_del_cuadro: cuando se acaba la cuenta de 0xC91A, lee el siguiente trio [cuadros][mandos][recien pulsados] (p01:78D4) y los deja en 0xC908 y 0xC907; con 0xC91F = 1 los graba (p01:7905)

@@ -180,7 +180,9 @@ C 0x8016 disparos_contra_actores: la rejilla de los disparos (p07:82E5) y los ac
 C 0x8019 nave_contra_balas: IY = la nave (p07:8280)
 C 0x8026 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x802A contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
+C 0x802E apunta a la primera opcion de la nave (ficha de actor de 0x20)
 C 0x8032 contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
+C 0x8035 apunta a la segunda opcion de la nave
 C 0x8039 lee el tipo del actor (0 = libre)
 C 0x803F lee la Y del actor (en caracteres de 8 puntos)
 C 0x8043 lee el alto de la caja del actor (p04:7662)
@@ -200,6 +202,7 @@ C 0x80E9 piezas_de_iy: las piezas del dibujo del actor de IY (p07:8178) en 0xCB1
 C 0x80ED piezas_de_ix: las del actor de IX en 0xCB16
 C 0x80F1 siguiente_pareja: las cajas de la siguiente pieza de IY (p07:81B0) y de IX (p07:81C9); acarreo si alguna no tiene caja
 C 0x80F6 cajas_se_tocan: acarreo si las dos cajas se tocan en los dos ejes
+C 0x8106 guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 C 0x8113 golpe_segun_tipo: iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
 C 0x8116 actor_especial_b: p04:600C (p04:6459)
 C 0x8121 golpe_segun_tipo: iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
@@ -211,9 +214,11 @@ C 0x815A vector_6459: jp p04:6459
 C 0x815E lee el tipo del actor (0 = libre)
 C 0x8161 lee el dibujo del actor (p04:7791)
 C 0x8164 piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
+C 0x8167 guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 C 0x816B lee el tipo del actor (0 = libre)
 C 0x816E lee el dibujo del actor (p04:7791)
 C 0x8171 piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
+C 0x8174 guarda la pieza del dibujo del actor de IX que se mira (p07) y el byte siguiente (16 bits)
 C 0x8198 caja_pieza_iy: la caja de la pieza de 0xCB14 en la posicion del actor de IY
 C 0x819E caja_pieza_ix: la caja de la pieza de 0xCB16 en la posicion del actor de IX
 C 0x81B0 lee la X del actor (fraccion: 32 por punto)
@@ -221,6 +226,7 @@ C 0x81B3 lee la X del actor (en caracteres de 8 puntos)
 C 0x81B6 lee la Y del actor (fraccion: 32 por punto)
 C 0x81B9 lee la Y del actor (en caracteres de 8 puntos)
 C 0x81C1 caja_de_pieza: la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
+C 0x81C5 guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 C 0x81C9 lee la X del actor (fraccion: 32 por punto)
 C 0x81CC lee la X del actor (en caracteres de 8 puntos)
 C 0x81CF lee la Y del actor (fraccion: 32 por punto)
@@ -229,7 +235,9 @@ C 0x81D9 caja_de_pieza: la posicion en puntos (x 8) mas la de la pieza y su caja
 C 0x81FA sin_caja: acarreo
 C 0x826D apunta a la nave: su ficha de actor (0 = muerta)
 C 0x8271 contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
+C 0x8275 apunta a la primera opcion de la nave (ficha de actor de 0x20)
 C 0x8279 contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
+C 0x827C apunta a la segunda opcion de la nave
 C 0x8280 apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 C 0x8287 lee la Y del actor (en caracteres de 8 puntos)
 C 0x828B lee el alto de la caja del actor (p04:7662)

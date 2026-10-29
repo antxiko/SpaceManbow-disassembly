@@ -126,6 +126,7 @@ C 0xA018 vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 C 0xA01B hijo_encima: la Y y la X del actor de IY = las de IX
 C 0xA01E indice_a_0: el indice de la lista del actor (ix+0x2E) a 0
 C 0xA02A llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
+C 0xA02D lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0xA037 guarda la vida del actor (p04:7C44 le resta los golpes)
 C 0xA03A prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 C 0xA03D siguiente_paso: el paso del actor + 1
@@ -135,6 +136,7 @@ C 0xA04C baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando l
 C 0xA052 baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 C 0xA059 lee un dato propio de cada tipo de actor (ix+0x21)
 C 0xA063 guarda un dato propio de cada tipo de actor (ix+0x21)
+C 0xA06D lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0xA09B lee un dato propio de cada tipo de actor (ix+0x22)
 C 0xA09E guarda la rapidez con la que p04:7240 calcula una velocidad
 C 0xA0A1 rafaga_de_lista: una bala por cada rumbo de la lista de HL (acaba en 0xFF), con la tabla p04:738D, desplazada BC (p04:737C)
@@ -195,6 +197,7 @@ C 0xA25F le suma la X del actor (en caracteres de 8 puntos)
 C 0xA262 guarda la X del actor (en caracteres de 8 puntos)
 C 0xA267 guarda un dato propio de cada tipo de actor (ix+0x20)
 C 0xA271 guarda el dibujo del actor (p04:7791)
+C 0xA2A9 lee el paso de la nave (1 explotando, 2 muerta)
 C 0xA2AE quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0xA2B1 lee el paso del actor
 C 0xA2B7 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
@@ -217,6 +220,7 @@ C 0xA30D llamada_lejana_b: guarda IX e IY y hace la llamada lejana que va detras
 C 0xA310 crea_hijo_a: si hay ficha, crea un actor unido al de IY (p04:6938)
 C 0xA316 hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
 C 0xA319 un dato propio de cada tipo de actor (ix+0x26) = 0x12
+C 0xA31D lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0xA323 la vida del actor (p04:7C44 le resta los golpes) = 0x6C
 C 0xA327 prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 C 0xA32A siguiente_paso: el paso del actor + 1
@@ -512,6 +516,7 @@ C 0xAC2C quita_destello: el bit 1 de 0xCE48 a 0
 C 0xAC2F lee la fraccion de la X guardada
 C 0xAC34 lee la fraccion de la Y guardada
 C 0xAC39 resta_golpe_jefe_b: lo mismo sin mirar ix+0x3F
+C 0xAC3F guarda 1: a la nave la empuja algo (p04:6E50)
 C 0xAC45 el dibujo del actor (p04:7791) = 0x00
 C 0xAC49 el paso del actor = 0x06
 C 0xAC4D la fraccion de la X guardada = 0x01
@@ -758,6 +763,7 @@ C 0xB55D guarda la Y del actor (en caracteres de 8 puntos)
 C 0xB560 la X del actor (en caracteres de 8 puntos) = 0x07
 C 0xB564 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
 C 0xB568 prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
+C 0xB56D guarda la vida del jefe / 4 para el destello
 C 0xB570 siguiente_paso: el paso del actor + 1
 C 0xB573 resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0xB577 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
@@ -833,6 +839,7 @@ C 0xB75C otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x02
 C 0xB760 suma 1 a el dibujo del actor (p04:7791)
 C 0xB763 lee el dibujo del actor (p04:7791)
 C 0xB769 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+C 0xB76C lee 1: a la nave la empuja algo (p04:6E50)
 C 0xB770 actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 C 0xB773 lee el paso del actor
 C 0xB778 nada_4AE0: ret
@@ -975,6 +982,7 @@ C 0xBB69 lee el paso del actor
 C 0xBB75 siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 C 0xBB7B guarda la Y del actor (en caracteres de 8 puntos)
 C 0xBB82 suma 1 a un dato propio de cada tipo de actor (ix+0x20)
+C 0xBB8A lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0xBB95 suma 1 a un dato propio de cada tipo de actor (ix+0x23)
 C 0xBB98 la vida del actor (p04:7C44 le resta los golpes) = 0x40
 C 0xBB9C guarda la X del actor (en caracteres de 8 puntos)
@@ -1130,6 +1138,7 @@ C 0xBF1A pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700)
 C 0xBF1D lee el paso del actor
 C 0xBF29 pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 C 0xBF2C prepara_destello_8: p04:69D7 con 0xCE4B = 8
+C 0xBF2F lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0xBF35 la vida del actor (p04:7C44 le resta los golpes) = 0x38
 C 0xBF3C siguiente_paso: el paso del actor + 1
 C 0xBF41 siguiente_ix6: ix+6 + 1, a 0 al llegar a B
@@ -1148,6 +1157,7 @@ C 0xBF8A siguiente_paso: el paso del actor + 1
 C 0xBF90 baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0xBF94 colores_de_destello: los colores de la tabla de p07 (bancos 4-7-8, p04:6A3C) y el color 0 a negro
 C 0xBF97 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
+C 0xBF9A apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
 C 0xBF9F resta 1 a un dato propio de cada tipo de actor (ix+0x20)
 C 0xBFAB pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0xBFAE numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917

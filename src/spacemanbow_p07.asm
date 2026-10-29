@@ -43,9 +43,9 @@ nave_contra_actores:		; IY = la nave (p07:8039)
 	call contra_actores		;802a   ; contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
 	ret			;802d
 opciones_contra_actores:		; las dos opciones contra los actores
-	ld iy,0cac0h		;802e
+	ld iy,0cac0h		;802e   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	call contra_actores		;8032   ; contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
-	ld iy,0cae0h		;8035
+	ld iy,0cae0h		;8035   ; apunta a la segunda opcion de la nave
 contra_actores:		; la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
 	ld a,(iy+000h)		;8039   ; lee el tipo del actor (0 = libre)
 	and a			;803c
@@ -187,7 +187,7 @@ L_80FB:
 	ld hl,(0cb14h)		;80ff   ; ninguna pieza de IX toca a esta de IY: la siguiente pieza de IY (6 bytes cada una)
 	ld de,00006h		;8102
 	add hl,de			;8105
-	ld (0cb14h),hl		;8106
+	ld (0cb14h),hl		;8106   ; guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 	djnz L_80EC		;8109   ; todas las piezas de IY
 	or a			;810b   ; sin acarreo: no se han tocado
 	ret			;810c
@@ -239,13 +239,13 @@ piezas_de_iy:		; las piezas del dibujo del actor de IY (p07:8178) en 0xCB14
 	ld a,(iy+000h)		;815e   ; lee el tipo del actor (0 = libre)
 	ld b,(iy+005h)		;8161   ; lee el dibujo del actor (p04:7791)
 	call piezas_del_dibujo		;8164   ; piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
-	ld (0cb14h),hl		;8167
+	ld (0cb14h),hl		;8167   ; guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 	ret			;816a
 piezas_de_ix:		; las del actor de IX en 0xCB16
 	ld a,(ix+000h)		;816b   ; lee el tipo del actor (0 = libre)
 	ld b,(ix+005h)		;816e   ; lee el dibujo del actor (p04:7791)
 	call piezas_del_dibujo		;8171   ; piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
-	ld (0cb16h),hl		;8174
+	ld (0cb16h),hl		;8174   ; guarda la pieza del dibujo del actor de IX que se mira (p07) y el byte siguiente (16 bits)
 	ret			;8177
 piezas_del_dibujo:		; de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
 	dec a			;8178   ; A = tipo - 1
@@ -301,7 +301,7 @@ caja_pieza_iy:		; la caja de la pieza de 0xCB14 en la posicion del actor de IY
 	push bc			;81c0
 	call caja_de_pieza		;81c1   ; caja_de_pieza: la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
 	pop hl			;81c4   ; la pieza siguiente
-	ld (0cb14h),hl		;81c5
+	ld (0cb14h),hl		;81c5   ; guarda la pieza del dibujo del actor de IY que se mira (p07) y el byte siguiente (16 bits)
 	ret			;81c8
 caja_pieza_ix:		; la caja de la pieza de 0xCB16 en la posicion del actor de IX
 	ld e,(ix+009h)		;81c9   ; lee la X del actor (fraccion: 32 por punto)
@@ -432,9 +432,9 @@ nave_contra_balas:		; IY = la nave (p07:8280)
 	call contra_balas		;8271   ; contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
 	ret			;8274
 opciones_contra_balas:		; las dos opciones contra las balas
-	ld iy,0cac0h		;8275
+	ld iy,0cac0h		;8275   ; apunta a la primera opcion de la nave (ficha de actor de 0x20)
 	call contra_balas		;8279   ; contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
-	ld iy,0cae0h		;827c
+	ld iy,0cae0h		;827c   ; apunta a la segunda opcion de la nave
 contra_balas:		; la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
 	ld ix,0d460h		;8280   ; apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 	ld b,012h		;8284

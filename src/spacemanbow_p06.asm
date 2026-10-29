@@ -37,7 +37,7 @@ L_A014:
 	call L_A12B		;a024
 	call L_A10F		;a027
 	call 06c4bh		;a02a   ; llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
-	ld a,(0ca04h)		;a02d
+	ld a,(0ca04h)		;a02d   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;a030
 	ld a,020h		;a031
 	jr z,L_A037		;a033
@@ -71,7 +71,7 @@ L_A061:
 	ld de,0a0a4h		;a068
 	add hl,de			;a06b
 	ld b,(hl)			;a06c
-	ld a,(0ca04h)		;a06d
+	ld a,(0ca04h)		;a06d   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;a070
 	jr nz,L_A076		;a071
 	ld a,b			;a073
@@ -394,7 +394,7 @@ DATA_leido_A275:
 
 
 L_A2A9:
-	ld a,(0ca41h)		;a2a9
+	ld a,(0ca41h)		;a2a9   ; lee el paso de la nave (1 explotando, 2 muerta)
 	and a			;a2ac
 	ret z			;a2ad
 	jp 06e98h		;a2ae   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
@@ -455,7 +455,7 @@ arranca_tipo_64:		; la puesta en marcha del actor del tipo 0x64 (tabla p04:6360,
 	ld bc,00406h		;a313
 	call 06929h		;a316   ; hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
 	ld (ix+026h),012h		;a319   ; un dato propio de cada tipo de actor (ix+0x26) = 0x12
-	ld a,(0ca04h)		;a31d
+	ld a,(0ca04h)		;a31d   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;a320
 	jr z,L_A327		;a321
 	ld (ix+016h),06ch		;a323   ; la vida del actor (p04:7C44 le resta los golpes) = 0x6C
@@ -1618,7 +1618,7 @@ L_AC2C:
 	call 07c6bh		;ac39   ; resta_golpe_jefe_b: lo mismo sin mirar ix+0x3F
 	ret nc			;ac3c
 	ld a,001h		;ac3d
-	ld (0ce76h),a		;ac3f
+	ld (0ce76h),a		;ac3f   ; guarda 1: a la nave la empuja algo (p04:6E50)
 	call L_ABE1		;ac42
 	ld (ix+005h),000h		;ac45   ; el dibujo del actor (p04:7791) = 0x00
 	ld (ix+001h),006h		;ac49   ; el paso del actor = 0x06
@@ -2695,7 +2695,7 @@ L_B555:
 	ld (ix+018h),01eh		;b564   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
 	call 069d7h		;b568   ; prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 	ld a,020h		;b56b
-	ld (0ce4ah),a		;b56d
+	ld (0ce4ah),a		;b56d   ; guarda la vida del jefe / 4 para el destello
 	jp 06c1dh		;b570   ; siguiente_paso: el paso del actor + 1
 L_B573:
 	dec (ix+018h)		;b573   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
@@ -2928,7 +2928,7 @@ L_B758:
 	ret nz			;b768
 	jp 06e98h		;b769   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 mueve_tipo_7C:		; lo que hace en cada cuadro el actor del tipo 0x7C (tabla p04:64D1, desde p04:64B9)
-	ld a,(0ce76h)		;b76c
+	ld a,(0ce76h)		;b76c   ; lee 1: a la nave la empuja algo (p04:6E50)
 	or a			;b76f
 	jp nz,07cc3h		;b770   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	ld a,(ix+001h)		;b773   ; lee el paso del actor
@@ -3460,7 +3460,7 @@ arranca_tipo_1E:		; la puesta en marcha del actor del tipo 0x1E (tabla p04:6360,
 L_BB85:
 	ld de,0ff80h		;bb85
 	ld b,01eh		;bb88
-	ld a,(0ca04h)		;bb8a
+	ld a,(0ca04h)		;bb8a   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;bb8d
 	jr z,L_BB9C		;bb8e
 	ld de,00080h		;bb90
@@ -3957,7 +3957,7 @@ L_BF1D:
 arranca_tipo_56:		; la puesta en marcha del actor del tipo 0x56 (tabla p04:6360, desde p04:6344)
 	call 06754h		;bf29   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 	call 069f2h		;bf2c   ; prepara_destello_8: p04:69D7 con 0xCE4B = 8
-	ld a,(0ca04h)		;bf2f
+	ld a,(0ca04h)		;bf2f   ; lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 	and a			;bf32
 	jr z,L_BF39		;bf33
 	ld (ix+016h),038h		;bf35   ; la vida del actor (p04:7C44 le resta los golpes) = 0x38
@@ -4008,7 +4008,7 @@ L_BF8D:
 	call 069fbh		;bf94   ; colores_de_destello: los colores de la tabla de p07 (bancos 4-7-8, p04:6A3C) y el color 0 a negro
 	jp 06e98h		;bf97   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 L_BF9A:
-	ld hl,0ce48h		;bf9a
+	ld hl,0ce48h		;bf9a   ; apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
 	res 1,(hl)		;bf9d
 	dec (ix+020h)		;bf9f   ; resta 1 a un dato propio de cada tipo de actor (ix+0x20)
 	ret nz			;bfa2

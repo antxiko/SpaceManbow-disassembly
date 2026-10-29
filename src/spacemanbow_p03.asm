@@ -228,7 +228,7 @@ primer_objeto:		; borra 0xE000-0xE6FF y pone el objeto 0 (0xE100) con el guion d
 	ld hl,0e000h		;a714   ; apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 	ld bc,006ffh		;a717
 	call 04648h		;a71a   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	ld ix,0e100h		;a71d
+	ld ix,0e100h		;a71d   ; apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 	pop hl			;a721
 	ld (ix+002h),l		;a722   ; guarda por donde va el guion del objeto (bajo)
 	ld (ix+003h),h		;a725   ; guarda por donde va el guion del objeto (alto)
@@ -248,7 +248,7 @@ objetos_del_cuadro:		; mueve los 0x30 objetos (p03:A754), los pinta por su prior
 	or a			;a752
 	ret			;a753
 mueve_objetos:		; los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
-	ld ix,0e100h		;a754
+	ld ix,0e100h		;a754   ; apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 	ld b,030h		;a758
 L_A75A:
 	push bc			;a75a
@@ -902,7 +902,7 @@ ficha_de_objeto:		; HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
 	ret c			;ab86
 	ld l,a			;ab87
 	ld h,000h		;ab88
-	ld de,0e100h		;ab8a
+	ld de,0e100h		;ab8a   ; apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 	add hl,hl			;ab8d   ; x 32
 	add hl,hl			;ab8e
 	add hl,hl			;ab8f
@@ -911,7 +911,7 @@ ficha_de_objeto:		; HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
 	add hl,de			;ab92
 	ret			;ab93
 borra_objetos:		; 0xE100-0xE6FF a 0
-	ld hl,0e100h		;ab94
+	ld hl,0e100h		;ab94   ; apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 	ld bc,005ffh		;ab97
 	jp 04648h		;ab9a   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 borra_objetos_menos_0:		; 0xE120-0xE6FF a 0

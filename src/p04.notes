@@ -654,16 +654,22 @@ C 0x60CD borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x60D2 guarda cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)
 C 0x60DD nada_4AE0: ret
 C 0x60E0 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x60EB guarda el efecto de la fase (1 colores, 2 se van los actores)
+C 0x60F0 guarda el numero del efecto de colores
+C 0x60F6 guarda el efecto de la fase (1 colores, 2 se van los actores)
+C 0x60FA lee el efecto de la fase (1 colores, 2 se van los actores)
 C 0x6108 apunta a las 20 fichas de actor de 0x40 bytes
 C 0x610D lee el tipo del actor (0 = libre)
 C 0x6115 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
-C 0x612C lee la cuenta de cuadros de la partida
+C 0x6121 guarda el efecto de la fase (1 colores, 2 se van los actores)
+C 0x6125 lee el numero del efecto de colores
 C 0x6161 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
+C 0x6174 guarda el efecto de la fase (1 colores, 2 se van los actores)
+C 0x6177 guarda el numero del efecto de colores
 C 0x6214 lee el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x6218 copia_guion: 0x600 bytes del guion de la fase (p05:93B8 + 2 x fase) a 0xE900
 C 0x621B apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x621E guarda por donde va el guion de la fase y el byte siguiente (16 bits)
-C 0x6225 lee la fase (0 a 8; 9 el final) y el byte siguiente (16 bits)
 C 0x622F apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x623E crea_actor: un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
 C 0x6242 la lista del actor (baja) = 0x81
@@ -673,14 +679,13 @@ C 0x6253 guarda el largo de la lista del actor
 C 0x6256 arranca_actor: la puesta en marcha del actor por su tipo (tabla p04:6360, tipo - 1); nada si la ficha esta libre o el tipo lleva el bit 7
 C 0x625E actor_de_ee80: si 0xCE7F: un actor nuevo con la lista de 0xEE81 (largo en 0xEE80-0xEE81) y su puesta en marcha
 C 0x6261 lee por donde va el guion de la fase y el byte siguiente (16 bits)
-C 0x627A lee la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
+C 0x6273 lee la vuelta al juego (0 la primera; sube al acabar las 9 fases)
 C 0x627D compara_hl_de: Z si HL = DE
 C 0x628C lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x6299 lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x629D tipo_en_la_lista: Z si B esta en la lista de p04:6315 (acaba en 0xFF); acarreo si no
 C 0x62A2 crea_actor_del_guion: ficha libre, borrada, tipo y lista desde HL (p04:67B0) y los datos del tipo (p04:66F4)
 C 0x62A7 arranca_actor: la puesta en marcha del actor por su tipo (tabla p04:6360, tipo - 1); nada si la ficha esta libre o el tipo lleva el bit 7
-C 0x62B6 guarda por donde va el guion de la fase y el byte siguiente (16 bits)
 C 0x62C4 apunta a el guion de la fase (0x600 bytes copiados de p05:93B8)
 C 0x62C7 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x62CB apunta a las 20 fichas de actor de 0x40 bytes
@@ -697,7 +702,6 @@ C 0x62F4 lee la X del actor (en caracteres de 8 puntos)
 C 0x62F8 guarda la X del actor (fraccion: 32 por punto)
 C 0x62FB guarda la X del actor (en caracteres de 8 puntos)
 C 0x6344 lee el tipo del actor (0 = libre)
-C 0x6350 nada_4AE0: ret
 C 0x6459 lee la copia del banco de 0x8000 y el byte siguiente (16 bits)
 C 0x645E bancos_4_5_6: pone el 4, el 5 y el 6
 C 0x6461 actor_especial_por_tipo: el salto de p04:6459 por el tipo
@@ -725,7 +729,6 @@ C 0x66E6 guarda el numero de la ficha del actor (1-20, p04:69A3)
 C 0x66EB busca_ficha_libre: si quedan fichas (0xCE44), busca la primera libre de las 20 de 0xCE80: IX y C = su numero (1-20); si no, cuenta el fallo en 0xCE50 y vuelve con acarreo
 C 0x66EE borra_ficha: los 0x40 bytes de la ficha de IX a 0
 C 0x66F1 lista_del_padre: la lista del actor de IY desde su indice
-C 0x66F7 bancos_4_2_3: pone el 4, el 2 y el 3
 C 0x6704 entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 C 0x6717 bancos_4_5_6: pone el 4, el 5 y el 6
 C 0x671A lee cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)
@@ -790,7 +793,6 @@ C 0x6886 pone a cero el bit 7 de el tipo del actor (0 = libre)
 C 0x688B suma 1 a la cuenta de p04:688B
 C 0x688E lee la cuenta de p04:688B
 C 0x6891 apunta a las 20 fichas de actor de 0x40 bytes
-C 0x689C lee el numero de la ficha del actor (1-20, p04:69A3)
 C 0x68B9 lee el actor unido por delante (p04:6964)
 C 0x68C4 lee el actor unido por detras (p04:6964)
 C 0x68D4 lee el actor unido por detras (p04:6964)
@@ -848,22 +850,23 @@ C 0x69C9 pone a uno el bit 7 de el padre del actor (bits 0-5); bit 6: hay que qu
 C 0x69CD pone a cero el bit 7 de el tipo del actor (0 = libre)
 C 0x69D7 lee la fase (0 a 8; 9 el final)
 C 0x69DD suma 1 a distinto de 0 en los jefes (p04:7C63)
-C 0x69E0 lee la vida del actor (p04:7C44 le resta los golpes)
+C 0x69E7 guarda la vida del jefe / 4 para el destello
 C 0x69F2 prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
+C 0x69FB apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
 C 0x6A03 bancos_4_7_8: pone el 4, el 7 y el 8
 C 0x6A09 bancos_4_5_6: pone el 4, el 5 y el 6
 C 0x6A10 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 C 0x6A13 bancos_4_7_8: pone el 4, el 7 y el 8
 C 0x6A16 paso_de_destello: cada 4 cuadros (0xCA02) cambia 8 colores con las tablas de p07:86C0 o p07:86D2 por fase (0xCE4B)
 C 0x6A19 bancos_4_5_6: pone el 4, el 5 y el 6
-C 0x6A2D lee la cuenta de cuadros de la partida
+C 0x6A1C apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
+C 0x6A22 apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
 C 0x6A3F tabla_por_fase: HL = la palabra 0xCE4B de la tabla de DE
 C 0x6A45 color_de_tabla: un color de la tabla: el numero y los dos bytes (D, E)
 C 0x6A48 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 C 0x6A6C tabla_por_fase: HL = la palabra 0xCE4B de la tabla de DE
 C 0x6A72 color_de_tabla: un color de la tabla: el numero y los dos bytes (D, E)
 C 0x6A78 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
-C 0x6A8C suma_16: suma 16 bits de (DE) a (HL), avanzando los dos
 C 0x6AA7 suma_16: suma 16 bits de (DE) a (HL), avanzando los dos
 C 0x6AAC lee la fase (0 a 8; 9 el final)
 C 0x6AB4 guarda el dibujo del actor (p04:7791)
@@ -956,9 +959,8 @@ C 0x6C47 guarda la X del actor (en caracteres de 8 puntos)
 C 0x6C4F llamada_lejana: lee detras del call los tres bancos y la direccion (5 bytes), los pone, llama y vuelve por p00:4C61 detras de los 5 bytes
 C 0x6C60 llamada_lejana: lee detras del call los tres bancos y la direccion (5 bytes), los pone, llama y vuelve por p00:4C61 detras de los 5 bytes
 C 0x6C75 le suma la Y del actor (en caracteres de 8 puntos)
-C 0x6C80 lee la X del actor (fraccion: 32 por punto)
 C 0x6C89 guarda el scroll fino en X: se suma a la fraccion de la X de los actores
-C 0x6C92 lee la Y del actor (fraccion: 32 por punto)
+C 0x6C8F guarda la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 C 0x6CA3 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores
 C 0x6CAA guarda el valor del scroll vertical (registro 23)
 C 0x6CAE vaiven_de_velocidad: si el valor absoluto de la velocidad en Y pasa de DE, o el de la X de HL, cambia de signo esa aceleracion
@@ -1053,6 +1055,7 @@ C 0x6E44 resta_golpe_jefe: lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE4
 C 0x6E47 empujon: 0xCE52 y 0xCE76 a 1 y la Y y la X del actor mas 0xCE6A y 0xCE69
 C 0x6E4A actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 C 0x6E4D dibuja_actor: con los bancos 4-7-8, los sprites del actor (p04:776B)
+C 0x6E56 guarda 1: a la nave la empuja algo (p04:6E50)
 C 0x6E5C le suma la Y del actor (en caracteres de 8 puntos)
 C 0x6E5F guarda la Y del actor (en caracteres de 8 puntos)
 C 0x6E65 le suma la X del actor (en caracteres de 8 puntos)
@@ -1103,7 +1106,7 @@ C 0x6F68 guarda la X del actor (en caracteres de 8 puntos)
 C 0x6F6B guarda la Y del actor (en caracteres de 8 puntos)
 C 0x6F78 guarda la X del actor (fraccion: 32 por punto)
 C 0x6F81 guarda la Y del actor (fraccion: 32 por punto)
-C 0x6F90 lee el tipo del actor (0 = libre)
+C 0x6F8C apunta a la primera opcion de la nave (ficha de actor de 0x20)
 C 0x6F9A lee el tipo del actor (0 = libre)
 C 0x6FAA borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6FAF las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x91
@@ -1122,8 +1125,12 @@ C 0x6FDD guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo 
 C 0x6FE2 mira_cb48_cb41_cb50: 1 o 2 segun A (3, 0x0A o 7) y 0xCB48, 0xCB41, 0xCB50 y 0xCB58
 C 0x6FEF vuelve_quitando_1: quita 1 palabra de la pila y vuelve
 C 0x6FF4 vuelve_quitando_1: quita 1 palabra de la pila y vuelve
+C 0x7005 lee la casilla de las armas 8 en adelante
+C 0x7017 lee la casilla de las armas 5 a 7
+C 0x701C lee la casilla de las armas 2 a 4
 C 0x7058 apunta a las 20 fichas de actor de 0x40 bytes
 C 0x708B apunta a las 20 fichas de actor de 0x40 bytes
+C 0x70AC lee la vida del jefe / 4 para el destello
 C 0x70DB ficha_pequena_libre: HL = la primera de las 18 fichas de 0xD460 que esta libre; NZ si no hay
 C 0x70E2 borra_ficha_pequena: los 0x20 bytes de HL a 0
 C 0x70EF lee el alto de la caja del actor (p04:7662)
@@ -1150,7 +1157,6 @@ C 0x7152 hacia_la_nave: las posiciones en octavos (p04:71EA) de la nave (0xCA47-
 C 0x7155 angulo_hacia: de las dos posiciones en octavos (BC y DE), los signos en 0xCA23 y 0xCA24 y el angulo en 0xCA20 (tabla p04:73ED)
 C 0x7158 velocidad_por_angulo: con el angulo A (0-0x3F) y la tabla p04:73AD, las dos velocidades por la rapidez de 0xCA26 y con los signos de 0xCA23 y 0xCA24: DE y HL
 C 0x716A lee la Y del actor (en caracteres de 8 puntos)
-C 0x7170 lee la X del actor (en caracteres de 8 puntos)
 C 0x718A lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F) y el byte siguiente (16 bits)
 C 0x7192 guarda la rapidez con la que p04:7240 calcula una velocidad
 C 0x719B lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F) y el byte siguiente (16 bits)
@@ -1171,9 +1177,13 @@ C 0x71E2 en_octavos: E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en u
 C 0x71E6 octavos_del_actor: la posicion del actor en octavos de punto (p04:71EA)
 C 0x7207 apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 C 0x722C guarda la rapidez con la que p04:7240 calcula una velocidad
+C 0x7232 guarda el signo de la velocidad en X de p04:7240
+C 0x723A guarda el signo de la velocidad en Y de p04:7240
 C 0x7255 por_la_rapidez: DE = E x 0xCA26 / 32
+C 0x7258 lee el signo de la velocidad en X de p04:7240
 C 0x725C niega_de: DE = -DE
 C 0x7264 por_la_rapidez: DE = E x 0xCA26 / 32
+C 0x7267 lee el signo de la velocidad en Y de p04:7240
 C 0x726B niega_de: DE = -DE
 C 0x729E lee la rapidez con la que p04:7240 calcula una velocidad
 C 0x72A2 multiplica: HL = H x E
@@ -1187,8 +1197,6 @@ C 0x72F6 guarda la rapidez con la que p04:7240 calcula una velocidad
 C 0x72F9 nave_muy_cerca: acarreo si la nave esta a menos de 12 puntos del centro del actor (la Y y la X mas la mitad de ix+0x13 e ix+0x14), sumando los dos ejes (p04:7725)
 C 0x72FD bala_hacia_la_nave: en una ficha pequena libre, una bala de tipo 0x60 en el sitio del actor y con la velocidad hacia la nave (p04:71B8, p04:7270, p04:7240)
 C 0x7303 rapidez_de_bala_b: igual que p04:7186
-C 0x7317 bala_con_rumbo: en una ficha pequena libre, una bala con el rumbo B, C desde el actor
-C 0x731B desplaza_bala: la Y y la X de la ficha de HL mas C y B
 C 0x7322 ficha_pequena_libre: HL = la primera de las 18 fichas de 0xD460 que esta libre; NZ si no hay
 C 0x7326 borra_ficha_pequena: los 0x20 bytes de HL a 0
 C 0x732B octavos_del_actor_b: la posicion del actor en octavos, sin tocar BC
@@ -1200,6 +1208,7 @@ C 0x733F lee la Y del actor (en caracteres de 8 puntos)
 C 0x7342 lee la X del actor (fraccion: 32 por punto)
 C 0x7345 lee la X del actor (en caracteres de 8 puntos)
 C 0x7348 en_octavos: E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en un byte
+C 0x734D apunta a el signo de la velocidad en X de p04:7240
 C 0x74F7 seno_del_cuarto: el valor de la tabla p04:73AD para A (0-0x7F), dando la vuelta en el segundo cuarto
 C 0x7509 suma_a_de: DE = DE + A
 C 0x750F numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
@@ -1227,7 +1236,7 @@ C 0x758A lee la Y del actor (en caracteres de 8 puntos)
 C 0x758D lee la Y del actor (fraccion: 32 por punto)
 C 0x759B posicion_mas: la posicion del actor mas HL y DE y el scroll fino: D, E
 C 0x759E casilla_del_mapa: si D < 0x20 y E < 0x18, DE = 0xD800 + 0x30 x (E + 8) + D + 8 y acarreo; si no, vuelve mas atras
-C 0x75AB posicion_mas: la posicion del actor mas HL y DE y el scroll fino: D, E
+C 0x75A5 lo que es el caracter A: el bit 0, solido
 C 0x75AF casilla_del_mapa: si D < 0x20 y E < 0x18, DE = 0xD800 + 0x30 x (E + 8) + D + 8 y acarreo; si no, vuelve mas atras
 C 0x75C3 posicion_mas: la posicion del actor mas HL y DE y el scroll fino: D, E
 C 0x75C7 casilla_del_mapa: si D < 0x20 y E < 0x18, DE = 0xD800 + 0x30 x (E + 8) + D + 8 y acarreo; si no, vuelve mas atras
@@ -1241,16 +1250,12 @@ C 0x75FB toca_algun_actor: para los 20 actores de 0xCE80, si el punto D, E cae e
 C 0x760C apunta a las 20 fichas de actor de 0x40 bytes
 C 0x7616 toca_este_actor: si el punto cae en la caja del actor de HL (ix+0x13 alto, ix+0x14 ancho) y se puede tocar (p04:7662), apunta el golpe (p04:76A9)
 C 0x7648 dentro_de_la_caja: si el bit 4 de iy+0x15 deja tocarlo, acarreo si el punto esta dentro de su caja
-C 0x764D apunta_golpe: iy+4 = 1 o 2 segun el tipo del que toca (el tipo 4 pone su ix+6)
 C 0x7651 vuelve_quitando_2: quita 2 palabras de la pila y vuelve
-C 0x7659 lee el tipo del actor (0 = libre)
 C 0x7663 mira el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x7669 lee el tipo del actor (0 = libre)
 C 0x7671 lee la X del actor (en caracteres de 8 puntos)
 C 0x7674 lee la X del actor (fraccion: 32 por punto)
 C 0x7677 lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
-C 0x767E lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
-C 0x768D lee la Y del actor (en caracteres de 8 puntos)
 C 0x7690 lee la Y del actor (fraccion: 32 por punto)
 C 0x7693 lee el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x769A lee el alto de la caja del actor (p04:7662)
@@ -1263,16 +1268,13 @@ C 0x76D7 lee el scroll fino en Y: se suma a la fraccion de la Y de los actores y
 C 0x76DF lee la X del actor (en caracteres de 8 puntos)
 C 0x76E2 lee la X del actor (fraccion: 32 por punto)
 C 0x76E6 lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
-C 0x76F9 casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 C 0x7700 lee la X del actor (fraccion: 32 por punto)
 C 0x7703 lee la X del actor (en caracteres de 8 puntos)
 C 0x7706 lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x770F lee la Y del actor (fraccion: 32 por punto)
 C 0x7712 lee la Y del actor (en caracteres de 8 puntos)
 C 0x7715 lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
-C 0x7728 lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 C 0x7731 niega_hl: HL = -HL
-C 0x7735 lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 C 0x773F niega_hl: HL = -HL
 C 0x7747 lee la copia del banco de 0x8000 y el byte siguiente (16 bits)
 C 0x774C bancos_4_7_8: pone el 4, el 7 y el 8
@@ -1309,6 +1311,7 @@ C 0x7804 sin_sprite: no queda sprite para el actor: el tipo 1 lo apunta en 0xC0E
 C 0x780D guarda la copia del banco de 0x8000 y el byte siguiente (16 bits)
 C 0x7812 el mapper: pone en 0x8000 el banco de A
 C 0x7816 el mapper: pone en 0xA000 el banco de A
+C 0x781C guarda 1: a la nave le han faltado sprites
 C 0x7821 lee el tipo del actor (0 = libre)
 C 0x7857 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0x785C libera_ficha: el tipo y las banderas del actor a 0
@@ -1335,6 +1338,7 @@ C 0x78ED lee cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x78F4 guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x78F7 lee el primer sprite del actor (p04:793D)
 C 0x78FB primer_sprite_c023: el primer sprite del actor, del grupo de 0xC023
+C 0x78FF lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x7917 guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x7927 sprite_del_grupo_c023: un sprite libre del grupo de 0xC023 (12) para el actor; si no hay, vuelve mas atras
 C 0x7933 sprite_libre: el primero libre de los B del grupo de HL (de 2 en 2), marcado con 0x8F; acarreo si no hay
@@ -1347,6 +1351,7 @@ C 0x7955 lee cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x795C guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x795F lee el primer sprite del actor (p04:793D)
 C 0x7963 primer_sprite_c009: el primer sprite del actor, del grupo de 0xC009
+C 0x7967 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x797F guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x798F sprite_del_grupo_c009: un sprite libre del grupo de 0xC009
 C 0x799B sprite_libre: el primero libre de los B del grupo de HL (de 2 en 2), marcado con 0x8F; acarreo si no hay
@@ -1359,6 +1364,7 @@ C 0x79BD lee cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x79C4 guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x79C7 lee el primer sprite del actor (p04:793D)
 C 0x79CB primer_sprite_c03b: el primer sprite del actor, del grupo de 0xC03B
+C 0x79CF lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x79EC guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x79F9 sprite_del_grupo_c03b: un sprite libre del grupo de 0xC03B
 C 0x7A04 sprite_libre: el primero libre de los B del grupo de HL (de 2 en 2), marcado con 0x8F; acarreo si no hay
@@ -1423,11 +1429,13 @@ C 0x7C54 lee la vida del actor (p04:7C44 le resta los golpes)
 C 0x7C58 guarda la vida del actor (p04:7C44 le resta los golpes)
 C 0x7C5E pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x7C63 lee distinto de 0 en los jefes (p04:7C63)
+C 0x7C6B apunta a el destello: bit 0 en marcha, bit 1 con los colores de p04:6606
 C 0x7C77 mira el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x7C7C lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 C 0x7C7F el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 C 0x7C8F lee la vida del actor (p04:7C44 le resta los golpes)
 C 0x7C93 guarda la vida del actor (p04:7C44 le resta los golpes)
+C 0x7C98 lee la vida del jefe / 4 para el destello
 C 0x7CA2 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x7CA7 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 C 0x7CAC lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)

@@ -254,6 +254,7 @@ C 0xA6AE espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 C 0xA6B9 apaga_sprites: el bit 1 del registro 8 (copia en 0xFFE7)
 C 0xA714 apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
 C 0xA71A borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xA71D apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 C 0xA722 guarda por donde va el guion del objeto (bajo)
 C 0xA725 guarda por donde va el guion del objeto (alto)
 C 0xA728 la X del rectangulo de origen = 0x0A
@@ -266,6 +267,7 @@ C 0xA740 pone a uno el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 d
 C 0xA744 pone a uno el bit 5 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 C 0xA749 mueve_objetos: los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
 C 0xA74C pinta_objetos: las 16 prioridades, de la 15 a la 0 (p03:A771)
+C 0xA754 apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 C 0xA75B objeto: su guion (p03:A818) y su movimiento (p03:A795)
 C 0xA76A pinta_prioridad: los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
 C 0xA77A lee la prioridad del objeto al pintarlo
@@ -426,6 +428,8 @@ C 0xAB4F el numero del color, en el nibble alto de E
 C 0xAB5D pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 C 0xAB61 ficha_de_objeto: HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
 C 0xAB6B borra_memoria: pone a 0 BC + 1 bytes desde HL
+C 0xAB8A apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
+C 0xAB94 apunta a los 0x30 objetos de las secuencias, de 0x20 bytes
 C 0xAB9A borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0xABA3 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0xABB8 mira el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)

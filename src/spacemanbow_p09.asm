@@ -668,7 +668,7 @@ para_scroll:		; el scroll fino y lo que se suma a los actores (0xCA12-0xCA1C) a 
 	ld (0ca1ah),de		;6df5   ; guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld (0ca14h),de		;6df9   ; guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 	ld (0ca12h),de		;6dfd   ; guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
-	ld (0c0d5h),a		;6e01
+	ld (0c0d5h),a		;6e01   ; guarda la direccion del scroll del tramo
 	ld hl,0c0d4h		;6e04   ; apunta a el estado del scroll (0 avanza, 1 y 2 parado)
 	inc (hl)			;6e07
 scroll_de_c0dc_y_borra:		; 0xCA12 y 0xCA14 de 0xC0DC (p09:6E37) y borra el trozo de mapa de 0xD988 (p09:6E0B)
@@ -897,14 +897,14 @@ L_6F6F:
 	ld a,(0c0ebh)		;6f7c   ; lee 4 si el VDP es un V9958 (MSX2+)
 	or a			;6f7f
 	jr nz,L_6F8F		;6f80
-	ld a,(0c0bbh)		;6f82
+	ld a,(0c0bbh)		;6f82   ; lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 	and 007h		;6f85
 	sub 008h		;6f87
 	and 00fh		;6f89
 	ld (0c9f3h),a		;6f8b
 	ret			;6f8e
 L_6F8F:
-	ld a,(0c0bbh)		;6f8f
+	ld a,(0c0bbh)		;6f8f   ; lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 	cpl			;6f92
 	and 007h		;6f93
 	ld (0c9f3h),a		;6f95
@@ -1214,9 +1214,9 @@ L_7213:
 L_7215:
 	ld (0c0aah),a		;7215   ; la de las marcas, la de la primera franja y la de la segunda
 	inc a			;7218
-	ld (0c0a6h),a		;7219
+	ld (0c0a6h),a		;7219   ; guarda la pagina de los planos de la primera franja
 	inc a			;721c
-	ld (0c0a8h),a		;721d
+	ld (0c0a8h),a		;721d   ; guarda la pagina de los planos de la segunda franja
 	ret			;7220
 reparte_sprites:		; los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
 	exx			;7221
@@ -1234,7 +1234,7 @@ L_7236:
 	ld a,(0c0ebh)		;7238   ; lee 4 si el VDP es un V9958 (MSX2+)
 	or a			;723b
 	jr nz,L_7244		;723c
-	ld a,(0c0bbh)		;723e
+	ld a,(0c0bbh)		;723e   ; lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 	and 007h		;7241
 	ld h,a			;7243
 L_7244:
@@ -1391,7 +1391,7 @@ franja_del_sprite:		; segun su Y, a cual de las cuatro franjas de las interrupci
 	jp franja_4		;72fc   ; franja_4: el sprite en la franja 4
 franja_1:		; el sprite en la franja 1
 	exx			;72ff   ; la marca del sprite en la pagina de 0xC0AA
-	ld a,(0c0aah)		;7300
+	ld a,(0c0aah)		;7300   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7303
 	inc l			;7304
 	ld a,(hl)			;7305
@@ -1401,7 +1401,7 @@ franja_1:		; el sprite en la franja 1
 	jp plano_franja_a		;730d   ; plano_franja_a: el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
 franja_2:		; el sprite en la franja 2 (y en la 1 si la toca)
 	exx			;7310
-	ld a,(0c0aah)		;7311
+	ld a,(0c0aah)		;7311   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7314
 	inc l			;7315
 	ld a,(hl)			;7316
@@ -1413,7 +1413,7 @@ franja_2:		; el sprite en la franja 2 (y en la 1 si la toca)
 	jp plano_franja_b		;7322   ; plano_franja_b: lo mismo en la franja de 0xC0A8
 franja_3:		; el sprite en la franja 3
 	exx			;7325
-	ld a,(0c0aah)		;7326
+	ld a,(0c0aah)		;7326   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7329
 	inc l			;732a
 	ld a,(hl)			;732b
@@ -1423,7 +1423,7 @@ franja_3:		; el sprite en la franja 3
 	jp plano_franja_b		;7333   ; plano_franja_b: lo mismo en la franja de 0xC0A8
 franja_4:		; el sprite en la franja 4
 	exx			;7336
-	ld a,(0c0aah)		;7337
+	ld a,(0c0aah)		;7337   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;733a
 	inc l			;733b
 	ld a,(hl)			;733c
@@ -1588,7 +1588,7 @@ pide_plano:		; un plano libre de los 32 (p09:742D) o ninguno (0x0E)
 	ret			;7422
 sin_plano:		; E = 0 y la marca 0x0E
 	ld e,000h		;7423   ; la marca 0x0E: espera un plano
-	ld a,(0c0aah)		;7425
+	ld a,(0c0aah)		;7425   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7428
 	ld (hl),00eh		;7429
 	ld h,d			;742b
@@ -1681,7 +1681,7 @@ franja_del_sprite_doble:		; lo mismo para un sprite de dos planos
 	jp franja_doble_4		;7497   ; franja_doble_4: franja 4
 franja_doble_1:		; franja 1
 	exx			;749a
-	ld a,(0c0aah)		;749b
+	ld a,(0c0aah)		;749b   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;749e
 	inc l			;749f
 	ld a,(hl)			;74a0
@@ -1691,7 +1691,7 @@ franja_doble_1:		; franja 1
 	jp planos_dobles_a		;74a8   ; planos_dobles_a: los dos planos en la franja de 0xC0A6
 franja_doble_2:		; franja 2
 	exx			;74ab
-	ld a,(0c0aah)		;74ac
+	ld a,(0c0aah)		;74ac   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;74af
 	inc l			;74b0
 	ld a,(hl)			;74b1
@@ -1703,7 +1703,7 @@ franja_doble_2:		; franja 2
 	jp planos_dobles_b		;74bd   ; planos_dobles_b: los dos planos en la franja de 0xC0A8
 franja_doble_3:		; franja 3
 	exx			;74c0
-	ld a,(0c0aah)		;74c1
+	ld a,(0c0aah)		;74c1   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;74c4
 	inc l			;74c5
 	ld a,(hl)			;74c6
@@ -1713,7 +1713,7 @@ franja_doble_3:		; franja 3
 	jp planos_dobles_b		;74ce   ; planos_dobles_b: los dos planos en la franja de 0xC0A8
 franja_doble_4:		; franja 4
 	exx			;74d1
-	ld a,(0c0aah)		;74d2
+	ld a,(0c0aah)		;74d2   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;74d5
 	inc l			;74d6
 	ld a,(hl)			;74d7
@@ -1892,7 +1892,7 @@ patron_doble_distinto:		; como p09:73FA para los de dos planos
 	jr nz,L_75D7		;75d4
 	push bc			;75d6
 L_75D7:
-	ld a,(0c0aah)		;75d7
+	ld a,(0c0aah)		;75d7   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;75da
 	set 0,l		;75db
 	res 7,(hl)		;75dd
@@ -1907,7 +1907,7 @@ pide_planos_dobles:		; dos planos libres seguidos (p09:7617)
 	ret			;75ec
 sin_planos_dobles:		; E = 0 y la marca 0x0E
 	ld e,000h		;75ed   ; la marca 0x0E: espera planos
-	ld a,(0c0aah)		;75ef
+	ld a,(0c0aah)		;75ef   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;75f2
 	ld (hl),00eh		;75f3
 	ld h,d			;75f5
@@ -2001,7 +2001,7 @@ L_7659:
 	ret			;7662
 L_7663:
 	ld (hl),000h		;7663   ; se lo quita y le pone la marca 0x0E
-	ld a,(0c0aah)		;7665
+	ld a,(0c0aah)		;7665   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;7668
 	ld (hl),00eh		;7669
 	or a			;766b
@@ -2279,8 +2279,8 @@ prepara_mapa_de_fase:		; los bloques de la fase (0xC0C8, tabla p09:7D76), el map
 	ld a,(0ca1eh)		;7826   ; lee el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
 	ld (0c0e1h),a		;7829
 	xor a			;782c
-	ld (0c0cdh),a		;782d
-	ld (0c0cch),a		;7830
+	ld (0c0cdh),a		;782d   ; guarda la columna del mapa en la que va el scroll
+	ld (0c0cch),a		;7830   ; guarda la fila del mapa en la que va el scroll
 	ld a,0ffh		;7833
 	ld (0ca33h),a		;7835   ; guarda las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 	call siguiente_del_mapa		;7838   ; siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
@@ -2720,7 +2720,7 @@ velocidades_del_scroll:		; la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas
 	ld a,(de)			;7b64
 	adc a,(hl)			;7b65
 	ld (hl),a			;7b66
-	ld a,(0c0c1h)		;7b67
+	ld a,(0c0c1h)		;7b67   ; lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 	ld h,a			;7b6a
 	ld de,(0c0c3h)		;7b6b   ; lo que se suma a la Y de los actores: - la velocidad / 8
 	call 0460ah		;7b6f   ; niega_de: DE = -DE
@@ -2747,7 +2747,7 @@ velocidades_del_scroll:		; la posicion del scroll (0xC0BA y 0xC0C0, 24 bits) mas
 	ld a,(0c0bbh)		;7ba5   ; los 3 bits bajos de las dos posiciones en 0xCA31-0xCA32 (las fracciones de p04:6F55)
 	and 007h		;7ba8
 	ld d,a			;7baa
-	ld a,(0c0c1h)		;7bab
+	ld a,(0c0c1h)		;7bab   ; lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 	and 007h		;7bae
 	ld e,a			;7bb0
 	ld (0ca31h),de		;7bb1
@@ -2867,13 +2867,13 @@ casilla_del_scroll:		; 0xC0CD y 0xC0CC = la columna y la fila del mapa en las qu
 	rra			;7c79
 	rra			;7c7a
 	and 03fh		;7c7b
-	ld (0c0cdh),a		;7c7d
+	ld (0c0cdh),a		;7c7d   ; guarda la columna del mapa en la que va el scroll
 	ld a,(0c0c1h)		;7c80   ; la fila: la Y del scroll / 8, de 0 a 31
 	rrca			;7c83
 	rrca			;7c84
 	rrca			;7c85
 	and 01fh		;7c86
-	ld (0c0cch),a		;7c88
+	ld (0c0cch),a		;7c88   ; guarda la fila del mapa en la que va el scroll
 	ret			;7c8b
 
 ; ----------------------------------------------------------------------
@@ -3156,7 +3156,7 @@ fila_por_c0c1_a:		; una fila de 15 bloques segun 0xC0C1
 	ret			;7e3e
 fila_por_c0c1_b:		; lo mismo con otra posicion
 	ld e,018h		;7e3f
-	ld a,(0c0c1h)		;7e41
+	ld a,(0c0c1h)		;7e41   ; lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 	and 018h		;7e44
 	rrca			;7e46
 	rrca			;7e47
@@ -3259,7 +3259,7 @@ fila_de_arriba_b:		; lo mismo en la columna 0
 	ret			;7edd
 fila_por_c0c1_c:		; una fila de 15 bloques segun 0xC0C1
 	call nada_7C71		;7ede
-	ld a,(0c0c1h)		;7ee1
+	ld a,(0c0c1h)		;7ee1   ; lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 	and 018h		;7ee4
 	rrca			;7ee6
 	rrca			;7ee7

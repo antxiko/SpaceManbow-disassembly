@@ -517,6 +517,7 @@ C 0x6DF1 guarda el scroll fino en X: se suma a la fraccion de la X de los actore
 C 0x6DF5 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x6DF9 guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x6DFD guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
+C 0x6E01 guarda la direccion del scroll del tramo
 C 0x6E04 apunta a el estado del scroll (0 avanza, 1 y 2 parado)
 C 0x6E08 scroll_de_c0dc: 0xCA12 = 0xC0DC y 0xCA14 = 0xC0DE
 C 0x6E10 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
@@ -546,6 +547,8 @@ C 0x6EBF lee lo que se suma a la X de los actores que lleva el scroll y el byte 
 C 0x6EE7 apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
 C 0x6F52 lee 4 si el VDP es un V9958 (MSX2+)
 C 0x6F7C lee 4 si el VDP es un V9958 (MSX2+)
+C 0x6F82 lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
+C 0x6F8F lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 C 0x6FEE lee 4 si el VDP es un V9958 (MSX2+)
 C 0x707A manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
 C 0x707E reparte_sprites: los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
@@ -565,8 +568,11 @@ C 0x7151 manda_atributos_b_b: dos tandas de p09:7165
 C 0x71A7 manda_patron: los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
 C 0x71BD manda_patron: los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
 C 0x7204 apunta a 1: hay que cambiar de tablas en el borde
+C 0x7219 guarda la pagina de los planos de la primera franja
+C 0x721D guarda la pagina de los planos de la segunda franja
 C 0x7222 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
 C 0x7238 lee 4 si el VDP es un V9958 (MSX2+)
+C 0x723E lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
 C 0x7244 lee el valor del scroll vertical (registro 23)
 C 0x724B sprites_fuera: la Y de 0xC099 (la del scroll menos 0x18) en todos los sprites de la tabla del cuadro
 C 0x724E reparte_grupo_c03b: los 12 sprites del grupo de 0xC03B (de dos planos): cada uno en su franja (p09:7488)
@@ -574,13 +580,17 @@ C 0x7251 reparte_grupo_c009: los 25 sprites del grupo de 0xC009: cada uno en su 
 C 0x72E0 franja_del_sprite: segun su Y, a cual de las cuatro franjas de las interrupciones de linea va el sprite
 C 0x72F9 franja_1: el sprite en la franja 1
 C 0x72FC franja_4: el sprite en la franja 4
+C 0x7300 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x7308 cambia_a_franja_1: el sprite cambia a la franja 1: suelta o pide sus planos
 C 0x730D plano_franja_a: el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
+C 0x7311 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x7319 cambia_a_franja_2: lo mismo a la franja 2
 C 0x731E plano_franja_a: el plano del sprite en la franja de 0xC0A6: su patron y su sitio (p09:73D4)
 C 0x7322 plano_franja_b: lo mismo en la franja de 0xC0A8
+C 0x7326 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x732E cambia_a_franja_3: lo mismo a la franja 3
 C 0x7333 plano_franja_b: lo mismo en la franja de 0xC0A8
+C 0x7337 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x733F cambia_a_franja_4: lo mismo a la franja 4
 C 0x7347 suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
 C 0x734F pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
@@ -606,6 +616,7 @@ C 0x73FC pon_patron: guarda A en (DE) y, si el sprite es de los de abajo (bit 7 
 C 0x7417 franja_4: el sprite en la franja 4
 C 0x741B plano_libre: el primer plano libre de los 32 de 4 en 4; acarreo si no hay
 C 0x741E sin_plano: E = 0 y la marca 0x0E
+C 0x7425 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x7449 suelta_plano: el plano A queda libre y con la Y de 0xC099
 C 0x744F suelta_plano: el plano A queda libre y con la Y de 0xC099
 C 0x7458 suelta_plano: el plano A queda libre y con la Y de 0xC099
@@ -613,13 +624,17 @@ C 0x745E suelta_plano: el plano A queda libre y con la Y de 0xC099
 C 0x747B franja_del_sprite_doble: lo mismo para un sprite de dos planos
 C 0x7494 franja_doble_1: franja 1
 C 0x7497 franja_doble_4: franja 4
+C 0x749B lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x74A3 cambia_doble_a_1: cambia a la franja 1
 C 0x74A8 planos_dobles_a: los dos planos en la franja de 0xC0A6
+C 0x74AC lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x74B4 cambia_doble_a_2: cambia a la franja 2
 C 0x74B9 planos_dobles_a: los dos planos en la franja de 0xC0A6
 C 0x74BD planos_dobles_b: los dos planos en la franja de 0xC0A8
+C 0x74C1 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x74C9 cambia_doble_a_3: cambia a la franja 3
 C 0x74CE planos_dobles_b: los dos planos en la franja de 0xC0A8
+C 0x74D2 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x74DA cambia_doble_a_4: cambia a la franja 4
 C 0x74E2 suelta_sprite_doble: suelta sus planos y vuelve mas atras
 C 0x74EA pide_planos_dobles: dos planos libres seguidos (p09:7617)
@@ -651,15 +666,18 @@ C 0x759D y_fuera: la Y con el scroll que da la vuelta
 C 0x75AE mas_1: A + 1
 C 0x75B7 y_fuera: la Y con el scroll que da la vuelta
 C 0x75C6 pon_patron: guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
+C 0x75D7 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x75E1 franja_doble_4: franja 4
 C 0x75E5 planos_dobles_libres: dos planos libres seguidos de los 16 de arriba; si hace falta, quita uno a un sprite sencillo (p09:7644)
 C 0x75E8 sin_planos_dobles: E = 0 y la marca 0x0E
+C 0x75EF lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x75FE suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
 C 0x7604 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
 C 0x760D suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
 C 0x7613 suelta_plano_doble: los dos planos quedan libres con la Y de 0xC099
 C 0x763E quita_plano_b: quita el plano de un sprite sencillo
 C 0x764F busca_dueno: busca en los 25 de 0xC009 el sprite que usa el plano A y lo deja sin plano
+C 0x7665 lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 C 0x7691 lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
 C 0x76AB manda_mapa_desde: A filas desde 0xD988
 C 0x76B0 direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
@@ -680,6 +698,8 @@ C 0x781C dos_palabras_de_tabla: de la tabla de DE con 4 bytes por entrada: DE = 
 C 0x781F guarda por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7823 guarda la posicion del scroll que mira el guion de la fase (p04:625E) y el byte siguiente (16 bits)
 C 0x7826 lee el punto de salida de la fase (0 a 5; p09:7A54 lo sube al pasarlo; con depuracion, F3)
+C 0x782D guarda la columna del mapa en la que va el scroll
+C 0x7830 guarda la fila del mapa en la que va el scroll
 C 0x7835 guarda las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x7838 siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
 C 0x783B siguiente_del_mapa: con el banco 27: salta los 0xFE y hace las ordenes de los bytes 0xFF (p09:7858)
@@ -758,10 +778,12 @@ C 0x7B20 niega_de: DE = -DE
 C 0x7B2F guarda lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7B43 guarda el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 C 0x7B49 niega_de: DE = -DE
+C 0x7B67 lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 C 0x7B6F niega_de: DE = -DE
 C 0x7B7E guarda lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 C 0x7B92 guarda el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 C 0x7B98 niega_de: DE = -DE
+C 0x7BAB lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 C 0x7BBB lee el valor del scroll vertical (registro 23)
 C 0x7BC0 guarda el valor del scroll vertical (registro 23)
 C 0x7BC4 lee el valor del scroll vertical (registro 23)
@@ -787,6 +809,8 @@ C 0x7C4D baja_adelanto: 0xCA33 - 1 si no es 0
 C 0x7C50 lee el modo de columnas del tramo de scroll
 C 0x7C55 nada_4AE0: ret
 C 0x7C58 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x7C7D guarda la columna del mapa en la que va el scroll
+C 0x7C88 guarda la fila del mapa en la que va el scroll
 C 0x7D8B casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 C 0x7D8E lee por donde va el mapa de la fase (banco 27) y el byte siguiente (16 bits)
 C 0x7D92 columna_de_bloques: 6 bloques del mapa (banco 27) en una columna: cada uno, 4 caracteres de la tabla de bloques de la fase (banco 26, 16 bytes por bloque) en la columna del mapa de 0xE000
@@ -800,6 +824,7 @@ C 0x7DD4 banco_en_A000: pone el banco A en 0xA000
 C 0x7DDE banco_en_A000: pone el banco A en 0xA000
 C 0x7E21 fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
 C 0x7E38 fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
+C 0x7E41 lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 C 0x7E4E fila_de_bloques: A bloques del mapa en una fila: 4 caracteres de cada uno (de su fila 0xC0C1) en la fila del mapa de 0xE000, dando la vuelta a las 64 columnas
 C 0x7E56 casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 C 0x7E63 lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
@@ -811,6 +836,7 @@ C 0x7EA4 menos_40: L - 0x40
 C 0x7EAE menos_40: L - 0x40
 C 0x7EC7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
 C 0x7ED7 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
+C 0x7EE1 lee la posicion del scroll en Y (0xC0C0-0xC0C2, 24 bits)
 C 0x7EF4 fila_de_bloques_b: como p09:7E55 con la otra fila de los bloques
 C 0x7EFD casilla_mas_scroll: la casilla D, E mas la posicion de 0xC0CD y 0xC0CC (p00:4E4E)
 C 0x7F0E lee la tabla de bloques de la fase (banco 26) y el byte siguiente (16 bits)
