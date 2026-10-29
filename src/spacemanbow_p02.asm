@@ -70,7 +70,7 @@ nave:		; la mueve (p02:8060) y la dibuja (p04:77D0 o p04:7747); si se quedo sin 
 	ret			;805f
 mueve_nave:		; IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); si no, p02:80F4, la inclinacion (p02:820D) y los mandos (p02:8108); el choque (p02:8099) salvo con el bit 0 de 0xCA03 (depuracion), con 0xCE75 o 0xCE76, o mientras ix+0x18 cuenta al aparecer
 	ld ix,0ca40h		;8060   ; apunta a la nave: su ficha de actor (0 = muerta)
-	ld a,(0ce75h)		;8064
+	ld a,(0ce75h)		;8064   ; lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 	or a			;8067
 	ret nz			;8068
 	ld a,(ix+001h)		;8069   ; lee el paso del actor
@@ -87,7 +87,7 @@ mueve_nave:		; IX = 0xCA40: explotando (paso 1, p02:80DA) o ya muerta (paso 2); 
 	ld a,(0ce76h)		;8080   ; lee 1: a la nave la empuja algo (p04:6E50)
 	or a			;8083
 	ret nz			;8084
-	ld a,(0ce75h)		;8085
+	ld a,(0ce75h)		;8085   ; lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 	or a			;8088
 	ret nz			;8089
 	ld a,(ix+018h)		;808a   ; lee otra cuenta del actor (p04:6ADF la baja hasta 1)

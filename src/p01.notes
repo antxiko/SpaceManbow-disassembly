@@ -359,11 +359,9 @@ C 0x6220 guarda una espera del programa (p01:6238 la baja)
 C 0x6223 apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
 C 0x6228 guarda el paso del estado del programa
 C 0x622D apunta a el estado del programa (1 logotipo, 2 titulo, 3 historia y demostracion, 4 partida)
-C 0x6234 guarda una espera del programa (p01:6238 la baja)
 C 0x6238 apunta a una espera del programa (p01:6238 la baja)
 C 0x623D lee lo recien pulsado que usa la partida (de los mandos o de la demostracion)
 C 0x6244 a_estado: al estado A, paso 0
-C 0x624A lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
 C 0x6250 recien_pulsadas: guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
 C 0x6256 apunta a la cuenta de cuadros de la partida
 C 0x625A lee el estado de la partida y el byte siguiente (16 bits)
@@ -425,7 +423,6 @@ C 0x638D paleta_y_fundido_b: igual que p01:6157
 C 0x6393 paleta_y_fundido_b: igual que p01:6157
 C 0x6396 siguiente_paso_de_partida: 0xCA01 + 1
 C 0x6399 lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
-C 0x63A0 lee la cuenta de cuadros de la partida
 C 0x63AC siguiente_paso_de_partida: 0xCA01 + 1
 C 0x63B7 escribe_cadena: 0xC91C = A xor 0xF0 (los colores) y la cadena de HL en DE hasta un 0 (p01:6C7F y p01:6BAC)
 C 0x63BD paleta_y_fundido_b: igual que p01:6157
@@ -470,7 +467,6 @@ C 0x64D0 lee la fase con la que empieza la partida
 C 0x64D5 guarda la fase con la que empieza la partida
 C 0x64D9 guarda la fase (0 a 8; 9 el final)
 C 0x64DD apunta a por que paso va la partida (p01:6256)
-C 0x64ED lee las teclas F1-F5
 C 0x6506 letra_a_vram: una letra de HL a 4 bits (p01:693A) y a la VRAM en D, E (p00:490B)
 C 0x650A avanza_8_puntos: D + 8 y, si da la vuelta, E + 8
 C 0x6516 letra_de_la_bios: HL = la letra A de la fuente de la BIOS (la direccion de 0x0004 + 8 x A)
@@ -511,7 +507,6 @@ C 0x69B8 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM 
 C 0x69BE paleta_y_fundido_c: igual que p01:6157
 C 0x69C4 paleta_y_fundido_c: igual que p01:6157
 C 0x69CA guarda la cuenta de interrupciones del cuadro
-C 0x69D5 lee la cuenta de interrupciones del cuadro
 C 0x69E6 pon_colores_ya: espera al fundido y pone tal cual los colores de la lista de HL (p00:4CAF) hasta un byte 0xF0 o mayor
 C 0x69F4 orden_copia: orden HMMM del VDP (0xD0): copia un rectangulo de la VRAM a otro sitio
 C 0x69FA paleta_y_fundido_c: igual que p01:6157
@@ -528,11 +523,9 @@ C 0x6AB8 copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 
 C 0x6AC0 recolorea: copia el caracter a 0xD700 y cambia sus colores 0x0E y 0x0F (p01:6ADD)
 C 0x6AC6 copia_rectangulo: copia B filas de C bytes de HL a la VRAM en DE, 0x80 bytes por linea (p00:4933)
 C 0x6AD5 recolorea_d700: en los 32 bytes de 0xD700, el color 0x0E por el nibble bajo de 0xC91C y el 0x0F por el alto
-C 0x6AED color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
 C 0x6AF2 color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
 C 0x6B06 lee los dos colores con los que p01:6ADD pinta las letras
 C 0x6B0F lee los dos colores con los que p01:6ADD pinta las letras
-C 0x6B1C por_3: HL = HL x 3
 C 0x6B1F por_3: HL = HL x 3
 C 0x6B35 guarda los dos colores con los que p01:6ADD pinta las letras
 C 0x6B38 apunta a el mapa de la fase en la RAM: 64 x 32 caracteres
@@ -544,13 +537,9 @@ C 0x6B4F fila_del_marcador: 32 caracteres del marcador (p01:6BC1) y DE a la fila
 C 0x6B58 borra_memoria: pone a 0 BC + 1 bytes desde HL
 C 0x6B63 llena_memoria: pone A en BC + 1 bytes desde HL
 C 0x6B70 pinta_caracter_del_marcador: el caracter A de p01:6D09 en DE
-C 0x6B87 por_36: HL = A x 36
 C 0x6B8F copia_6x6: copia 6 filas de 6 bytes a la VRAM (p00:4921)
-C 0x6B9C por_32: HL = A x 32
 C 0x6BA4 copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
-C 0x6BB1 por_32: HL = A x 32
 C 0x6BB9 copia_caracter_coloreado: lo mismo con los colores 0x0E y 0x0F cambiados por los de 0xC91C (p01:6ACC)
-C 0x6BC6 por_32: HL = A x 32
 C 0x6BCE copia_caracter: copia 8 filas de 4 bytes de HL a la VRAM en DE (un caracter de 8 x 8 de SCREEN 5: 0x80 bytes por linea)
 C 0x6BD6 cifras_del_marcador: las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el record (0xC922-0xC924): solo las que han cambiado desde sus copias de 0xDF90
 C 0x6BD9 iconos_de_cb08: 0xDF9E se acerca a 0xCB08 un icono por cuadro, pintandolo o borrandolo (p01:6B82)
@@ -560,8 +549,6 @@ C 0x6BED pinta_icono: el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
 C 0x6BF2 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x6BF6 sitio_del_icono: DE = 0xE21C + 6 x A en la VRAM
 C 0x6BFA pinta_icono: el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
-C 0x6C08 por_3: HL = HL x 3
-C 0x6C12 apunta a las vidas, en BCD
 C 0x6C1F cambia_cifras: B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
 C 0x6C2F cambia_cifras: B bytes BCD de DE contra su copia de HL: pinta los que han cambiado (p01:6C4F)
 C 0x6C41 pinta_dos_cifras: las dos cifras del byte A

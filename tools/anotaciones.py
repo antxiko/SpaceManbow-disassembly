@@ -175,6 +175,7 @@ RAM = {
     0xCB01: ("la velocidad de la nave (0 a 4)", "p02:8479"),
     0xCB05: ("la formacion de las opciones (0 a 2)", "p02:8569"),
     0xCE4A: ("la vida del jefe / 4 para el destello", "p04:69E7"),
+    0xCE75: ("1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)", "p02:8060, p07:8003"),
     0xCB10: ("los puntos de la siguiente vida extra, en BCD", "p04:7E29"),
     0xC922: ("el record, en BCD (3 bytes)", "p04:7E50"),
 }

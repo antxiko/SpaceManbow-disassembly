@@ -375,7 +375,7 @@ a_estado:		; al estado A, paso 0
 	inc hl			;6231
 	xor a			;6232   ; paso 0
 	ld (hl),a			;6233
-	ld (0c904h),a		;6234   ; guarda una espera del programa (p01:6238 la baja)
+	ld (0c904h),a		;6234   ; sin espera
 	ret			;6237
 baja_c904:		; 0xC904 - 1; Z al llegar a 0
 	ld hl,0c904h		;6238   ; apunta a una espera del programa (p01:6238 la baja)
@@ -391,7 +391,7 @@ pulsado_al_titulo:		; si se ha pulsado algo (0xC907), al estado 2 (titulo) con a
 	ret			;6248
 mandos_en_c921:		; los mandos (p00:4A8C) en 0xC921 y lo recien pulsado en 0xC920
 	exx			;6249
-	call 04a8ch		;624a   ; lee_mandos: el joystick 1 (PSG 14 y 15) mas el teclado: cursores (fila 8), espacio (disparo) y M o N (boton 2); bit 0 arriba, 1 abajo, 2 izquierda, 3 derecha, 4 disparo, 5 boton 2
+	call 04a8ch		;624a   ; los mandos directamente, sin la interrupcion
 	ld hl,0c921h		;624d
 	call 04a63h		;6250   ; recien_pulsadas: guarda A en (HL) y en (HL - 1) lo que se acaba de pulsar
 	or a			;6253   ; Z: nada nuevo
@@ -610,7 +610,7 @@ fin_de_partida_espera:		; con F5 (bit 4 de 0xC90C) se sigue (p01:63AF); si no, a
 	ld a,(0c90ch)		;6399   ; lee las teclas F1-F5 recien pulsadas (bit 0 F1 ... bit 4 F5)
 	bit 4,a		;639c   ; F5: se sigue jugando
 	jr nz,sigue_la_partida		;639e
-	ld a,(0ca02h)		;63a0   ; lee la cuenta de cuadros de la partida
+	ld a,(0ca02h)		;63a0   ; a la cuenta 0xD8, los colores de p01:6413
 	cp 0d8h		;63a3
 	ld hl,06413h		;63a5
 	jr z,paleta_y_fundido_b		;63a8
@@ -774,7 +774,7 @@ L_64D9:
 	ld a,(04032h)		;64e8   ; con el byte 0x4032 a 0xFF no hay depuracion
 	inc a			;64eb
 	ret z			;64ec
-	ld a,(0c90dh)		;64ed   ; lee las teclas F1-F5
+	ld a,(0c90dh)		;64ed   ; F3 al empezar: el bit 0 de 0xCA03, la nave no choca (p02:8060)
 	bit 2,a		;64f0
 	ret z			;64f2
 	set 0,(hl)		;64f3
@@ -1096,7 +1096,7 @@ L_69C9:
 	pop bc			;69d3
 L_69D4:
 	ei			;69d4
-	ld a,(0c914h)		;69d5   ; lee la cuenta de interrupciones del cuadro
+	ld a,(0c914h)		;69d5   ; espera una interrupcion
 	or a			;69d8
 	jr z,L_69D4		;69d9
 	inc b			;69db   ; el registro 23 sube 2 lineas por cuadro
@@ -1215,7 +1215,7 @@ L_6AE2:
 	rrca			;6aea
 	rrca			;6aeb
 	rrca			;6aec
-	call color_de_c91c		;6aed   ; color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
+	call color_de_c91c		;6aed   ; su color cambiado si es 0x0E o 0x0F
 	ld b,a			;6af0
 	ld a,c			;6af1   ; el de la derecha
 	call color_de_c91c		;6af2   ; color_de_c91c: A = el color de 0xC91C que toca si A es 0x0E o 0x0F
@@ -1250,7 +1250,7 @@ L_6B0C:
 por_36:		; HL = A x 36
 	ld l,a			;6b19
 	ld h,000h		;6b1a
-	call por_3		;6b1c   ; por_3: HL = HL x 3
+	call por_3		;6b1c   ; A x 3 x 3
 	call por_3		;6b1f   ; por_3: HL = HL x 3
 	add hl,hl			;6b22   ; x 4: A x 36
 	add hl,hl			;6b23
@@ -1315,7 +1315,7 @@ pinta_icono:		; el icono A de 6 x 6 (p01:70C9 + 36 x A) en DE
 	push bc			;6b84
 	push af			;6b85
 	push de			;6b86
-	call por_36		;6b87   ; por_36: HL = A x 36
+	call por_36		;6b87   ; 36 bytes por icono de 6 x 6
 	ld de,070c9h		;6b8a
 	add hl,de			;6b8d
 	pop de			;6b8e
@@ -1331,7 +1331,7 @@ pinta_cifra:		; la cifra A (p01:7135 + 32 x A) en DE
 	push bc			;6b99
 	push af			;6b9a
 	push de			;6b9b
-	call por_32		;6b9c   ; por_32: HL = A x 32
+	call por_32		;6b9c   ; 32 bytes por cifra (8 x 8 a 4 bits)
 	ld de,07135h		;6b9f
 	add hl,de			;6ba2
 	pop de			;6ba3
@@ -1347,7 +1347,7 @@ pinta_cifra_coloreada:		; la cifra A con los colores de 0xC91C
 	push bc			;6bae
 	push af			;6baf
 	push de			;6bb0
-	call por_32		;6bb1   ; por_32: HL = A x 32
+	call por_32		;6bb1   ; 32 bytes por cifra
 	ld de,07135h		;6bb4
 	add hl,de			;6bb7
 	pop de			;6bb8
@@ -1363,7 +1363,7 @@ pinta_caracter_del_marcador:		; el caracter A de p01:6D09 en DE
 	push bc			;6bc3
 	push af			;6bc4
 	push de			;6bc5
-	call por_32		;6bc6   ; por_32: HL = A x 32
+	call por_32		;6bc6   ; 32 bytes por caracter
 	ld de,06d09h		;6bc9
 	add hl,de			;6bcc
 	pop de			;6bcd
@@ -1405,14 +1405,14 @@ clase_de_icono:		; B = 1 hasta el icono 7 y 2 desde el 8
 sitio_del_icono:		; DE = 0xE21C + 6 x A en la VRAM
 	ld l,a			;6c05
 	ld h,000h		;6c06
-	call por_3		;6c08   ; por_3: HL = HL x 3
+	call por_3		;6c08   ; 6 bytes (12 puntos) por icono
 	add hl,hl			;6c0b
 	ld de,0e21ch		;6c0c
 	add hl,de			;6c0f
 	ex de,hl			;6c10
 	ret			;6c11
 cifras_del_marcador:		; las vidas (0xCB0F), el marcador (0xCB0B-0xCB0D) y el record (0xC922-0xC924): solo las que han cambiado desde sus copias de 0xDF90
-	ld de,0cb0fh		;6c12   ; apunta a las vidas, en BCD
+	ld de,0cb0fh		;6c12   ; las vidas: 1 byte BCD, su copia y su sitio en la VRAM
 	ld hl,0df97h		;6c15
 	ld b,001h		;6c18
 	exx			;6c1a

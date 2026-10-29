@@ -309,11 +309,13 @@ C 0x8047 guarda 1: a la nave le han faltado sprites
 C 0x804A guarda cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)
 C 0x804D guarda el primer sprite del actor (p04:793D)
 C 0x8060 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x8064 lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 C 0x8069 lee el paso del actor
 C 0x8072 baja_cb02: 0xCB02 - 1 si no es 0
 C 0x8075 inclinacion: 0xCA45 = 0 sin arriba ni abajo, 1 arriba, 2 abajo
 C 0x8078 mueve_nave_con_mandos: los mandos (0xC909 jugando, 0xC908 en la demostracion): por la direccion, de la tabla p02:817D el dibujo (0xCB18) y las dos velocidades, multiplicadas por 0xCB01 (p02:8177); la Y (0xCA47) solo si no pasa de 0x14 y la X (0xCA49) entre 0x80 y 0x1D80
 C 0x8080 lee 1: a la nave la empuja algo (p04:6E50)
+C 0x8085 lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 C 0x808A lee otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8091 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8094 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00

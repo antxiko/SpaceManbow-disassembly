@@ -634,23 +634,23 @@ cada_4_cuadros:		; p09:6DC3 solo cuando la cuenta de cuadros and 3 es 0
 	and 003h		;6dc0
 	ret nz			;6dc2
 pagina_siguiente:		; si no hay un cambio pendiente (0xC0B5) y 0xC0B4 es menor que 4: 0xC0DB pasa de 0 a 5 y pide la pagina (0, 1, 2, 3, 2, 1) en 0xC0B5 con el bit 7
-	di			;6dc3
+	di			;6dc3   ; sin interrupciones: 0xC0B5 lo lee el borde
 	ld a,(0c0b5h)		;6dc4   ; si ya hay una pagina pedida, no se pide otra
 	or a			;6dc7
-	jr nz,L_6DE9		;6dc8
+	jr nz,L_6DE9		;6dc8   ; ya hay una pedida
 	ld a,(0c0b4h)		;6dca   ; solo con las paginas 0 a 3
 	cp 004h		;6dcd
-	ret nc			;6dcf
+	ret nc			;6dcf   ; las paginas 4 o mas no se animan
 	ld a,(0c0dbh)		;6dd0   ; el paso de la animacion de paginas: de 0 a 5
-	inc a			;6dd3
+	inc a			;6dd3   ; el paso siguiente
 	cp 006h		;6dd4
 	jr c,L_6DD9		;6dd6
 	xor a			;6dd8
 L_6DD9:
 	ld (0c0dbh),a		;6dd9   ; los pasos 4 y 5 van hacia atras: 2 y 1
-	cp 004h		;6ddc
+	cp 004h		;6ddc   ; 0-3: la misma pagina
 	jr c,L_6DE4		;6dde
-	neg		;6de0
+	neg		;6de0   ; 4 y 5: 6 - paso (2 y 1)
 	add a,006h		;6de2
 L_6DE4:
 	set 7,a		;6de4   ; la pagina pedida, con el bit 7 de que hay que ponerla
@@ -683,7 +683,7 @@ L_6E14:
 L_6E16:
 	ld (hl),a			;6e16   ; 8 bytes a 0 por vuelta, 4 vueltas: 32 bytes
 	inc hl			;6e17
-	ld (hl),a			;6e18
+	ld (hl),a			;6e18   ; 8 bytes a 0 por vuelta
 	inc hl			;6e19
 	ld (hl),a			;6e1a
 	inc hl			;6e1b
@@ -699,7 +699,7 @@ L_6E16:
 	inc hl			;6e25
 	djnz L_6E16		;6e26
 	add hl,de			;6e28   ; salta el margen de 16
-	dec c			;6e29
+	dec c			;6e29   ; 24 filas
 	jr nz,L_6E14		;6e2a
 	ret			;6e2c
 borra_e000:		; 0xE000-0xE7FF a 0
@@ -744,7 +744,7 @@ estrellas_al_azar:		; 0xC0EA = 0 y 24 columnas al azar (0-31) en 0xE800-0xE817
 L_6E80:
 	call 04678h		;6e80   ; su columna al azar (0-31)
 	and 01fh		;6e83   ; una columna de 0 a 31
-	ld (hl),a			;6e85
+	ld (hl),a			;6e85   ; la columna de la estrella de la fila
 	inc hl			;6e86
 	djnz L_6E80		;6e87
 	ret			;6e89
@@ -763,22 +763,22 @@ estrellas_del_cuadro:		; mueve las estrellas con el scroll (0xC0E6, 0xC0E8) y po
 	ld a,(0c0d4h)		;6e9c   ; lee el estado del scroll (0 avanza, 1 y 2 parado)
 	or a			;6e9f
 	jr nz,sin_estrellas		;6ea0   ; con el scroll parado se acaban las estrellas
-	ld a,(0c0eah)		;6ea2
+	ld a,(0c0eah)		;6ea2   ; 0xC0EA: no hay estrellas en esta fase
 	or a			;6ea5
 	ret nz			;6ea6
-	push bc			;6ea7
+	push bc			;6ea7   ; B = el caracter y DE = lo que se mueven en X
 	push de			;6ea8
 	ld de,(0c0e6h)		;6ea9   ; 0xC0E6 se mueve al reves de la Y de los actores
 	ld hl,(0ca12h)		;6ead   ; lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
 	call 04612h		;6eb0   ; niega_hl: HL = -HL
-	add hl,de			;6eb3
+	add hl,de			;6eb3   ; 0xC0E6 - lo que se mueve en Y
 	ld a,d			;6eb4   ; cuando cambia la parte alta, las columnas giran
-	cp h			;6eb5
+	cp h			;6eb5   ; si la parte alta cambia, una fila entera
 	ld (0c0e6h),hl		;6eb6
 	call nz,rota_estrellas		;6eb9   ; rota_estrellas: las 24 columnas de 0xE800 giran una posicion (segun 0xC0D5, hacia un lado o hacia el otro)
 	ld hl,(0c0e8h)		;6ebc   ; 0xC0E8 se mueve con la X de los actores y con DE
 	ld de,(0ca14h)		;6ebf   ; lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
-	add hl,de			;6ec3
+	add hl,de			;6ec3   ; 0xC0E8 + lo que se mueve en X + DE
 	pop de			;6ec4
 	add hl,de			;6ec5
 	ld (0c0e8h),hl		;6ec6
@@ -786,43 +786,43 @@ estrellas_del_cuadro:		; mueve las estrellas con el scroll (0xC0E6, 0xC0E8) y po
 	ld d,000h		;6ecd
 	add hl,de			;6ecf
 	ld a,l			;6ed0   ; entre 32: cuantas columnas se han movido
-	srl a		;6ed1
+	srl a		;6ed1   ; entre 32: columnas
 	srl a		;6ed3
 	srl a		;6ed5
 	srl a		;6ed7
 	srl a		;6ed9
-	neg		;6edb
+	neg		;6edb   ; al reves
 	pop bc			;6edd
 	add a,b			;6ede   ; mas el caracter de la estrella, en L' para la fila
-	push hl			;6edf
+	push hl			;6edf   ; L' = el caracter de estrella menos lo que se ha movido
 	exx			;6ee0
 	pop hl			;6ee1
 	ld l,a			;6ee2
 	exx			;6ee3
 	ld de,0e800h		;6ee4   ; las 24 columnas y las 24 filas del mapa de la pantalla
 	ld hl,0d988h		;6ee7   ; apunta a las 24 filas de 32 caracteres que se mandan a la tabla de nombres (0x30 por fila)
-	ld b,018h		;6eea
+	ld b,018h		;6eea   ; las 24 filas
 L_6EEC:
-	push bc			;6eec
+	push bc			;6eec   ; una fila
 	push hl			;6eed
 	ld a,(de)			;6eee   ; la columna de la estrella de esta fila
 	inc de			;6eef
 	exx			;6ef0
 	add a,h			;6ef1   ; mas lo que se ha movido, dando la vuelta a las 32 columnas
-	and 01fh		;6ef2
+	and 01fh		;6ef2   ; dando la vuelta a las 32 columnas
 	exx			;6ef4
-	ld c,a			;6ef5
+	ld c,a			;6ef5   ; la casilla de la estrella en la fila
 	ld b,000h		;6ef6
 	add hl,bc			;6ef8
 	ld a,(hl)			;6ef9   ; solo en un caracter vacio
-	or a			;6efa
+	or a			;6efa   ; si hay algo, no se pinta
 	jr nz,L_6F01		;6efb
 	exx			;6efd   ; pone la estrella
 	ld a,l			;6efe
 	exx			;6eff
-	ld (hl),a			;6f00
+	ld (hl),a			;6f00   ; la estrella
 L_6F01:
-	pop hl			;6f01
+	pop hl			;6f01   ; la segunda estrella de la fila, en la misma columna + 13
 	push hl			;6f02
 	ld a,(de)			;6f03   ; la segunda estrella de la fila, 13 columnas mas alla
 	exx			;6f04
@@ -833,34 +833,34 @@ L_6F01:
 	ld c,a			;6f0b
 	ld b,000h		;6f0c
 	add hl,bc			;6f0e
-	ld a,(hl)			;6f0f
+	ld a,(hl)			;6f0f   ; si hay algo, no se pinta
 	or a			;6f10
 	jr nz,L_6F17		;6f11
 	exx			;6f13
 	ld a,l			;6f14
 	exx			;6f15
-	ld (hl),a			;6f16
+	ld (hl),a			;6f16   ; la estrella
 L_6F17:
 	pop hl			;6f17   ; la fila siguiente del mapa (0x30)
-	ld bc,00030h		;6f18
+	ld bc,00030h		;6f18   ; la fila siguiente (0x30)
 	add hl,bc			;6f1b
 	pop bc			;6f1c
 	djnz L_6EEC		;6f1d
 	ret			;6f1f
 rota_estrellas:		; las 24 columnas de 0xE800 giran una posicion (segun 0xC0D5, hacia un lado o hacia el otro)
 	ld a,(0c0d5h)		;6f20   ; segun la direccion del scroll (0xC0D5)
-	cp 002h		;6f23
+	cp 002h		;6f23   ; la direccion 2: al reves
 	jr z,L_6F35		;6f25
 	ld de,0e817h		;6f27   ; las columnas bajan una posicion y la ultima pasa a la primera
-	ld hl,0e816h		;6f2a
+	ld hl,0e816h		;6f2a   ; las 24 columnas bajan una posicion
 	ld bc,00017h		;6f2d
-	ld a,(de)			;6f30
+	ld a,(de)			;6f30   ; la ultima pasa a la primera
 	lddr		;6f31
 	ld (de),a			;6f33
 	ret			;6f34
 L_6F35:
 	ld de,0e800h		;6f35   ; o suben una y la primera pasa a la ultima
-	ld hl,0e801h		;6f38
+	ld hl,0e801h		;6f38   ; las 24 suben una
 	ld bc,00017h		;6f3b
 	ld a,(de)			;6f3e
 	ldir		;6f3f
@@ -869,56 +869,56 @@ L_6F35:
 registros_de_scroll:		; con 0xC0D2 y 0xC0BB, los valores del scroll en una de las dos tablas de registros (0xC9C5-0xC9CF o 0xC9F1-0xC9FB); con el V9958, de otra forma
 	jr c,L_6F6F		;6f43   ; con acarreo, la segunda tabla
 	ld a,(0c0d2h)		;6f45   ; la linea de la primera interrupcion: el scroll vertical - 0x1C
-	sub 01ch		;6f48
+	sub 01ch		;6f48   ; la linea de la interrupcion: el scroll - 0x1C
 	ld (0c9c5h),a		;6f4a
 	add a,06ch		;6f4d   ; y la de la segunda, 0x6C lineas mas abajo
-	ld (0c9cfh),a		;6f4f
+	ld (0c9cfh),a		;6f4f   ; la segunda linea
 	ld a,(0c0ebh)		;6f52   ; lee 4 si el VDP es un V9958 (MSX2+)
-	or a			;6f55
+	or a			;6f55   ; el V9958 lo hace distinto
 	jr nz,L_6F65		;6f56
 	ld a,(0c0bbh)		;6f58   ; el scroll horizontal fino del registro 18: 8 - los 3 bits bajos de 0xC0BB
-	and 007h		;6f5b
+	and 007h		;6f5b   ; el registro 18 (ajuste horizontal) con el scroll fino
 	sub 008h		;6f5d
 	and 00fh		;6f5f
 	ld (0c9c7h),a		;6f61
 	ret			;6f64
 L_6F65:
 	ld a,(0c0bbh)		;6f65   ; con el V9958, el ajuste es el contrario
-	cpl			;6f68
+	cpl			;6f68   ; en el V9958, el registro 27: los 3 bits del scroll fino, al reves
 	and 007h		;6f69
 	ld (0c9c7h),a		;6f6b
 	ret			;6f6e
 L_6F6F:
 	ld a,(0c0d2h)		;6f6f   ; lo mismo en la segunda tabla de registros
-	sub 01ch		;6f72
+	sub 01ch		;6f72   ; la otra tabla: la linea de la interrupcion
 	ld (0c9f1h),a		;6f74
 	add a,08ch		;6f77   ; 0x8C lineas mas abajo
-	ld (0c9fbh),a		;6f79
+	ld (0c9fbh),a		;6f79   ; la segunda linea, 0x8C mas abajo
 	ld a,(0c0ebh)		;6f7c   ; lee 4 si el VDP es un V9958 (MSX2+)
 	or a			;6f7f
 	jr nz,L_6F8F		;6f80
 	ld a,(0c0bbh)		;6f82   ; lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
-	and 007h		;6f85
+	and 007h		;6f85   ; el registro 18 con el scroll fino
 	sub 008h		;6f87
 	and 00fh		;6f89
 	ld (0c9f3h),a		;6f8b
 	ret			;6f8e
 L_6F8F:
 	ld a,(0c0bbh)		;6f8f   ; lee la posicion del scroll en X (0xC0BA-0xC0BC, 24 bits)
-	cpl			;6f92
+	cpl			;6f92   ; el V9958: el registro 27
 	and 007h		;6f93
 	ld (0c9f3h),a		;6f95
 	ret			;6f98
 tablas_de_registros:		; copia las listas de registros de p09:7002-705B a las seis tablas de 0xC948-0xC9FF (las que mandan las interrupciones de linea) con el registro 8 de 0xFFE7 y, con el V9958, el 0x9B
 	ld de,0c9beh		;6f99   ; copia las listas de registros de la ROM a las seis tablas de las interrupciones
-	ld hl,07007h		;6f9c
+	ld hl,07007h		;6f9c   ; las listas de registros de la primera tabla
 	ld bc,00015h		;6f9f
 	ldir		;6fa2
-	ld de,0c9eah		;6fa4
+	ld de,0c9eah		;6fa4   ; de la segunda
 	ld hl,07034h		;6fa7
 	ld bc,00015h		;6faa
 	ldir		;6fad
-	ld de,0c948h		;6faf
+	ld de,0c948h		;6faf   ; las del borde (5 bytes)
 	ld hl,07002h		;6fb2
 	ld bc,00005h		;6fb5
 	ldir		;6fb8
@@ -926,7 +926,7 @@ tablas_de_registros:		; copia las listas de registros de p09:7002-705B a las sei
 	ld hl,0702fh		;6fbd
 	ld bc,00005h		;6fc0
 	ldir		;6fc3
-	ld de,0c9a8h		;6fc5
+	ld de,0c9a8h		;6fc5   ; las de las lineas (0x13 bytes)
 	ld hl,0701ch		;6fc8
 	ld bc,00013h		;6fcb
 	ldir		;6fce
@@ -935,14 +935,14 @@ tablas_de_registros:		; copia las listas de registros de p09:7002-705B a las sei
 	ld bc,00013h		;6fd6
 	ldir		;6fd9
 	ld a,(0ffe7h)		;6fdb   ; el registro 8 de la BIOS con los bits 3 y 5
-	and 028h		;6fde
-	ld (0c9c3h),a		;6fe0
+	and 028h		;6fde   ; del registro 8, los bits 3 y 5
+	ld (0c9c3h),a		;6fe0   ; en las dos tablas
 	ld (0c9efh),a		;6fe3
 	or 002h		;6fe6   ; y el 1 (sin sprites) en las otras tablas
-	ld (0c9abh),a		;6fe8
+	ld (0c9abh),a		;6fe8   ; con los sprites apagados (bit 1) en las otras dos
 	ld (0c9d7h),a		;6feb
 	ld a,(0c0ebh)		;6fee   ; lee 4 si el VDP es un V9958 (MSX2+)
-	or a			;6ff1
+	or a			;6ff1   ; con el V9958, el registro 27 en lugar del 18
 	ret z			;6ff2
 	ld a,09bh		;6ff3   ; con el V9958, 0x9B en las tablas: el registro 27 (el scroll horizontal)
 	ld (0c9c8h),a		;6ff5
@@ -979,10 +979,10 @@ DATA_sin_leer_706E:
 
 paleta_retrasada:		; baja 0xC0D8 y, al llegar a 0, manda la paleta (p00:4DA9)
 	ld a,(0c0d8h)		;7070   ; cuadros que faltan para mandar la paleta
-	or a			;7073
+	or a			;7073   ; 0: nada
 	ret z			;7074
 	dec a			;7075
-	ld (0c0d8h),a		;7076
+	ld (0c0d8h),a		;7076   ; un cuadro menos
 	ret nz			;7079
 	jp 04da9h		;707a   ; manda_paleta: los 16 colores de 0xEF00 al VDP (p00:4776)
 nada_707D:		; ret
@@ -992,13 +992,13 @@ sprites_del_cuadro:		; reparte los sprites por franjas (p09:7221) y manda sus at
 	call manda_sprites		;7081   ; manda_sprites: segun la tabla del cuadro (0xC09B): los atributos de 0xC4B9 y 0xC5B9 a 0xFA00 y 0xFE00 de la VRAM, o los de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600 (p09:713F)
 	ret			;7084
 borra_sprites_ram:		; 0xC000-0xC07F, 0xC180-0xC1FF y 0xC280-0xC2FF a 0
-	ld hl,0c000h		;7085
+	ld hl,0c000h		;7085   ; la primera mitad de los sprites (Y)
 	ld bc,0007fh		;7088
 	call 04648h		;708b   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	ld hl,0c180h		;708e
+	ld hl,0c180h		;708e   ; la pagina de las X
 	ld bc,0007fh		;7091
 	call 04648h		;7094   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	ld hl,0c280h		;7097
+	ld hl,0c280h		;7097   ; la de los patrones
 	ld bc,0007fh		;709a
 	call 04648h		;709d   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 	ret			;70a0
@@ -1022,13 +1022,13 @@ DATA_sin_leer_70A1:
 
 manda_sprites:		; segun la tabla del cuadro (0xC09B): los atributos de 0xC4B9 y 0xC5B9 a 0xFA00 y 0xFE00 de la VRAM, o los de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600 (p09:713F)
 	ld a,(0c09bh)		;70e4   ; lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
-	rrca			;70e7
+	rrca			;70e7   ; el bit 0: una tabla o la otra
 	jp nc,manda_sprites_b		;70e8   ; manda_sprites_b: los atributos de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600
-	ld hl,0fa00h		;70eb
+	ld hl,0fa00h		;70eb   ; los atributos a 0xFA00
 	ld de,0c4b9h		;70ee
 	push de			;70f1
 	call manda_atributos_a		;70f2   ; manda_atributos_a: apunta la VRAM a HL y manda los atributos de DE (p09:7106); HL + 0x400
-	pop de			;70f5
+	pop de			;70f5   ; la segunda mitad a 0xFE00
 	inc d			;70f6
 manda_atributos_a:		; apunta la VRAM a HL y manda los atributos de DE (p09:7106); HL + 0x400
 	xor a			;70f7
@@ -1052,14 +1052,14 @@ manda_atributos_a_c:		; 4 veces 8 + 8 bytes con otir, saltando 16 hacia atras en
 	ld a,004h		;7117
 L_7119:
 	outi		;7119   ; 8 bytes al VDP
-	outi		;711b
+	outi		;711b   ; 8 bytes de atributos
 	outi		;711d
 	outi		;711f
 	outi		;7121
 	outi		;7123
 	outi		;7125
 	outi		;7127
-	add hl,de			;7129
+	add hl,de			;7129   ; 16 bytes hacia atras
 	outi		;712a
 	outi		;712c
 	outi		;712e
@@ -1069,24 +1069,24 @@ L_7119:
 	outi		;7136
 	outi		;7138
 	add hl,de			;713a
-	dec a			;713b
+	dec a			;713b   ; 4 veces
 	jr nz,L_7119		;713c
 	ret			;713e
 manda_sprites_b:		; los atributos de 0xC1C1 y 0xC2C1 a 0xF200 y 0xF600
 	ld hl,0f200h		;713f   ; la otra tabla: los atributos a 0xF200
-	ld de,0c1c1h		;7142
+	ld de,0c1c1h		;7142   ; la otra tabla a 0xF200
 	push de			;7145
 	call manda_atributos_b		;7146   ; manda_atributos_b: apunta la VRAM a HL y manda los atributos de DE (p09:715A); HL + 0x400
-	pop de			;7149
+	pop de			;7149   ; y la segunda mitad a 0xF600
 	inc d			;714a
 manda_atributos_b:		; apunta la VRAM a HL y manda los atributos de DE (p09:715A); HL + 0x400
-	xor a			;714b
+	xor a			;714b   ; 64 KB bajos
 	call 046f0h		;714c   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
-	push hl			;714f
+	push hl			;714f   ; HL = los atributos
 	ex de,hl			;7150
 	call manda_atributos_b_b		;7151   ; manda_atributos_b_b: dos tandas de p09:7165
 	pop hl			;7154
-	ld de,00400h		;7155
+	ld de,00400h		;7155   ; la tabla siguiente, 0x400 mas alla
 	add hl,de			;7158
 	ret			;7159
 manda_atributos_b_b:		; dos tandas de p09:7165
@@ -1098,7 +1098,7 @@ manda_atributos_b_b:		; dos tandas de p09:7165
 manda_atributos_b_c:		; 4 veces 16 bytes con otir
 	ld a,004h		;7165
 L_7167:
-	outi		;7167
+	outi		;7167   ; 16 bytes de atributos
 	outi		;7169
 	outi		;716b
 	outi		;716d
@@ -1114,27 +1114,27 @@ L_7167:
 	outi		;7181
 	outi		;7183
 	outi		;7185
-	dec a			;7187
+	dec a			;7187   ; 4 veces
 	jr nz,L_7167		;7188
 	ret			;718a
 pon_patron:		; guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E), manda los 16 bytes de su patron a la VRAM (p09:71C3)
 	ld a,(hl)			;718b   ; guarda el plano en la tabla
-	ld (de),a			;718c
+	ld (de),a			;718c   ; guarda el plano
 	bit 7,e		;718d   ; solo los planos de la mitad de abajo (bit 7 de E) llevan patron propio
-	ret z			;718f
+	ret z			;718f   ; los de arriba usan los patrones fijos
 	push hl			;7190
 	push de			;7191
-	ld b,a			;7192
+	ld b,a			;7192   ; B = el patron
 	ld a,d			;7193   ; la pagina de la tabla (0xC1-0xC3) da la tabla de patrones en la VRAM
-	sub 0c1h		;7194
+	sub 0c1h		;7194   ; la pagina de la tabla: 0xC1 a 0xC3
 	cp 003h		;7196
-	jp nc,L_71AD		;7198
-	add a,a			;719b
+	jp nc,L_71AD		;7198   ; la 0xC4 y la 0xC5, al reves
+	add a,a			;719b   ; el sitio en la VRAM de los patrones de ese plano
 	add a,038h		;719c
 	ld h,a			;719e
 	ld a,e			;719f
 	add a,040h		;71a0   ; el sitio del plano en la tabla de patrones (16 bytes por plano de 16 x 16)
-	and 07ch		;71a2
+	and 07ch		;71a2   ; el numero del plano x 8
 	add a,a			;71a4
 	ld l,a			;71a5
 	add hl,hl			;71a6
@@ -1144,7 +1144,7 @@ pon_patron:		; guarda A en (DE) y, si el sprite es de los de abajo (bit 7 de E),
 	ret			;71ac
 L_71AD:
 	dec a			;71ad   ; la segunda pagina va al reves
-	add a,a			;71ae
+	add a,a			;71ae   ; lo mismo para las otras paginas
 	add a,038h		;71af
 	ld h,a			;71b1
 	ld a,e			;71b2
@@ -1161,28 +1161,28 @@ L_71AD:
 	ret			;71c2
 manda_patron:		; los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL de la VRAM (registro 14 = 3)
 	ld a,(00007h)		;71c3   ; el puerto de registros del VDP
-	inc a			;71c6
+	inc a			;71c6   ; el puerto de registros
 	ld c,a			;71c7
 	ld a,003h		;71c8   ; registro 14 = 3: la VRAM desde 0x0C000
 	di			;71ca
-	out (c),a		;71cb
+	out (c),a		;71cb   ; el registro 14
 	ld a,08eh		;71cd
 	out (c),a		;71cf
 	ld a,l			;71d1   ; la direccion, baja y alta (con el bit 6 de escribir ya en H)
-	out (c),a		;71d2
+	out (c),a		;71d2   ; la direccion baja
 	ld a,h			;71d4
-	out (c),a		;71d5
+	out (c),a		;71d5   ; y la alta con el bit de escribir
 	ei			;71d7
 	ld a,b			;71d8   ; el patron B: 0x6000 + 16 x B, en el banco que este en 0x6000
-	dec c			;71d9
+	dec c			;71d9   ; C = el puerto de datos
 	ld l,a			;71da
-	ld h,006h		;71db
+	ld h,006h		;71db   ; el patron en 0x6000 + 16 x B
 	add hl,hl			;71dd
 	add hl,hl			;71de
 	add hl,hl			;71df
 	add hl,hl			;71e0
 	outi		;71e1   ; los 16 bytes del patron al VDP
-	outi		;71e3
+	outi		;71e3   ; los 16 bytes del patron
 	outi		;71e5
 	outi		;71e7
 	outi		;71e9
@@ -1200,15 +1200,15 @@ manda_patron:		; los 16 bytes del patron B (0x6000 + 16 x B) a la direccion HL d
 	ei			;7201
 	ret			;7202
 pagina_de_sprites:		; 0xC0AA, 0xC0A6 y 0xC0A8 = 0xC0-0xC2 o 0xC3-0xC5, segun la tabla de este cuadro
-	di			;7203
+	di			;7203   ; sin interrupciones mientras se mira la tabla
 	ld hl,0c09ch		;7204   ; apunta a 1: hay que cambiar de tablas en el borde
 	ld a,(0c09bh)		;7207   ; si este cuadro hay que cambiar de tablas, se usan las otras
-	xor (hl)			;720a
+	xor (hl)			;720a   ; si este cuadro hay cambio de tabla, la otra
 	ei			;720b
 	rrca			;720c
-	jr c,L_7213		;720d
+	jr c,L_7213		;720d   ; acarreo: la 0xC3
 	ld a,0c0h		;720f   ; las paginas 0xC0-0xC2 o las 0xC3-0xC5
-	jr L_7215		;7211
+	jr L_7215		;7211   ; la 0xC0
 L_7213:
 	ld a,0c3h		;7213
 L_7215:
@@ -1219,12 +1219,12 @@ L_7215:
 	ld (0c0a8h),a		;721d   ; guarda la pagina de los planos de la segunda franja
 	ret			;7220
 reparte_sprites:		; los limites de las franjas segun el scroll (0xC0D2, 0xC0BB), la Y por defecto (p09:7255) y los dos grupos de sprites (p09:7470, p09:72D5)
-	exx			;7221
+	exx			;7221   ; los limites a los registros de detras
 	ld a,(0c09bh)		;7222   ; lee cual de las dos tablas de registros y de sprites toca este cuadro (bit 0)
 	rrca			;7225
-	jr c,L_7230		;7226
+	jr c,L_7230		;7226   ; la otra tabla
 	ld bc,04060h		;7228   ; los limites de las franjas de una tabla o de la otra
-	ld de,0c0f0h		;722b
+	ld de,0c0f0h		;722b   ; los limites de las franjas: 0x40, 0x60, 0xC0, 0xF0
 	jr L_7236		;722e
 L_7230:
 	ld bc,06080h		;7230
@@ -1254,15 +1254,15 @@ sprites_fuera:		; la Y de 0xC099 (la del scroll menos 0x18) en todos los sprites
 	jr nz,L_725D		;725a   ; la Y 0xD8 acaba la lista: se usa 0xD9
 	inc a			;725c
 L_725D:
-	ld e,a			;725d
+	ld e,a			;725d   ; la Y por defecto
 	ld (0c099h),a		;725e
 	ld a,(0c09bh)		;7261   ; en una tabla o en la otra
 	rrca			;7264
-	jr nc,L_729E		;7265
+	jr nc,L_729E		;7265   ; la tabla de este cuadro
 	ld hl,0c481h		;7267   ; la Y en los 32 planos de las dos franjas, de 4 en 4 bytes
-	ld b,008h		;726a
+	ld b,008h		;726a   ; los 32 planos de la primera franja
 L_726C:
-	ld (hl),e			;726c
+	ld (hl),e			;726c   ; la Y de cuatro planos (4 bytes cada uno)
 	inc l			;726d
 	inc l			;726e
 	inc l			;726f
@@ -1283,7 +1283,7 @@ L_726C:
 	inc l			;727e
 	inc l			;727f
 	djnz L_726C		;7280
-	ld hl,0c581h		;7282
+	ld hl,0c581h		;7282   ; los de la segunda franja
 	ld b,008h		;7285
 L_7287:
 	ld (hl),e			;7287
@@ -1312,7 +1312,7 @@ L_729E:
 	ld hl,0c181h		;729e   ; la otra tabla
 	ld b,008h		;72a1
 L_72A3:
-	ld (hl),e			;72a3
+	ld (hl),e			;72a3   ; los 32 planos de la primera franja de la otra tabla
 	inc l			;72a4
 	inc l			;72a5
 	inc l			;72a6
@@ -1333,7 +1333,7 @@ L_72A3:
 	inc l			;72b5
 	inc l			;72b6
 	djnz L_72A3		;72b7
-	ld hl,0c281h		;72b9
+	ld hl,0c281h		;72b9   ; los de la segunda franja
 	ld b,008h		;72bc
 L_72BE:
 	ld (hl),e			;72be
@@ -1372,7 +1372,7 @@ L_72E3:
 	set 0,l		;72e3
 	ld h,0c0h		;72e5
 L_72E7:
-	inc l			;72e7
+	inc l			;72e7   ; el sprite siguiente (2 bytes)
 	inc l			;72e8
 	pop bc			;72e9
 	djnz L_72DA		;72ea
@@ -1380,13 +1380,13 @@ L_72E7:
 franja_del_sprite:		; segun su Y, a cual de las cuatro franjas de las interrupciones de linea va el sprite
 	ld a,(hl)			;72ed   ; la Y del sprite contra los limites de las franjas (B, C, D, E)
 	exx			;72ee
-	cp b			;72ef
+	cp b			;72ef   ; por encima del limite B: franja 1
 	jr c,franja_1		;72f0
-	cp c			;72f2
+	cp c			;72f2   ; entre B y C: franja 2 (toca las dos tablas)
 	jr c,franja_2		;72f3
-	cp d			;72f5
+	cp d			;72f5   ; entre C y D: franja 3
 	jr c,franja_3		;72f6
-	cp e			;72f8
+	cp e			;72f8   ; por debajo de E otra vez la 1; si no, la 4
 	jp nc,franja_1		;72f9   ; franja_1: el sprite en la franja 1
 	jp franja_4		;72fc   ; franja_4: el sprite en la franja 4
 franja_1:		; el sprite en la franja 1
@@ -1414,22 +1414,22 @@ franja_2:		; el sprite en la franja 2 (y en la 1 si la toca)
 franja_3:		; el sprite en la franja 3
 	exx			;7325
 	ld a,(0c0aah)		;7326   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
-	ld h,a			;7329
+	ld h,a			;7329   ; la marca del sprite
 	inc l			;732a
-	ld a,(hl)			;732b
+	ld a,(hl)			;732b   ; en que franja estaba
 	cp 003h		;732c
 	call nz,cambia_a_franja_3		;732e   ; cambia_a_franja_3: lo mismo a la franja 3
-	set 7,(hl)		;7331
+	set 7,(hl)		;7331   ; este cuadro se ve
 	jp plano_franja_b		;7333   ; plano_franja_b: lo mismo en la franja de 0xC0A8
 franja_4:		; el sprite en la franja 4
 	exx			;7336
 	ld a,(0c0aah)		;7337   ; lee la pagina de las marcas de los sprites de este cuadro (0xC0 o 0xC3)
 	ld h,a			;733a
 	inc l			;733b
-	ld a,(hl)			;733c
+	ld a,(hl)			;733c   ; en que franja estaba
 	cp 004h		;733d
 	call nz,cambia_a_franja_4		;733f   ; cambia_a_franja_4: lo mismo a la franja 4
-	set 7,(hl)		;7342
+	set 7,(hl)		;7342   ; la franja 4 no tiene planos: no se ve
 	ret			;7344
 cambia_a_franja_1:		; el sprite cambia a la franja 1: suelta o pide sus planos
 	bit 7,a		;7345   ; si ya tenia el bit 7, otro sprite le quito el plano: se suelta
@@ -1447,14 +1447,14 @@ cambia_a_franja_1:		; el sprite cambia a la franja 1: suelta o pide sus planos
 	dec h			;7359
 	ret			;735a
 cambia_a_franja_2:		; lo mismo a la franja 2
-	bit 7,a		;735b
+	bit 7,a		;735b   ; el bit 7: otro le quito el plano
 	jp nz,suelta_sprite		;735d   ; suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
-	ld (hl),002h		;7360
-	inc h			;7362
+	ld (hl),002h		;7360   ; la franja 2
+	inc h			;7362   ; un plano en la primera mitad...
 	ld a,(hl)			;7363
 	or a			;7364
 	call z,pide_plano		;7365   ; pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
-	inc h			;7368
+	inc h			;7368   ; ...y otro en la segunda
 	ld a,(hl)			;7369
 	or a			;736a
 	call z,pide_plano		;736b   ; pide_plano: un plano libre de los 32 (p09:742D) o ninguno (0x0E)
@@ -1464,7 +1464,7 @@ cambia_a_franja_2:		; lo mismo a la franja 2
 cambia_a_franja_3:		; lo mismo a la franja 3
 	bit 7,a		;7371
 	jp nz,suelta_sprite		;7373   ; suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
-	ld (hl),003h		;7376
+	ld (hl),003h		;7376   ; la franja 3: solo en la segunda mitad
 	inc h			;7378
 	ld a,(hl)			;7379
 	or a			;737a
@@ -1479,7 +1479,7 @@ cambia_a_franja_3:		; lo mismo a la franja 3
 cambia_a_franja_4:		; lo mismo a la franja 4
 	bit 7,a		;7387
 	jp nz,suelta_sprite		;7389   ; suelta_sprite: suelta los planos del sprite (p09:7442) y vuelve mas atras
-	ld (hl),004h		;738c
+	ld (hl),004h		;738c   ; la franja 4: sin planos
 	inc h			;738e
 	ld a,(hl)			;738f
 	or a			;7390

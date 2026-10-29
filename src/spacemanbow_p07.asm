@@ -23,7 +23,7 @@ choques_del_cuadro:		; con la nave explotando, solo una espera; si no (y sin 0xC
 	ld a,(0ce76h)		;8009   ; con 0xCE76 o 0xCE75 tampoco
 	or a			;800c
 	ret nz			;800d
-	ld a,(0ce75h)		;800e
+	ld a,(0ce75h)		;800e   ; lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 	or a			;8011
 	ret nz			;8012
 	call nave_contra_actores		;8013   ; nave_contra_actores: IY = la nave (p07:8039)

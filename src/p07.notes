@@ -175,6 +175,7 @@ L 0x8320 actores_en_la_rejilla cada uno de los 20 actores que se pueden tocar: s
 L 0x8395 actor_contra_disparos el actor contra cada uno de los 8 disparos: caja y choque fino
 L 0x83BD borra_pagina_hl los 256 bytes de la pagina de HL a 0
 C 0x8000 choques_del_cuadro: con la nave explotando, solo una espera; si no (y sin 0xCE75 ni 0xCE76): la nave contra los actores (p07:8026), los disparos contra los actores (p07:82DE) y la nave contra las balas (p07:826D)
+C 0x800E lee 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 C 0x8013 nave_contra_actores: IY = la nave (p07:8039)
 C 0x8016 disparos_contra_actores: la rejilla de los disparos (p07:82E5) y los actores que caen en ella (p07:8320)
 C 0x8019 nave_contra_balas: IY = la nave (p07:8280)

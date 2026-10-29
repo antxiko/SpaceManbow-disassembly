@@ -1,4 +1,114 @@
 
+
+# --- A MANO: comentarios escritos leyendo el codigo ---
+C 0xA055 al acabar la espera
+C 0xA05C del paso 8 se vuelve al 0
+C 0xA061 el paso de ahora y el siguiente
+C 0xA068 lo que hace en cada paso, de la tabla p06:A0A4
+C 0xA073 con el bit 7, solo en la segunda vuelta
+C 0xA076 0: nada
+C 0xA079 los bits 0-1 eligen que lanza
+C 0xA084 8 bytes de la tabla p06:A0B1
+C 0xA0CF del paso 7 se vuelve al 0
+C 0xA0D4 el paso y el siguiente
+C 0xA0DB la tabla p06:A0F7, 2 bytes por paso
+C 0xA0E4 y la aceleracion en X de la tabla p06:A105
+C 0xA112 la vida, para la espera
+C 0xA116 al menos 1
+C 0xA117 la espera no baja de 0x18
+C 0xA120 cuanto menos vida, mas deprisa (- vida / 8)
+C 0xA157 en el paso 2...
+C 0xA15A ...el sonido 0x29
+C 0xA1A1 segun el lado, 4 u 8
+C 0xA1C3 segun el lado, una tabla u otra
+C 0xA1EB segun el lado, 4 o 0x0A
+C 0xA1F4 cada 4 cuadros
+C 0xA209 segun el lado, una tabla u otra
+C 0xA22D con 0xCE52 (algo ha empujado), desaparece
+C 0xA235 las esperas de este hijo de la tabla p06:A29B
+C 0xA23C su numero de hijo - 1
+C 0xA241 dos cuentas por hijo
+C 0xA26A 0 o 4 segun A
+C 0xA2CE con 0xCE52, un golpe que lo destruye
+C 0xA346 hasta que acabe
+C 0xA34B y su siguiente movimiento
+C 0xA35C hasta que acabe
+C 0xA36B hasta que acabe
+C 0xA37A hasta que acabe
+C 0xA389 hasta que acabe
+C 0xA38E por el paso, 4 bytes de la tabla p06:A3B0
+C 0xA393 paso - 2
+C 0xA430 la entrada siguiente de la tabla p06:A453 (0 vuelve a empezar)
+C 0xA43E 0: el principio de nuevo
+C 0xA45F en la pieza 0 o 5, mira a la nave
+C 0xA466 si no, el dibujo de la tabla p06:A486
+C 0xA475 el octante hacia la nave, girado
+C 0xA47A el dibujo de la tabla p06:A48C
+C 0xA582 por el paso
+C 0xA58F segun ix+0x24, el tipo 0x0B o el 4
+C 0xA5B4 cada 4 cuadros
+C 0xA5B7 3 dibujos
+C 0xA5BC desde el dibujo 2 apunta a la nave
+C 0xA5CB sin pasar de 0x98
+C 0xA5D6 el angulo en octavos
+C 0xA5E3 la espera de la tabla p06:A601 por el octante
+C 0xA5F8 cae hacia abajo
+C 0xA633 si toca algo
+C 0xA635 un golpe que lo destruye
+C 0xA65E por el paso
+C 0xA762 de 0 a 2
+C 0xA768 tres hijos: el 1, el 2 y el 3
+C 0xA778 un actor de tipo 0x3F unido a este
+C 0xA77F si no hay ficha, nada
+C 0xA788 IY = el padre
+C 0xA798 del paso 8 se vuelve al 0
+C 0xA7A2 la espera y la pieza de la tabla p06:A7B3
+C 0xA856 el nivel a la mitad mientras arranca
+C 0xA8F8 cada 4 cuadros
+C 0xA8FF del 3 se vuelve al 2
+C 0xA932 uno menos
+C 0xA93C acarreo si quedan
+C 0xA950 uno mas
+C 0xA95A acarreo hasta el 2
+C 0xA95D la pieza: ix+0x24 + 3 x (ix+0x23 - 1) + 4 x (ix+3 - 1)
+C 0xA974 de la tabla p06:A9E2
+C 0xA994 B contra 2
+C 0xA998 A x 12
+C 0xA99F A x 4
+C 0xAA67 velocidad -0x20
+C 0xAA6F aun no: espera
+C 0xAA92 velocidad 0x20
+C 0xAA9A aun no: espera
+C 0xAAF5 una sola vez
+C 0xAAF7 un hijo en (1, 4)
+C 0xAB2C 0xCE75 = 1: la nave deja de moverse con los mandos y de chocar (p02:8060, p07:8003)
+C 0xAB32 el sonido 0x51
+C 0xAB63 del 6 se vuelve al 0
+C 0xAB6C 0 y 3 cambian la direccion (0x0840 o 0x4008)
+C 0xAB79 los demas, 6
+C 0xAB7F con el nivel 6 o mas, la otra
+C 0xAB89 cada 16 cuadros
+C 0xAB95 la nave se acerca al actor: 6 filas por debajo...
+C 0xABA3 en Y, 0x20 por cuadro hacia el
+C 0xABB2 ...y 2 columnas a su izquierda
+C 0xABC0 en X
+C 0xABCA cuando ya no se mueve en ninguno de los dos ejes...
+C 0xABCC ...la fase se acaba
+C 0xABD1 DE = HL; HL x 8
+C 0xABD7 0 si ya esta, 0x20 o -0x20 segun el lado
+C 0xAC13 del 4 se vuelve al 0
+C 0xAC1D la espera de la tabla p06:AC28
+C 0xAC5D 10 piezas
+C 0xAC62 Z en la 9
+C 0xAC6E del 3 se vuelve al 0
+C 0xAC77 0: nada que pintar
+C 0xAC7B la pieza de caracteres 0x0F + A en el mapa
+C 0xAC89 del 0x1E se vuelve al 0x1B
+C 0xAC9A el color sube y baja de 0 a 8
+C 0xACA3 el color 5 de la paleta
+C 0xACAF el color 9, tres pasos mas alla
+C 0xACBA la entrada de la tabla p06:ACC8 por A
+# --- fin de lo escrito a mano ---
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
 D 0xA187 0xA191 tabla_A187  5 destinos del despachador p00:461A (call en p06:A184, el indice en A): A191, A19A, A1BB, A1E7, A205; lo leen p06:A184 (10 bytes)
 F 0xA187 w5
@@ -161,12 +271,16 @@ C 0xA149 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo 
 C 0xA150 olvida_golpe: ix+4 = 0
 C 0xA153 pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0xA15C pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
+C 0xA17E con 0xCE52 (algo ha empujado), desaparece
 C 0xA181 lee el paso del actor
 C 0xA184 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0xA194 las esperas de este hijo de la tabla p06:A29B
 C 0xA197 siguiente_paso: el paso del actor + 1
 C 0xA19A baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 C 0xA19E lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA1A9 siguiente_dibujo: ix+5 + 1, a 0 al llegar a B
+C 0xA1AE 0 o 4 segun A
+C 0xA1B1 las esperas de este hijo de la tabla p06:A29B
 C 0xA1B4 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 C 0xA1B8 siguiente_paso: el paso del actor + 1
 C 0xA1BB baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
@@ -185,6 +299,7 @@ C 0xA205 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA211 lee un dato propio de cada tipo de actor (ix+0x21)
 C 0xA219 guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0xA221 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
+C 0xA225 las esperas de este hijo de la tabla p06:A29B
 C 0xA228 el paso del actor = 0x01
 C 0xA232 quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 C 0xA238 lee el numero de hijo del actor (p04:694D)
@@ -235,7 +350,6 @@ C 0xA35D siguiente_paso: el paso del actor + 1
 C 0xA36C siguiente_paso: el paso del actor + 1
 C 0xA37B siguiente_paso: el paso del actor + 1
 C 0xA38A el paso del actor = 0x03
-C 0xA38E lee el paso del actor
 C 0xA39D guarda la aceleracion en X del actor (baja)
 C 0xA3A2 guarda la aceleracion en X del actor (alta)
 C 0xA3A7 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -262,7 +376,6 @@ C 0xA41D resta 1 a un dato propio de cada tipo de actor (ix+0x23)
 C 0xA422 un dato propio de cada tipo de actor (ix+0x23) = 0x02
 C 0xA429 suma 1 a un dato propio de cada tipo de actor (ix+0x25)
 C 0xA42C resta 1 a un dato propio de cada tipo de actor (ix+0x21)
-C 0xA430 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0xA433 suma 1 a un dato propio de cada tipo de actor (ix+0x22)
 C 0xA441 guarda un dato propio de cada tipo de actor (ix+0x22)
 C 0xA446 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
@@ -313,7 +426,6 @@ C 0xA619 el dibujo del actor (p04:7791) = 0x03
 C 0xA61E lee la Y del actor (en caracteres de 8 puntos)
 C 0xA624 la Y del actor (en caracteres de 8 puntos) = 0x00
 C 0xA628 la Y del actor (fraccion: 32 por punto) = 0x00
-C 0xA635 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0xFF
 C 0xA63B le suma la Y del actor (en caracteres de 8 puntos)
 C 0xA640 le suma la X del actor (en caracteres de 8 puntos)
 C 0xA644 fondo_bajo_el_actor: el caracter del mapa en la posicion del actor mas D, E (con el scroll fino de 0xCA1A y 0xCA1C) y su bit 0 en la tabla 0xDE00 (Z si no es solido); acarreo si cae fuera
@@ -325,6 +437,7 @@ C 0xA65B lee el paso del actor
 C 0xA667 la Y del actor (en caracteres de 8 puntos) = 0x01
 C 0xA66B la X del actor (en caracteres de 8 puntos) = 0x1F
 C 0xA66F otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x14
+C 0xA673 tres hijos: el 1, el 2 y el 3
 C 0xA67C prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 C 0xA67F siguiente_paso: el paso del actor + 1
 C 0xA685 lee la X del actor (en caracteres de 8 puntos)
@@ -347,12 +460,14 @@ C 0xA6F1 suma 1 a un dato propio de cada tipo de actor (ix+2)
 C 0xA6F4 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0A
 C 0xA6F9 resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0xA6FD lee un dato propio de cada tipo de actor (ix+0x23)
+C 0xA700 de 0 a 2
 C 0xA703 guarda un dato propio de cada tipo de actor (ix+0x23)
 C 0xA707 guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0xA70A un dato propio de cada tipo de actor (ix+0x22) = 0x02
 C 0xA70E otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x05
 C 0xA717 resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0xA71B lee un dato propio de cada tipo de actor (ix+0x23)
+C 0xA71E de 0 a 2
 C 0xA722 guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0xA725 un dato propio de cada tipo de actor (ix+0x22) = 0x01
 C 0xA729 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
@@ -361,6 +476,8 @@ C 0xA732 suma 1 a un dato propio de cada tipo de actor (ix+3)
 C 0xA735 suma 1 a un dato propio de cada tipo de actor (ix+2)
 C 0xA73C resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0xA740 lee un dato propio de cada tipo de actor (ix+0x23)
+C 0xA743 de 0 a 2
+C 0xA746 de 0 a 2
 C 0xA74A guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0xA74D un dato propio de cada tipo de actor (ix+0x22) = 0x01
 C 0xA751 suma 1 a un dato propio de cada tipo de actor (ix+3)
@@ -370,6 +487,7 @@ C 0xA75D un dato propio de cada tipo de actor (ix+0x22) = 0x00
 C 0xA77B crea_actor_unido: p04:69A3 y lo une al de IY
 C 0xA781 guarda un dato propio de cada tipo de actor (ix+3)
 C 0xA784 un dato propio de cada tipo de actor (ix+0x23) = 0x01
+C 0xA78F la pieza: ix+0x24 + 3 x (ix+0x23 - 1) + 4 x (ix+3 - 1)
 C 0xA795 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0xA79F guarda un dato propio de cada tipo de actor (ix+0x20)
 C 0xA7AC guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -405,6 +523,7 @@ C 0xA8F0 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
 C 0xA8F5 lee la cuenta de cuadros de la partida
 C 0xA8FC lee un dato propio de cada tipo de actor (ix+0x24)
 C 0xA906 guarda un dato propio de cada tipo de actor (ix+0x24)
+C 0xA909 la pieza: ix+0x24 + 3 x (ix+0x23 - 1) + 4 x (ix+3 - 1)
 C 0xA90C resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xA917 resta 1 a un dato propio de cada tipo de actor (ix+3)
 C 0xA91A el paso del actor = 0x00
@@ -413,14 +532,17 @@ C 0xA923 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 C 0xA927 lee un dato propio de cada tipo de actor (ix+0x24)
 C 0xA92F pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA934 guarda un dato propio de cada tipo de actor (ix+0x24)
+C 0xA938 la pieza: ix+0x24 + 3 x (ix+0x23 - 1) + 4 x (ix+3 - 1)
 C 0xA93E resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0xA942 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 C 0xA946 lee un dato propio de cada tipo de actor (ix+0x24)
 C 0xA94D pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xA952 guarda un dato propio de cada tipo de actor (ix+0x24)
-C 0xA95D lee un dato propio de cada tipo de actor (ix+0x24)
+C 0xA956 la pieza: ix+0x24 + 3 x (ix+0x23 - 1) + 4 x (ix+3 - 1)
 C 0xA961 lee un dato propio de cada tipo de actor (ix+0x23)
+C 0xA965 A x 12
 C 0xA969 lee un dato propio de cada tipo de actor (ix+3)
+C 0xA96D A x 4
 C 0xA977 suma_a_hl: HL = HL + A
 C 0xA97F guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0xA982 pone a uno el bit 6 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
@@ -481,6 +603,7 @@ C 0xAB13 suma 1 a un dato propio de cada tipo de actor (ix+0x22)
 C 0xAB16 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0xAB1F la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x05
 C 0xAB23 siguiente_paso: el paso del actor + 1
+C 0xAB2F guarda 1: la nave deja de moverse con los mandos y no hay choques (el final de una fase)
 C 0xAB34 pide_sonido_c: lo mismo con hasta 0x17 en la cola (musicas y efectos)
 C 0xAB37 siguiente_paso: el paso del actor + 1
 C 0xAB42 lee el paso del actor
@@ -494,11 +617,17 @@ C 0xAB7C lee el nivel con el que se elige la rapidez de las balas (p04:7186) y c
 C 0xAB86 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 C 0xAB8F lee la Y del actor (en caracteres de 8 puntos)
 C 0xAB92 lee la Y del actor (fraccion: 32 por punto)
+C 0xAB99 DE = HL; HL x 8
 C 0xAB9D lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
+C 0xABA0 DE = HL; HL x 8
+C 0xABA4 0 si ya esta, 0x20 o -0x20 segun el lado
 C 0xABA9 guarda la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 C 0xABAC lee la X del actor (en caracteres de 8 puntos)
 C 0xABAF lee la X del actor (fraccion: 32 por punto)
+C 0xABB6 DE = HL; HL x 8
 C 0xABBA lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
+C 0xABBD DE = HL; HL x 8
+C 0xABC1 0 si ya esta, 0x20 o -0x20 segun el lado
 C 0xABC6 guarda la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 C 0xABCD guarda distinto de 0: la fase esta acabada
 C 0xABDE niega_hl: HL = -HL
@@ -531,8 +660,10 @@ C 0xAC86 lee un dato propio de cada tipo de actor (ix+0x25)
 C 0xAC90 guarda un dato propio de cada tipo de actor (ix+0x25)
 C 0xAC93 pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 C 0xAC9C vaiven: ix+0x18 sube hasta B y luego baja (el bit 7 dice hacia donde)
+C 0xACA0 la entrada de la tabla p06:ACC8 por A
 C 0xACA5 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 C 0xACA9 lee el paso del actor
+C 0xACB2 la entrada de la tabla p06:ACC8 por A
 C 0xACB7 pon_color: el color A de la paleta (registro 16) con los bytes D y E por el puerto de la paleta
 C 0xACD8 lee la cuenta de cuadros de la partida
 C 0xAE0D destello_del_cuadro: p04:6A22 con los bancos 4-7-8
