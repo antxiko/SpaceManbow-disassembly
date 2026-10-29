@@ -107,3 +107,30 @@ Todo lo que sale en la web lo hace código de `tools/`:
 - `omsx_ritmo.tcl`: el ritmo de verdad del juego, cuadro a cuadro del VDP.
 - `omsx_demo.tcl`, `lanza_demo.ps1` y `coteja_demo.py`: la demostración en
   openMSX contra el cartucho ejecutado, cuadro de juego a cuadro de juego.
+
+## Código compartido con otros cartuchos de Konami
+
+Este desensamblado se ha comparado, instrucción por instrucción, con
+todos los demás de Konami de la serie. Cuenta un bloque cuando las
+mismas instrucciones, al menos seis desde una etiqueta hasta su `ret`
+o su salto sin condición, están en los dos cartuchos; las direcciones
+no se miran, porque cambian de un cartucho a otro. De los otros 58,
+**33** tienen al menos un bloque en común con este; estos son los
+que más comparten:
+
+| Cartucho | Bloques | Instrucciones | Por ejemplo (aquí = allí) |
+|---|---:|---:|---|
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/es/) | 93 | 1.461 | `orden_DD` (p28:7604) = `orden_dd` |
+| [Nemesis 3 - The Eve of Destruction](https://antxiko.github.io/Nemesis3-disassembly/es/) | 92 | 1.571 | `entrada_de_tabla` (p00:468E) = `lee_palabra` |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/es/) | 64 | 1.138 | `orden_copia_logica` (p00:487C) = `copia_logica` |
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/es/) | 51 | 838 | `canales_encendidos_scc` (p28:6235) |
+| [Contra](https://antxiko.github.io/Contra-disassembly/es/) | 44 | 780 | `canales_encendidos_scc` (p28:6235) |
+| [Parodius](https://antxiko.github.io/Parodius-disassembly/es/) | 43 | 758 | `orden_de_partitura` (p28:728B) = `orden` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/es/) | 42 | 659 | `orden_copia_logica` (p00:487C) = `vdp_lmmm` |
+| [Salamander - Operation X](https://antxiko.github.io/Salamander-disassembly/es/) | 40 | 707 | `orden_de_partitura` (p28:728B) = `orden` |
+| [F-1 Spirit — The Way to Formula 1](https://antxiko.github.io/F1Spirit-disassembly/es/) | 38 | 635 | `nota_de_ruido` (p28:6C38) = `NOTA_CRUDA` |
+| [Hai no Majutsushi - Mahjong 2](https://antxiko.github.io/Majutsushi-disassembly/es/) | 37 | 401 | `copia_a_vram` (p00:46AD) = `copia_a_vram_hl` |
+
+La matriz entera, los 59 cartuchos entre sí, está en
+[Las rutinas](https://antxiko.github.io/MSX-disassembly-database/es/LAS-RUTINAS.html) de la base de datos de la
+serie, con el método y el programa que la mide.

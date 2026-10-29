@@ -106,3 +106,30 @@ Everything on these pages is made by code in `tools/`:
 - `omsx_ritmo.tcl`: the game's real pace, VDP frame by VDP frame.
 - `omsx_demo.tcl`, `lanza_demo.ps1` and `coteja_demo.py`: the demo in openMSX
   against the running cartridge, game frame by game frame.
+
+## Code shared with other Konami cartridges
+
+This disassembly has been compared, instruction by instruction, with
+every other Konami one in the series. A block counts when the same
+instructions, at least six of them from a label to its `ret` or its
+unconditional jump, are in both cartridges; the addresses are left
+aside, because they change from one cartridge to the next. Of the
+other 58, **33** have at least one block in common with this one;
+these are the ones that share the most:
+
+| Cartridge | Blocks | Instructions | For example (here = there) |
+|---|---:|---:|---|
+| [Gekitotsu Pennant Race 2](https://antxiko.github.io/PennantRace2-disassembly/) | 93 | 1,461 | `orden_DD` (p28:7604) = `orden_dd` |
+| [Nemesis 3 - The Eve of Destruction](https://antxiko.github.io/Nemesis3-disassembly/) | 92 | 1,571 | `entrada_de_tabla` (p00:468E) = `lee_palabra` |
+| [The Pro Yakyuu Gekitotsu Pennant Race](https://antxiko.github.io/PennantRace-disassembly/) | 64 | 1,138 | `orden_copia_logica` (p00:487C) = `copia_logica` |
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/) | 51 | 838 | `canales_encendidos_scc` (p28:6235) |
+| [Contra](https://antxiko.github.io/Contra-disassembly/) | 44 | 780 | `canales_encendidos_scc` (p28:6235) |
+| [Parodius](https://antxiko.github.io/Parodius-disassembly/) | 43 | 758 | `orden_de_partitura` (p28:728B) = `orden` |
+| [Konami’s Game Master 2](https://antxiko.github.io/GameMaster2-disassembly/) | 42 | 659 | `orden_copia_logica` (p00:487C) = `vdp_lmmm` |
+| [Salamander - Operation X](https://antxiko.github.io/Salamander-disassembly/) | 40 | 707 | `orden_de_partitura` (p28:728B) = `orden` |
+| [F-1 Spirit — The Way to Formula 1](https://antxiko.github.io/F1Spirit-disassembly/) | 38 | 635 | `nota_de_ruido` (p28:6C38) = `NOTA_CRUDA` |
+| [Hai no Majutsushi - Mahjong 2](https://antxiko.github.io/Majutsushi-disassembly/) | 37 | 401 | `copia_a_vram` (p00:46AD) = `copia_a_vram_hl` |
+
+The whole matrix, the 59 cartridges against each other, is on
+[The routines](https://antxiko.github.io/MSX-disassembly-database/THE-ROUTINES.html) in the series database, along
+with the method and the program that measures it.
