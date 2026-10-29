@@ -59,14 +59,14 @@ L_A04F:
 	call 06adfh		;a052   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;a055
 	call L_A10F		;a056
-	ld a,(ix+021h)		;a059
+	ld a,(ix+021h)		;a059   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	cp 008h		;a05c
 	jr c,L_A061		;a05e
 	xor a			;a060
 L_A061:
 	ld l,a			;a061
 	inc a			;a062
-	ld (ix+021h),a		;a063
+	ld (ix+021h),a		;a063   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ld h,000h		;a066
 	ld de,0a0a4h		;a068
 	add hl,de			;a06b
@@ -100,7 +100,7 @@ L_A095:
 	ld hl,0a0ach		;a095
 	ld bc,000feh		;a098
 L_A09B:
-	ld a,(ix+022h)		;a09b
+	ld a,(ix+022h)		;a09b   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	ld (0ca26h),a		;a09e   ; guarda la rapidez con la que p04:7240 calcula una velocidad
 	jp 07306h		;a0a1   ; rafaga_de_lista: una bala por cada rumbo de la lista de HL (acaba en 0xFF), con la tabla p04:738D, desplazada BC (p04:737C)
 
@@ -118,29 +118,29 @@ DATA_leido_A0A4:
 
 
 L_A0B6:
-	ld a,(ix+023h)		;a0b6
+	ld a,(ix+023h)		;a0b6   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	and a			;a0b9
 	call z,L_A0CC		;a0ba
-	dec (ix+023h)		;a0bd
+	dec (ix+023h)		;a0bd   ; resta 1 a un dato propio de cada tipo de actor (ix+0x23)
 	ld e,(ix+011h)		;a0c0   ; lee la aceleracion en X del actor (baja)
 	ld d,(ix+012h)		;a0c3   ; lee la aceleracion en X del actor (alta)
 	ld hl,00000h		;a0c6
 	jp 06c6dh		;a0c9   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_A0CC:
-	ld a,(ix+024h)		;a0cc
+	ld a,(ix+024h)		;a0cc   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	cp 007h		;a0cf
 	jr c,L_A0D4		;a0d1
 	xor a			;a0d3
 L_A0D4:
 	ld l,a			;a0d4
 	inc a			;a0d5
-	ld (ix+024h),a		;a0d6
+	ld (ix+024h),a		;a0d6   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	ld h,000h		;a0d9
 	add hl,hl			;a0db
 	ld de,0a0f7h		;a0dc
 	add hl,de			;a0df
 	ld a,(hl)			;a0e0
-	ld (ix+023h),a		;a0e1
+	ld (ix+023h),a		;a0e1   ; guarda un dato propio de cada tipo de actor (ix+0x23)
 	inc hl			;a0e4
 	ld l,(hl)			;a0e5
 	ld h,000h		;a0e6
@@ -185,18 +185,18 @@ L_A11D:
 	rrca			;a123
 	rrca			;a124
 	and 01fh		;a125
-	ld (ix+022h),a		;a127
+	ld (ix+022h),a		;a127   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ret			;a12a
 L_A12B:
 	res 7,(ix+014h)		;a12b   ; pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
-	ld a,(ix+020h)		;a12f
+	ld a,(ix+020h)		;a12f   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	cp 00eh		;a132
 	jr c,L_A137		;a134
 	xor a			;a136
 L_A137:
 	ld l,a			;a137
 	inc a			;a138
-	ld (ix+020h),a		;a139
+	ld (ix+020h),a		;a139   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ld h,000h		;a13c
 	add hl,hl			;a13e
 	ld de,0a15fh		;a13f
@@ -205,7 +205,7 @@ L_A137:
 	inc hl			;a144
 	ld a,(hl)			;a145
 	ld (ix+017h),e		;a146   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
-	ld (ix+006h),a		;a149
+	ld (ix+006h),a		;a149   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	cp 004h		;a14c
 	jr nz,L_A157		;a14e
 	call 07ca7h		;a150   ; olvida_golpe: ix+4 = 0
@@ -256,7 +256,7 @@ L_A19A:
 	call 06ad2h		;a19a   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 L_A19D:
 	ret nz			;a19d
-	ld a,(ix+020h)		;a19e
+	ld a,(ix+020h)		;a19e   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	ld c,a			;a1a1
 	and a			;a1a2
 	ld b,004h		;a1a3
@@ -274,29 +274,29 @@ L_A1BB:
 	call 06ad2h		;a1bb   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
 L_A1BE:
 	ret nz			;a1be
-	ld a,(ix+020h)		;a1bf
+	ld a,(ix+020h)		;a1bf   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;a1c2
 	ld de,0a275h		;a1c3
 	jr z,L_A1CB		;a1c6
 	ld de,0a27ah		;a1c8
 L_A1CB:
-	ld a,(ix+021h)		;a1cb
+	ld a,(ix+021h)		;a1cb   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	inc a			;a1ce
 	cp 005h		;a1cf
 	jp nc,06c1dh		;a1d1   ; siguiente_paso: el paso del actor + 1
-	ld (ix+021h),a		;a1d4
+	ld (ix+021h),a		;a1d4   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ld b,a			;a1d7
 	ld l,a			;a1d8
 	ld h,000h		;a1d9
 	add hl,de			;a1db
 	ld a,(hl)			;a1dc
-	ld (ix+006h),a		;a1dd
+	ld (ix+006h),a		;a1dd   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	dec b			;a1e0
 	ret nz			;a1e1
 	ld a,028h		;a1e2
 	jp 04af5h		;a1e4   ; pide_musica: lo mismo con hasta 0x17 en la cola
 L_A1E7:
-	ld a,(ix+020h)		;a1e7
+	ld a,(ix+020h)		;a1e7   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;a1ea
 	ld b,004h		;a1eb
 	jr z,L_A1F1		;a1ed
@@ -308,26 +308,26 @@ L_A1F1:
 	xor a			;a1f9
 L_A1FA:
 	add a,b			;a1fa
-	ld (ix+006h),a		;a1fb
+	ld (ix+006h),a		;a1fb   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	call 06adfh		;a1fe   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;a201
 	jp 06c1dh		;a202   ; siguiente_paso: el paso del actor + 1
 L_A205:
-	ld a,(ix+020h)		;a205
+	ld a,(ix+020h)		;a205   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;a208
 	ld de,0a275h		;a209
 	jr z,L_A211		;a20c
 	ld de,0a27ah		;a20e
 L_A211:
-	ld a,(ix+021h)		;a211
+	ld a,(ix+021h)		;a211   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	sub 001h		;a214
 	jp c,L_A225		;a216
-	ld (ix+021h),a		;a219
+	ld (ix+021h),a		;a219   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ld l,a			;a21c
 	ld h,000h		;a21d
 	add hl,de			;a21f
 	ld a,(hl)			;a220
-	ld (ix+006h),a		;a221
+	ld (ix+006h),a		;a221   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ret			;a224
 L_A225:
 	call L_A235		;a225
@@ -340,7 +340,7 @@ L_A22D:
 	jp 06e98h		;a232   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
 L_A235:
 	ld de,0a29bh		;a235
-	ld l,(ix+038h)		;a238
+	ld l,(ix+038h)		;a238   ; lee el numero de hijo del actor (p04:694D)
 	dec l			;a23b
 	ld h,000h		;a23c
 	add hl,hl			;a23e
@@ -352,7 +352,7 @@ L_A235:
 	ld (ix+018h),d		;a246   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret			;a249
 L_A24A:
-	ld l,(ix+038h)		;a24a
+	ld l,(ix+038h)		;a24a   ; lee el numero de hijo del actor (p04:694D)
 	dec l			;a24d
 	ld h,000h		;a24e
 	add hl,hl			;a250
@@ -368,7 +368,7 @@ L_A24A:
 	ld (ix+00ah),a		;a262   ; guarda la X del actor (en caracteres de 8 puntos)
 	inc hl			;a265
 	ld a,(hl)			;a266
-	ld (ix+020h),a		;a267
+	ld (ix+020h),a		;a267   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 L_A26A:
 	and a			;a26a
 	ld a,000h		;a26b
@@ -405,10 +405,10 @@ mueve_tipo_3C:		; lo que hace en cada cuadro el actor del tipo 0x3C (tabla p04:6
 arranca_tipo_3C:		; la puesta en marcha del actor del tipo 0x3C (tabla p04:6360, desde p04:6344)
 	call 06754h		;a2b7   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 	call 06796h		;a2ba   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
-	ld (ix+006h),a		;a2bd
+	ld (ix+006h),a		;a2bd   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	jp 06c1dh		;a2c0   ; siguiente_paso: el paso del actor + 1
 L_A2C3:
-	ld a,(ix+006h)		;a2c3
+	ld a,(ix+006h)		;a2c3   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	and a			;a2c6
 	jr nz,L_A2CE		;a2c7
 	ld a,0fbh		;a2c9
@@ -448,13 +448,13 @@ DATA_tabla_A2F2:
 arranca_tipo_64:		; la puesta en marcha del actor del tipo 0x64 (tabla p04:6360, desde p04:6344)
 	ld (ix+00ah),028h		;a300   ; la X del actor (en caracteres de 8 puntos) = 0x28
 	ld (ix+008h),00ch		;a304   ; la Y del actor (en caracteres de 8 puntos) = 0x0C
-	ld (ix+006h),006h		;a308
+	ld (ix+006h),006h		;a308   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x06
 	xor a			;a30c
 	call 06c5ch		;a30d   ; llamada_lejana_b: guarda IX e IY y hace la llamada lejana que va detras
 	call 067feh		;a310   ; crea_hijo_a: si hay ficha, crea un actor unido al de IY (p04:6938)
 	ld bc,00406h		;a313
 	call 06929h		;a316   ; hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
-	ld (ix+026h),012h		;a319
+	ld (ix+026h),012h		;a319   ; un dato propio de cada tipo de actor (ix+0x26) = 0x12
 	ld a,(0ca04h)		;a31d
 	and a			;a320
 	jr z,L_A327		;a321
@@ -468,9 +468,9 @@ L_A32D:
 	call 06c1dh		;a333   ; siguiente_paso: el paso del actor + 1
 	jr L_A38E		;a336
 L_A338:
-	dec (ix+026h)		;a338
+	dec (ix+026h)		;a338   ; resta 1 a un dato propio de cada tipo de actor (ix+0x26)
 	jr nz,L_A340		;a33b
-	dec (ix+006h)		;a33d
+	dec (ix+006h)		;a33d   ; resta 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 L_A340:
 	call L_A45C		;a340
 	call L_A3F9		;a343
@@ -526,7 +526,7 @@ L_A38E:
 	ld (ix+017h),a		;a3a7   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 	inc hl			;a3aa
 	ld a,(hl)			;a3ab
-	ld (ix+020h),a		;a3ac
+	ld (ix+020h),a		;a3ac   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ret			;a3af
 
 ; ----------------------------------------------------------------------
@@ -543,33 +543,33 @@ DATA_leido_A3B0:
 
 
 L_A3C4:
-	ld a,(ix+020h)		;a3c4
+	ld a,(ix+020h)		;a3c4   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	dec a			;a3c7
 	jr z,L_A3CE		;a3c8
-	ld (ix+020h),a		;a3ca
+	ld (ix+020h),a		;a3ca   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ret			;a3cd
 L_A3CE:
-	ld a,(ix+006h)		;a3ce
+	ld a,(ix+006h)		;a3ce   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	inc a			;a3d1
 	cp 006h		;a3d2
 	ret z			;a3d4
-	ld (ix+006h),a		;a3d5
+	ld (ix+006h),a		;a3d5   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	dec a			;a3d8
 	ret nz			;a3d9
 	ld a,026h		;a3da
 	jp 04af5h		;a3dc   ; pide_musica: lo mismo con hasta 0x17 en la cola
 L_A3DF:
-	ld a,(ix+020h)		;a3df
+	ld a,(ix+020h)		;a3df   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	dec a			;a3e2
 	jr z,L_A3E9		;a3e3
-	ld (ix+020h),a		;a3e5
+	ld (ix+020h),a		;a3e5   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ret			;a3e8
 L_A3E9:
-	ld a,(ix+006h)		;a3e9
+	ld a,(ix+006h)		;a3e9   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	and a			;a3ec
 	ret z			;a3ed
 	dec a			;a3ee
-	ld (ix+006h),a		;a3ef
+	ld (ix+006h),a		;a3ef   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	and a			;a3f2
 	ret nz			;a3f3
 	ld a,027h		;a3f4
@@ -586,25 +586,25 @@ L_A3FC:
 	and a			;a40b
 	ret			;a40c
 L_A40D:
-	ld (ix+024h),000h		;a40d
+	ld (ix+024h),000h		;a40d   ; un dato propio de cada tipo de actor (ix+0x24) = 0x00
 	jr L_A416		;a411
 L_A413:
-	inc (ix+024h)		;a413
+	inc (ix+024h)		;a413   ; suma 1 a un dato propio de cada tipo de actor (ix+0x24)
 L_A416:
 	call 06adfh		;a416   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;a419
-	ld a,(ix+023h)		;a41a
-	dec (ix+023h)		;a41d
+	ld a,(ix+023h)		;a41a   ; lee un dato propio de cada tipo de actor (ix+0x23)
+	dec (ix+023h)		;a41d   ; resta 1 a un dato propio de cada tipo de actor (ix+0x23)
 	and a			;a420
 	ret nz			;a421
-	ld (ix+023h),002h		;a422
+	ld (ix+023h),002h		;a422   ; un dato propio de cada tipo de actor (ix+0x23) = 0x02
 	call L_A560		;a426
-	inc (ix+025h)		;a429
-	dec (ix+021h)		;a42c
+	inc (ix+025h)		;a429   ; suma 1 a un dato propio de cada tipo de actor (ix+0x25)
+	dec (ix+021h)		;a42c   ; resta 1 a un dato propio de cada tipo de actor (ix+0x21)
 	ret nz			;a42f
 L_A430:
-	ld l,(ix+022h)		;a430
-	inc (ix+022h)		;a433
+	ld l,(ix+022h)		;a430   ; lee un dato propio de cada tipo de actor (ix+0x22)
+	inc (ix+022h)		;a433   ; suma 1 a un dato propio de cada tipo de actor (ix+0x22)
 	ld h,000h		;a436
 	add hl,hl			;a438
 	ld de,0a453h		;a439
@@ -612,15 +612,15 @@ L_A430:
 	ld a,(hl)			;a43d
 	and a			;a43e
 	jr nz,L_A445		;a43f
-	ld (ix+022h),a		;a441
+	ld (ix+022h),a		;a441   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ex de,hl			;a444
 L_A445:
 	ld a,(hl)			;a445
 	ld (ix+018h),a		;a446   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 	inc hl			;a449
 	ld a,(hl)			;a44a
-	ld (ix+021h),a		;a44b
-	ld (ix+025h),000h		;a44e
+	ld (ix+021h),a		;a44b   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+025h),000h		;a44e   ; un dato propio de cada tipo de actor (ix+0x25) = 0x00
 	ret			;a452
 
 ; ----------------------------------------------------------------------
@@ -636,7 +636,7 @@ DATA_leido_A453:
 
 
 L_A45C:
-	ld a,(ix+006h)		;a45c
+	ld a,(ix+006h)		;a45c   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	and a			;a45f
 	jr z,L_A472		;a460
 	cp 005h		;a462
@@ -696,7 +696,7 @@ mueve_tipo_3D:		; lo que hace en cada cuadro el actor del tipo 0x3D (tabla p04:6
 	and a			;a533
 	jr nz,L_A53D		;a534
 arranca_tipo_3D:		; la puesta en marcha del actor del tipo 0x3D (tabla p04:6360, desde p04:6344)
-	ld (ix+020h),000h		;a536
+	ld (ix+020h),000h		;a536   ; un dato propio de cada tipo de actor (ix+0x20) = 0x00
 	jp 06c1dh		;a53a   ; siguiente_paso: el paso del actor + 1
 L_A53D:
 	ld a,(0ca3bh)		;a53d
@@ -709,9 +709,9 @@ L_A53D:
 	inc d			;a54e
 L_A54F:
 	res 3,d		;a54f
-	ld a,(ix+020h)		;a551
+	ld a,(ix+020h)		;a551   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	add a,d			;a554
-	ld (ix+006h),a		;a555
+	ld (ix+006h),a		;a555   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld a,(0ce52h)		;a558
 	and a			;a55b
 	ret z			;a55c
@@ -720,11 +720,11 @@ L_A560:
 	ld a,040h		;a560
 	call 0684ch		;a562   ; crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 	ret c			;a565
-	ld a,(ix+024h)		;a566
-	ld (iy+024h),a		;a569
-	ld a,(ix+021h)		;a56c
-	ld (iy+021h),a		;a56f
-	ld a,(ix+025h)		;a572
+	ld a,(ix+024h)		;a566   ; lee un dato propio de cada tipo de actor (ix+0x24)
+	ld (iy+024h),a		;a569   ; guarda un dato propio de cada tipo de actor (ix+0x24)
+	ld a,(ix+021h)		;a56c   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	ld (iy+021h),a		;a56f   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld a,(ix+025h)		;a572   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	and 003h		;a575
 	ld bc,00c00h		;a577
 	add a,b			;a57a
@@ -739,7 +739,7 @@ mueve_tipo_40:		; lo que hace en cada cuadro el actor del tipo 0x40 (tabla p04:6
 	dec a			;a588
 	jr z,$+127		;a589
 arranca_tipo_40:		; la puesta en marcha del actor del tipo 0x40 (tabla p04:6360, desde p04:6344)
-	ld a,(ix+024h)		;a58b
+	ld a,(ix+024h)		;a58b   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	and a			;a58e
 	ld a,00bh		;a58f
 	jr z,L_A595		;a591
@@ -925,7 +925,7 @@ L_A6C3:
 	ld hl,00000h		;a6c6
 	jp 06c6dh		;a6c9   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_A6CC:
-	ld a,(ix+002h)		;a6cc
+	ld a,(ix+002h)		;a6cc   ; lee un dato propio de cada tipo de actor (ix+2)
 	cp 005h		;a6cf
 	jp nc,04ae0h		;a6d1   ; nada_4AE0: ret
 	call 0461ah		;a6d4   ; despachador: salta a la entrada A de la tabla de direcciones que va detras del call
@@ -945,61 +945,61 @@ DATA_tabla_A6D7:
 L_A6E1:
 	dec (ix+018h)		;a6e1   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret nz			;a6e4
-	inc (ix+002h)		;a6e5
+	inc (ix+002h)		;a6e5   ; suma 1 a un dato propio de cada tipo de actor (ix+2)
 	ret			;a6e8
 L_A6E9:
 	call L_A759		;a6e9
-	ld a,(ix+003h)		;a6ec
+	ld a,(ix+003h)		;a6ec   ; lee un dato propio de cada tipo de actor (ix+3)
 	or a			;a6ef
 	ret nz			;a6f0
-	inc (ix+002h)		;a6f1
+	inc (ix+002h)		;a6f1   ; suma 1 a un dato propio de cada tipo de actor (ix+2)
 	ld (ix+018h),00ah		;a6f4   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0A
 	ret			;a6f8
 L_A6F9:
 	dec (ix+018h)		;a6f9   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret nz			;a6fc
-	ld a,(ix+023h)		;a6fd
+	ld a,(ix+023h)		;a6fd   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	call L_A762		;a700
-	ld (ix+023h),a		;a703
+	ld (ix+023h),a		;a703   ; guarda un dato propio de cada tipo de actor (ix+0x23)
 	inc a			;a706
-	ld (ix+021h),a		;a707
-	ld (ix+022h),002h		;a70a
+	ld (ix+021h),a		;a707   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),002h		;a70a   ; un dato propio de cada tipo de actor (ix+0x22) = 0x02
 	ld (ix+018h),005h		;a70e   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x05
 	jr L_A732		;a712
 L_A714:
 	call L_A759		;a714
 	dec (ix+018h)		;a717   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret nz			;a71a
-	ld a,(ix+023h)		;a71b
+	ld a,(ix+023h)		;a71b   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	call L_A762		;a71e
 	inc a			;a721
-	ld (ix+021h),a		;a722
-	ld (ix+022h),001h		;a725
+	ld (ix+021h),a		;a722   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),001h		;a725   ; un dato propio de cada tipo de actor (ix+0x22) = 0x01
 	call 04678h		;a729   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 L_A72C:
 	and 00fh		;a72c
 	inc a			;a72e
 	ld (ix+018h),a		;a72f   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 L_A732:
-	inc (ix+003h)		;a732
-	inc (ix+002h)		;a735
+	inc (ix+003h)		;a732   ; suma 1 a un dato propio de cada tipo de actor (ix+3)
+	inc (ix+002h)		;a735   ; suma 1 a un dato propio de cada tipo de actor (ix+2)
 	ret			;a738
 L_A739:
 	call L_A759		;a739
 	dec (ix+018h)		;a73c   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret nz			;a73f
-	ld a,(ix+023h)		;a740
+	ld a,(ix+023h)		;a740   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	call L_A762		;a743
 	call L_A762		;a746
 	inc a			;a749
-	ld (ix+021h),a		;a74a
-	ld (ix+022h),001h		;a74d
-	inc (ix+003h)		;a751
-	ld (ix+002h),001h		;a754
+	ld (ix+021h),a		;a74a   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),001h		;a74d   ; un dato propio de cada tipo de actor (ix+0x22) = 0x01
+	inc (ix+003h)		;a751   ; suma 1 a un dato propio de cada tipo de actor (ix+3)
+	ld (ix+002h),001h		;a754   ; un dato propio de cada tipo de actor (ix+2) = 0x01
 	ret			;a758
 L_A759:
-	ld (ix+021h),000h		;a759
-	ld (ix+022h),000h		;a75d
+	ld (ix+021h),000h		;a759   ; un dato propio de cada tipo de actor (ix+0x21) = 0x00
+	ld (ix+022h),000h		;a75d   ; un dato propio de cada tipo de actor (ix+0x22) = 0x00
 	ret			;a761
 L_A762:
 	inc a			;a762
@@ -1021,8 +1021,8 @@ L_A774:
 	call 069bfh		;a77b   ; crea_actor_unido: p04:69A3 y lo une al de IY
 	pop bc			;a77e
 	jr c,L_A792		;a77f
-	ld (ix+003h),b		;a781
-	ld (ix+023h),001h		;a784
+	ld (ix+003h),b		;a781   ; guarda un dato propio de cada tipo de actor (ix+3)
+	ld (ix+023h),001h		;a784   ; un dato propio de cada tipo de actor (ix+0x23) = 0x01
 	pop iy		;a788
 	ld a,b			;a78a
 	dec a			;a78b
@@ -1032,14 +1032,14 @@ L_A792:
 	pop ix		;a792
 	ret			;a794
 L_A795:
-	ld a,(ix+020h)		;a795
+	ld a,(ix+020h)		;a795   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	cp 008h		;a798
 	jr c,L_A79D		;a79a
 	xor a			;a79c
 L_A79D:
 	ld l,a			;a79d
 	inc a			;a79e
-	ld (ix+020h),a		;a79f
+	ld (ix+020h),a		;a79f   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ld h,000h		;a7a2
 	add hl,hl			;a7a4
 	ld de,0a7b3h		;a7a5
@@ -1048,7 +1048,7 @@ L_A79D:
 	inc hl			;a7aa
 	ld d,(hl)			;a7ab
 	ld (ix+017h),e		;a7ac   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
-	ld (ix+006h),d		;a7af
+	ld (ix+006h),d		;a7af   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ret			;a7b2
 
 ; ----------------------------------------------------------------------
@@ -1086,16 +1086,16 @@ L_A863:
 	call L_A9A2		;a863
 	jp c,07cc3h		;a866   ; actor_destruido: ya no se le puede dar, se suelta de los suyos (p04:7D5E), se borra el movimiento (p04:7D1B) y pasa al tipo de su explosion (tabla p04:7E74: tipo, sonido, puntos); suma sus puntos
 	call L_A884		;a869
-	ld a,(ix+023h)		;a86c
+	ld a,(ix+023h)		;a86c   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	cp 002h		;a86f
 	ret nz			;a871
-	ld a,(ix+024h)		;a872
+	ld a,(ix+024h)		;a872   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	or a			;a875
 	ret z			;a876
 	ld a,(ix+004h)		;a877   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;a87a
 	ret z			;a87b
-	ld (iy+004h),a		;a87c
+	ld (iy+004h),a		;a87c   ; guarda el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	ld (ix+004h),000h		;a87f   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;a883
 L_A884:
@@ -1118,12 +1118,12 @@ DATA_tabla_A88F:
 
 
 L_A89F:
-	ld a,(iy+021h)		;a89f
-	cp (ix+003h)		;a8a2
+	ld a,(iy+021h)		;a89f   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	cp (ix+003h)		;a8a2   ; compara con un dato propio de cada tipo de actor (ix+3)
 	ret nz			;a8a5
-	ld a,(iy+022h)		;a8a6
+	ld a,(iy+022h)		;a8a6   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	ld (ix+001h),a		;a8a9   ; guarda el paso del actor
-	ld (ix+023h),a		;a8ac
+	ld (ix+023h),a		;a8ac   ; guarda un dato propio de cada tipo de actor (ix+0x23)
 	ld (ix+017h),003h		;a8af   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x03
 	ld (ix+004h),000h		;a8b3   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;a8b7
@@ -1160,13 +1160,13 @@ L_A8F5:
 	ld a,(0ca02h)		;a8f5   ; lee la cuenta de cuadros de la partida
 	and 003h		;a8f8
 	jr nz,L_A90C		;a8fa
-	ld a,(ix+024h)		;a8fc
+	ld a,(ix+024h)		;a8fc   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	inc a			;a8ff
 	cp 004h		;a900
 	jr c,L_A906		;a902
 	ld a,002h		;a904
 L_A906:
-	ld (ix+024h),a		;a906
+	ld (ix+024h),a		;a906   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	call L_A95D		;a909
 L_A90C:
 	dec (ix+017h)		;a90c   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -1175,14 +1175,14 @@ L_A90C:
 L_A913:
 	call L_A91F		;a913
 	ret nz			;a916
-	dec (iy+003h)		;a917
+	dec (iy+003h)		;a917   ; resta 1 a un dato propio de cada tipo de actor (ix+3)
 	ld (ix+001h),000h		;a91a   ; el paso del actor = 0x00
 	ret			;a91e
 L_A91F:
 	dec (ix+017h)		;a91f   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;a922
 	ld (ix+017h),001h		;a923   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
-	ld a,(ix+024h)		;a927
+	ld a,(ix+024h)		;a927   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	push af			;a92a
 	cp 002h		;a92b
 	ld a,02bh		;a92d
@@ -1190,7 +1190,7 @@ L_A91F:
 L_A932:
 	pop af			;a932
 	dec a			;a933
-	ld (ix+024h),a		;a934
+	ld (ix+024h),a		;a934   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	push af			;a937
 	call L_A95D		;a938
 	pop af			;a93b
@@ -1200,7 +1200,7 @@ L_A93E:
 	dec (ix+017h)		;a93e   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;a941
 	ld (ix+017h),001h		;a942   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
-	ld a,(ix+024h)		;a946
+	ld a,(ix+024h)		;a946   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	push af			;a949
 	or a			;a94a
 	ld a,02ah		;a94b
@@ -1208,20 +1208,20 @@ L_A93E:
 L_A950:
 	pop af			;a950
 	inc a			;a951
-	ld (ix+024h),a		;a952
+	ld (ix+024h),a		;a952   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	push af			;a955
 	call L_A95D		;a956
 	pop af			;a959
 	cp 002h		;a95a
 	ret			;a95c
 L_A95D:
-	ld a,(ix+024h)		;a95d
+	ld a,(ix+024h)		;a95d   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	push af			;a960
-	ld a,(ix+023h)		;a961
+	ld a,(ix+023h)		;a961   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	dec a			;a964
 	call L_A998		;a965
 	push af			;a968
-	ld a,(ix+003h)		;a969
+	ld a,(ix+003h)		;a969   ; lee un dato propio de cada tipo de actor (ix+3)
 	dec a			;a96c
 	call L_A99F		;a96d
 	pop bc			;a970
@@ -1235,7 +1235,7 @@ L_A97A:
 	or a			;a97b
 	jr z,L_A98C		;a97c
 	dec a			;a97e
-	ld (ix+006h),a		;a97f
+	ld (ix+006h),a		;a97f   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	set 6,(ix+015h)		;a982   ; pone a uno el bit 6 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	set 4,(ix+015h)		;a986   ; pone a uno el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	jr L_A994		;a98a
@@ -1260,28 +1260,28 @@ L_A9A2:
 	call 068deh		;a9a2   ; padre: IY = la ficha de ix+0x34 (bits 0-5); compara su numero
 L_A9A5:
 	ret c			;a9a5
-	ld a,(ix+003h)		;a9a6
+	ld a,(ix+003h)		;a9a6   ; lee un dato propio de cada tipo de actor (ix+3)
 	dec a			;a9a9
 	jr z,L_A9B0		;a9aa
-	ld a,(iy+021h)		;a9ac
+	ld a,(iy+021h)		;a9ac   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	ret			;a9af
 L_A9B0:
-	ld a,(iy+022h)		;a9b0
+	ld a,(iy+022h)		;a9b0   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	ret			;a9b3
 L_A9B4:
 	ld hl,0a9dch		;a9b4
 	call 0468eh		;a9b7   ; entrada_de_tabla: HL = la palabra A de la tabla de HL
 L_A9BA:
 	ex de,hl			;a9ba
-	ld b,(iy+008h)		;a9bb
-	ld c,(iy+007h)		;a9be
+	ld b,(iy+008h)		;a9bb   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld c,(iy+007h)		;a9be   ; lee la Y del actor (fraccion: 32 por punto)
 	ld h,e			;a9c1
 	ld l,000h		;a9c2
 	add hl,bc			;a9c4
 	ld (ix+008h),h		;a9c5   ; guarda la Y del actor (en caracteres de 8 puntos)
 	ld (ix+007h),l		;a9c8   ; guarda la Y del actor (fraccion: 32 por punto)
-	ld b,(iy+00ah)		;a9cb
-	ld c,(iy+009h)		;a9ce
+	ld b,(iy+00ah)		;a9cb   ; lee la X del actor (en caracteres de 8 puntos)
+	ld c,(iy+009h)		;a9ce   ; lee la X del actor (fraccion: 32 por punto)
 	ld h,d			;a9d1
 	ld l,000h		;a9d2
 	add hl,bc			;a9d4
@@ -1359,8 +1359,8 @@ DATA_tabla_AA36:
 arranca_tipo_78:		; la puesta en marcha del actor del tipo 0x78 (tabla p04:6360, desde p04:6344)
 	ld (ix+008h),004h		;aa48   ; la Y del actor (en caracteres de 8 puntos) = 0x04
 	ld (ix+00ah),01fh		;aa4c   ; la X del actor (en caracteres de 8 puntos) = 0x1F
-	ld (ix+023h),030h		;aa50
-	ld (ix+025h),015h		;aa54
+	ld (ix+023h),030h		;aa50   ; un dato propio de cada tipo de actor (ix+0x23) = 0x30
+	ld (ix+025h),015h		;aa54   ; un dato propio de cada tipo de actor (ix+0x25) = 0x15
 	call L_AC10		;aa58
 	call 06c4bh		;aa5b   ; llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
 	call 069d7h		;aa5e   ; prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
@@ -1373,10 +1373,10 @@ L_AA64:
 	ret c			;aa6f
 	jp 06c1dh		;aa70   ; siguiente_paso: el paso del actor + 1
 L_AA73:
-	cp (ix+022h)		;aa73
+	cp (ix+022h)		;aa73   ; compara con un dato propio de cada tipo de actor (ix+0x22)
 	jr z,L_AA8A		;aa76
-	inc (ix+022h)		;aa78
-	ld (ix+029h),001h		;aa7b
+	inc (ix+022h)		;aa78   ; suma 1 a un dato propio de cada tipo de actor (ix+0x22)
+	ld (ix+029h),001h		;aa7b   ; la fraccion de la X guardada = 0x01
 	ld hl,00000h		;aa7f
 	call 06c6dh		;aa82   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 	call L_AC65		;aa85
@@ -1384,7 +1384,7 @@ L_AA73:
 	ret			;aa89
 L_AA8A:
 	xor a			;aa8a
-	ld (ix+022h),a		;aa8b
+	ld (ix+022h),a		;aa8b   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ret			;aa8e
 L_AA8F:
 	call L_AC54		;aa8f
@@ -1393,7 +1393,7 @@ L_AA8F:
 	call L_AA73		;aa97
 	ret c			;aa9a
 	call L_ABE1		;aa9b
-	ld (ix+029h),000h		;aa9e
+	ld (ix+029h),000h		;aa9e   ; la fraccion de la X guardada = 0x00
 	jp 06c1dh		;aaa2   ; siguiente_paso: el paso del actor + 1
 L_AAA5:
 	call L_AB86		;aaa5
@@ -1404,7 +1404,7 @@ L_AAA5:
 L_AAB4:
 	ret nz			;aab4
 	call L_ABE1		;aab5
-	ld (ix+028h),003h		;aab8
+	ld (ix+028h),003h		;aab8   ; la X guardada del actor (p04:6CF5) = 0x03
 	jp 06c1dh		;aabc   ; siguiente_paso: el paso del actor + 1
 L_AABF:
 	call L_AB86		;aabf
@@ -1413,9 +1413,9 @@ L_AABF:
 	ld b,004h		;aac8
 	call 06ab8h		;aaca   ; siguiente_dibujo: ix+5 + 1, a 0 al llegar a B
 	ret nz			;aacd
-	dec (ix+028h)		;aace
+	dec (ix+028h)		;aace   ; resta 1 a la X guardada del actor (p04:6CF5)
 	ret nz			;aad1
-	ld (ix+027h),020h		;aad2
+	ld (ix+027h),020h		;aad2   ; un dato propio de cada tipo de actor (ix+0x27) = 0x20
 	jp 06c1dh		;aad6   ; siguiente_paso: el paso del actor + 1
 L_AAD9:
 	call L_AB86		;aad9
@@ -1423,18 +1423,18 @@ L_AAD9:
 	call L_AC65		;aadf
 L_AAE2:
 	call L_AAF2		;aae2
-	dec (ix+027h)		;aae5
+	dec (ix+027h)		;aae5   ; resta 1 a un dato propio de cada tipo de actor (ix+0x27)
 	ret nz			;aae8
-	ld (ix+026h),000h		;aae9
+	ld (ix+026h),000h		;aae9   ; un dato propio de cada tipo de actor (ix+0x26) = 0x00
 	ld (ix+001h),003h		;aaed   ; el paso del actor = 0x03
 	ret			;aaf1
 L_AAF2:
-	ld a,(ix+026h)		;aaf2
+	ld a,(ix+026h)		;aaf2   ; lee un dato propio de cada tipo de actor (ix+0x26)
 	and a			;aaf5
 	ret nz			;aaf6
 	ld de,00104h		;aaf7
 	call 0915dh		;aafa
-	inc (ix+026h)		;aafd
+	inc (ix+026h)		;aafd   ; suma 1 a un dato propio de cada tipo de actor (ix+0x26)
 	jp L_AC10		;ab00
 L_AB03:
 	res 7,(ix+014h)		;ab03   ; pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
@@ -1442,12 +1442,12 @@ L_AB03:
 	ld hl,00000h		;ab0a
 	call 06c6dh		;ab0d   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 	call L_AC65		;ab10
-	inc (ix+022h)		;ab13
-	ld a,(ix+022h)		;ab16
+	inc (ix+022h)		;ab13   ; suma 1 a un dato propio de cada tipo de actor (ix+0x22)
+	ld a,(ix+022h)		;ab16   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	cp 040h		;ab19
 	ret nz			;ab1b
 	call L_ABE1		;ab1c
-	ld (ix+006h),005h		;ab1f
+	ld (ix+006h),005h		;ab1f   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x05
 	jp 06c1dh		;ab23   ; siguiente_paso: el paso del actor + 1
 L_AB26:
 	call L_AC65		;ab26
@@ -1471,24 +1471,24 @@ L_AB42:
 	ret c			;ab47
 	cp 006h		;ab48
 	ret nc			;ab4a
-	ld a,(ix+02ah)		;ab4b
+	ld a,(ix+02ah)		;ab4b   ; lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
 	and a			;ab4e
 	call z,L_AB60		;ab4f
 	dec a			;ab52
-	ld (ix+02ah),a		;ab53
-	ld a,(ix+02bh)		;ab56
+	ld (ix+02ah),a		;ab53   ; guarda la Y guardada del actor (0xFF: no hay, p04:6CE9)
+	ld a,(ix+02bh)		;ab56   ; lee la fraccion de la Y guardada
 	and a			;ab59
 	ret z			;ab5a
 	add a,01dh		;ab5b
 	jp 07a43h		;ab5d   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AB60:
-	ld a,(ix+02bh)		;ab60
+	ld a,(ix+02bh)		;ab60   ; lee la fraccion de la Y guardada
 	inc a			;ab63
 	cp 006h		;ab64
 	jr c,L_AB69		;ab66
 	xor a			;ab68
 L_AB69:
-	ld (ix+02bh),a		;ab69
+	ld (ix+02bh),a		;ab69   ; guarda la fraccion de la Y guardada
 	and a			;ab6c
 	ld bc,00840h		;ab6d
 	jr z,L_AB7C		;ab70
@@ -1562,17 +1562,17 @@ L_ABE1:
 	ld de,00000h		;abe4
 	jp 06c6dh		;abe7   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_ABEA:
-	ld a,(ix+023h)		;abea
+	ld a,(ix+023h)		;abea   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	cp 060h		;abed
 	inc a			;abef
 	jr c,L_ABFB		;abf0
 	ld a,001h		;abf2
-	xor (ix+024h)		;abf4
-	ld (ix+024h),a		;abf7
+	xor (ix+024h)		;abf4   ; XOR con un dato propio de cada tipo de actor (ix+0x24)
+	ld (ix+024h),a		;abf7   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	xor a			;abfa
 L_ABFB:
-	ld (ix+023h),a		;abfb
-	ld a,(ix+024h)		;abfe
+	ld (ix+023h),a		;abfb   ; guarda un dato propio de cada tipo de actor (ix+0x23)
+	ld a,(ix+024h)		;abfe   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	and a			;ac01
 	ld hl,0ffe0h		;ac02
 	jr z,L_AC0A		;ac05
@@ -1581,14 +1581,14 @@ L_AC0A:
 	ld de,00000h		;ac0a
 	jp 06c6dh		;ac0d   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_AC10:
-	ld a,(ix+021h)		;ac10
+	ld a,(ix+021h)		;ac10   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	ld l,a			;ac13
 	inc a			;ac14
 	cp 004h		;ac15
 	jr nz,L_AC1A		;ac17
 	xor a			;ac19
 L_AC1A:
-	ld (ix+021h),a		;ac1a
+	ld (ix+021h),a		;ac1a   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ld h,000h		;ac1d
 	ld de,0ac28h		;ac1f
 	add hl,de			;ac22
@@ -1609,10 +1609,10 @@ DATA_leido_AC28:
 
 L_AC2C:
 	call 06a1ch		;ac2c   ; quita_destello: el bit 1 de 0xCE48 a 0
-	ld a,(ix+029h)		;ac2f
+	ld a,(ix+029h)		;ac2f   ; lee la fraccion de la X guardada
 	and a			;ac32
 	ret nz			;ac33
-	ld a,(ix+02bh)		;ac34
+	ld a,(ix+02bh)		;ac34   ; lee la fraccion de la Y guardada
 	and a			;ac37
 	ret z			;ac38
 	call 07c6bh		;ac39   ; resta_golpe_jefe_b: lo mismo sin mirar ix+0x3F
@@ -1622,7 +1622,7 @@ L_AC2C:
 	call L_ABE1		;ac42
 	ld (ix+005h),000h		;ac45   ; el dibujo del actor (p04:7791) = 0x00
 	ld (ix+001h),006h		;ac49   ; el paso del actor = 0x06
-	ld (ix+029h),001h		;ac4d
+	ld (ix+029h),001h		;ac4d   ; la fraccion de la X guardada = 0x01
 	jp 07cbeh		;ac51   ; puntos_y_sonido: los puntos y el sonido del tipo (p04:7D0A) sin cambiarlo
 L_AC54:
 	ld b,005h		;ac54
@@ -1635,7 +1635,7 @@ L_AC59:
 	cp 009h		;ac62
 	ret			;ac64
 L_AC65:
-	ld b,(ix+020h)		;ac65
+	ld b,(ix+020h)		;ac65   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	call L_ACD8		;ac68
 	ld a,b			;ac6b
 	jr nz,L_AC77		;ac6c
@@ -1644,7 +1644,7 @@ L_AC65:
 	jr c,L_AC74		;ac71
 	xor a			;ac73
 L_AC74:
-	ld (ix+020h),a		;ac74
+	ld (ix+020h),a		;ac74   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 L_AC77:
 	and a			;ac77
 	ret z			;ac78
@@ -1657,13 +1657,13 @@ L_AC80:
 	add a,012h		;ac81
 	jp 07a43h		;ac83   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AC86:
-	ld a,(ix+025h)		;ac86
+	ld a,(ix+025h)		;ac86   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	inc a			;ac89
 	cp 01eh		;ac8a
 	jr nz,L_AC90		;ac8c
 	ld a,01bh		;ac8e
 L_AC90:
-	ld (ix+025h),a		;ac90
+	ld (ix+025h),a		;ac90   ; guarda un dato propio de cada tipo de actor (ix+0x25)
 	jp 07a43h		;ac93   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AC96:
 	call L_ACD8		;ac96
@@ -1772,13 +1772,13 @@ L_AE41:
 	call L_AFAA		;ae41
 	call L_AFD4		;ae44
 L_AE47:
-	ld (ix+021h),001h		;ae47
+	ld (ix+021h),001h		;ae47   ; un dato propio de cada tipo de actor (ix+0x21) = 0x01
 	call L_AEE2		;ae4b
-	inc (ix+020h)		;ae4e
-	ld a,(ix+020h)		;ae51
+	inc (ix+020h)		;ae4e   ; suma 1 a un dato propio de cada tipo de actor (ix+0x20)
+	ld a,(ix+020h)		;ae51   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	cp 050h		;ae54
 	ret nz			;ae56
-	ld (ix+021h),000h		;ae57
+	ld (ix+021h),000h		;ae57   ; un dato propio de cada tipo de actor (ix+0x21) = 0x00
 	call L_AEE2		;ae5b
 	call L_B002		;ae5e
 	jp 06c1dh		;ae61   ; siguiente_paso: el paso del actor + 1
@@ -1849,12 +1849,12 @@ DATA_leido_AED3:
 
 
 L_AED8:
-	ld a,(ix+022h)		;aed8
-	dec (ix+022h)		;aedb
+	ld a,(ix+022h)		;aed8   ; lee un dato propio de cada tipo de actor (ix+0x22)
+	dec (ix+022h)		;aedb   ; resta 1 a un dato propio de cada tipo de actor (ix+0x22)
 	and a			;aede
 	call z,L_AF18		;aedf
 L_AEE2:
-	ld l,(ix+021h)		;aee2
+	ld l,(ix+021h)		;aee2   ; lee un dato propio de cada tipo de actor (ix+0x21)
 L_AEE5:
 	ld h,000h		;aee5
 	add hl,hl			;aee7
@@ -1885,7 +1885,7 @@ L_AEF9:
 	ld de,00000h		;af12
 	jp 06c6dh		;af15   ; pon_c0dc: 0xC0DC = HL y 0xC0DE = DE
 L_AF18:
-	ld l,(ix+023h)		;af18
+	ld l,(ix+023h)		;af18   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	ld h,000h		;af1b
 	add hl,hl			;af1d
 	ld de,0af53h		;af1e
@@ -1893,15 +1893,15 @@ L_AF18:
 	ld a,(hl)			;af22
 	inc a			;af23
 	jr nz,L_AF2A		;af24
-	ld (ix+023h),a		;af26
+	ld (ix+023h),a		;af26   ; guarda un dato propio de cada tipo de actor (ix+0x23)
 	ex de,hl			;af29
 L_AF2A:
-	inc (ix+023h)		;af2a
+	inc (ix+023h)		;af2a   ; suma 1 a un dato propio de cada tipo de actor (ix+0x23)
 	ld a,(hl)			;af2d
-	ld (ix+021h),a		;af2e
+	ld (ix+021h),a		;af2e   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	inc hl			;af31
 	ld a,(hl)			;af32
-	ld (ix+022h),a		;af33
+	ld (ix+022h),a		;af33   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ret			;af36
 
 ; ----------------------------------------------------------------------
@@ -1919,11 +1919,11 @@ DATA_leido_AF37:
 
 
 L_AF66:
-	ld a,(ix+024h)		;af66
-	dec (ix+024h)		;af69
+	ld a,(ix+024h)		;af66   ; lee un dato propio de cada tipo de actor (ix+0x24)
+	dec (ix+024h)		;af69   ; resta 1 a un dato propio de cada tipo de actor (ix+0x24)
 	and a			;af6c
 	ret nz			;af6d
-	ld a,(ix+025h)		;af6e
+	ld a,(ix+025h)		;af6e   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	ld l,a			;af71
 	ld h,000h		;af72
 	inc a			;af74
@@ -1931,22 +1931,22 @@ L_AF66:
 	jr nz,L_AF7A		;af77
 	xor a			;af79
 L_AF7A:
-	ld (ix+025h),a		;af7a
+	ld (ix+025h),a		;af7a   ; guarda un dato propio de cada tipo de actor (ix+0x25)
 	add hl,hl			;af7d
 	ld de,0b02ch		;af7e
 	add hl,de			;af81
 	ld a,(hl)			;af82
-	ld (ix+026h),a		;af83
+	ld (ix+026h),a		;af83   ; guarda un dato propio de cada tipo de actor (ix+0x26)
 	inc hl			;af86
 	ld a,(hl)			;af87
-	ld (ix+024h),a		;af88
+	ld (ix+024h),a		;af88   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	ret			;af8b
 L_AF8C:
 	ld a,(0ca02h)		;af8c   ; lee la cuenta de cuadros de la partida
 	and 003h		;af8f
 	ret nz			;af91
 L_AF92:
-	ld a,(ix+027h)		;af92
+	ld a,(ix+027h)		;af92   ; lee un dato propio de cada tipo de actor (ix+0x27)
 	ld l,a			;af95
 	ld h,000h		;af96
 	inc a			;af98
@@ -1954,24 +1954,24 @@ L_AF92:
 	jr nz,L_AF9E		;af9b
 	xor a			;af9d
 L_AF9E:
-	ld (ix+027h),a		;af9e
+	ld (ix+027h),a		;af9e   ; guarda un dato propio de cada tipo de actor (ix+0x27)
 	ld de,0b034h		;afa1
 	add hl,de			;afa4
 	ld a,(hl)			;afa5
-	ld (ix+028h),a		;afa6
+	ld (ix+028h),a		;afa6   ; guarda la X guardada del actor (p04:6CF5)
 	ret			;afa9
 L_AFAA:
 	ld a,(0ca02h)		;afaa   ; lee la cuenta de cuadros de la partida
 	rrca			;afad
 	ret c			;afae
-	inc (ix+029h)		;afaf
+	inc (ix+029h)		;afaf   ; suma 1 a la fraccion de la X guardada
 	ret			;afb2
 L_AFB3:
-	ld a,(ix+02ah)		;afb3
-	inc (ix+02ah)		;afb6
+	ld a,(ix+02ah)		;afb3   ; lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
+	inc (ix+02ah)		;afb6   ; suma 1 a la Y guardada del actor (0xFF: no hay, p04:6CE9)
 	and 003h		;afb9
 	ret nz			;afbb
-	ld a,(ix+02bh)		;afbc
+	ld a,(ix+02bh)		;afbc   ; lee la fraccion de la Y guardada
 	ld l,a			;afbf
 	ld h,000h		;afc0
 	inc a			;afc2
@@ -1979,17 +1979,17 @@ L_AFB3:
 	jr nz,L_AFC8		;afc5
 	xor a			;afc7
 L_AFC8:
-	ld (ix+02bh),a		;afc8
+	ld (ix+02bh),a		;afc8   ; guarda la fraccion de la Y guardada
 	ld de,0b038h		;afcb
 	add hl,de			;afce
 	ld a,(hl)			;afcf
 	ld (ix+02ch),a		;afd0
 	ret			;afd3
 L_AFD4:
-	ld a,(ix+026h)		;afd4
+	ld a,(ix+026h)		;afd4   ; lee un dato propio de cada tipo de actor (ix+0x26)
 	call 07a43h		;afd7   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AFDA:
-	ld a,(ix+028h)		;afda
+	ld a,(ix+028h)		;afda   ; lee la X guardada del actor (p04:6CF5)
 	call 07a43h		;afdd   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AFE0:
 	ld a,(ix+02ch)		;afe0
@@ -1997,7 +1997,7 @@ L_AFE0:
 	jr z,L_AFE9		;afe4
 	call 07a43h		;afe6   ; pinta_pieza_a: con los bancos 4-7-8, la pieza A del tipo en el mapa
 L_AFE9:
-	ld a,(ix+029h)		;afe9
+	ld a,(ix+029h)		;afe9   ; lee la fraccion de la X guardada
 	rrca			;afec
 	jr c,L_AFF8		;afed
 	ld a,006h		;afef
@@ -2057,7 +2057,7 @@ L_B04E:
 	rrca			;b05a
 	jr c,L_B063		;b05b
 	ld bc,0fb09h		;b05d
-	inc (iy+020h)		;b060
+	inc (iy+020h)		;b060   ; suma 1 a un dato propio de cada tipo de actor (ix+0x20)
 L_B063:
 	jp 06929h		;b063   ; hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
 mueve_tipo_58:		; lo que hace en cada cuadro el actor del tipo 0x58 (tabla p04:64D1, desde p04:64B9)
@@ -2073,7 +2073,7 @@ arranca_tipo_58:		; la puesta en marcha del actor del tipo 0x58 (tabla p04:6360,
 L_B077:
 	and 03fh		;b077
 	ld b,a			;b079
-	ld a,(ix+020h)		;b07a
+	ld a,(ix+020h)		;b07a   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;b07d
 	ld a,080h		;b07e
 	jr z,L_B084		;b080
@@ -2140,7 +2140,7 @@ arranca_tipo_77:		; la puesta en marcha del actor del tipo 0x77 (tabla p04:6360,
 	call 06c4bh		;b0e3   ; llamada_lejana_a: guarda IX e IY y hace la llamada lejana que va detras
 L_B0E6:
 	call 06754h		;b0e6   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
-	ld (ix+006h),000h		;b0e9
+	ld (ix+006h),000h		;b0e9   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x00
 	ld (ix+008h),006h		;b0ed   ; la Y del actor (en caracteres de 8 puntos) = 0x06
 	ld (ix+00ah),01fh		;b0f1   ; la X del actor (en caracteres de 8 puntos) = 0x1F
 	call 069d7h		;b0f5   ; prepara_destello: la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
@@ -2177,7 +2177,7 @@ L_B125:
 	jp 06c1dh		;b128   ; siguiente_paso: el paso del actor + 1
 L_B12B:
 	call L_B0C2		;b12b
-	ld a,(ix+037h)		;b12e
+	ld a,(ix+037h)		;b12e   ; lee cuantos hijos lleva el actor (p04:694D)
 	or a			;b131
 	ret nz			;b132
 	inc (ix+001h)		;b133   ; suma 1 a el paso del actor
@@ -2191,7 +2191,7 @@ L_B141:
 	ret nz			;b147
 	set 7,(ix+014h)		;b148   ; pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	inc (ix+001h)		;b14c   ; suma 1 a el paso del actor
-	ld (ix+003h),00ah		;b14f
+	ld (ix+003h),00ah		;b14f   ; un dato propio de cada tipo de actor (ix+3) = 0x0A
 	ld (ix+018h),032h		;b153   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x32
 	set 4,(ix+015h)		;b157   ; pone a uno el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	call 04e73h		;b15b   ; pon_c0d4_1: 0xC0D4 = 1
@@ -2210,10 +2210,10 @@ L_B170:
 	dec (ix+018h)		;b17a   ; resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret nz			;b17d
 L_B17E:
-	ld a,(ix+003h)		;b17e
+	ld a,(ix+003h)		;b17e   ; lee un dato propio de cada tipo de actor (ix+3)
 	res 7,a		;b181
 	ld (ix+018h),a		;b183   ; guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
-	ld a,(ix+002h)		;b186
+	ld a,(ix+002h)		;b186   ; lee un dato propio de cada tipo de actor (ix+2)
 	push af			;b189
 	call L_B1B4		;b18a
 	pop af			;b18d
@@ -2222,21 +2222,21 @@ L_B17E:
 	jr c,L_B194		;b191
 	xor a			;b193
 L_B194:
-	ld (ix+002h),a		;b194
-	ld a,(ix+003h)		;b197
+	ld (ix+002h),a		;b194   ; guarda un dato propio de cada tipo de actor (ix+2)
+	ld a,(ix+003h)		;b197   ; lee un dato propio de cada tipo de actor (ix+3)
 	bit 7,a		;b19a
 	jr z,L_B1AA		;b19c
 	inc a			;b19e
-	ld (ix+003h),a		;b19f
+	ld (ix+003h),a		;b19f   ; guarda un dato propio de cada tipo de actor (ix+3)
 	cp 088h		;b1a2
 	ret c			;b1a4
-	ld (ix+003h),007h		;b1a5
+	ld (ix+003h),007h		;b1a5   ; un dato propio de cada tipo de actor (ix+3) = 0x07
 	ret			;b1a9
 L_B1AA:
 	dec a			;b1aa
-	ld (ix+003h),a		;b1ab
+	ld (ix+003h),a		;b1ab   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ret nz			;b1ae
-	ld (ix+003h),082h		;b1af
+	ld (ix+003h),082h		;b1af   ; un dato propio de cada tipo de actor (ix+3) = 0x82
 	ret			;b1b3
 L_B1B4:
 	push ix		;b1b4
@@ -2251,7 +2251,7 @@ L_B1B4:
 	cp 005h		;b1c9
 	ld a,02dh		;b1cb
 	jp nc,04af5h		;b1cd   ; pide_musica: lo mismo con hasta 0x17 en la cola
-	bit 0,(ix+002h)		;b1d0
+	bit 0,(ix+002h)		;b1d0   ; mira el bit 0 de un dato propio de cada tipo de actor (ix+2)
 	ret nz			;b1d4
 	jp 04af5h		;b1d5   ; pide_musica: lo mismo con hasta 0x17 en la cola
 L_B1D8:
@@ -2268,8 +2268,8 @@ L_B1D8:
 	add hl,hl			;b1e2
 	ret			;b1e3
 L_B1E4:
-	ld a,(iy+002h)		;b1e4
-	ld (ix+003h),a		;b1e7
+	ld a,(iy+002h)		;b1e4   ; lee un dato propio de cada tipo de actor (ix+2)
+	ld (ix+003h),a		;b1e7   ; guarda un dato propio de cada tipo de actor (ix+3)
 	add a,a			;b1ea
 	add a,a			;b1eb
 	ld e,a			;b1ec
@@ -2278,28 +2278,28 @@ L_B1E4:
 	add hl,de			;b1f2
 	ex de,hl			;b1f3
 	call L_B1D8		;b1f4
-	ld b,(iy+008h)		;b1f7
-	ld c,(iy+007h)		;b1fa
+	ld b,(iy+008h)		;b1f7   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld c,(iy+007h)		;b1fa   ; lee la Y del actor (fraccion: 32 por punto)
 	add hl,bc			;b1fd
 	ld (ix+008h),h		;b1fe   ; guarda la Y del actor (en caracteres de 8 puntos)
 	ld (ix+007h),l		;b201   ; guarda la Y del actor (fraccion: 32 por punto)
 	call L_B1D8		;b204
-	ld b,(iy+00ah)		;b207
-	ld c,(iy+009h)		;b20a
+	ld b,(iy+00ah)		;b207   ; lee la X del actor (en caracteres de 8 puntos)
+	ld c,(iy+009h)		;b20a   ; lee la X del actor (fraccion: 32 por punto)
 	add hl,bc			;b20d
 	ld (ix+00ah),h		;b20e   ; guarda la X del actor (en caracteres de 8 puntos)
 	ld (ix+009h),l		;b211   ; guarda la X del actor (fraccion: 32 por punto)
 	call L_B1D8		;b214
-	ld b,(iy+00eh)		;b217
-	ld c,(iy+00dh)		;b21a
+	ld b,(iy+00eh)		;b217   ; lee la velocidad en X del actor (alta)
+	ld c,(iy+00dh)		;b21a   ; lee la velocidad en X del actor (baja)
 	sra b		;b21d
 	rr c		;b21f
 	add hl,bc			;b221
 	ld (ix+00eh),h		;b222   ; guarda la velocidad en X del actor (alta)
 	ld (ix+00dh),l		;b225   ; guarda la velocidad en X del actor (baja)
 	call L_B1D8		;b228
-	ld b,(iy+00ch)		;b22b
-	ld c,(iy+00bh)		;b22e
+	ld b,(iy+00ch)		;b22b   ; lee la velocidad en Y del actor (alta)
+	ld c,(iy+00bh)		;b22e   ; lee la velocidad en Y del actor (baja)
 	sra b		;b231
 	rr c		;b233
 	add hl,bc			;b235
@@ -2307,7 +2307,7 @@ L_B1E4:
 	ld (ix+00bh),l		;b239   ; guarda la velocidad en Y del actor (baja)
 	ld a,000h		;b23c
 	call L_B268		;b23e
-	ld (ix+006h),a		;b241
+	ld (ix+006h),a		;b241   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld (ix+005h),a		;b244   ; guarda el dibujo del actor (p04:7791)
 	ret			;b247
 
@@ -2325,7 +2325,7 @@ DATA_leido_B248:
 
 L_B268:
 	ld b,a			;b268
-	ld a,(ix+003h)		;b269
+	ld a,(ix+003h)		;b269   ; lee un dato propio de cada tipo de actor (ix+3)
 	ld c,a			;b26c
 	add a,a			;b26d
 	add a,c			;b26e
@@ -2360,8 +2360,8 @@ L_B2A8:
 	call L_B335		;b2a8
 L_B2AB:
 	push af			;b2ab
-	ld (ix+024h),d		;b2ac
-	ld (ix+023h),e		;b2af
+	ld (ix+024h),d		;b2ac   ; guarda un dato propio de cada tipo de actor (ix+0x24)
+	ld (ix+023h),e		;b2af   ; guarda un dato propio de cada tipo de actor (ix+0x23)
 	push de			;b2b2
 	ld h,(ix+008h)		;b2b3   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld l,(ix+007h)		;b2b6   ; lee la Y del actor (fraccion: 32 por punto)
@@ -2398,7 +2398,7 @@ L_B2ED:
 	call L_B34E		;b2ed
 	jr L_B2A8		;b2f0
 L_B2F2:
-	ld l,(ix+024h)		;b2f2
+	ld l,(ix+024h)		;b2f2   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	ld h,000h		;b2f5
 	add hl,hl			;b2f7
 	add hl,hl			;b2f8
@@ -2411,7 +2411,7 @@ L_B2F2:
 	bit 7,h		;b304
 	call nz,04612h		;b306   ; niega_hl: HL = -HL
 	push hl			;b309
-	ld l,(ix+023h)		;b30a
+	ld l,(ix+023h)		;b30a   ; lee un dato propio de cada tipo de actor (ix+0x23)
 	ld h,000h		;b30d
 	add hl,hl			;b30f
 	add hl,hl			;b310
@@ -2435,8 +2435,8 @@ L_B32F:
 	call L_B335		;b32f
 	call L_B34E		;b332
 L_B335:
-	ld h,(ix+021h)		;b335
-	ld l,(ix+022h)		;b338
+	ld h,(ix+021h)		;b335   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	ld l,(ix+022h)		;b338   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	ld a,(hl)			;b33b
 	inc hl			;b33c
 	bit 7,a		;b33d
@@ -2452,8 +2452,8 @@ L_B346:
 	call L_B34E		;b349
 	jr L_B335		;b34c
 L_B34E:
-	ld (ix+021h),h		;b34e
-	ld (ix+022h),l		;b351
+	ld (ix+021h),h		;b34e   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),l		;b351   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ret			;b354
 L_B355:
 	inc a			;b355
@@ -2514,16 +2514,16 @@ L_B3A0:
 	inc hl			;b3bc
 	ld c,(hl)			;b3bd
 	inc hl			;b3be
-	ld (iy+006h),c		;b3bf
-	ld (iy+005h),b		;b3c2
+	ld (iy+006h),c		;b3bf   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
+	ld (iy+005h),b		;b3c2   ; guarda el dibujo del actor (p04:7791)
 	ld b,(hl)			;b3c5
 	inc hl			;b3c6
 	ld c,(hl)			;b3c7
-	ld (iy+013h),b		;b3c8
+	ld (iy+013h),b		;b3c8   ; guarda el alto de la caja del actor (p04:7662)
 	set 7,c		;b3cb
-	ld (iy+014h),c		;b3cd
+	ld (iy+014h),c		;b3cd   ; guarda el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ld a,(ix+009h)		;b3d0   ; lee la X del actor (fraccion: 32 por punto)
-	ld (iy+009h),a		;b3d3
+	ld (iy+009h),a		;b3d3   ; guarda la X del actor (fraccion: 32 por punto)
 	call 0699eh		;b3d6   ; indice_a_0: el indice de la lista del actor (ix+0x2E) a 0
 	or a			;b3d9
 	ret			;b3da
@@ -2559,7 +2559,7 @@ arranca_tipo_76:		; la puesta en marcha del actor del tipo 0x76 (tabla p04:6360,
 	res 4,(ix+015h)		;b43a   ; pone a cero el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	ret			;b43e
 L_B43F:
-	ld a,(ix+037h)		;b43f
+	ld a,(ix+037h)		;b43f   ; lee cuantos hijos lleva el actor (p04:694D)
 	or a			;b442
 	ret nz			;b443
 	jp 06e98h		;b444   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
@@ -2599,33 +2599,33 @@ DATA_paleta_B4A3:
 
 
 L_B4B6:
-	ld (ix+026h),e		;b4b6
-	ld (ix+027h),d		;b4b9
-	ld (ix+025h),001h		;b4bc
+	ld (ix+026h),e		;b4b6   ; guarda un dato propio de cada tipo de actor (ix+0x26)
+	ld (ix+027h),d		;b4b9   ; guarda un dato propio de cada tipo de actor (ix+0x27)
+	ld (ix+025h),001h		;b4bc   ; un dato propio de cada tipo de actor (ix+0x25) = 0x01
 	ret			;b4c0
 L_B4C1:
-	ld a,(ix+025h)		;b4c1
+	ld a,(ix+025h)		;b4c1   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	or a			;b4c4
 	ret z			;b4c5
 	dec a			;b4c6
-	ld (ix+025h),a		;b4c7
+	ld (ix+025h),a		;b4c7   ; guarda un dato propio de cada tipo de actor (ix+0x25)
 	ret nz			;b4ca
-	ld l,(ix+026h)		;b4cb
-	ld h,(ix+027h)		;b4ce
+	ld l,(ix+026h)		;b4cb   ; lee un dato propio de cada tipo de actor (ix+0x26)
+	ld h,(ix+027h)		;b4ce   ; lee un dato propio de cada tipo de actor (ix+0x27)
 	call L_B4DB		;b4d1
-	ld (ix+026h),l		;b4d4
-	ld (ix+027h),h		;b4d7
+	ld (ix+026h),l		;b4d4   ; guarda un dato propio de cada tipo de actor (ix+0x26)
+	ld (ix+027h),h		;b4d7   ; guarda un dato propio de cada tipo de actor (ix+0x27)
 	ret			;b4da
 L_B4DB:
 	ld a,(hl)			;b4db
 	inc hl			;b4dc
 	cp 0ffh		;b4dd
 	jr z,L_B4EE		;b4df
-	ld (ix+025h),a		;b4e1
+	ld (ix+025h),a		;b4e1   ; guarda un dato propio de cada tipo de actor (ix+0x25)
 	ld a,(hl)			;b4e4
 	bit 7,a		;b4e5
 	jr nz,L_B4EC		;b4e7
-	ld (ix+006h),a		;b4e9
+	ld (ix+006h),a		;b4e9   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 L_B4EC:
 	inc hl			;b4ec
 	ret			;b4ed
@@ -2706,7 +2706,7 @@ L_B57E:
 	dec (ix+017h)		;b57e   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;b581
 	ld (ix+017h),005h		;b582   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
-	ld a,(ix+022h)		;b586
+	ld a,(ix+022h)		;b586   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	push af			;b589
 	or a			;b58a
 	ld a,02eh		;b58b
@@ -2714,7 +2714,7 @@ L_B57E:
 L_B590:
 	pop af			;b590
 	inc a			;b591
-	ld (ix+022h),a		;b592
+	ld (ix+022h),a		;b592   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	cp 002h		;b595
 	ret c			;b597
 	ld (ix+017h),005h		;b598   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
@@ -2725,9 +2725,9 @@ L_B59F:
 	call L_B638		;b5a3
 L_B5A6:
 	ld (ix+017h),014h		;b5a6   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x14
-	ld a,(ix+021h)		;b5aa
+	ld a,(ix+021h)		;b5aa   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	inc a			;b5ad
-	ld (ix+021h),a		;b5ae
+	ld (ix+021h),a		;b5ae   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	cp 004h		;b5b1
 	ret c			;b5b3
 	jp 06c1dh		;b5b4   ; siguiente_paso: el paso del actor + 1
@@ -2743,16 +2743,16 @@ L_B5C5:
 	ret nz			;b5c8
 	call L_B638		;b5c9
 	ld (ix+017h),005h		;b5cc   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
-	ld a,(ix+021h)		;b5d0
+	ld a,(ix+021h)		;b5d0   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	dec a			;b5d3
-	ld (ix+021h),a		;b5d4
+	ld (ix+021h),a		;b5d4   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ret nz			;b5d7
 	jp 06c1dh		;b5d8   ; siguiente_paso: el paso del actor + 1
 L_B5DB:
 	dec (ix+017h)		;b5db   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;b5de
 	ld (ix+017h),005h		;b5df   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x05
-	ld a,(ix+022h)		;b5e3
+	ld a,(ix+022h)		;b5e3   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	push af			;b5e6
 	cp 002h		;b5e7
 	ld a,02fh		;b5e9
@@ -2760,19 +2760,19 @@ L_B5DB:
 L_B5EE:
 	pop af			;b5ee
 	dec a			;b5ef
-	ld (ix+022h),a		;b5f0
+	ld (ix+022h),a		;b5f0   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ret nz			;b5f3
 	ld (ix+001h),001h		;b5f4   ; el paso del actor = 0x01
 	ld (ix+018h),01eh		;b5f8   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
 	ret			;b5fc
 L_B5FD:
 	call L_B60C		;b5fd
-	ld a,(ix+022h)		;b600
-	ld (ix+006h),a		;b603
+	ld a,(ix+022h)		;b600   ; lee un dato propio de cada tipo de actor (ix+0x22)
+	ld (ix+006h),a		;b603   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld de,0b670h		;b606
 	jp 07b65h		;b609   ; pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
 L_B60C:
-	ld a,(ix+021h)		;b60c
+	ld a,(ix+021h)		;b60c   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	or a			;b60f
 	ret z			;b610
 	ld b,(ix+008h)		;b611   ; lee la Y del actor (en caracteres de 8 puntos)
@@ -2789,7 +2789,7 @@ L_B60C:
 L_B625:
 	ld (ix+005h),a		;b625   ; guarda el dibujo del actor (p04:7791)
 	add a,003h		;b628
-	ld (ix+006h),a		;b62a
+	ld (ix+006h),a		;b62a   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld de,0b670h		;b62d
 	call 07b65h		;b630   ; pinta_varias_piezas: la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
 L_B633:
@@ -2850,7 +2850,7 @@ L_B6C9:
 	ld a,05eh		;b6c9
 	call 0684ch		;b6cb   ; crea_actor_tipo_a: si hay ficha, crea un actor del tipo D (p04:66DC)
 	ret c			;b6ce
-	ld a,(ix+025h)		;b6cf
+	ld a,(ix+025h)		;b6cf   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	and a			;b6d2
 	ld bc,0fa07h		;b6d3
 	jr z,L_B6DB		;b6d6
@@ -2950,14 +2950,14 @@ DATA_tabla_B77E:
 
 arranca_tipo_7C:		; la puesta en marcha del actor del tipo 0x7C (tabla p04:6360, desde p04:6344)
 	call 06796h		;b782   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
-	ld (ix+003h),a		;b785
+	ld (ix+003h),a		;b785   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ld (ix+016h),0ffh		;b788   ; la vida del actor (p04:7C44 le resta los golpes) = 0xFF
 	ld (ix+005h),011h		;b78c   ; el dibujo del actor (p04:7791) = 0x11
 	ld hl,0c000h		;b790
-	ld (ix+021h),h		;b793
-	ld (ix+022h),l		;b796
+	ld (ix+021h),h		;b793   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),l		;b796   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ld (ix+008h),017h		;b799   ; la Y del actor (en caracteres de 8 puntos) = 0x17
-	bit 0,(ix+003h)		;b79d
+	bit 0,(ix+003h)		;b79d   ; mira el bit 0 de un dato propio de cada tipo de actor (ix+3)
 	ld a,005h		;b7a1
 	ld hl,0b9d0h		;b7a3
 	jr z,L_B7AD		;b7a6
@@ -2965,8 +2965,8 @@ arranca_tipo_7C:		; la puesta en marcha del actor del tipo 0x7C (tabla p04:6360,
 	ld hl,0b978h		;b7aa
 L_B7AD:
 	ld (ix+00ah),a		;b7ad   ; guarda la X del actor (en caracteres de 8 puntos)
-	ld (ix+028h),h		;b7b0
-	ld (ix+027h),l		;b7b3
+	ld (ix+028h),h		;b7b0   ; guarda la X guardada del actor (p04:6CF5)
+	ld (ix+027h),l		;b7b3   ; guarda un dato propio de cada tipo de actor (ix+0x27)
 	call L_B7BC		;b7b6
 	jp 06c1dh		;b7b9   ; siguiente_paso: el paso del actor + 1
 L_B7BC:
@@ -2987,23 +2987,23 @@ L_B7CA:
 	ld a,(ix+017h)		;b7ce   ; lee una cuenta del actor (p04:6AD2 la baja hasta 1)
 	inc a			;b7d1
 	ld (ix+017h),a		;b7d2   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
-	ld (iy+005h),011h		;b7d5
-	ld (iy+016h),0ffh		;b7d9
+	ld (iy+005h),011h		;b7d5   ; el dibujo del actor (p04:7791) = 0x11
+	ld (iy+016h),0ffh		;b7d9   ; la vida del actor (p04:7C44 le resta los golpes) = 0xFF
 	rrca			;b7dd
 	jr nc,L_B7E7		;b7de
-	set 3,(iy+015h)		;b7e0
-	dec (iy+005h)		;b7e4
+	set 3,(iy+015h)		;b7e0   ; pone a uno el bit 3 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+	dec (iy+005h)		;b7e4   ; resta 1 a el dibujo del actor (p04:7791)
 L_B7E7:
 	ld h,(ix+008h)		;b7e7   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld (iy+008h),h		;b7ea
+	ld (iy+008h),h		;b7ea   ; guarda la Y del actor (en caracteres de 8 puntos)
 	ld h,(ix+00ah)		;b7ed   ; lee la X del actor (en caracteres de 8 puntos)
-	ld (iy+00ah),h		;b7f0
-	ld (iy+001h),001h		;b7f3
-	ld (ix+021h),000h		;b7f7
-	ld a,(iy+002h)		;b7fb
+	ld (iy+00ah),h		;b7f0   ; guarda la X del actor (en caracteres de 8 puntos)
+	ld (iy+001h),001h		;b7f3   ; el paso del actor = 0x01
+	ld (ix+021h),000h		;b7f7   ; un dato propio de cada tipo de actor (ix+0x21) = 0x00
+	ld a,(iy+002h)		;b7fb   ; lee un dato propio de cada tipo de actor (ix+2)
 	inc a			;b7fe
-	ld (iy+002h),a		;b7ff
-	ld (ix+002h),a		;b802
+	ld (iy+002h),a		;b7ff   ; guarda un dato propio de cada tipo de actor (ix+2)
+	ld (ix+002h),a		;b802   ; guarda un dato propio de cada tipo de actor (ix+2)
 	or a			;b805
 	ret			;b806
 L_B807:
@@ -3013,10 +3013,10 @@ L_B807:
 	call 068b9h		;b80e   ; padre_por_35: IY = la ficha de ix+0x35 (0xD700 y acarreo si no hay)
 L_B811:
 	call L_B82C		;b811
-	ld a,(ix+036h)		;b814
+	ld a,(ix+036h)		;b814   ; lee el actor unido por detras (p04:6964)
 	or a			;b817
 	ret nz			;b818
-	ld a,(ix+021h)		;b819
+	ld a,(ix+021h)		;b819   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	rrca			;b81c
 	rrca			;b81d
 	rrca			;b81e
@@ -3033,7 +3033,7 @@ L_B82C:
 	ld a,(ix+004h)		;b835   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;b838
 	ret z			;b839
-	ld (iy+004h),a		;b83a
+	ld (iy+004h),a		;b83a   ; guarda el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	ld (ix+004h),000h		;b83d   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;b841
 L_B842:
@@ -3045,15 +3045,15 @@ L_B842:
 	push hl			;b84b
 	call 074efh		;b84c   ; seno: HL = el seno del angulo A (0-0xFF) con la tabla de un cuarto de vuelta p04:73AD, con signo
 	call L_B873		;b84f
-	ld d,(iy+008h)		;b852
-	ld e,(iy+007h)		;b855
+	ld d,(iy+008h)		;b852   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld e,(iy+007h)		;b855   ; lee la Y del actor (fraccion: 32 por punto)
 	or a			;b858
 	add hl,de			;b859
 	ld (ix+008h),h		;b85a   ; guarda la Y del actor (en caracteres de 8 puntos)
 	ld (ix+007h),l		;b85d   ; guarda la Y del actor (fraccion: 32 por punto)
 	ex (sp),hl			;b860
-	ld d,(iy+00ah)		;b861
-	ld e,(iy+009h)		;b864
+	ld d,(iy+00ah)		;b861   ; lee la X del actor (en caracteres de 8 puntos)
+	ld e,(iy+009h)		;b864   ; lee la X del actor (fraccion: 32 por punto)
 	or a			;b867
 	add hl,de			;b868
 	ld (ix+00ah),h		;b869   ; guarda la X del actor (en caracteres de 8 puntos)
@@ -3091,20 +3091,20 @@ L_B880:
 	ld h,a			;b897
 	ret			;b898
 L_B899:
-	ld h,(iy+025h)		;b899
-	ld l,(iy+026h)		;b89c
-	ld d,(iy+023h)		;b89f
-	ld e,(iy+024h)		;b8a2
-	ld (ix+023h),d		;b8a5
-	ld (ix+024h),e		;b8a8
+	ld h,(iy+025h)		;b899   ; lee un dato propio de cada tipo de actor (ix+0x25)
+	ld l,(iy+026h)		;b89c   ; lee un dato propio de cada tipo de actor (ix+0x26)
+	ld d,(iy+023h)		;b89f   ; lee un dato propio de cada tipo de actor (ix+0x23)
+	ld e,(iy+024h)		;b8a2   ; lee un dato propio de cada tipo de actor (ix+0x24)
+	ld (ix+023h),d		;b8a5   ; guarda un dato propio de cada tipo de actor (ix+0x23)
+	ld (ix+024h),e		;b8a8   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	add hl,de			;b8ab
-	ld (ix+025h),h		;b8ac
-	ld (ix+026h),l		;b8af
-	ld d,(iy+021h)		;b8b2
-	ld e,(iy+022h)		;b8b5
+	ld (ix+025h),h		;b8ac   ; guarda un dato propio de cada tipo de actor (ix+0x25)
+	ld (ix+026h),l		;b8af   ; guarda un dato propio de cada tipo de actor (ix+0x26)
+	ld d,(iy+021h)		;b8b2   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	ld e,(iy+022h)		;b8b5   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	add hl,de			;b8b8
-	ld (ix+021h),h		;b8b9
-	ld (ix+022h),l		;b8bc
+	ld (ix+021h),h		;b8b9   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),l		;b8bc   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	ld a,h			;b8bf
 	ret			;b8c0
 L_B8C1:
@@ -3120,29 +3120,29 @@ L_B8CB:
 	ld a,(ix+004h)		;b8cb   ; lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	or a			;b8ce
 	jr nz,L_B923		;b8cf
-	ld h,(ix+028h)		;b8d1
-	ld l,(ix+027h)		;b8d4
-	ld d,(ix+021h)		;b8d7
-	ld e,(ix+022h)		;b8da
+	ld h,(ix+028h)		;b8d1   ; lee la X guardada del actor (p04:6CF5)
+	ld l,(ix+027h)		;b8d4   ; lee un dato propio de cada tipo de actor (ix+0x27)
+	ld d,(ix+021h)		;b8d7   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	ld e,(ix+022h)		;b8da   ; lee un dato propio de cada tipo de actor (ix+0x22)
 	call L_B949		;b8dd
-	ld (ix+021h),d		;b8e0
-	ld (ix+022h),e		;b8e3
+	ld (ix+021h),d		;b8e0   ; guarda un dato propio de cada tipo de actor (ix+0x21)
+	ld (ix+022h),e		;b8e3   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	push af			;b8e6
-	ld d,(ix+025h)		;b8e7
-	ld e,(ix+026h)		;b8ea
+	ld d,(ix+025h)		;b8e7   ; lee un dato propio de cada tipo de actor (ix+0x25)
+	ld e,(ix+026h)		;b8ea   ; lee un dato propio de cada tipo de actor (ix+0x26)
 	call L_B8C1		;b8ed
 	call L_B949		;b8f0
 	call L_B8C1		;b8f3
-	ld (ix+025h),d		;b8f6
-	ld (ix+026h),e		;b8f9
+	ld (ix+025h),d		;b8f6   ; guarda un dato propio de cada tipo de actor (ix+0x25)
+	ld (ix+026h),e		;b8f9   ; guarda un dato propio de cada tipo de actor (ix+0x26)
 	push af			;b8fc
-	ld d,(ix+023h)		;b8fd
-	ld e,(ix+024h)		;b900
+	ld d,(ix+023h)		;b8fd   ; lee un dato propio de cada tipo de actor (ix+0x23)
+	ld e,(ix+024h)		;b900   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	call L_B8C1		;b903
 	call L_B949		;b906
 	call L_B8C1		;b909
-	ld (ix+023h),d		;b90c
-	ld (ix+024h),e		;b90f
+	ld (ix+023h),d		;b90c   ; guarda un dato propio de cada tipo de actor (ix+0x23)
+	ld (ix+024h),e		;b90f   ; guarda un dato propio de cada tipo de actor (ix+0x24)
 	ld c,000h		;b912
 	rr c		;b914
 	pop af			;b916
@@ -3158,8 +3158,8 @@ L_B923:
 	ld (ix+004h),000h		;b923   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 	ret			;b927
 L_B928:
-	ld h,(ix+028h)		;b928
-	ld l,(ix+027h)		;b92b
+	ld h,(ix+028h)		;b928   ; lee la X guardada del actor (p04:6CF5)
+	ld l,(ix+027h)		;b92b   ; lee un dato propio de cada tipo de actor (ix+0x27)
 	ld de,0000ch		;b92e
 	add hl,de			;b931
 	ld e,(hl)			;b932
@@ -3169,8 +3169,8 @@ L_B928:
 	and e			;b936
 	inc a			;b937
 	call z,L_B942		;b938
-	ld (ix+028h),h		;b93b
-	ld (ix+027h),l		;b93e
+	ld (ix+028h),h		;b93b   ; guarda la X guardada del actor (p04:6CF5)
+	ld (ix+027h),l		;b93e   ; guarda un dato propio de cada tipo de actor (ix+0x27)
 	ret			;b941
 L_B942:
 	inc hl			;b942
@@ -3268,8 +3268,8 @@ arranca_tipo_1C:		; la puesta en marcha del actor del tipo 0x1C (tabla p04:6360,
 	rla			;ba45
 	ld c,006h		;ba46
 	jr nc,L_BA52		;ba48
-	inc (ix+020h)		;ba4a
-	ld (ix+006h),001h		;ba4d
+	inc (ix+020h)		;ba4a   ; suma 1 a un dato propio de cada tipo de actor (ix+0x20)
+	ld (ix+006h),001h		;ba4d   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x01
 	inc c			;ba51
 L_BA52:
 	ld (ix+03eh),c		;ba52
@@ -3303,8 +3303,8 @@ L_BA81:
 	call 06ae8h		;ba83   ; pon_cuenta_2: ix+0x18 = A
 	call 06814h		;ba86   ; crea_hijo_b: si hay ficha, crea un actor unido al de IY (p04:694D)
 	ret c			;ba89
-	ld a,(ix+020h)		;ba8a
-	ld (iy+020h),a		;ba8d
+	ld a,(ix+020h)		;ba8a   ; lee un dato propio de cada tipo de actor (ix+0x20)
+	ld (iy+020h),a		;ba8d   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ld bc,00201h		;ba90
 	and a			;ba93
 	jr nz,L_BA99		;ba94
@@ -3329,10 +3329,10 @@ DATA_tabla_BAA5:
 
 
 arranca_tipo_1D:		; la puesta en marcha del actor del tipo 0x1D (tabla p04:6360, desde p04:6344)
-	ld a,(ix+020h)		;baab
+	ld a,(ix+020h)		;baab   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	ld c,a			;baae
 	ld b,(ix+008h)		;baaf   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld (ix+022h),b		;bab2
+	ld (ix+022h),b		;bab2   ; guarda un dato propio de cada tipo de actor (ix+0x22)
 	call L_BB27		;bab5
 	jr c,L_BB24		;bab8
 	ld a,c			;baba
@@ -3359,12 +3359,12 @@ L_BADF:
 	cp b			;bae1
 	jr c,L_BAE8		;bae2
 	xor a			;bae4
-	inc (ix+03dh)		;bae5
+	inc (ix+03dh)		;bae5   ; suma 1 a un aviso de los hijos al padre (p04:7D77)
 L_BAE8:
 	ld (hl),a			;bae8
 	jp 06c1dh		;bae9   ; siguiente_paso: el paso del actor + 1
 L_BAEC:
-	ld a,(ix+020h)		;baec
+	ld a,(ix+020h)		;baec   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;baef
 	ld l,(ix+00ch)		;baf0   ; lee la velocidad en Y del actor (alta)
 	ld h,(ix+00bh)		;baf3   ; lee la velocidad en Y del actor (baja)
@@ -3375,7 +3375,7 @@ L_BAFB:
 	call 04650h		;bafe   ; compara_hl_de: Z si HL = DE
 L_BB01:
 	call c,06a9ah		;bb01   ; acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
-	ld a,(ix+021h)		;bb04
+	ld a,(ix+021h)		;bb04   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	sub (ix+008h)		;bb07   ; le resta la Y del actor (en caracteres de 8 puntos)
 	jr nc,L_BB0E		;bb0a
 	neg		;bb0c
@@ -3391,7 +3391,7 @@ L_BB1A:
 	call 06a9ah		;bb1a   ; acelera_actor: la velocidad del actor mas su aceleracion (Y y X)
 L_BB1D:
 	ld a,(ix+008h)		;bb1d   ; lee la Y del actor (en caracteres de 8 puntos)
-	cp (ix+022h)		;bb20
+	cp (ix+022h)		;bb20   ; compara con un dato propio de cada tipo de actor (ix+0x22)
 	ret nz			;bb23
 L_BB24:
 	jp 06e98h		;bb24   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
@@ -3418,7 +3418,7 @@ L_BB36:
 	jr c,L_BB43		;bb40
 	ld a,d			;bb42
 L_BB43:
-	ld (ix+021h),a		;bb43
+	ld (ix+021h),a		;bb43   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	or a			;bb46
 	ret			;bb47
 L_BB48:
@@ -3456,7 +3456,7 @@ arranca_tipo_1E:		; la puesta en marcha del actor del tipo 0x1E (tabla p04:6360,
 	ld a,d			;bb7e
 	rlca			;bb7f
 	jr nc,L_BB85		;bb80
-	inc (ix+020h)		;bb82
+	inc (ix+020h)		;bb82   ; suma 1 a un dato propio de cada tipo de actor (ix+0x20)
 L_BB85:
 	ld de,0ff80h		;bb85
 	ld b,01eh		;bb88
@@ -3465,7 +3465,7 @@ L_BB85:
 	jr z,L_BB9C		;bb8e
 	ld de,00080h		;bb90
 	ld b,000h		;bb93
-	inc (ix+023h)		;bb95
+	inc (ix+023h)		;bb95   ; suma 1 a un dato propio de cada tipo de actor (ix+0x23)
 	ld (ix+016h),040h		;bb98   ; la vida del actor (p04:7C44 le resta los golpes) = 0x40
 L_BB9C:
 	ld (ix+00ah),b		;bb9c   ; guarda la X del actor (en caracteres de 8 puntos)
@@ -3499,12 +3499,12 @@ L_BBC6:
 	ret c			;bbcf
 L_BBD0:
 	ld a,001h		;bbd0
-	xor (ix+020h)		;bbd2
-	ld (ix+020h),a		;bbd5
+	xor (ix+020h)		;bbd2   ; XOR con un dato propio de cada tipo de actor (ix+0x20)
+	ld (ix+020h),a		;bbd5   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	call L_BBF1		;bbd8
-	ld a,(ix+021h)		;bbdb
+	ld a,(ix+021h)		;bbdb   ; lee un dato propio de cada tipo de actor (ix+0x21)
 	inc a			;bbde
-	ld (ix+021h),a		;bbdf
+	ld (ix+021h),a		;bbdf   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	cp 003h		;bbe2
 	ret c			;bbe4
 	call 06bf0h		;bbe5   ; velocidad_y_a_0: la velocidad en Y a 0
@@ -3514,7 +3514,7 @@ L_BBE8:
 L_BBEE:
 	jp 06c1dh		;bbee   ; siguiente_paso: el paso del actor + 1
 L_BBF1:
-	ld a,(ix+020h)		;bbf1
+	ld a,(ix+020h)		;bbf1   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;bbf4
 	ld hl,00040h		;bbf5
 	jr nz,L_BBFD		;bbf8
@@ -3583,7 +3583,7 @@ L_BC64:
 	ld a,(ix+008h)		;bc6c   ; lee la Y del actor (en caracteres de 8 puntos)
 	cp 018h		;bc6f
 	ret nc			;bc71
-	ld a,(ix+024h)		;bc72
+	ld a,(ix+024h)		;bc72   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	and a			;bc75
 	call z,L_BCC0		;bc76
 	call 06ad2h		;bc79   ; baja_cuenta: baja la cuenta de ix+0x17 si no ha llegado a 1; Z cuando llega
@@ -3592,8 +3592,8 @@ L_BC7C:
 	call 06adfh		;bc7d   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;bc80
 	ld (ix+018h),004h		;bc81   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x04
-	ld a,(ix+024h)		;bc85
-	inc (ix+024h)		;bc88
+	ld a,(ix+024h)		;bc85   ; lee un dato propio de cada tipo de actor (ix+0x24)
+	inc (ix+024h)		;bc88   ; suma 1 a un dato propio de cada tipo de actor (ix+0x24)
 	cp 003h		;bc8b
 	jr z,L_BCAA		;bc8d
 	cp 001h		;bc8f
@@ -3613,7 +3613,7 @@ L_BC98:
 	ex de,hl			;bca6
 	jp 0737ch		;bca7   ; desplaza_bala: la Y y la X de la ficha de HL mas C y B
 L_BCAA:
-	ld (ix+024h),000h		;bcaa
+	ld (ix+024h),000h		;bcaa   ; un dato propio de cada tipo de actor (ix+0x24) = 0x00
 	ld (ix+017h),020h		;bcae   ; una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x20
 	inc (ix+018h)		;bcb2   ; suma 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 	ret			;bcb5
@@ -3674,7 +3674,7 @@ arranca_tipo_20:		; la puesta en marcha del actor del tipo 0x20 (tabla p04:6360,
 	ld a,(hl)			;bd05
 	rrca			;bd06
 	jr nc,L_BD0C		;bd07
-	inc (ix+03dh)		;bd09
+	inc (ix+03dh)		;bd09   ; suma 1 a un aviso de los hijos al padre (p04:7D77)
 L_BD0C:
 	jp 06c1dh		;bd0c   ; siguiente_paso: el paso del actor + 1
 mueve_tipo_22:		; lo que hace en cada cuadro el actor del tipo 0x22 (tabla p04:64D1, desde p04:64B9)
@@ -3688,7 +3688,7 @@ arranca_tipo_22:		; la puesta en marcha del actor del tipo 0x22 (tabla p04:6360,
 	ld (ix+03eh),00bh		;bd1b
 	jp 06c1dh		;bd1f   ; siguiente_paso: el paso del actor + 1
 L_BD22:
-	ld l,(ix+020h)		;bd22
+	ld l,(ix+020h)		;bd22   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	ld h,000h		;bd25
 	add hl,hl			;bd27
 	ld de,0bd6bh		;bd28
@@ -3698,13 +3698,13 @@ L_BD22:
 	ret z			;bd2e
 	cp (ix+00ah)		;bd2f   ; compara con la X del actor (en caracteres de 8 puntos)
 	ret c			;bd32
-	inc (ix+020h)		;bd33
+	inc (ix+020h)		;bd33   ; suma 1 a un dato propio de cada tipo de actor (ix+0x20)
 	inc hl			;bd36
 	ld a,(0ca19h)		;bd37   ; lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	cp (hl)			;bd3a
 	ret c			;bd3b
 	ld (ix+018h),006h		;bd3c   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x06
-	ld (ix+006h),001h		;bd40
+	ld (ix+006h),001h		;bd40   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x01
 	jp 06c1dh		;bd44   ; siguiente_paso: el paso del actor + 1
 L_BD47:
 	call 06adfh		;bd47   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
@@ -3718,7 +3718,7 @@ L_BD47:
 	ld a,017h		;bd5d
 	call 04af0h		;bd5f   ; pide_sonido_b: lo mismo con hasta 0x17 en la cola
 L_BD62:
-	ld (ix+006h),000h		;bd62
+	ld (ix+006h),000h		;bd62   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x00
 	ld (ix+001h),001h		;bd66   ; el paso del actor = 0x01
 	ret			;bd6a
 
@@ -3762,7 +3762,7 @@ mueve_tipo_24:		; lo que hace en cada cuadro el actor del tipo 0x24 (tabla p04:6
 arranca_tipo_24:		; la puesta en marcha del actor del tipo 0x24 (tabla p04:6360, desde p04:6344)
 	call 06754h		;bda1   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 	call 06796h		;bda4   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
-	ld (ix+020h),a		;bda7
+	ld (ix+020h),a		;bda7   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	jp 06c1dh		;bdaa   ; siguiente_paso: el paso del actor + 1
 L_BDAD:
 	ld a,(ix+00ah)		;bdad   ; lee la X del actor (en caracteres de 8 puntos)
@@ -3864,12 +3864,12 @@ arranca_tipo_26:		; la puesta en marcha del actor del tipo 0x26 (tabla p04:6360,
 	call 06754h		;be6b   ; pon_sitio_del_guion: la Y y la X del actor con el siguiente byte de su lista (p04:6796), segun 0xC0D5
 	call 06796h		;be6e   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 	call 06796h		;be71   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
-	ld (ix+021h),a		;be74
+	ld (ix+021h),a		;be74   ; guarda un dato propio de cada tipo de actor (ix+0x21)
 	ld (ix+03eh),00ch		;be77
 	jp 06c1dh		;be7b   ; siguiente_paso: el paso del actor + 1
 L_BE7E:
-	ld (ix+006h),000h		;be7e
-	ld l,(ix+026h)		;be82
+	ld (ix+006h),000h		;be7e   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x00
+	ld l,(ix+026h)		;be82   ; lee un dato propio de cada tipo de actor (ix+0x26)
 	ld h,000h		;be85
 	add hl,hl			;be87
 	ld de,0befdh		;be88
@@ -3880,7 +3880,7 @@ L_BE7E:
 	cp (ix+00ah)		;be8f   ; compara con la X del actor (en caracteres de 8 puntos)
 	ret c			;be92
 	inc hl			;be93
-	inc (ix+026h)		;be94
+	inc (ix+026h)		;be94   ; suma 1 a un dato propio de cada tipo de actor (ix+0x26)
 	ld b,(hl)			;be97
 	ld a,(0ca19h)		;be98   ; lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 	cp b			;be9b
@@ -3895,17 +3895,17 @@ L_BEA7:
 	jr c,L_BEAD		;bea9
 	ld a,00fh		;beab
 L_BEAD:
-	ld (ix+025h),a		;bead
+	ld (ix+025h),a		;bead   ; guarda un dato propio de cada tipo de actor (ix+0x25)
 	ld (ix+018h),006h		;beb0   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x06
 	jp 06c1dh		;beb4   ; siguiente_paso: el paso del actor + 1
 L_BEB7:
 	call 06adfh		;beb7   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;beba
-	ld (ix+022h),000h		;bebb
+	ld (ix+022h),000h		;bebb   ; un dato propio de cada tipo de actor (ix+0x22) = 0x00
 	ld (ix+001h),001h		;bebf   ; el paso del actor = 0x01
 	ret			;bec3
 L_BEC4:
-	ld (ix+006h),001h		;bec4
+	ld (ix+006h),001h		;bec4   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x01
 	call 06adfh		;bec8   ; baja_cuenta_2: baja la cuenta de ix+0x18 si no ha llegado a 1; Z cuando llega
 	ret nz			;becb
 	ld a,011h		;becc
@@ -3914,16 +3914,16 @@ L_BEC4:
 	ld bc,00202h		;bed2
 	call 06929h		;bed5   ; hijo_al_lado: la Y y la X del actor de IY = las de IX mas C y B
 	call 0699eh		;bed8   ; indice_a_0: el indice de la lista del actor (ix+0x2E) a 0
-	ld l,(ix+025h)		;bedb
+	ld l,(ix+025h)		;bedb   ; lee un dato propio de cada tipo de actor (ix+0x25)
 	ld h,000h		;bede
 	ld de,0bf04h		;bee0
 	add hl,de			;bee3
 	ld a,(hl)			;bee4
-	ld (iy+017h),a		;bee5
+	ld (iy+017h),a		;bee5   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ld (ix+018h),004h		;bee8   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x04
-	inc (ix+022h)		;beec
-	ld a,(ix+021h)		;beef
-	cp (ix+022h)		;bef2
+	inc (ix+022h)		;beec   ; suma 1 a un dato propio de cada tipo de actor (ix+0x22)
+	ld a,(ix+021h)		;beef   ; lee un dato propio de cada tipo de actor (ix+0x21)
+	cp (ix+022h)		;bef2   ; compara con un dato propio de cada tipo de actor (ix+0x22)
 	ret nz			;bef5
 	ld (ix+018h),008h		;bef6   ; otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x08
 	jp 06c1dh		;befa   ; siguiente_paso: el paso del actor + 1
@@ -3986,7 +3986,7 @@ L_BF5F:
 	jr z,L_BF86		;bf6d
 	cp 003h		;bf6f
 	jr nz,L_BF77		;bf71
-	ld (ix+006h),004h		;bf73
+	ld (ix+006h),004h		;bf73   ; la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x04
 L_BF77:
 	dec a			;bf77
 	ld l,a			;bf78
@@ -4010,7 +4010,7 @@ L_BF8D:
 L_BF9A:
 	ld hl,0ce48h		;bf9a
 	res 1,(hl)		;bf9d
-	dec (ix+020h)		;bf9f
+	dec (ix+020h)		;bf9f   ; resta 1 a un dato propio de cada tipo de actor (ix+0x20)
 	ret nz			;bfa2
 	ld (hl),003h		;bfa3
 	ld a,(0ce4dh)		;bfa5
@@ -4022,7 +4022,7 @@ L_BFAE:
 L_BFB1:
 	and 007h		;bfb1
 	inc a			;bfb3
-	ld (ix+020h),a		;bfb4
+	ld (ix+020h),a		;bfb4   ; guarda un dato propio de cada tipo de actor (ix+0x20)
 	ret			;bfb7
 
 ; ----------------------------------------------------------------------

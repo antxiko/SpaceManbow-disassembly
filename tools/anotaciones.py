@@ -67,7 +67,8 @@ RAM = {
     0xC942: ("1: hay que mandar la cola de sonidos", "p00:4B4A"),
     0xCA40: ("la nave: su ficha de actor (0 = muerta)", "p00:440F, p04:6B94"),
     0xD800: ("el mapa de caracteres de la pantalla: 0x30 por fila, con 8 de margen (p04:7B18)", "p04:7B38"),
-    0xDE00: ("lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores", "p04:753C, p04:75C2"),
+    0xDE00: ("lo que es cada caracter del fondo: bit 0 solido, bit 2 mira los actores (lo pone p10:8209)", "p04:753C, p04:75C2"),
+    0xDF00: ("el primer patron de sprite de cada tipo de actor (0xDF00 + tipo)", "p10:83A9, p04:78E6"),
     0xCA48: ("la Y de la nave", "work/ejes.py"),
     0xCA4A: ("la X de la nave", "work/ejes.py"),
     0xCA12: ("lo que se suma a la Y de los actores que lleva el scroll", "p04:6C29"),
@@ -163,6 +164,36 @@ CAMPOS_ACTOR = {
     0x18: "otra cuenta del actor (p04:6ADF la baja hasta 1)",
     0x19: "cuantos sprites lleva puestos en este cuadro (p04:78E6, hasta 6)",
     0x1A: "el primer sprite del actor (p04:793D)",
+    0x02: "un dato propio de cada tipo de actor (ix+2)",
+    0x03: "un dato propio de cada tipo de actor (ix+3)",
+    0x06: "la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)",
+    0x20: "un dato propio de cada tipo de actor (ix+0x20)",
+    0x21: "un dato propio de cada tipo de actor (ix+0x21)",
+    0x22: "un dato propio de cada tipo de actor (ix+0x22)",
+    0x23: "un dato propio de cada tipo de actor (ix+0x23)",
+    0x24: "un dato propio de cada tipo de actor (ix+0x24)",
+    0x25: "un dato propio de cada tipo de actor (ix+0x25)",
+    0x26: "un dato propio de cada tipo de actor (ix+0x26)",
+    0x27: "un dato propio de cada tipo de actor (ix+0x27)",
+    0x28: "la X guardada del actor (p04:6CF5)",
+    0x29: "la fraccion de la X guardada",
+    0x2A: "la Y guardada del actor (0xFF: no hay, p04:6CE9)",
+    0x2B: "la fraccion de la Y guardada",
+    0x2D: "el numero de la ficha del actor (1-20, p04:69A3)",
+    0x2E: "por donde va la lista del actor (p04:6796)",
+    0x2F: "el largo de la lista del actor",
+    0x30: "un dato de la lista del actor (p04:67E8)",
+    0x31: "la lista del actor (baja)",
+    0x32: "la lista del actor (alta)",
+    0x34: "el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)",
+    0x35: "el actor unido por delante (p04:6964)",
+    0x36: "el actor unido por detras (p04:6964)",
+    0x37: "cuantos hijos lleva el actor (p04:694D)",
+    0x38: "el numero de hijo del actor (p04:694D)",
+    0x39: "la cuenta de p04:688B",
+    0x3B: "los hijos que le quedan al padre (p04:7D77)",
+    0x3D: "un aviso de los hijos al padre (p04:7D77)",
+    0x3F: "distinto de 0 en los jefes (p04:7C63)",
 }
 CARGAS_ACTOR = (tuple(0xCE80 + 0x40 * k for k in range(20)) + tuple(0xD460 + 0x20 * k for k in range(18))
                 + (0xCA40, 0xCAC0, 0xCAE0) + tuple(0xCC40 + 0x20 * k for k in range(8)))
@@ -256,8 +287,14 @@ CARGAS_OBJETO = tuple(0xE100 + 0x20 * k for k in range(0x30)) + (0xE0C0,)
 
 FICHAS = ((CARGAS_OBJETO, {3: ((0xA000, 0xC000),)}, CAMPOS_OBJETO),
           (CARGAS_CANAL, {28: ((0x6000, 0x8000),)}, CAMPOS_CANAL),
-          (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 2: ((0x8000, 0xA000),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
-                          6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR),)
+          (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 7: ((0x8000, 0x8400),), 2: ((0x8000, 0xA000),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
+                          6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR),
+          # con IY: el objeto que manda la orden (p03), y el otro actor (el padre,
+          # el hijo o la nave) en los bancos de actores; p02 no, que usa IY
+          # para las casillas de las armas (0xCB40, fichas de 8 bytes)
+          (CARGAS_OBJETO, {3: ((0xA000, 0xC000),)}, CAMPOS_OBJETO, "iy"),
+          (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 7: ((0x8000, 0x8400),), 4: ((0x6000, 0x8000),),
+                          5: ((0x8000, 0xA000),), 6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR, "iy"))
 
 
 def _rutinas_txt():

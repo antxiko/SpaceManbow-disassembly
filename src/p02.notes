@@ -205,6 +205,7 @@ C 0x8091 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x8094 el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0x00
 C 0x8099 resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 C 0x809D el paso del actor = 0x01
+C 0x80A1 un dato propio de cada tipo de actor (ix+3) = 0x01
 C 0x80A5 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x2D
 C 0x80A9 pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x80AD el dibujo del actor (p04:7791) = 0x06
@@ -284,6 +285,7 @@ C 0x8343 guarda la Y del actor (fraccion: 32 por punto)
 C 0x834C otra_opcion: IY = la otra opcion que ya esta enganchada y A = su ix+0x18; acarreo si no hay
 C 0x835D pone a uno el bit 7 de la aceleracion en Y del actor (alta)
 C 0x8361 mira el bit 7 de la aceleracion en Y del actor (alta)
+C 0x8366 lee un dato propio de cada tipo de actor (ix+3)
 C 0x836C entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 C 0x8370 niega_hl: HL = -HL
 C 0x8373 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
@@ -337,10 +339,12 @@ C 0x85E3 dispara_arma: el arma de IY: 0x80 cuenta como 1; la 5 dispara como la 1
 C 0x85F5 disparo_por_nivel: salta por el nivel del arma (iy+1, hasta 0x0A; tabla p02:8608)
 C 0x8602 nada_4AE0: ret
 C 0x8605 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x8637 lee un dato propio de cada tipo de actor (ix+3)
 C 0x8645 quien_dispara: BC, DE = la posicion de la nave (0xCA47, 0xCA49) o la de una de las opciones (0xCAC7, 0xCAE7), segun la casilla del arma y el bit 7 de 0xCAD8 y 0xCAF8
 C 0x866C lee la fraccion de la Y de la nave (0xCA47-0xCA48, palabra) y el byte siguiente (16 bits)
 C 0x8670 lee la fraccion de la X de la nave (0xCA49-0xCA4A, palabra) y el byte siguiente (16 bits)
 C 0x86A5 guarda el tipo del actor (0 = libre)
+C 0x86AB guarda un dato propio de cada tipo de actor (ix+3)
 C 0x86AF fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
 C 0x86B3 quita_disparo: ix+0 = 0
 C 0x86B8 rompe_bloque: el caracter del mapa de 0xA7 a 0xAE pasa al siguiente (el sonido 0x1E) y el 0xAE se borra (el sonido 0x1F); el disparo se quita
@@ -388,6 +392,7 @@ C 0x8805 copia_a_vram_hl: BC bytes de DE a la VRAM en HL (p00:46AC)
 C 0x8810 copia_a_vram_baja: copia BC bytes de HL a la VRAM en DE, en los 64 KB bajos
 C 0x8826 disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 C 0x8829 bomba: 0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180, sus patrones (p02:8950) y el sonido 0x0C
+C 0x882C un dato propio de cada tipo de actor (ix+3) = 0x05
 C 0x8830 el dibujo del actor (p04:7791) = 0x04
 C 0x8838 disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 C 0x8841 tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
@@ -430,10 +435,12 @@ C 0x8909 patrones_de_la_bomba: los patrones del dibujo ix+5 (hasta 2) de p02:8B3
 C 0x8912 paleta_oscura: los 16 colores con cada componente 2 pasos mas oscuro (p02:89AA)
 C 0x8917 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x891C resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x8920 mira el bit 0 de un dato propio de cada tipo de actor (ix+3)
 C 0x8926 pon_c0d8_4: 0xC0D8 = 4
 C 0x8929 manda_paleta_clara: los 16 colores con cada componente mas claro (p00:4E0E)
 C 0x892C borra_fichas_pequenas: borra 0xD440-0xD69F; detras, 16 nop
 C 0x892F marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
+C 0x8934 mira el bit 0 de un dato propio de cada tipo de actor (ix+3)
 C 0x8938 quita_disparo: ix+0 = 0
 C 0x893B marca_tipos_70D2: al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
 C 0x8940 pide_musica: lo mismo con hasta 0x17 en la cola
@@ -461,6 +468,8 @@ C 0x8C3B disparo_del_cuadro: si sigue (p02:86EC): con fondo alrededor (p02:8E0C)
 C 0x8C42 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x8C47 disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 C 0x8C4E tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8C53 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
+C 0x8C59 guarda un dato propio de cada tipo de actor (ix+3)
 C 0x8C5F datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
 C 0x8C62 guarda la velocidad en Y del actor (baja)
 C 0x8C65 guarda la velocidad en Y del actor (alta)
@@ -479,9 +488,11 @@ C 0x8C98 guarda el dibujo del actor (p04:7791)
 C 0x8CA6 lanza_bomba: si las tres fichas de IX estan libres, dos bombas (p02:883B) con ix+3 = 5 e ix+5 = 4 en la segunda
 C 0x8CA9 crea_disparo_b: lo mismo que p02:8C47 sin la potencia
 C 0x8CB0 tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
+C 0x8CB4 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x8CBA disparo_del_cuadro: si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira el choque contra el fondo por delante y en el centro (p02:86AF); lo dibuja
 C 0x8CC8 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x8CCD disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
+C 0x8CD4 guarda un dato propio de cada tipo de actor (ix+3)
 C 0x8CDA datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
 C 0x8CDD guarda la velocidad en Y del actor (baja)
 C 0x8CE0 guarda la velocidad en Y del actor (alta)
@@ -536,6 +547,7 @@ C 0x8E52 disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borr
 C 0x8E62 tipo_del_disparo: ix+0 = A e ix+3 = el arma de IY
 C 0x8E65 el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44) = 0x03
 C 0x8E69 el alto de la caja del actor (p04:7662) = 0x03
+C 0x8E72 guarda un dato propio de cada tipo de actor (ix+3)
 C 0x8E79 origen_del_disparo: el sitio de salida con el arma de IY (0 cuenta como 1)
 C 0x8E7C guarda la X del actor (en caracteres de 8 puntos)
 C 0x8E7F guarda la X del actor (fraccion: 32 por punto)

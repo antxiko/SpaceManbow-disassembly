@@ -1273,3 +1273,76 @@ p28 0x75FE orden_DC  orden 0xDC: el volumen minimo a 0
 p28 0x7604 orden_DD  orden 0xDD: una envolvente de volumen con los pasos calculados
 p28 0x76E7 orden_DE  orden 0xDE: la marca de repeticion o, en una lista, el bit 5 de ix+0x0E
 p28 0x76F4 orden_DF  orden 0xDF: el bit 7 de ix+0x0E a 0
+p07 0x8000 vector_choques  jp p07:8003
+p07 0x8003 choques_del_cuadro  con la nave explotando, solo una espera; si no (y sin 0xCE75 ni 0xCE76): la nave contra los actores (p07:8026), los disparos contra los actores (p07:82DE) y la nave contra las balas (p07:826D)
+p07 0x801D espera_corta  una espera de 0x500 vueltas
+p07 0x8026 nave_contra_actores  IY = la nave (p07:8039)
+p07 0x802E opciones_contra_actores  las dos opciones contra los actores
+p07 0x8039 contra_actores  la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
+p07 0x80A5 cajas_de_disparo  las cajas del disparo de HL y del actor de IY en los registros
+p07 0x80D0 cajas_se_tocan  acarreo si las dos cajas se tocan en los dos ejes
+p07 0x80E2 ix_del_disparo  IX = la ficha del disparo (HL - 0x14) y el choque fino
+p07 0x80E9 choque_fino  pieza a pieza de los dos dibujos (p07:815E, p07:816B, p07:8198): si dos se tocan, el golpe a cada uno (p07:813F, p04:600C) y, si es un disparo, se quita; acarreo
+p07 0x813F golpe_segun_tipo  iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
+p07 0x815A actor_especial_b  p04:600C (p04:6459)
+p07 0x815E piezas_de_iy  las piezas del dibujo del actor de IY (p07:8178) en 0xCB14
+p07 0x816B piezas_de_ix  las del actor de IX en 0xCB16
+p07 0x8178 piezas_del_dibujo  de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
+p07 0x8198 siguiente_pareja  las cajas de la siguiente pieza de IY (p07:81B0) y de IX (p07:81C9); acarreo si alguna no tiene caja
+p07 0x81B0 caja_pieza_iy  la caja de la pieza de 0xCB14 en la posicion del actor de IY
+p07 0x81C9 caja_pieza_ix  la caja de la pieza de 0xCB16 en la posicion del actor de IX
+p07 0x81E0 caja_de_pieza  la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
+p07 0x8216 sin_caja  acarreo
+p07 0x826D nave_contra_balas  IY = la nave (p07:8280)
+p07 0x8275 opciones_contra_balas  las dos opciones contra las balas
+p07 0x8280 contra_balas  la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
+p07 0x82DE disparos_contra_actores  la rejilla de los disparos (p07:82E5) y los actores que caen en ella (p07:8320)
+p07 0x82E5 rejilla_de_disparos  borra 0xD700 y marca la casilla de 16 x 16 puntos de cada uno de los 8 disparos de 0xCC40
+p07 0x8320 actores_en_la_rejilla  cada uno de los 20 actores que se pueden tocar: si su caja cubre una casilla marcada, contra los disparos (p07:8395)
+p07 0x8395 actor_contra_disparos  el actor contra cada uno de los 8 disparos: caja y choque fino
+p07 0x83BD borra_pagina_hl  los 256 bytes de la pagina de HL a 0
+p10 0x8000 graficos_por_a  borra 0xDE00-0xDECD y la lista de graficos A de p10:8189 (p10:8046)
+p10 0x800F graficos_de_la_fase  borra 0xDE00-0xDECD y la lista de la fase de p10:8177
+p10 0x801F graficos_de_fase_completos  borra 0xDE00-0xDEFF, las listas de p10:83FD y la A de p10:8165 (p10:803B) y los sprites de la fase (p10:8371)
+p10 0x8029 borra_de00  0xDE00-0xDEFF a 0
+p10 0x8032 borra_de00_cd  0xDE00-0xDECD a 0
+p10 0x803B listas_fija_y_por_a  la lista de p10:83FD y la A de p10:8165
+p10 0x8046 lista_de_graficos  borra 0xD700-0xD7FF; la paleta de la lista (p10:8069) si no empieza por 0xFF; por secciones, los grupos (p10:818F) y las fichas de graficos (p10:81C2); al final, lo que es cada caracter (p10:8209)
+p10 0x8069 paleta_de_la_lista  los colores de IX como destino (p00:4CE0) e IX detras
+p10 0x8073 llena_vram_ff  escribe 0xFF 65536 veces en el puerto del VDP
+p10 0x8085 escribe_0_a_255  escribe 0, 1 ... 255 en el puerto del VDP
+p10 0x808E visor_de_paginas  con las teclas: los cursores de la fila 8 suben o bajan la pantalla (0xC0B2, registro 23) y las filas 2 y 3 eligen la pagina que se ve (p10:80F8)
+p10 0x80CD espera_tecla_suelta  espera a que no se pulse nada en la fila 8
+p10 0x80D6 teclas_de_pagina  las filas 2 y 3 del teclado en 7 bits
+p10 0x80EC primer_bit  el numero del primer bit puesto de A
+p10 0x80F4 pide_pagina_c0b5  0xC0B5 = A
+p10 0x80F8 pon_pagina_c0b4  0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa pagina
+p10 0x814F tab_pulsado  NZ si TAB (fila 7, bit 3)
+p10 0x8157 lee_fila  la fila A del teclado (SNSMAT) guardando IX
+p10 0x815F lista_de_8165  HL = la lista A de p10:8165
+p10 0x818F grupos_de_patrones  borra 0xD710-0xD7FF y lee los grupos (p10:8198)
+p10 0x8198 grupos  los bytes de la lista hasta un 0xFF: 0 pasa al patron siguiente; N apunta el patron en el grupo N - 1 (12 por grupo, 0xD710)
+p10 0x81BA por_12  A = A x 12
+p10 0x81C2 fichas_de_graficos  cada ficha de 8 bytes hasta 0xFE u 0xFF: los patrones comprimidos (p10:827B), dados la vuelta si toca (p10:82E8) y a sus grupos de la VRAM (p10:8233); luego los colores igual (p10:82FC, p10:822E)
+p10 0x8209 que_es_cada_caracter  fichas de 3 bytes [valor][desde][hasta] hasta 0xFF: pone el valor en 0xDE00 + caracter, del primero al ultimo
+p10 0x8226 borra_hl  BC + 1 bytes desde HL a 0
+p10 0x822E a_grupos_alta  p10:8235 con 0xC93E = 0x20
+p10 0x8233 a_grupos_baja  p10:8235 con 0xC93E = 0
+p10 0x8235 a_grupos  por cada bit puesto de A (8 grupos), copia lo descomprimido a los patrones de ese grupo (p10:824A)
+p10 0x824A a_un_grupo  los patrones apuntados del grupo C
+p10 0x8263 copia_patron  lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo de la VRAM (p00:4E8A)
+p10 0x827B descomprime  descomprime a 0xD800 lo que apunta HL con el banco base A (p10:82BA, p10:8290) y deja el largo en 0xD700
+p10 0x8290 rle  el RLE: 0 acaba, n < 0x80 repite el byte de detras, 0x81-0xFF copian n and 0x7F bytes
+p10 0x82BA banco_del_puntero  pone en 0xA000 el banco 0x0C + A + los 3 bits altos de H (0xD703) y deja H en 0xA0-0xBF
+p10 0x82D2 pasa_de_banco  si H llega a 0xC0, el banco siguiente y H - 0x20
+p10 0x82E8 da_la_vuelta  con el bit 0 de A, de arriba abajo (p10:8307); con el bit 1, de izquierda a derecha (p10:8341)
+p10 0x82FC da_la_vuelta_b  solo de arriba abajo
+p10 0x8307 arriba_abajo  invierte el orden de las 8 filas de cada caracter de 0xD800
+p10 0x8334 cambia_4_filas  cambia 4 bytes de HL por los de DE hacia atras
+p10 0x8341 izquierda_derecha  da la vuelta a los bits de cada byte de 0xD800
+p10 0x8371 sprites_de_la_fase  salvo en la fase 7: borra 0xDF00-0xDF7F, las piezas de p10:92B8 y las de la fase (p10:83C0): cada ficha de 6 bytes, sus patrones de sprite comprimidos a la VRAM (p10:83D5) y 0xDF00 + su casilla = su primer patron (el que suma p04:78E6)
+p10 0x8389 piezas_de_hl  la lista de HL (p10:838C)
+p10 0x838C piezas  fichas de 6 bytes [que][primer patron][puntero][base][casilla] hasta un 0
+p10 0x83B6 piezas_de_la_fase  HL = la lista de la fase de p10:83C0
+p10 0x83D5 a_patrones_de_sprite  lo descomprimido al patron L de la tabla de sprites (0xC800), en las paginas que dicen los bits de A
+p10 0x83F1 copia_a_c800  0xD700 bytes de 0xD800 a la VRAM en DE

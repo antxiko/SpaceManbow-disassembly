@@ -14,23 +14,23 @@
 ; ======================================================================
 
 
-L_8000:
-	jp L_8003		;8000
-L_8003:
+vector_choques:		; jp p07:8003
+	jp choques_del_cuadro		;8000   ; choques_del_cuadro: con la nave explotando, solo una espera; si no (y sin 0xCE75 ni 0xCE76): la nave contra los actores (p07:8026), los disparos contra los actores (p07:82DE) y la nave contra las balas (p07:826D)
+choques_del_cuadro:		; con la nave explotando, solo una espera; si no (y sin 0xCE75 ni 0xCE76): la nave contra los actores (p07:8026), los disparos contra los actores (p07:82DE) y la nave contra las balas (p07:826D)
 	ld a,(0ca41h)		;8003
 	or a			;8006
-	jr nz,L_801D		;8007
+	jr nz,espera_corta		;8007
 	ld a,(0ce76h)		;8009
 	or a			;800c
 	ret nz			;800d
 	ld a,(0ce75h)		;800e
 	or a			;8011
 	ret nz			;8012
-	call L_8026		;8013
-	call L_82DE		;8016
-	call L_826D		;8019
+	call nave_contra_actores		;8013   ; nave_contra_actores: IY = la nave (p07:8039)
+	call disparos_contra_actores		;8016   ; disparos_contra_actores: la rejilla de los disparos (p07:82E5) y los actores que caen en ella (p07:8320)
+	call nave_contra_balas		;8019   ; nave_contra_balas: IY = la nave (p07:8280)
 	ret			;801c
-L_801D:
+espera_corta:		; una espera de 0x500 vueltas
 	ld bc,00500h		;801d
 L_8020:
 	dec bc			;8020
@@ -38,25 +38,25 @@ L_8020:
 	or c			;8022
 	jr nz,L_8020		;8023
 	ret			;8025
-L_8026:
+nave_contra_actores:		; IY = la nave (p07:8039)
 	ld iy,0ca40h		;8026   ; apunta a la nave: su ficha de actor (0 = muerta)
-	call L_8039		;802a
+	call contra_actores		;802a   ; contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
 	ret			;802d
-L_802E:
+opciones_contra_actores:		; las dos opciones contra los actores
 	ld iy,0cac0h		;802e
-	call L_8039		;8032
+	call contra_actores		;8032   ; contra_actores: la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
 	ld iy,0cae0h		;8035
-L_8039:
-	ld a,(iy+000h)		;8039
+contra_actores:		; la caja del actor de IY contra la de los 20 actores que se pueden tocar (tipo no 0x5F, bits 7, 5 y 4 de ix+0x15); si se tocan, el choque fino (p07:80E9)
+	ld a,(iy+000h)		;8039   ; lee el tipo del actor (0 = libre)
 	and a			;803c
 	ret z			;803d
 	exx			;803e
-	ld l,(iy+008h)		;803f
+	ld l,(iy+008h)		;803f   ; lee la Y del actor (en caracteres de 8 puntos)
 	dec l			;8042
-	ld h,(iy+013h)		;8043
-	ld e,(iy+00ah)		;8046
+	ld h,(iy+013h)		;8043   ; lee el alto de la caja del actor (p04:7662)
+	ld e,(iy+00ah)		;8046   ; lee la X del actor (en caracteres de 8 puntos)
 	dec e			;8049
-	ld a,(iy+014h)		;804a
+	ld a,(iy+014h)		;804a   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	and 07fh		;804d
 	ld d,a			;804f
 	exx			;8050
@@ -101,7 +101,7 @@ L_8057:
 	push hl			;8090
 	push de			;8091
 	push ix		;8092
-	call L_80E9		;8094
+	call choque_fino		;8094   ; choque_fino: pieza a pieza de los dos dibujos (p07:815E, p07:816B, p07:8198): si dos se tocan, el golpe a cada uno (p07:813F, p04:600C) y, si es un disparo, se quita; acarreo
 	pop ix		;8097
 	pop de			;8099
 	pop hl			;809a
@@ -113,7 +113,7 @@ L_809C:
 	add ix,de		;80a0
 	djnz L_8057		;80a2
 	ret			;80a4
-L_80A5:
+cajas_de_disparo:		; las cajas del disparo de HL y del actor de IY en los registros
 	ld de,0fff3h		;80a5
 	add hl,de			;80a8
 	ld c,(hl)			;80a9
@@ -135,16 +135,16 @@ L_80B4:
 	exx			;80bb
 	pop bc			;80bc
 	exx			;80bd
-	ld e,(iy+008h)		;80be
-	ld d,(iy+013h)		;80c1
+	ld e,(iy+008h)		;80be   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld d,(iy+013h)		;80c1   ; lee el alto de la caja del actor (p04:7662)
 	exx			;80c4
-	ld e,(iy+00ah)		;80c5
-	ld a,(iy+014h)		;80c8
+	ld e,(iy+00ah)		;80c5   ; lee la X del actor (en caracteres de 8 puntos)
+	ld a,(iy+014h)		;80c8   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	and 07fh		;80cb
 	ld d,a			;80cd
 	exx			;80ce
 	ret			;80cf
-L_80D0:
+cajas_se_tocan:		; acarreo si las dos cajas se tocan en los dos ejes
 	ld a,b			;80d0
 	add a,d			;80d1
 	ld b,a			;80d2
@@ -163,22 +163,22 @@ L_80D0:
 	cp b			;80df
 	exx			;80e0
 	ret			;80e1
-L_80E2:
+ix_del_disparo:		; IX = la ficha del disparo (HL - 0x14) y el choque fino
 	ld a,l			;80e2
 	sub 014h		;80e3
 	ld l,a			;80e5
 	push hl			;80e6
 	pop ix		;80e7
-L_80E9:
-	call L_815E		;80e9
+choque_fino:		; pieza a pieza de los dos dibujos (p07:815E, p07:816B, p07:8198): si dos se tocan, el golpe a cada uno (p07:813F, p04:600C) y, si es un disparo, se quita; acarreo
+	call piezas_de_iy		;80e9   ; piezas_de_iy: las piezas del dibujo del actor de IY (p07:8178) en 0xCB14
 L_80EC:
 	push bc			;80ec
-	call L_816B		;80ed
+	call piezas_de_ix		;80ed   ; piezas_de_ix: las del actor de IX en 0xCB16
 L_80F0:
 	push bc			;80f0
-	call L_8198		;80f1
+	call siguiente_pareja		;80f1   ; siguiente_pareja: las cajas de la siguiente pieza de IY (p07:81B0) y de IX (p07:81C9); acarreo si alguna no tiene caja
 	jr c,L_80FB		;80f4
-	call L_80D0		;80f6
+	call cajas_se_tocan		;80f6   ; cajas_se_tocan: acarreo si las dos cajas se tocan en los dos ejes
 	jr c,L_810D		;80f9
 L_80FB:
 	pop bc			;80fb
@@ -196,14 +196,14 @@ L_810D:
 	pop bc			;810e
 	push ix		;810f
 	push iy		;8111
-	call L_813F		;8113
-	call L_815A		;8116
+	call golpe_segun_tipo		;8113   ; golpe_segun_tipo: iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
+	call actor_especial_b		;8116   ; actor_especial_b: p04:600C (p04:6459)
 	push ix		;8119
 	push iy		;811b
 	pop ix		;811d
 	pop iy		;811f
-	call L_813F		;8121
-	call L_815A		;8124
+	call golpe_segun_tipo		;8121   ; golpe_segun_tipo: iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
+	call actor_especial_b		;8124   ; actor_especial_b: p04:600C (p04:6459)
 	ld a,(ix+000h)		;8127
 	cp 004h		;812a
 	jr nz,L_8139		;812c
@@ -216,8 +216,8 @@ L_8139:
 	pop ix		;813b
 	scf			;813d
 	ret			;813e
-L_813F:
-	ld a,(ix+000h)		;813f
+golpe_segun_tipo:		; iy+4 = 1 o 2 segun el tipo de IX (el 4 da su ix+6)
+	ld a,(ix+000h)		;813f   ; lee el tipo del actor (0 = libre)
 	ld c,001h		;8142
 	cp 004h		;8144
 	jr z,L_8154		;8146
@@ -226,28 +226,28 @@ L_813F:
 	jr nc,L_8150		;814c
 	ld c,002h		;814e
 L_8150:
-	ld (iy+004h),c		;8150
+	ld (iy+004h),c		;8150   ; guarda el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	ret			;8153
 L_8154:
-	ld a,(ix+006h)		;8154
+	ld a,(ix+006h)		;8154   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld c,a			;8157
 	jr L_8150		;8158
-L_815A:
+actor_especial_b:		; p04:600C (p04:6459)
 	call 0600ch		;815a   ; vector_6459: jp p04:6459
 	ret			;815d
-L_815E:
-	ld a,(iy+000h)		;815e
-	ld b,(iy+005h)		;8161
-	call L_8178		;8164
+piezas_de_iy:		; las piezas del dibujo del actor de IY (p07:8178) en 0xCB14
+	ld a,(iy+000h)		;815e   ; lee el tipo del actor (0 = libre)
+	ld b,(iy+005h)		;8161   ; lee el dibujo del actor (p04:7791)
+	call piezas_del_dibujo		;8164   ; piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
 	ld (0cb14h),hl		;8167
 	ret			;816a
-L_816B:
-	ld a,(ix+000h)		;816b
-	ld b,(ix+005h)		;816e
-	call L_8178		;8171
+piezas_de_ix:		; las del actor de IX en 0xCB16
+	ld a,(ix+000h)		;816b   ; lee el tipo del actor (0 = libre)
+	ld b,(ix+005h)		;816e   ; lee el dibujo del actor (p04:7791)
+	call piezas_del_dibujo		;8171   ; piezas_del_dibujo: de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
 	ld (0cb16h),hl		;8174
 	ret			;8177
-L_8178:
+piezas_del_dibujo:		; de la tabla p07:8496 por el tipo A y el dibujo B: HL en la lista de piezas y B cuantas
 	dec a			;8178
 	ld h,000h		;8179
 	ld l,a			;817b
@@ -273,12 +273,12 @@ L_8178:
 	ld b,(hl)			;8195
 	inc hl			;8196
 	ret			;8197
-L_8198:
-	call L_81B0		;8198
+siguiente_pareja:		; las cajas de la siguiente pieza de IY (p07:81B0) y de IX (p07:81C9); acarreo si alguna no tiene caja
+	call caja_pieza_iy		;8198   ; caja_pieza_iy: la caja de la pieza de 0xCB14 en la posicion del actor de IY
 	ret c			;819b
 	push bc			;819c
 	push de			;819d
-	call L_81C9		;819e
+	call caja_pieza_ix		;819e   ; caja_pieza_ix: la caja de la pieza de 0xCB16 en la posicion del actor de IX
 	jp c,0469dh		;81a1   ; vuelve_quitando_2: quita 2 palabras de la pila y vuelve
 	push bc			;81a4
 	push de			;81a5
@@ -292,27 +292,27 @@ L_8198:
 	pop bc			;81ad
 	or a			;81ae
 	ret			;81af
-L_81B0:
-	ld e,(iy+009h)		;81b0
-	ld d,(iy+00ah)		;81b3
-	ld l,(iy+007h)		;81b6
-	ld h,(iy+008h)		;81b9
+caja_pieza_iy:		; la caja de la pieza de 0xCB14 en la posicion del actor de IY
+	ld e,(iy+009h)		;81b0   ; lee la X del actor (fraccion: 32 por punto)
+	ld d,(iy+00ah)		;81b3   ; lee la X del actor (en caracteres de 8 puntos)
+	ld l,(iy+007h)		;81b6   ; lee la Y del actor (fraccion: 32 por punto)
+	ld h,(iy+008h)		;81b9   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld bc,(0cb14h)		;81bc
 	push bc			;81c0
-	call L_81E0		;81c1
+	call caja_de_pieza		;81c1   ; caja_de_pieza: la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
 	pop hl			;81c4
 	ld (0cb14h),hl		;81c5
 	ret			;81c8
-L_81C9:
-	ld e,(ix+009h)		;81c9
-	ld d,(ix+00ah)		;81cc
-	ld l,(ix+007h)		;81cf
-	ld h,(ix+008h)		;81d2
+caja_pieza_ix:		; la caja de la pieza de 0xCB16 en la posicion del actor de IX
+	ld e,(ix+009h)		;81c9   ; lee la X del actor (fraccion: 32 por punto)
+	ld d,(ix+00ah)		;81cc   ; lee la X del actor (en caracteres de 8 puntos)
+	ld l,(ix+007h)		;81cf   ; lee la Y del actor (fraccion: 32 por punto)
+	ld h,(ix+008h)		;81d2   ; lee la Y del actor (en caracteres de 8 puntos)
 	ld bc,(0cb16h)		;81d5
-	call L_81E0		;81d9
+	call caja_de_pieza		;81d9   ; caja_de_pieza: la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
 	ld (0cb16h),hl		;81dc
 	ret			;81df
-L_81E0:
+caja_de_pieza:		; la posicion en puntos (x 8) mas la de la pieza y su caja de la tabla p07:8219 (4 bytes por clase); acarreo si la pieza no tiene caja (0)
 	add hl,hl			;81e0
 	add hl,hl			;81e1
 	add hl,hl			;81e2
@@ -339,7 +339,7 @@ L_81E0:
 	inc hl			;81f7
 	ld a,(hl)			;81f8
 	or a			;81f9
-	jp z,L_8216		;81fa
+	jp z,sin_caja		;81fa   ; sin_caja: acarreo
 	inc hl			;81fd
 	push hl			;81fe
 	ld de,08219h		;81ff
@@ -362,7 +362,7 @@ L_81E0:
 	pop hl			;8213
 	or a			;8214
 	ret			;8215
-L_8216:
+sin_caja:		; acarreo
 	inc hl			;8216
 	scf			;8217
 	ret			;8218
@@ -427,24 +427,24 @@ DATA_sin_leer_8269:
 ; ======================================================================
 
 
-L_826D:
+nave_contra_balas:		; IY = la nave (p07:8280)
 	ld iy,0ca40h		;826d   ; apunta a la nave: su ficha de actor (0 = muerta)
-	call L_8280		;8271
+	call contra_balas		;8271   ; contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
 	ret			;8274
-L_8275:
+opciones_contra_balas:		; las dos opciones contra las balas
 	ld iy,0cac0h		;8275
-	call L_8280		;8279
+	call contra_balas		;8279   ; contra_balas: la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
 	ld iy,0cae0h		;827c
-L_8280:
+contra_balas:		; la caja del actor de IY contra las 18 fichas pequenas de 0xD460 que se pueden tocar (bit 4 de ix+0x15); si se tocan, el choque fino
 	ld ix,0d460h		;8280   ; apunta a las 18 fichas de actor pequenas, de 0x20 bytes (balas)
 	ld b,012h		;8284
 	exx			;8286
-	ld l,(iy+008h)		;8287
+	ld l,(iy+008h)		;8287   ; lee la Y del actor (en caracteres de 8 puntos)
 	dec l			;828a
-	ld h,(iy+013h)		;828b
-	ld e,(iy+00ah)		;828e
+	ld h,(iy+013h)		;828b   ; lee el alto de la caja del actor (p04:7662)
+	ld e,(iy+00ah)		;828e   ; lee la X del actor (en caracteres de 8 puntos)
 	dec e			;8291
-	ld a,(iy+014h)		;8292
+	ld a,(iy+014h)		;8292   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	and 07fh		;8295
 	ld d,a			;8297
 	exx			;8298
@@ -482,7 +482,7 @@ L_8299:
 	push hl			;82c9
 	push de			;82ca
 	push ix		;82cb
-	call L_80E9		;82cd
+	call choque_fino		;82cd   ; choque_fino: pieza a pieza de los dos dibujos (p07:815E, p07:816B, p07:8198): si dos se tocan, el golpe a cada uno (p07:813F, p04:600C) y, si es un disparo, se quita; acarreo
 	pop ix		;82d0
 	pop de			;82d2
 	pop hl			;82d3
@@ -494,13 +494,13 @@ L_82D5:
 	add ix,de		;82d9
 	djnz L_8299		;82db
 	ret			;82dd
-L_82DE:
-	call L_82E5		;82de
-	call L_8320		;82e1
+disparos_contra_actores:		; la rejilla de los disparos (p07:82E5) y los actores que caen en ella (p07:8320)
+	call rejilla_de_disparos		;82de   ; rejilla_de_disparos: borra 0xD700 y marca la casilla de 16 x 16 puntos de cada uno de los 8 disparos de 0xCC40
+	call actores_en_la_rejilla		;82e1   ; actores_en_la_rejilla: cada uno de los 20 actores que se pueden tocar: si su caja cubre una casilla marcada, contra los disparos (p07:8395)
 	ret			;82e4
-L_82E5:
+rejilla_de_disparos:		; borra 0xD700 y marca la casilla de 16 x 16 puntos de cada uno de los 8 disparos de 0xCC40
 	ld hl,0d700h		;82e5
-	call L_83BD		;82e8
+	call borra_pagina_hl		;82e8   ; borra_pagina_hl: los 256 bytes de la pagina de HL a 0
 	ld hl,0cc40h		;82eb
 	ld a,008h		;82ee
 	ld bc,00020h		;82f0
@@ -539,7 +539,7 @@ L_831A:
 	dec a			;831c
 	jr nz,L_82F5		;831d
 	ret			;831f
-L_8320:
+actores_en_la_rejilla:		; cada uno de los 20 actores que se pueden tocar: si su caja cubre una casilla marcada, contra los disparos (p07:8395)
 	ld hl,0ce80h		;8320   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;8323
 	ld d,0d7h		;8325
@@ -620,11 +620,11 @@ L_838A:
 	pop bc			;838b
 	push hl			;838c
 	push de			;838d
-	call L_8395		;838e
+	call actor_contra_disparos		;838e   ; actor_contra_disparos: el actor contra cada uno de los 8 disparos: caja y choque fino
 	pop de			;8391
 	pop hl			;8392
 	jr L_837E		;8393
-L_8395:
+actor_contra_disparos:		; el actor contra cada uno de los 8 disparos: caja y choque fino
 	ld a,l			;8395
 	and 0e0h		;8396
 	ld l,a			;8398
@@ -640,9 +640,9 @@ L_83A1:
 	jr z,L_83B4		;83a5
 	ld de,00015h		;83a7
 	add hl,de			;83aa
-	call L_80A5		;83ab
-	call L_80D0		;83ae
-	call c,L_80E2		;83b1
+	call cajas_de_disparo		;83ab   ; cajas_de_disparo: las cajas del disparo de HL y del actor de IY en los registros
+	call cajas_se_tocan		;83ae   ; cajas_se_tocan: acarreo si las dos cajas se tocan en los dos ejes
+	call c,ix_del_disparo		;83b1   ; ix_del_disparo: IX = la ficha del disparo (HL - 0x14) y el choque fino
 L_83B4:
 	pop bc			;83b4
 	pop hl			;83b5
@@ -650,7 +650,7 @@ L_83B4:
 	add hl,de			;83b9
 	djnz L_83A1		;83ba
 	ret			;83bc
-L_83BD:
+borra_pagina_hl:		; los 256 bytes de la pagina de HL a 0
 	xor a			;83bd
 	ld l,a			;83be
 L_83BF:

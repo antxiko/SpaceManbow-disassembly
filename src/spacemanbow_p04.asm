@@ -85,7 +85,7 @@ mueve_un_actor:		; si la ficha no esta libre: con el bit 7 del tipo p04:7D9C; si
 	jp c,quitado_por_el_padre		;606e   ; quitado_por_el_padre: si el bit 6 de ix+0x34, ix+4 = 0xFF (un golpe que lo destruye)
 	jp mueve_y_actua		;6071   ; mueve_y_actua: mueve el actor (p04:6A7F), apunta su tipo en 0xF0FE, le aplica el scroll (salvo al tipo 0x5F) y hace lo de su tipo (p04:64B9)
 quita_si_lo_quitan:		; quita el actor si el bit 6 de ix+0x34
-	ld a,(ix+034h)		;6074
+	ld a,(ix+034h)		;6074   ; lee el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	bit 6,a		;6077
 	ret z			;6079
 	jp quita_actor		;607a   ; quita_actor: el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus sprites (p04:6EB4) y su ficha a 0
@@ -310,12 +310,12 @@ actor_de_ee80:		; si 0xCE7F: un actor nuevo con la lista de 0xEE81 (largo en 0xE
 	ret z			;623d
 	call crea_actor		;623e   ; crea_actor: un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
 	ret c			;6241
-	ld (ix+031h),081h		;6242
-	ld (ix+032h),0eeh		;6246
+	ld (ix+031h),081h		;6242   ; la lista del actor (baja) = 0x81
+	ld (ix+032h),0eeh		;6246   ; la lista del actor (alta) = 0xEE
 	ld a,(0ee80h)		;624a
-	ld (ix+030h),a		;624d
+	ld (ix+030h),a		;624d   ; guarda un dato de la lista del actor (p04:67E8)
 	ld a,(0ee81h)		;6250
-	ld (ix+02fh),a		;6253
+	ld (ix+02fh),a		;6253   ; guarda el largo de la lista del actor
 	call arranca_actor		;6256   ; arranca_actor: la puesta en marcha del actor por su tipo (tabla p04:6360, tipo - 1); nada si la ficha esta libre o el tipo lleva el bit 7
 	xor a			;6259
 	ld (0ce7fh),a		;625a
@@ -696,7 +696,7 @@ L_66DF:
 	call borra_ficha		;66e0   ; borra_ficha: los 0x40 bytes de la ficha de IX a 0
 L_66E3:
 	ld (ix+000h),d		;66e3   ; guarda el tipo del actor (0 = libre)
-	ld (ix+02dh),c		;66e6
+	ld (ix+02dh),c		;66e6   ; guarda el numero de la ficha del actor (1-20, p04:69A3)
 	jr datos_del_tipo		;66e9
 crea_actor_como_iy:		; ficha libre, borrada, con la lista del actor de IY (p04:67CE) y los datos del tipo
 	call busca_ficha_libre		;66eb   ; busca_ficha_libre: si quedan fichas (0xCE44), busca la primera libre de las 20 de 0xCE80: IX y C = su numero (1-20); si no, cuenta el fallo en 0xCE50 y vuelve con acarreo
@@ -821,14 +821,14 @@ L_678F:
 	ld (ix+00ah),c		;6792   ; guarda la X del actor (en caracteres de 8 puntos)
 	ret			;6795
 siguiente_de_la_lista:		; el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
-	ld a,(ix+02eh)		;6796
-	cp (ix+02fh)		;6799
+	ld a,(ix+02eh)		;6796   ; lee por donde va la lista del actor (p04:6796)
+	cp (ix+02fh)		;6799   ; compara con el largo de la lista del actor
 	inc a			;679c
 	ccf			;679d
 	ret c			;679e
-	ld (ix+02eh),a		;679f
-	ld l,(ix+031h)		;67a2
-	ld h,(ix+032h)		;67a5
+	ld (ix+02eh),a		;679f   ; guarda por donde va la lista del actor (p04:6796)
+	ld l,(ix+031h)		;67a2   ; lee la lista del actor (baja)
+	ld h,(ix+032h)		;67a5   ; lee la lista del actor (alta)
 	add a,l			;67a8
 	ld l,a			;67a9
 	jr nc,L_67AD		;67aa
@@ -856,19 +856,19 @@ L_67BD:
 	or e			;67c3
 	call L_67E8		;67c4
 	ld (ix+000h),d		;67c7   ; guarda el tipo del actor (0 = libre)
-	ld (ix+02dh),c		;67ca
+	ld (ix+02dh),c		;67ca   ; guarda el numero de la ficha del actor (1-20, p04:69A3)
 	ret			;67cd
 lista_del_padre:		; la lista del actor de IY desde su indice
-	ld l,(iy+031h)		;67ce
-	ld h,(iy+032h)		;67d1
-	ld e,(iy+02fh)		;67d4
+	ld l,(iy+031h)		;67ce   ; lee la lista del actor (baja)
+	ld h,(iy+032h)		;67d1   ; lee la lista del actor (alta)
+	ld e,(iy+02fh)		;67d4   ; lee el largo de la lista del actor
 	ld d,000h		;67d7
 	add hl,de			;67d9
 	call pon_lista		;67da   ; pon_lista: apunta la lista del actor a HL: largo en ix+0x2F (y con el bit 7, algo mas en ix+0x30)
 tipo_de_la_lista:		; el tipo del actor, el siguiente byte de su lista
 	call siguiente_de_la_lista		;67dd   ; siguiente_de_la_lista: el siguiente byte de la lista del actor (puntero en ix+0x31, indice en ix+0x2E, largo en ix+0x2F); acarreo si se acaba
 	ld (ix+000h),a		;67e0   ; guarda el tipo del actor (0 = libre)
-	ld (ix+02dh),c		;67e3
+	ld (ix+02dh),c		;67e3   ; guarda el numero de la ficha del actor (1-20, p04:69A3)
 	ret			;67e6
 pon_lista:		; apunta la lista del actor a HL: largo en ix+0x2F (y con el bit 7, algo mas en ix+0x30)
 	ld a,(hl)			;67e7
@@ -878,19 +878,19 @@ L_67E8:
 	ld a,b			;67ea
 	jr nc,L_67F4		;67eb
 	and 03fh		;67ed
-	ld (ix+030h),a		;67ef
+	ld (ix+030h),a		;67ef   ; guarda un dato de la lista del actor (p04:67E8)
 	inc hl			;67f2
 	ld b,(hl)			;67f3
 L_67F4:
-	ld (ix+02fh),b		;67f4
-	ld (ix+031h),l		;67f7
-	ld (ix+032h),h		;67fa
+	ld (ix+02fh),b		;67f4   ; guarda el largo de la lista del actor
+	ld (ix+031h),l		;67f7   ; guarda la lista del actor (baja)
+	ld (ix+032h),h		;67fa   ; guarda la lista del actor (alta)
 	ret			;67fd
 crea_hijo_a:		; si hay ficha, crea un actor unido al de IY (p04:6938)
 	ld a,001h		;67fe
 	call hay_fichas		;6800   ; hay_fichas: acarreo si no quedan las fichas que pide A (0xCE44)
 	ret c			;6803
-	set 7,(ix+034h)		;6804
+	set 7,(ix+034h)		;6804   ; pone a uno el bit 7 de el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	call 04656h		;6808   ; cambia_ix_iy: cambia IX por IY
 	call crea_actor_como_iy		;680b   ; crea_actor_como_iy: ficha libre, borrada, con la lista del actor de IY (p04:67CE) y los datos del tipo
 L_680E:
@@ -900,24 +900,24 @@ crea_hijo_b:		; si hay ficha, crea un actor unido al de IY (p04:694D)
 	ld a,001h		;6814
 	call hay_fichas		;6816   ; hay_fichas: acarreo si no quedan las fichas que pide A (0xCE44)
 	ret c			;6819
-	set 7,(ix+034h)		;681a
+	set 7,(ix+034h)		;681a   ; pone a uno el bit 7 de el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	call 04656h		;681e   ; cambia_ix_iy: cambia IX por IY
 	call crea_actor_como_iy		;6821   ; crea_actor_como_iy: ficha libre, borrada, con la lista del actor de IY (p04:67CE) y los datos del tipo
 L_6824:
 	call une_hijo		;6824   ; une_hijo: apunta en los dos actores la union (ix+0x34, ix+0x37, ix+0x38, ix+0x3B)
 	jp 04656h		;6827   ; cambia_ix_iy: cambia IX por IY
 crea_hijo_c:		; p04:6836 sin perder el indice de la lista
-	ld b,(ix+02eh)		;682a
+	ld b,(ix+02eh)		;682a   ; lee por donde va la lista del actor (p04:6796)
 	push bc			;682d
 	call crea_hijo_d		;682e   ; crea_hijo_d: si hay ficha, crea un actor unido al de IY (p04:6964)
 	pop bc			;6831
-	ld (ix+02eh),b		;6832
+	ld (ix+02eh),b		;6832   ; guarda por donde va la lista del actor (p04:6796)
 	ret			;6835
 crea_hijo_d:		; si hay ficha, crea un actor unido al de IY (p04:6964)
 	ld a,001h		;6836
 	call hay_fichas		;6838   ; hay_fichas: acarreo si no quedan las fichas que pide A (0xCE44)
 	ret c			;683b
-	set 7,(ix+034h)		;683c
+	set 7,(ix+034h)		;683c   ; pone a uno el bit 7 de el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	call 04656h		;6840   ; cambia_ix_iy: cambia IX por IY
 	call crea_actor_como_iy		;6843   ; crea_actor_como_iy: ficha libre, borrada, con la lista del actor de IY (p04:67CE) y los datos del tipo
 L_6846:
@@ -962,11 +962,11 @@ L_6884:
 	scf			;6884
 	ret			;6885
 quita_bit7_del_tipo:		; el bit 7 del tipo del actor de IY a 0
-	res 7,(iy+000h)		;6886
+	res 7,(iy+000h)		;6886   ; pone a cero el bit 7 de el tipo del actor (0 = libre)
 	ret			;688a
 busca_hermano:		; busca en las 20 fichas la que tiene el mismo numero de grupo (ix+0x2D) y la cuenta de ix+0x39: IY; si no, IY = 0xD700 y acarreo
-	inc (ix+039h)		;688b
-	ld c,(ix+039h)		;688e
+	inc (ix+039h)		;688b   ; suma 1 a la cuenta de p04:688B
+	ld c,(ix+039h)		;688e   ; lee la cuenta de p04:688B
 	ld hl,0ce80h		;6891   ; apunta a las 20 fichas de actor de 0x40 bytes
 	ld b,014h		;6894
 L_6896:
@@ -974,7 +974,7 @@ L_6896:
 	ld de,00034h		;6897
 	add hl,de			;689a
 	ld e,(hl)			;689b
-	ld a,(ix+02dh)		;689c
+	ld a,(ix+02dh)		;689c   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	cp e			;689f
 	jr nz,L_68A8		;68a0
 	ld de,00004h		;68a2
@@ -994,7 +994,7 @@ L_68B5:
 	pop iy		;68b6
 	ret			;68b8
 padre_por_35:		; IY = la ficha de ix+0x35 (0xD700 y acarreo si no hay)
-	ld a,(ix+035h)		;68b9
+	ld a,(ix+035h)		;68b9   ; lee el actor unido por delante (p04:6964)
 	and a			;68bc
 	jr z,L_68CF		;68bd
 	rla			;68bf
@@ -1002,7 +1002,7 @@ padre_por_35:		; IY = la ficha de ix+0x35 (0xD700 y acarreo si no hay)
 	rra			;68c1
 	jr ficha_a_iy		;68c2
 padre_por_36:		; IY = la ficha de ix+0x36 (0xD700 y acarreo si no hay)
-	ld a,(ix+036h)		;68c4
+	ld a,(ix+036h)		;68c4   ; lee el actor unido por detras (p04:6964)
 	and a			;68c7
 	jr z,L_68CF		;68c8
 	rla			;68ca
@@ -1014,13 +1014,13 @@ L_68CF:
 	scf			;68d2
 	ret			;68d3
 L_68D4:
-	ld a,(ix+036h)		;68d4
+	ld a,(ix+036h)		;68d4   ; lee el actor unido por detras (p04:6964)
 	jr ficha_a_iy		;68d7
 L_68D9:
-	ld a,(iy+036h)		;68d9
+	ld a,(iy+036h)		;68d9   ; lee el actor unido por detras (p04:6964)
 	jr ficha_a_iy		;68dc
 padre:		; IY = la ficha de ix+0x34 (bits 0-5); compara su numero
-	ld a,(ix+034h)		;68de
+	ld a,(ix+034h)		;68de   ; lee el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	ld c,a			;68e1
 	and 03fh		;68e2
 	call ficha_a_iy		;68e4   ; ficha_a_iy: IY = la ficha numero A (p04:68FF)
@@ -1028,7 +1028,7 @@ padre:		; IY = la ficha de ix+0x34 (bits 0-5); compara su numero
 	bit 6,a		;68e8
 	jr nz,L_68F2		;68ea
 	and 03fh		;68ec
-	cp (iy+02dh)		;68ee
+	cp (iy+02dh)		;68ee   ; compara con el numero de la ficha del actor (1-20, p04:69A3)
 	ret			;68f1
 L_68F2:
 	ld iy,0d700h		;68f2
@@ -1057,10 +1057,10 @@ L_690F:
 	exx			;6912
 	call padre		;6913   ; padre: IY = la ficha de ix+0x34 (bits 0-5); compara su numero
 	exx			;6916
-	ld a,(iy+008h)		;6917
+	ld a,(iy+008h)		;6917   ; lee la Y del actor (en caracteres de 8 puntos)
 	add a,c			;691a
 	ld (ix+008h),a		;691b   ; guarda la Y del actor (en caracteres de 8 puntos)
-	ld a,(iy+00ah)		;691e
+	ld a,(iy+00ah)		;691e   ; lee la X del actor (en caracteres de 8 puntos)
 	add a,b			;6921
 	ld (ix+00ah),a		;6922   ; guarda la X del actor (en caracteres de 8 puntos)
 	ret			;6925
@@ -1069,15 +1069,15 @@ hijo_encima:		; la Y y la X del actor de IY = las de IX
 hijo_al_lado:		; la Y y la X del actor de IY = las de IX mas C y B
 	ld a,(ix+008h)		;6929   ; lee la Y del actor (en caracteres de 8 puntos)
 	add a,c			;692c
-	ld (iy+008h),a		;692d
+	ld (iy+008h),a		;692d   ; guarda la Y del actor (en caracteres de 8 puntos)
 	ld a,(ix+00ah)		;6930   ; lee la X del actor (en caracteres de 8 puntos)
 	add a,b			;6933
-	ld (iy+00ah),a		;6934
+	ld (iy+00ah),a		;6934   ; guarda la X del actor (en caracteres de 8 puntos)
 	ret			;6937
 une_hijo_a:		; une el actor nuevo al de IY (p04:694D) y, si su numero es menor, lo pasa al tipo 0x5F
 	call une_hijo		;6938   ; une_hijo: apunta en los dos actores la union (ix+0x34, ix+0x37, ix+0x38, ix+0x3B)
-	ld a,(iy+02dh)		;693b
-	ld b,(ix+02dh)		;693e
+	ld a,(iy+02dh)		;693b   ; lee el numero de la ficha del actor (1-20, p04:69A3)
+	ld b,(ix+02dh)		;693e   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	cp b			;6941
 	jr nc,L_694B		;6942
 	ld (ix+03ah),c		;6944
@@ -1086,45 +1086,45 @@ L_694B:
 	xor a			;694b
 	ret			;694c
 une_hijo:		; apunta en los dos actores la union (ix+0x34, ix+0x37, ix+0x38, ix+0x3B)
-	inc (iy+037h)		;694d
-	ld a,(iy+037h)		;6950
-	ld (iy+03bh),a		;6953
-	ld (ix+038h),a		;6956
+	inc (iy+037h)		;694d   ; suma 1 a cuantos hijos lleva el actor (p04:694D)
+	ld a,(iy+037h)		;6950   ; lee cuantos hijos lleva el actor (p04:694D)
+	ld (iy+03bh),a		;6953   ; guarda los hijos que le quedan al padre (p04:7D77)
+	ld (ix+038h),a		;6956   ; guarda el numero de hijo del actor (p04:694D)
 	ld a,(ix+000h)		;6959   ; lee el tipo del actor (0 = libre)
 	ld c,a			;695c
-	ld a,(iy+02dh)		;695d
-	ld (ix+034h),a		;6960
+	ld a,(iy+02dh)		;695d   ; lee el numero de la ficha del actor (1-20, p04:69A3)
+	ld (ix+034h),a		;6960   ; guarda el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	ret			;6963
 une_hijo_en_cadena:		; une el actor nuevo al de IY detras del ultimo de la cadena (ix+0x33, ix+0x35, ix+0x36)
-	inc (iy+037h)		;6964
-	ld a,(iy+037h)		;6967
-	ld (ix+038h),a		;696a
+	inc (iy+037h)		;6964   ; suma 1 a cuantos hijos lleva el actor (p04:694D)
+	ld a,(iy+037h)		;6967   ; lee cuantos hijos lleva el actor (p04:694D)
+	ld (ix+038h),a		;696a   ; guarda el numero de hijo del actor (p04:694D)
 	ld c,(ix+000h)		;696d   ; lee el tipo del actor (0 = libre)
-	ld a,(iy+02dh)		;6970
-	ld (ix+034h),a		;6973
+	ld a,(iy+02dh)		;6970   ; lee el numero de la ficha del actor (1-20, p04:69A3)
+	ld (ix+034h),a		;6973   ; guarda el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	ld a,(iy+033h)		;6976
-	ld b,(ix+02dh)		;6979
+	ld b,(ix+02dh)		;6979   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	ld (iy+033h),b		;697c
 	and a			;697f
 	jr z,L_6991		;6980
-	ld (ix+035h),a		;6982
+	ld (ix+035h),a		;6982   ; guarda el actor unido por delante (p04:6964)
 	call ficha_numero		;6985   ; ficha_numero: HL = 0xCE80 + 0x40 x (A - 1)
 L_6988:
 	ld de,00036h		;6988
 	add hl,de			;698b
-	ld a,(ix+02dh)		;698c
+	ld a,(ix+02dh)		;698c   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	ld (hl),a			;698f
 	ret			;6990
 L_6991:
-	ld a,(iy+02dh)		;6991
-	ld (ix+035h),a		;6994
-	ld a,(ix+02dh)		;6997
-	ld (iy+036h),a		;699a
+	ld a,(iy+02dh)		;6991   ; lee el numero de la ficha del actor (1-20, p04:69A3)
+	ld (ix+035h),a		;6994   ; guarda el actor unido por delante (p04:6964)
+	ld a,(ix+02dh)		;6997   ; lee el numero de la ficha del actor (1-20, p04:69A3)
+	ld (iy+036h),a		;699a   ; guarda el actor unido por detras (p04:6964)
 	ret			;699d
 indice_a_0:		; el indice de la lista del actor (ix+0x2E) a 0
 	xor a			;699e
 indice_a_a:		; el indice de la lista del actor = A
-	ld (ix+02eh),a		;699f
+	ld (ix+02eh),a		;699f   ; guarda por donde va la lista del actor (p04:6796)
 	ret			;69a2
 crea_actor:		; un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en el que lo crea; si no hay ficha, vuelve a quien llamo al que llama
 	push ix		;69a3
@@ -1135,7 +1135,7 @@ crea_actor:		; un actor nuevo de tipo A en una ficha libre (p04:671A), con IY en
 	push bc			;69ae
 	call borra_ficha		;69af   ; borra_ficha: los 0x40 bytes de la ficha de IX a 0
 	pop bc			;69b2
-	ld (ix+02dh),c		;69b3
+	ld (ix+02dh),c		;69b3   ; guarda el numero de la ficha del actor (1-20, p04:69A3)
 	pop af			;69b6
 	ld (ix+000h),a		;69b7   ; guarda el tipo del actor (0 = libre)
 	call datos_del_tipo		;69ba   ; datos_del_tipo: con los bancos 4-2-3: los 4 bytes del tipo en p02:9100 + 4 x (tipo - 1) a ix+0x13-0x16
@@ -1146,8 +1146,8 @@ crea_actor_unido:		; p04:69A3 y lo une al de IY
 L_69C2:
 	ret c			;69c2
 	call une_hijo		;69c3   ; une_hijo: apunta en los dos actores la union (ix+0x34, ix+0x37, ix+0x38, ix+0x3B)
-	inc (iy+039h)		;69c6
-	set 7,(iy+034h)		;69c9
+	inc (iy+039h)		;69c6   ; suma 1 a la cuenta de p04:688B
+	set 7,(iy+034h)		;69c9   ; pone a uno el bit 7 de el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	res 7,(ix+000h)		;69cd   ; pone a cero el bit 7 de el tipo del actor (0 = libre)
 	res 7,(ix+03ah)		;69d1
 	or a			;69d5
@@ -1155,7 +1155,7 @@ L_69C2:
 prepara_destello:		; la fase en 0xCE4B, ix+0x3F + 1 y 0xCE4A con ix+0x16 / 4
 	ld a,(0ca10h)		;69d7   ; lee la fase (0 a 8; 9 el final)
 	ld (0ce4bh),a		;69da
-	inc (ix+03fh)		;69dd
+	inc (ix+03fh)		;69dd   ; suma 1 a distinto de 0 en los jefes (p04:7C63)
 	ld a,(ix+016h)		;69e0   ; lee la vida del actor (p04:7C44 le resta los golpes)
 	rrca			;69e3
 	rrca			;69e4
@@ -1312,9 +1312,9 @@ siguiente_dibujo:		; ix+5 + 1, a 0 al llegar a B
 	ld (ix+005h),a		;6abe   ; guarda el dibujo del actor (p04:7791)
 	ret			;6ac1
 siguiente_ix6:		; ix+6 + 1, a 0 al llegar a B
-	ld a,(ix+006h)		;6ac2
+	ld a,(ix+006h)		;6ac2   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	call sube_hasta_b		;6ac5   ; sube_hasta_b: A + 1, a 0 si llega a B
-	ld (ix+006h),a		;6ac8
+	ld (ix+006h),a		;6ac8   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ret			;6acb
 sube_hasta_b:		; A + 1, a 0 si llega a B
 	inc a			;6acc
@@ -1691,7 +1691,7 @@ valor_absoluto:		; HL = el valor absoluto de HL
 	inc hl			;6ce7
 	ret			;6ce8
 olvida_sitio_guardado:		; ix+0x2A = 0xFF: no hay posicion guardada
-	ld (ix+02ah),0ffh		;6ce9
+	ld (ix+02ah),0ffh		;6ce9   ; la Y guardada del actor (0xFF: no hay, p04:6CE9) = 0xFF
 	ret			;6ced
 guarda_o_vuelve:		; mueve con el scroll la posicion guardada (p04:6D2C) y, con Z, guarda la actual; si no, vuelve a la guardada
 	push af			;6cee
@@ -1700,40 +1700,40 @@ guarda_o_vuelve:		; mueve con el scroll la posicion guardada (p04:6D2C) y, con Z
 	jr nz,vuelve_al_sitio_guardado		;6cf3
 guarda_sitio:		; la X, la Y y sus fracciones a ix+0x28-0x2B
 	ld a,(ix+00ah)		;6cf5   ; lee la X del actor (en caracteres de 8 puntos)
-	ld (ix+028h),a		;6cf8
+	ld (ix+028h),a		;6cf8   ; guarda la X guardada del actor (p04:6CF5)
 	ld a,(ix+009h)		;6cfb   ; lee la X del actor (fraccion: 32 por punto)
-	ld (ix+029h),a		;6cfe
+	ld (ix+029h),a		;6cfe   ; guarda la fraccion de la X guardada
 	ld a,(ix+008h)		;6d01   ; lee la Y del actor (en caracteres de 8 puntos)
-	ld (ix+02ah),a		;6d04
+	ld (ix+02ah),a		;6d04   ; guarda la Y guardada del actor (0xFF: no hay, p04:6CE9)
 	ld a,(ix+007h)		;6d07   ; lee la Y del actor (fraccion: 32 por punto)
-	ld (ix+02bh),a		;6d0a
+	ld (ix+02bh),a		;6d0a   ; guarda la fraccion de la Y guardada
 	ret			;6d0d
 vuelve_al_sitio_guardado:		; si hay posicion guardada (ix+0x2A no es 0xFF), la pone
-	ld a,(ix+02ah)		;6d0e
+	ld a,(ix+02ah)		;6d0e   ; lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
 	inc a			;6d11
 	ret z			;6d12
-	ld a,(ix+028h)		;6d13
+	ld a,(ix+028h)		;6d13   ; lee la X guardada del actor (p04:6CF5)
 	ld (ix+00ah),a		;6d16   ; guarda la X del actor (en caracteres de 8 puntos)
-	ld a,(ix+029h)		;6d19
+	ld a,(ix+029h)		;6d19   ; lee la fraccion de la X guardada
 	ld (ix+009h),a		;6d1c   ; guarda la X del actor (fraccion: 32 por punto)
-	ld a,(ix+02ah)		;6d1f
+	ld a,(ix+02ah)		;6d1f   ; lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
 	ld (ix+008h),a		;6d22   ; guarda la Y del actor (en caracteres de 8 puntos)
-	ld a,(ix+02bh)		;6d25
+	ld a,(ix+02bh)		;6d25   ; lee la fraccion de la Y guardada
 	ld (ix+007h),a		;6d28   ; guarda la Y del actor (fraccion: 32 por punto)
 	ret			;6d2b
 sitio_guardado_con_scroll:		; la posicion guardada mas 0xCA14 (X) y 0xCA12 (Y)
 	ld de,(0ca14h)		;6d2c   ; lee lo que se suma a la X de los actores que lleva el scroll y el byte siguiente (16 bits)
-	ld h,(ix+028h)		;6d30
-	ld l,(ix+029h)		;6d33
+	ld h,(ix+028h)		;6d30   ; lee la X guardada del actor (p04:6CF5)
+	ld l,(ix+029h)		;6d33   ; lee la fraccion de la X guardada
 	add hl,de			;6d36
-	ld (ix+028h),h		;6d37
-	ld (ix+029h),l		;6d3a
+	ld (ix+028h),h		;6d37   ; guarda la X guardada del actor (p04:6CF5)
+	ld (ix+029h),l		;6d3a   ; guarda la fraccion de la X guardada
 	ld de,(0ca12h)		;6d3d   ; lee lo que se suma a la Y de los actores que lleva el scroll y el byte siguiente (16 bits)
-	ld h,(ix+02ah)		;6d41
-	ld l,(ix+02bh)		;6d44
+	ld h,(ix+02ah)		;6d41   ; lee la Y guardada del actor (0xFF: no hay, p04:6CE9)
+	ld l,(ix+02bh)		;6d44   ; lee la fraccion de la Y guardada
 	add hl,de			;6d47
-	ld (ix+02ah),h		;6d48
-	ld (ix+02bh),l		;6d4b
+	ld (ix+02ah),h		;6d48   ; guarda la Y guardada del actor (0xFF: no hay, p04:6CE9)
+	ld (ix+02bh),l		;6d4b   ; guarda la fraccion de la Y guardada
 	ret			;6d4e
 acerca_velocidad_8:		; cada velocidad, un octavo mas cerca de la de DE (X) y HL (Y): (7 x v + destino) / 8
 	push hl			;6d4f
@@ -1937,9 +1937,9 @@ quita_actor:		; el actor desaparece: p04:7D3E, una ficha libre mas (0xCE44), sus
 	inc (hl)			;6e9e
 	call suelta_sprites		;6e9f   ; suelta_sprites: los sprites del actor (ix+0x19 a ix+0x1C) a 0
 	xor a			;6ea2
-	ld (ix+034h),a		;6ea3
-	ld (ix+02dh),a		;6ea6
-	ld (ix+038h),a		;6ea9
+	ld (ix+034h),a		;6ea3   ; guarda el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
+	ld (ix+02dh),a		;6ea6   ; guarda el numero de la ficha del actor (1-20, p04:69A3)
+	ld (ix+038h),a		;6ea9   ; guarda el numero de hijo del actor (p04:694D)
 libera_ficha:		; el tipo y las banderas del actor a 0
 	xor a			;6eac
 	ld (ix+000h),a		;6ead   ; guarda el tipo del actor (0 = libre)
@@ -2100,12 +2100,12 @@ L_6FA2:
 mira_cc01:		; el siguiente valor de 0xCC01 (p04:7024), ix+3 y el ix+6 de la tabla p04:7049
 	call siguiente_cc01		;6fcd   ; siguiente_cc01: 0xCC01 = el que va detras del actual en la tabla p04:7042 (2 si no esta)
 	call mira_cb		;6fd0   ; mira_cb: segun p04:6FF7 cambia A a 0x0E o 0x0C y vuelve mas atras
-	ld (ix+003h),a		;6fd3
+	ld (ix+003h),a		;6fd3   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ld hl,07049h		;6fd6
 	call 04600h		;6fd9   ; suma_a_hl: HL = HL + A
 L_6FDC:
 	ld a,(hl)			;6fdc
-	ld (ix+006h),a		;6fdd
+	ld (ix+006h),a		;6fdd   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ret			;6fe0
 mira_cb:		; segun p04:6FF7 cambia A a 0x0E o 0x0C y vuelve mas atras
 	push af			;6fe1
@@ -2296,8 +2296,8 @@ L_710F:
 dispara_cerca_de_la_nave:		; una bala hacia la nave (p04:714A) con la Y y la X de la nave movidas al azar hasta 4 puntos
 	call rapidez_de_bala_b		;7110   ; rapidez_de_bala_b: igual que p04:7186
 	ld iy,0ca40h		;7113   ; apunta a la nave: su ficha de actor (0 = muerta)
-	ld b,(iy+00ah)		;7117
-	ld c,(iy+008h)		;711a
+	ld b,(iy+00ah)		;7117   ; lee la X del actor (en caracteres de 8 puntos)
+	ld c,(iy+008h)		;711a   ; lee la Y del actor (en caracteres de 8 puntos)
 	push bc			;711d
 	push iy		;711e
 	call 04678h		;7120   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
@@ -2305,13 +2305,13 @@ L_7123:
 	and 007h		;7123
 	sub 004h		;7125
 	add a,b			;7127
-	ld (iy+00ah),a		;7128
+	ld (iy+00ah),a		;7128   ; guarda la X del actor (en caracteres de 8 puntos)
 	call 04678h		;712b   ; numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 L_712E:
 	and 007h		;712e
 	sub 004h		;7130
 	add a,c			;7132
-	ld (iy+008h),a		;7133
+	ld (iy+008h),a		;7133   ; guarda la Y del actor (en caracteres de 8 puntos)
 	call bala_hacia_la_nave		;7136   ; bala_hacia_la_nave: en una ficha pequena libre, una bala de tipo 0x60 en el sitio del actor y con la velocidad hacia la nave (p04:71B8, p04:7270, p04:7240)
 L_7139:
 	pop iy		;7139
@@ -2427,10 +2427,10 @@ octavos_del_actor:		; la posicion del actor en octavos de punto (p04:71EA)
 	ld b,h			;71d4
 	ret			;71d5
 octavos_de_iy_e_ix:		; las posiciones en octavos del actor de IY y del de IX
-	ld e,(iy+007h)		;71d6
-	ld d,(iy+008h)		;71d9
-	ld c,(iy+009h)		;71dc
-	ld b,(iy+00ah)		;71df
+	ld e,(iy+007h)		;71d6   ; lee la Y del actor (fraccion: 32 por punto)
+	ld d,(iy+008h)		;71d9   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld c,(iy+009h)		;71dc   ; lee la X del actor (fraccion: 32 por punto)
+	ld b,(iy+00ah)		;71df   ; lee la X del actor (en caracteres de 8 puntos)
 	call en_octavos		;71e2   ; en_octavos: E = 8 x Y + fraccion / 32 y D = 8 x X + fraccion / 32, en un byte
 	ex de,hl			;71e5
 	call octavos_del_actor		;71e6   ; octavos_del_actor: la posicion del actor en octavos de punto (p04:71EA)
@@ -2626,7 +2626,7 @@ dispara_si_arriba:		; si la Y es menor que 0x16: 0xCE6C + 1, p04:750F y p04:7586
 	ret c			;72e1
 	call distancia_y		;72e2   ; distancia_y: HL = la Y de la nave - la del actor, con fraccion
 	ex af,af'			;72e5
-	ld a,(ix+020h)		;72e6
+	ld a,(ix+020h)		;72e6   ; lee un dato propio de cada tipo de actor (ix+0x20)
 	and a			;72e9
 	jr nz,L_72F1		;72ea
 	ex af,af'			;72ec
@@ -3047,26 +3047,26 @@ L_7654:
 	ld l,a			;7657
 	ret			;7658
 solo_tipo_3:		; el tipo 1 solo toca a los de tipo 3
-	ld a,(iy+000h)		;7659
+	ld a,(iy+000h)		;7659   ; lee el tipo del actor (0 = libre)
 	cp 003h		;765c
 	jr z,L_7670		;765e
 	or a			;7660
 	ret			;7661
 dentro_de_la_caja:		; si el bit 4 de iy+0x15 deja tocarlo, acarreo si el punto esta dentro de su caja
 	or a			;7662
-	bit 4,(iy+015h)		;7663
+	bit 4,(iy+015h)		;7663   ; mira el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 	jr z,L_76A8		;7667
 	ld a,(ix+000h)		;7669   ; lee el tipo del actor (0 = libre)
 	cp 001h		;766c
 	jr z,solo_tipo_3		;766e
 L_7670:
 	push hl			;7670
-	ld h,(iy+00ah)		;7671
-	ld l,(iy+009h)		;7674
+	ld h,(iy+00ah)		;7671   ; lee la X del actor (en caracteres de 8 puntos)
+	ld l,(iy+009h)		;7674   ; lee la X del actor (fraccion: 32 por punto)
 	ld bc,(0ca1ch)		;7677   ; lee el scroll fino en X: se suma a la fraccion de la X de los actores y el byte siguiente (16 bits)
 	ld b,000h		;767b
 	add hl,bc			;767d
-	ld a,(iy+014h)		;767e
+	ld a,(iy+014h)		;767e   ; lee el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	and 01fh		;7681
 	dec a			;7683
 	ld b,a			;7684
@@ -3077,12 +3077,12 @@ L_7670:
 	sub h			;7689
 	cp b			;768a
 	jr nc,L_76A7		;768b
-	ld h,(iy+008h)		;768d
-	ld l,(iy+007h)		;7690
+	ld h,(iy+008h)		;768d   ; lee la Y del actor (en caracteres de 8 puntos)
+	ld l,(iy+007h)		;7690   ; lee la Y del actor (fraccion: 32 por punto)
 	ld bc,(0ca1ah)		;7693   ; lee el scroll fino en Y: se suma a la fraccion de la Y de los actores y el byte siguiente (16 bits)
 	ld b,000h		;7697
 	add hl,bc			;7699
-	ld a,(iy+013h)		;769a
+	ld a,(iy+013h)		;769a   ; lee el alto de la caja del actor (p04:7662)
 	and 01fh		;769d
 	dec a			;769f
 	ld b,a			;76a0
@@ -3106,10 +3106,10 @@ apunta_golpe:		; iy+4 = 1 o 2 segun el tipo del que toca (el tipo 4 pone su ix+6
 	ret nc			;76b6
 	ld c,002h		;76b7
 L_76B9:
-	ld (iy+004h),c		;76b9
+	ld (iy+004h),c		;76b9   ; guarda el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 	ret			;76bc
 L_76BD:
-	ld a,(ix+006h)		;76bd
+	ld a,(ix+006h)		;76bd   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld c,a			;76c0
 	jr L_76B9		;76c1
 L_76C3:
@@ -3735,7 +3735,7 @@ pieza_del_actor:		; la pieza ix+6 del tipo (tabla p07:8596 + 2 x (tipo - 1)) en 
 	ld e,(hl)			;7a6a
 	inc hl			;7a6b
 	ld d,(hl)			;7a6c
-	ld a,(ix+006h)		;7a6d
+	ld a,(ix+006h)		;7a6d   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 sitio_de_la_pieza:		; la pieza A de la tabla de DE: E = Y + su fila y D = X + su columna (con el scroll fino), B filas y C columnas y HL en sus caracteres
 	ld h,000h		;7a70
 	ld l,a			;7a72
@@ -3914,7 +3914,7 @@ L_7B59:
 	scf			;7b63
 	ret			;7b64
 pinta_varias_piezas:		; la lista ix+6 de la tabla de DE (copiada a 0xD700): grupos de piezas del tipo con su desplazamiento (0xCA27, 0xCA29)
-	ld l,(ix+006h)		;7b65
+	ld l,(ix+006h)		;7b65   ; lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld h,000h		;7b68
 	add hl,hl			;7b6a
 	add hl,de			;7b6b
@@ -4089,7 +4089,7 @@ resta_golpe:		; si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se
 	pop af			;7c61
 	ret			;7c62
 resta_golpe_jefe:		; lo mismo para los jefes (ix+0x3F): parpadeo con 0xCE47-0xCE48, la vida en 0xCE4A y el sonido 0x25
-	ld a,(ix+03fh)		;7c63
+	ld a,(ix+03fh)		;7c63   ; lee distinto de 0 en los jefes (p04:7C63)
 	and a			;7c66
 	ld c,001h		;7c67
 	jr z,L_7C77		;7c69
@@ -4213,10 +4213,10 @@ parar_actor:		; suelta los sprites y p04:7D1E
 borra_movimiento:		; el paso, las uniones, los dibujos, la cuenta y las velocidades a 0
 	xor a			;7d1e
 	ld (ix+001h),a		;7d1f   ; guarda el paso del actor
-	ld (ix+034h),a		;7d22
-	ld (ix+038h),a		;7d25
+	ld (ix+034h),a		;7d22   ; guarda el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
+	ld (ix+038h),a		;7d25   ; guarda el numero de hijo del actor (p04:694D)
 	ld (ix+005h),a		;7d28   ; guarda el dibujo del actor (p04:7791)
-	ld (ix+006h),a		;7d2b
+	ld (ix+006h),a		;7d2b   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld (ix+017h),a		;7d2e   ; guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ld (ix+00bh),a		;7d31   ; guarda la velocidad en Y del actor (baja)
 	ld (ix+00ch),a		;7d34   ; guarda la velocidad en Y del actor (alta)
@@ -4224,8 +4224,8 @@ borra_movimiento:		; el paso, las uniones, los dibujos, la cuenta y las velocida
 	ld (ix+00eh),a		;7d3a   ; guarda la velocidad en X del actor (alta)
 	ret			;7d3d
 suelta_de_los_suyos:		; deshace las uniones del actor con los de su grupo (p04:7D89, p04:7D54)
-	ld a,(ix+034h)		;7d3e
-	ld b,(ix+02dh)		;7d41
+	ld a,(ix+034h)		;7d3e   ; lee el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
+	ld b,(ix+02dh)		;7d41   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	and a			;7d44
 	ret z			;7d45
 	push af			;7d46
@@ -4241,11 +4241,11 @@ avisa_al_padre:		; al actor de ix+0x34 le baja ix+0x37 y avisa a los suyos (p04:
 	call padre		;7d54   ; padre: IY = la ficha de ix+0x34 (bits 0-5); compara su numero
 	ret c			;7d57
 	ret nz			;7d58
-	dec (iy+037h)		;7d59
+	dec (iy+037h)		;7d59   ; resta 1 a cuantos hijos lleva el actor (p04:694D)
 	jr avisa_a_los_unidos		;7d5c
 suelta_de_los_suyos_b:		; lo mismo y, si el padre se queda sin hijos, le sube ix+0x3D
-	ld a,(ix+034h)		;7d5e
-	ld b,(ix+02dh)		;7d61
+	ld a,(ix+034h)		;7d5e   ; lee el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
+	ld b,(ix+02dh)		;7d61   ; lee el numero de la ficha del actor (1-20, p04:69A3)
 	and a			;7d64
 	ret z			;7d65
 	push af			;7d66
@@ -4260,15 +4260,15 @@ L_7D6C:
 	ret z			;7d73
 	call avisa_al_padre		;7d74   ; avisa_al_padre: al actor de ix+0x34 le baja ix+0x37 y avisa a los suyos (p04:7DA6)
 L_7D77:
-	dec (iy+03bh)		;7d77
+	dec (iy+03bh)		;7d77   ; resta 1 a los hijos que le quedan al padre (p04:7D77)
 	ret nz			;7d7a
-	ld a,(iy+024h)		;7d7b
+	ld a,(iy+024h)		;7d7b   ; lee un dato propio de cada tipo de actor (ix+0x24)
 	and a			;7d7e
 	ret nz			;7d7f
-	ld a,(iy+03dh)		;7d80
+	ld a,(iy+03dh)		;7d80   ; lee un aviso de los hijos al padre (p04:7D77)
 	and a			;7d83
 	ret z			;7d84
-	inc (ix+03dh)		;7d85
+	inc (ix+03dh)		;7d85   ; suma 1 a un aviso de los hijos al padre (p04:7D77)
 	ret			;7d88
 marca_hijos:		; a los 20 actores del grupo B les pone el bit 6 de ix+0x34 (se van a quitar)
 	ld a,b			;7d89
@@ -4284,25 +4284,25 @@ L_7D97:
 	djnz L_7D92		;7d98
 	jr avisa_a_los_unidos		;7d9a
 quitado_por_el_padre:		; si el bit 6 de ix+0x34, ix+4 = 0xFF (un golpe que lo destruye)
-	bit 6,(ix+034h)		;7d9c
+	bit 6,(ix+034h)		;7d9c   ; mira el bit 6 de el padre del actor (bits 0-5); bit 6: hay que quitarlo; bit 7: tiene hijos (p04:694D)
 	ret z			;7da0
 	ld (ix+004h),0ffh		;7da1   ; el golpe que ha recibido el actor y aun no se ha restado (p04:7C44) = 0xFF
 	ret			;7da5
 avisa_a_los_unidos:		; marca con el bit 7 a los de ix+0x35 e ix+0x36
-	ld b,(ix+035h)		;7da6
-	ld c,(ix+036h)		;7da9
+	ld b,(ix+035h)		;7da6   ; lee el actor unido por delante (p04:6964)
+	ld c,(ix+036h)		;7da9   ; lee el actor unido por detras (p04:6964)
 	ld a,b			;7dac
 	or c			;7dad
 	ret z			;7dae
 	ld a,b			;7daf
 	call padre_por_35		;7db0   ; padre_por_35: IY = la ficha de ix+0x35 (0xD700 y acarreo si no hay)
 	jr c,L_7DB9		;7db3
-	set 7,(iy+035h)		;7db5
+	set 7,(iy+035h)		;7db5   ; pone a uno el bit 7 de el actor unido por delante (p04:6964)
 L_7DB9:
 	ld a,c			;7db9
 	call padre_por_36		;7dba   ; padre_por_36: IY = la ficha de ix+0x36 (0xD700 y acarreo si no hay)
 	ret c			;7dbd
-	set 7,(iy+036h)		;7dbe
+	set 7,(iy+036h)		;7dbe   ; pone a uno el bit 7 de el actor unido por detras (p04:6964)
 	ret			;7dc2
 puntos_del_tipo:		; los puntos del tipo del actor
 	ld a,(ix+000h)		;7dc3   ; lee el tipo del actor (0 = libre)

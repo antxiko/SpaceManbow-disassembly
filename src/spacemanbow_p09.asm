@@ -533,15 +533,15 @@ DATA_sin_leer_6CE0:
 
 
 vector_graficos_de_fase:		; jp p10:801F (los graficos de la fase A)
-	jp 0801fh		;6d00
+	jp 0801fh		;6d00   ; graficos_de_fase_completos: borra 0xDE00-0xDEFF, las listas de p10:83FD y la A de p10:8165 (p10:803B) y los sprites de la fase (p10:8371)
 vector_80F4:		; jp p10:80F4
-	jp 080f4h		;6d03
+	jp 080f4h		;6d03   ; pide_pagina_c0b5: 0xC0B5 = A
 vector_reinicio:		; jp 0x0000
 	jp 00000h		;6d06   ; BIOS CHKRAM - Tests RAM and sets RAM slot for the system  [alias: STARTUP, RESET, BOOT]
 vector_graficos_b:		; jp p10:800F
-	jp 0800fh		;6d09
+	jp 0800fh		;6d09   ; graficos_de_la_fase: borra 0xDE00-0xDECD y la lista de la fase de p10:8177
 vector_graficos_a:		; jp p10:8000
-	jp 08000h		;6d0c
+	jp 08000h		;6d0c   ; graficos_por_a: borra 0xDE00-0xDECD y la lista de graficos A de p10:8189 (p10:8046)
 vector_prepara_pantalla:		; jp p09:6D30
 	jp prepara_pantalla_de_fase		;6d0f   ; prepara_pantalla_de_fase: los registros (p09:6D75), los graficos de la fase (p10:801F), sprites, borra 0xC000-0xC5FF; si el VDP es un V9958 (estado 1, bits 1-5 = 2) 0xC0EB = 4 y el registro 25 = 2; luego p09:77FC, p09:7683, las tablas de registros (p09:6F99), las lineas y las estrellas (p09:6E77)
 vector_pantalla_del_cuadro:		; jp p09:6E44

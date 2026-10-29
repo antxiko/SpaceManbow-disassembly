@@ -241,6 +241,10 @@ L 0x7EBD fila_de_arriba una fila de 8 bloques arriba (p09:7EFC)
 L 0x7ECE fila_de_arriba_b lo mismo en la columna 0
 L 0x7EDE fila_por_c0c1_c una fila de 15 bloques segun 0xC0C1
 L 0x7EFC fila_de_bloques_b como p09:7E55 con la otra fila de los bloques
+C 0x6D00 graficos_de_fase_completos: borra 0xDE00-0xDEFF, las listas de p10:83FD y la A de p10:8165 (p10:803B) y los sprites de la fase (p10:8371)
+C 0x6D03 pide_pagina_c0b5: 0xC0B5 = A
+C 0x6D09 graficos_de_la_fase: borra 0xDE00-0xDECD y la lista de la fase de p10:8177
+C 0x6D0C graficos_por_a: borra 0xDE00-0xDECD y la lista de graficos A de p10:8189 (p10:8046)
 C 0x6D0F prepara_pantalla_de_fase: los registros (p09:6D75), los graficos de la fase (p10:801F), sprites, borra 0xC000-0xC5FF; si el VDP es un V9958 (estado 1, bits 1-5 = 2) 0xC0EB = 4 y el registro 25 = 2; luego p09:77FC, p09:7683, las tablas de registros (p09:6F99), las lineas y las estrellas (p09:6E77)
 C 0x6D12 pantalla_del_cuadro: p09:7070, los registros del scroll en la tabla que toca (p09:6F43), p09:707E, las estrellas de la fase 0 o 2, p09:7683, 0xC09C = 1 (cambiar de tablas) y el fundido pendiente (bits 7 y 6 de 0xEF60)
 C 0x6D15 scroll_del_cuadro: en la fase 4 (y cada 4 cuadros en la 8) cambia de pagina (p09:6DC3); p09:7203 y p09:7AB5; y segun 0xC0D4: 0 el scroll (p09:7AC4, p09:7755), 1 los graficos de p10:800F, 2 para el scroll, 3 o mas p09:6E08

@@ -353,6 +353,7 @@ C 0x43D6 vector_nave: jp p02:801B
 C 0x43DD vector_878A: jp p02:878A
 C 0x43E1 apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x43E7 bancos_4_7_8: pone el 4, el 7 y el 8
+C 0x43EA vector_choques: jp p07:8003
 C 0x43EE apunta a por que paso va el cuadro de partida (p00:438E)
 C 0x43F4 bancos_9_10: pone el 9 en 0x6000 y el 10 en 0x8000
 C 0x43F7 vector_pantalla_del_cuadro: jp p09:6E44
@@ -617,21 +618,27 @@ C 0x4F04 guarda el paso del actor
 C 0x4F0D lee el paso del actor
 C 0x4F24 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x32
 C 0x4F28 lee la Y del actor (en caracteres de 8 puntos)
+C 0x4F2E la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x04
 C 0x4F36 lee el golpe que ha recibido el actor y aun no se ha restado (p04:7C44)
 C 0x4F3C pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x4F43 lee la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4F46 guarda el dibujo del actor (p04:7791)
+C 0x4F49 la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2) = 0x08
 C 0x4F4D pone a uno el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 C 0x4F51 el paso del actor = 0x04
 C 0x4F58 lee el paso del actor
 C 0x4F60 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x4F71 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4F75 suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4F78 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 C 0x4F7E pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x4F81 suma 1 a el paso del actor
 C 0x4F85 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x4F89 suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4F8C una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 C 0x4F92 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x4F98 lee la cuenta de cuadros de la partida
+C 0x4F9E mira el bit 2 de la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4FA4 lee la Y del actor (en caracteres de 8 puntos)
 C 0x4FAA guarda la Y del actor (en caracteres de 8 puntos)
 C 0x4FB1 guarda la Y del actor (en caracteres de 8 puntos)
@@ -641,11 +648,14 @@ C 0x4FBE apunta a la nave: su ficha de actor (0 = muerta)
 C 0x4FC2 dispara_cerca_de_la_nave: una bala hacia la nave (p04:714A) con la Y y la X de la nave movidas al azar hasta 4 puntos
 C 0x4FC6 guarda la X del actor (en caracteres de 8 puntos)
 C 0x4FCA pone a cero el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x4FCE suma 1 a la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4FD3 lee el dibujo del actor (p04:7791)
+C 0x4FD7 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x4FDA apunta a el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x4FEC guarda el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x4FF1 lee el paso del actor
 C 0x4FF9 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x500D guarda un dato propio de cada tipo de actor (ix+3)
 C 0x5010 el paso del actor = 0x05
 C 0x5015 guarda las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
 C 0x5019 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
@@ -654,14 +664,20 @@ C 0x5026 lee la X del actor (en caracteres de 8 puntos)
 C 0x502C pone a uno el bit 1 de el dibujo del actor (p04:7791)
 C 0x5033 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x503D apunta a la nave: su ficha de actor (0 = muerta)
+C 0x504C compara con un dato propio de cada tipo de actor (ix+2)
+C 0x5054 lee un dato propio de cada tipo de actor (ix+3)
 C 0x505A suma_a_hl: HL = HL + A
+C 0x505E guarda un dato propio de cada tipo de actor (ix+0x21)
+C 0x5063 un dato propio de cada tipo de actor (ix+0x22) = 0x03
 C 0x5067 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0A
 C 0x506B suma 1 a el paso del actor
 C 0x506F resta 1 a otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x5073 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x0E
+C 0x5085 lee un dato propio de cada tipo de actor (ix+0x21)
 C 0x5088 guarda la Y del actor (en caracteres de 8 puntos)
 C 0x508B la X del actor (en caracteres de 8 puntos) = 0x1F
 C 0x508F una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
+C 0x50A5 guarda un dato propio de cada tipo de actor (ix+2)
 C 0x50AA niega_de: DE = -DE
 C 0x50B1 niega_hl: HL = -HL
 C 0x50D0 lee el paso del actor
@@ -687,25 +703,48 @@ C 0x5182 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x00
 C 0x518B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x01
 C 0x518F otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x00
 C 0x5193 el paso del actor = 0x02
+C 0x5198 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0x519B el paso del actor = 0x03
+C 0x51A0 lee un dato propio de cada tipo de actor (ix+0x24)
+C 0x51A5 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0x51A8 el paso del actor = 0x04
+C 0x51AD lee un dato propio de cada tipo de actor (ix+0x24)
+C 0x51B2 un dato propio de cada tipo de actor (ix+0x21) = 0x35
+C 0x51B6 un dato propio de cada tipo de actor (ix+3) = 0x05
 C 0x51BA otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x03
+C 0x51C0 un dato propio de cada tipo de actor (ix+0x21) = 0x26
+C 0x51C4 un dato propio de cada tipo de actor (ix+3) = 0xF6
 C 0x51C8 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x02
+C 0x51DC la Y del actor (en caracteres de 8 puntos) = 0x18
 C 0x51E0 lee una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x51E3 le suma otra cuenta del actor (p04:6ADF la baja hasta 1)
 C 0x51E6 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x51E9 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x51EC lee un dato propio de cada tipo de actor (ix+0x21)
+C 0x51EF guarda un dato propio de cada tipo de actor (ix+0x21)
+C 0x51F2 lee un dato propio de cada tipo de actor (ix+3)
+C 0x51F5 guarda un dato propio de cada tipo de actor (ix+3)
 C 0x51FA resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5208 lee el paso del actor
 C 0x520E lee una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5211 le suma un dato propio de cada tipo de actor (ix+3)
 C 0x5214 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x521D lee la Y del actor (fraccion: 32 por punto)
+C 0x5220 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5224 guarda la Y del actor (fraccion: 32 por punto)
 C 0x5227 guarda la Y del actor (en caracteres de 8 puntos)
 C 0x522A lee una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x5233 lee la X del actor (fraccion: 32 por punto)
+C 0x5236 lee la X del actor (en caracteres de 8 puntos)
 C 0x523A guarda la X del actor (fraccion: 32 por punto)
 C 0x523D guarda la X del actor (en caracteres de 8 puntos)
 C 0x5240 lee el dibujo del actor (p04:7791)
 C 0x5246 guarda el dibujo del actor (p04:7791)
 C 0x5249 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5259 lee un dato propio de cada tipo de actor (ix+0x21)
 C 0x5273 niega_hl: HL = -HL
+C 0x5276 lee el actor unido por delante (p04:6964)
+C 0x5279 OR con el actor unido por detras (p04:6964)
 C 0x527E lee la cuenta de cuadros de la partida
 C 0x5288 lee el paso del actor
 C 0x5291 lee la cuenta de cuadros de la partida
@@ -725,13 +764,18 @@ C 0x5313 pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scrol
 C 0x531E lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x5329 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x5330 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x5337 lee un dato propio de cada tipo de actor (ix+0x26)
 C 0x533A le resta la Y del actor (en caracteres de 8 puntos)
 C 0x5346 el paso del actor = 0x01
 C 0x534A suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x534E lee el paso del actor
+C 0x535D guarda un dato propio de cada tipo de actor (ix+0x20)
 C 0x536F una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
 C 0x537E lee la X del actor (en caracteres de 8 puntos)
 C 0x5386 lee la Y del actor (en caracteres de 8 puntos)
+C 0x5395 XOR con un dato propio de cada tipo de actor (ix+0x20)
+C 0x5398 guarda un dato propio de cada tipo de actor (ix+0x20)
+C 0x53A6 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0x53BB la X del actor (en caracteres de 8 puntos) = 0x14
 C 0x53BF la Y del actor (en caracteres de 8 puntos) = 0x10
 C 0x53C4 lee el paso del actor
@@ -747,6 +791,7 @@ C 0x5419 resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x541D el paso del actor = 0x00
 C 0x5422 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x542C lee el paso del actor
+C 0x5438 lee un dato propio de cada tipo de actor (ix+0x20)
 C 0x5447 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
 C 0x544B una cuenta del actor (p04:6AD2 la baja hasta 1) = 0xC0
 C 0x544F pone a uno el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
@@ -754,25 +799,43 @@ C 0x5460 apunta a la nave: su ficha de actor (0 = muerta)
 C 0x5464 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x5472 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x18
 C 0x5486 pone a cero el bit 2 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
+C 0x54BB suma 1 a la Y guardada del actor (0xFF: no hay, p04:6CE9)
 C 0x54BE dispara_a_la_nave: si la nave no esta muy cerca (p04:70EF), la rapidez por 0xCA19 (p04:7197) y una bala hacia la nave (p04:714A)
 C 0x54C1 lee el paso del actor
+C 0x54CD guarda un dato propio de cada tipo de actor (ix+0x21)
 C 0x54E9 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
+C 0x54EE guarda un dato propio de cada tipo de actor (ix+0x22)
+C 0x54F3 guarda un dato propio de cada tipo de actor (ix+0x23)
 C 0x54FB una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x17
 C 0x5502 dibujo_por_fase: el dibujo del actor (ix+5) de la tabla de DE por la fase
+C 0x552B lee un dato propio de cada tipo de actor (ix+0x22)
+C 0x552E lee un dato propio de cada tipo de actor (ix+0x23)
 C 0x5531 compara_velocidad_y: Z si el valor absoluto de la velocidad en Y es DE
 C 0x5540 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x17
+C 0x554B lee un dato propio de cada tipo de actor (ix+0x21)
 C 0x5554 lee la X del actor (en caracteres de 8 puntos)
 C 0x5561 apunta a la nave: su ficha de actor (0 = muerta)
+C 0x5565 lee un dato propio de cada tipo de actor (ix+0x21)
 C 0x557C lee el paso del actor
 C 0x557F despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x5598 guarda la Y del actor (en caracteres de 8 puntos)
 C 0x559E guarda la X del actor (en caracteres de 8 puntos)
+C 0x55A5 suma 1 a un dato propio de cada tipo de actor (ix+0x22)
+C 0x55AE un dato propio de cada tipo de actor (ix+0x20) = 0x40
 C 0x55B2 otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x10
+C 0x55D2 resta 1 a un dato propio de cada tipo de actor (ix+0x20)
+C 0x55D6 un dato propio de cada tipo de actor (ix+0x20) = 0x40
 C 0x55DC guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x55F6 guarda un dato propio de cada tipo de actor (ix+0x24)
+C 0x55FF lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x560A una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x04
+C 0x560E un dato propio de cada tipo de actor (ix+0x21) = 0x04
 C 0x5612 guarda el paso del actor
+C 0x5620 resta 1 a un dato propio de cada tipo de actor (ix+0x21)
 C 0x562A lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
+C 0x5635 le suma el numero de la ficha del actor (1-20, p04:69A3)
 C 0x5638 guarda otra cuenta del actor (p04:6ADF la baja hasta 1)
+C 0x5642 un aviso de los hijos al padre (p04:7D77) = 0x01
 C 0x5663 lee la aceleracion en Y del actor (baja)
 C 0x5666 lee la aceleracion en Y del actor (alta)
 C 0x5669 lee la velocidad en Y del actor (baja)
@@ -785,28 +848,53 @@ C 0x568C lee la Y del actor (en caracteres de 8 puntos)
 C 0x5694 lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 C 0x5697 guarda la Y del actor (fraccion: 32 por punto)
 C 0x569B suma 1 a la Y del actor (en caracteres de 8 puntos)
+C 0x56A5 lee un dato propio de cada tipo de actor (ix+0x22)
+C 0x56BC lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x56D0 pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x56D8 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x56F0 el dibujo del actor (p04:7791) = 0x04
+C 0x56F8 lee un dato propio de cada tipo de actor (ix+0x22)
+C 0x56FD guarda un dato propio de cada tipo de actor (ix+0x22)
+C 0x570B lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x5712 clase_de_icono: B = 1 hasta el icono 7 y 2 desde el 8
 C 0x5715 lee la cuenta de cuadros de la partida
 C 0x571A lee el dibujo del actor (p04:7791)
 C 0x571F guarda el dibujo del actor (p04:7791)
+C 0x5723 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x572B guarda el dibujo del actor (p04:7791)
+C 0x573F lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x574E le suma la Y del actor (en caracteres de 8 puntos)
 C 0x5754 le suma la X del actor (en caracteres de 8 puntos)
 C 0x5763 lee el paso del actor
+C 0x576D lee un dato propio de cada tipo de actor (ix+0x20)
+C 0x5776 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0x577C suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x577F lee un dato propio de cada tipo de actor (ix+0x23)
+C 0x5784 guarda un dato propio de cada tipo de actor (ix+0x23)
+C 0x5796 suma 1 a un dato propio de cada tipo de actor (ix+0x25)
+C 0x5799 lee un dato propio de cada tipo de actor (ix+0x25)
+C 0x579F un dato propio de cada tipo de actor (ix+0x25) = 0x00
+C 0x57A9 lee un dato propio de cada tipo de actor (ix+0x24)
 C 0x57B5 guarda la velocidad en Y del actor (baja)
 C 0x57BA guarda la velocidad en Y del actor (alta)
 C 0x57BF guarda la velocidad en X del actor (baja)
 C 0x57C4 guarda la velocidad en X del actor (alta)
 C 0x57C8 lee la vida del actor (p04:7C44 le resta los golpes)
+C 0x57CE un dato propio de cada tipo de actor (ix+0x27) = 0x08
+C 0x57D2 lee la X guardada del actor (p04:6CF5)
+C 0x57D7 suma 1 a la X guardada del actor (p04:6CF5)
 C 0x57DC pide_musica: lo mismo con hasta 0x17 en la cola
+C 0x57DF lee un dato propio de cada tipo de actor (ix+0x27)
 C 0x5805 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x10
 C 0x5812 lee el nivel con el que se elige la rapidez de las balas (p04:7186) y cuantas veces disparan (p04:750F)
 C 0x581C guarda la rapidez con la que p04:7240 calcula una velocidad
+C 0x5822 lee un dato propio de cada tipo de actor (ix+0x23)
+C 0x5827 guarda un dato propio de cada tipo de actor (ix+0x23)
+C 0x582B lee un dato propio de cada tipo de actor (ix+0x24)
+C 0x5830 le suma un dato propio de cada tipo de actor (ix+0x27)
 C 0x5833 guarda el dibujo del actor (p04:7791)
 C 0x5837 lee la cuenta de cuadros de la partida
+C 0x583A XOR con el numero de la ficha del actor (1-20, p04:69A3)
 C 0x5840 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5843 lee la X del actor (en caracteres de 8 puntos)
 C 0x584D la vida del actor (p04:7C44 le resta los golpes) = 0x00
@@ -817,28 +905,51 @@ C 0x586A lee la X del actor (en caracteres de 8 puntos)
 C 0x5874 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5883 bancos_4_7_8: pone el 4, el 7 y el 8
 C 0x5889 bancos_4_5_6: pone el 4, el 5 y el 6
+C 0x588C lee un dato propio de cada tipo de actor (ix+0x21)
+C 0x5899 lee un dato propio de cada tipo de actor (ix+0x22)
+C 0x58A5 guarda un dato propio de cada tipo de actor (ix+0x24)
+C 0x58A8 suma 1 a un dato propio de cada tipo de actor (ix+0x22)
 C 0x58BC lee la Y del actor (en caracteres de 8 puntos)
+C 0x58C2 lee un dato propio de cada tipo de actor (ix+0x24)
+C 0x58C8 resta 1 a un dato propio de cada tipo de actor (ix+0x24)
+C 0x58CC suma 1 a un dato propio de cada tipo de actor (ix+0x25)
+C 0x58CF lee un dato propio de cada tipo de actor (ix+0x25)
+C 0x58D5 un dato propio de cada tipo de actor (ix+0x24) = 0x08
 C 0x58E2 lee la Y del actor (en caracteres de 8 puntos)
 C 0x58E5 lee la X del actor (en caracteres de 8 puntos)
+C 0x58E9 guarda la Y del actor (en caracteres de 8 puntos)
+C 0x58EC guarda la X del actor (en caracteres de 8 puntos)
 C 0x58FF lee el paso del actor
 C 0x5902 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
+C 0x5914 guarda un dato propio de cada tipo de actor (ix+0x22)
+C 0x591D guarda un dato propio de cada tipo de actor (ix+0x20)
+C 0x5924 suma 1 a un dato propio de cada tipo de actor (ix+0x21)
 C 0x5927 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
+C 0x592F guarda un dato propio de cada tipo de actor (ix+0x23)
 C 0x5935 lee la X del actor (en caracteres de 8 puntos)
+C 0x5938 compara con un dato propio de cada tipo de actor (ix+0x20)
 C 0x593C suma 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x5941 pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x5951 lee la Y del actor (en caracteres de 8 puntos)
 C 0x5954 resta 1 a la Y del actor (en caracteres de 8 puntos)
+C 0x5957 lee un dato propio de cada tipo de actor (ix+0x21)
+C 0x595C lee un dato propio de cada tipo de actor (ix+0x23)
 C 0x595F compara con la Y del actor (en caracteres de 8 puntos)
 C 0x5966 lee la X del actor (en caracteres de 8 puntos)
 C 0x5973 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x06
 C 0x5977 suma 1 a la Y del actor (en caracteres de 8 puntos)
 C 0x597A lee la Y del actor (en caracteres de 8 puntos)
+C 0x597D compara con un dato propio de cada tipo de actor (ix+0x22)
+C 0x5984 lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x5987 le resta la Y del actor (en caracteres de 8 puntos)
 C 0x5996 guarda una cuenta del actor (p04:6AD2 la baja hasta 1)
+C 0x59AD lee un dato propio de cada tipo de actor (ix+0x22)
 C 0x59B0 le resta la Y del actor (en caracteres de 8 puntos)
+C 0x59B8 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 C 0x59BB lee la cuenta de cuadros de la partida
 C 0x59CC guarda el dibujo del actor (p04:7791)
 C 0x59D0 lee la cuenta de cuadros de la partida
+C 0x59D3 XOR con el numero de la ficha del actor (1-20, p04:69A3)
 C 0x59E9 lee la Y del actor (en caracteres de 8 puntos)
 C 0x59EC lee la X del actor (en caracteres de 8 puntos)
 C 0x59F4 lee la Y del actor (fraccion: 32 por punto)
@@ -848,10 +959,21 @@ C 0x59FD lee la X del actor (en caracteres de 8 puntos)
 C 0x5A0A guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5A0D guarda la X del actor (en caracteres de 8 puntos)
 C 0x5A84 lee el paso del actor
+C 0x5A9A un aviso de los hijos al padre (p04:7D77) = 0x01
 C 0x5AA2 lee el paso del actor
+C 0x5AB2 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0x5AC2 guarda la X del actor (en caracteres de 8 puntos)
+C 0x5AD2 lee un dato propio de cada tipo de actor (ix+0x21)
+C 0x5AD5 lee un dato propio de cada tipo de actor (ix+0x22)
+C 0x5AD8 lee un dato propio de cada tipo de actor (ix+0x23)
+C 0x5ADB lee un dato propio de cada tipo de actor (ix+0x24)
+C 0x5ADF guarda un dato propio de cada tipo de actor (ix+0x23)
+C 0x5AE2 guarda un dato propio de cada tipo de actor (ix+0x24)
 C 0x5AE5 guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5AF0 guarda el dibujo del actor (p04:7791)
+C 0x5AF3 guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
+C 0x5B0A guarda un dato propio de cada tipo de actor (ix+0x21)
+C 0x5B0D guarda un dato propio de cada tipo de actor (ix+0x22)
 C 0x5B19 lee el paso del actor
 C 0x5B1F resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 C 0x5B23 pone a uno el bit 4 de las banderas del actor (bit 2: lo lleva el scroll, p04:6C21)
@@ -862,6 +984,7 @@ C 0x5B5E pide_musica: lo mismo con hasta 0x17 en la cola
 C 0x5B62 una cuenta del actor (p04:6AD2 la baja hasta 1) = 0x02
 C 0x5BB5 el paso del actor = 0x02
 C 0x5BB9 las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x00
+C 0x5BBD un dato propio de cada tipo de actor (ix+3) = 0xFF
 C 0x5BC2 lee el paso del actor
 C 0x5BCB otra cuenta del actor (p04:6ADF la baja hasta 1) = 0x1E
 C 0x5BCF suma 1 a el paso del actor
@@ -896,11 +1019,14 @@ C 0x5C7D guarda la X del actor (en caracteres de 8 puntos)
 C 0x5C80 guarda la X del actor (fraccion: 32 por punto)
 C 0x5C84 lee la posicion del scroll que mira el guion de la fase (p04:625E)
 C 0x5C8C lee la cuenta de cuadros de la partida
+C 0x5C8F AND con un dato propio de cada tipo de actor (ix+3)
 C 0x5CA5 numero_al_azar: A al azar: byte(0x4600 + C) xor B xor byte(0x4700 + C), con B y C en 0xC917
 C 0x5CAA guarda la Y del actor (en caracteres de 8 puntos)
 C 0x5CAD la X del actor (en caracteres de 8 puntos) = 0x1F
 C 0x5CB4 lee la posicion del scroll que mira el guion de la fase (p04:625E)
 C 0x5CC7 suma_a_hl: HL = HL + A
+C 0x5CCB guarda un dato propio de cada tipo de actor (ix+3)
+C 0x5CE5 guarda un dato propio de cada tipo de actor (ix+3)
 C 0x5CEA guarda el dibujo del actor (p04:7791)
 C 0x5CF6 lee la X del actor (en caracteres de 8 puntos)
 C 0x5CFA lee la Y del actor (en caracteres de 8 puntos)
@@ -908,11 +1034,15 @@ C 0x5CFD lee el scroll fino en Y: se suma a la fraccion de la Y de los actores
 C 0x5D00 le suma la Y del actor (fraccion: 32 por punto)
 C 0x5D06 lee el scroll fino en X: se suma a la fraccion de la X de los actores
 C 0x5D09 le suma la X del actor (fraccion: 32 por punto)
+C 0x5D10 lee un dato propio de cada tipo de actor (ix+3)
+C 0x5D1F lee un dato propio de cada tipo de actor (ix+3)
 C 0x5D3D lee el paso del actor
 C 0x5D45 despachador: salta a la entrada A de la tabla de direcciones que va detras del call
 C 0x5D50 suma 1 a el paso del actor
+C 0x5D59 lee un dato propio de cada tipo de actor (ix+3)
 C 0x5D60 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x5D67 el paso del actor = 0x00
+C 0x5D71 lee un dato propio de cada tipo de actor (ix+3)
 C 0x5D78 pide_sonido_b: lo mismo con hasta 0x17 en la cola
 C 0x5D8A lee las columnas que quedan por adelantar el mapa al empezar (0xFF: aun no se sabe)
 C 0x5D99 guarda la aceleracion en X del actor (baja)
@@ -925,5 +1055,7 @@ C 0x5DD0 lee la pagina pedida (bit 7: hay que ponerla)
 C 0x5DEA lee la aceleracion en X del actor (alta)
 C 0x5DED lee la aceleracion en X del actor (baja)
 C 0x5DF0 suma_a_hl: HL = HL + A
+C 0x5E3D mira el bit 7 de un dato propio de cada tipo de actor (ix+3)
+C 0x5E42 pone a uno el bit 7 de un dato propio de cada tipo de actor (ix+3)
 C 0x5E48 llamada_lejana_b: guarda IX e IY y hace la llamada lejana que va detras
 # --- fin de las anotaciones de anota.py ---

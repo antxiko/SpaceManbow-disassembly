@@ -101,7 +101,7 @@ choque_de_la_nave:		; si el golpe le quita la vida (p04:7C44): paso 1, ya no se 
 	call 07c44h		;8099   ; resta_golpe: si al actor se le puede dar (bit 7 de ix+0x14) y tiene golpe, se lo resta de la vida (el sonido 0x16); acarreo si se queda sin vida
 	ret nc			;809c
 	ld (ix+001h),001h		;809d   ; el paso del actor = 0x01
-	ld (ix+003h),001h		;80a1
+	ld (ix+003h),001h		;80a1   ; un dato propio de cada tipo de actor (ix+3) = 0x01
 	ld (ix+015h),02dh		;80a5   ; las banderas del actor (bit 2: lo lleva el scroll, p04:6C21) = 0x2D
 	res 7,(ix+014h)		;80a9   ; pone a cero el bit 7 de el ancho de la caja del actor; bit 7: se le puede dar (p04:7C44)
 	ld (ix+005h),006h		;80ad   ; el dibujo del actor (p04:7791) = 0x06
@@ -450,7 +450,7 @@ L_8359:
 L_8361:
 	bit 7,(ix+010h)		;8361   ; mira el bit 7 de la aceleracion en Y del actor (alta)
 	push af			;8365
-	ld a,(ix+003h)		;8366
+	ld a,(ix+003h)		;8366   ; lee un dato propio de cada tipo de actor (ix+3)
 	ld de,0839ch		;8369
 	call 04624h		;836c   ; entrada_de_tabla_de: HL = la palabra A de la tabla de DE
 	pop af			;836f
@@ -883,7 +883,7 @@ datos_del_disparo:		; de la tabla de BC con 6 bytes por entrada, la entrada (A a
 	ld l,a			;8635
 	ret			;8636
 origen_del_disparo_ix3:		; el sitio de salida (p02:8644) con ix+3
-	ld a,(ix+003h)		;8637
+	ld a,(ix+003h)		;8637   ; lee un dato propio de cada tipo de actor (ix+3)
 	jr sale_desde		;863a
 origen_del_disparo:		; el sitio de salida con el arma de IY (0 cuenta como 1)
 	ld a,(iy+000h)		;863c
@@ -955,7 +955,7 @@ L_869C:
 tipo_del_disparo:		; ix+0 = A e ix+3 = el arma de IY
 	ld (ix+000h),a		;86a5   ; guarda el tipo del actor (0 = libre)
 	ld a,(iy+000h)		;86a8
-	ld (ix+003h),a		;86ab
+	ld (ix+003h),a		;86ab   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ret			;86ae
 disparo_contra_fondo:		; si toca fondo (p04:75C2) se quita; si el caracter rompe (bit 4), p02:86CB
 	call 075c2h		;86af   ; fondo_o_actores: lo mismo y, si el bit 2 del caracter esta puesto, mira los actores (p04:7606)
@@ -1178,7 +1178,7 @@ lanza_bomba:		; si las tres fichas de IX estan libres, dos bombas (p02:883B) con
 	ld b,003h		;8824
 	call disparo_libre		;8826   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 	call bomba		;8829   ; bomba: 0xCB1D = 0, una ficha de tipo 8 desde la nave con velocidad en X 0x180, sus patrones (p02:8950) y el sonido 0x0C
-	ld (ix+003h),005h		;882c
+	ld (ix+003h),005h		;882c   ; un dato propio de cada tipo de actor (ix+3) = 0x05
 	ld (ix+005h),004h		;8830   ; el dibujo del actor (p04:7791) = 0x04
 	pop ix		;8834
 	ld b,003h		;8836
@@ -1294,7 +1294,7 @@ bomba_3:		; cada 5 cuadros el dibujo siguiente; al cuarto, la paleta oscura (p02
 bomba_4:		; al acabar la cuenta, si ix+3 es impar: destello (p00:4E65, p00:4DD7), borra las balas (p04:7523) y da a todos los actores (p04:7058)
 	dec (ix+017h)		;891c   ; resta 1 a una cuenta del actor (p04:6AD2 la baja hasta 1)
 	ret nz			;891f
-	bit 0,(ix+003h)		;8920
+	bit 0,(ix+003h)		;8920   ; mira el bit 0 de un dato propio de cada tipo de actor (ix+3)
 	jr z,siguiente_paso_ix		;8924
 	call 04e65h		;8926   ; pon_c0d8_4: 0xC0D8 = 4
 	call 04dd7h		;8929   ; manda_paleta_clara: los 16 colores con cada componente mas claro (p00:4E0E)
@@ -1302,7 +1302,7 @@ bomba_4:		; al acabar la cuenta, si ix+3 es impar: destello (p00:4E65, p00:4DD7)
 	call 07058h		;892f   ; marca_actores: a los 20 actores cuyo tipo no esta en la lista p04:70B7 (0x23 tipos) les pone ix+4 = 1 e ix+0x16 = 0; luego p04:708B
 	jr siguiente_paso_ix		;8932
 bomba_5:		; si ix+3 es impar: p04:708B, el sonido 0x0E, borra las balas y da a todos los actores; se quita
-	bit 0,(ix+003h)		;8934
+	bit 0,(ix+003h)		;8934   ; mira el bit 0 de un dato propio de cada tipo de actor (ix+3)
 	jp z,quita_disparo		;8938   ; quita_disparo: ix+0 = 0
 	call 0708bh		;893b   ; marca_tipos_70D2: al primer actor cuyo tipo esta en p04:70D2 le pone ix+0x16 = 0xCE4A - 1, y 0xCE48 = 1
 	ld a,00eh		;893e
@@ -1538,9 +1538,9 @@ crea_disparo:		; en una ficha libre: la potencia por el tramo de 0xCB08 (ix+6), 
 	call 04e79h		;8c4e   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8c51
 	add a,a			;8c52
-	ld (ix+006h),a		;8c53
+	ld (ix+006h),a		;8c53   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	ld a,(iy+000h)		;8c56
-	ld (ix+003h),a		;8c59
+	ld (ix+003h),a		;8c59   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ld bc,08ddch		;8c5c
 	call datos_del_disparo		;8c5f   ; datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
 	ld (ix+00bh),e		;8c62   ; guarda la velocidad en Y del actor (baja)
@@ -1577,7 +1577,7 @@ L_8CA9:
 	ld a,(0cb08h)		;8cad
 	call 04e79h		;8cb0   ; tramo_de_a: A = 0 si A es 0, 1 si es de 1 a 8 y 2 si es 9 o mas
 	inc a			;8cb3
-	ld (ix+006h),a		;8cb4
+	ld (ix+006h),a		;8cb4   ; guarda la pieza de caracteres del actor (p04:7A5F) o un segundo dibujo (p04:6AC2)
 	push af			;8cb7
 	push iy		;8cb8
 	call disparo_del_cuadro		;8cba   ; disparo_del_cuadro: si sigue (p02:86EC): con fondo alrededor (p02:8E0C) mira el choque contra el fondo por delante y en el centro (p02:86AF); lo dibuja
@@ -1595,7 +1595,7 @@ crea_disparo_b:		; lo mismo que p02:8C47 sin la potencia
 	call disparo_libre		;8ccd   ; disparo_libre: IX = la primera libre de B fichas de 0x20 desde IX, borrada; acarreo si no hay
 	ret c			;8cd0
 	ld a,(iy+000h)		;8cd1
-	ld (ix+003h),a		;8cd4
+	ld (ix+003h),a		;8cd4   ; guarda un dato propio de cada tipo de actor (ix+3)
 	ld bc,08ddch		;8cd7
 	call datos_del_disparo		;8cda   ; datos_del_disparo: de la tabla de BC con 6 bytes por entrada, la entrada (A and 0x0F) - 1: DE, BC y HL
 	ld (ix+00bh),e		;8cdd   ; guarda la velocidad en Y del actor (baja)
@@ -1821,7 +1821,7 @@ disparo_por_el_suelo:		; un disparo de tipo 7 (uno solo, 0xCC0E) que sale de la 
 	ld (ix+013h),003h		;8e69   ; el alto de la caja del actor (p04:7662) = 0x03
 	ld a,(iy+000h)		;8e6d
 	ld a,004h		;8e70
-	ld (ix+003h),a		;8e72
+	ld (ix+003h),a		;8e72   ; guarda un dato propio de cada tipo de actor (ix+3)
 	xor a			;8e75
 	ld hl,0000ch		;8e76
 	call origen_del_disparo		;8e79   ; origen_del_disparo: el sitio de salida con el arma de IY (0 cuenta como 1)
