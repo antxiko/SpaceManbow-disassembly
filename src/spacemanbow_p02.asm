@@ -1977,7 +1977,7 @@ al_banco_31:		; sin interrupciones del VDP, guarda la pila, cambia la RAM (p02:8
 	ld a,01fh		;8fa2
 	call 04c07h		;8fa4   ; banco_en_6000: pone el banco A en 0x6000
 	ld sp,0d200h		;8fa7
-	jp 06000h		;8faa   ; vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
+	jp 06000h		;8faa
 enciende_interrupcion:		; el bit 5 del registro 1 y las lineas (p00:4B8F)
 	call 04b8fh		;8fad   ; enciende_lineas: 0xC940 = 1
 	ld a,(0f3e0h)		;8fb0

@@ -267,7 +267,6 @@ C 0x8056 paleta_de_la_lista: los colores de IX como destino (p00:4CE0) e IX detr
 C 0x805B grupos_de_patrones: borra 0xD710-0xD7FF y lee los grupos (p10:8198)
 C 0x805E fichas_de_graficos: cada ficha de 8 bytes hasta 0xFE u 0xFF: los patrones comprimidos (p10:827B), dados la vuelta si toca (p10:82E8) y a sus grupos de la VRAM (p10:8233); luego los colores igual (p10:82FC, p10:822E)
 C 0x8065 que_es_cada_caracter: fichas de 3 bytes [valor][desde][hasta] hasta 0xFF: pone el valor en 0xDE00 + caracter, del primero al ultimo
-C 0x806C prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
 C 0x8090 lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x809B teclas_de_pagina: las filas 2 y 3 del teclado en 7 bits
 C 0x809F primer_bit: el numero del primer bit puesto de A
@@ -275,7 +274,6 @@ C 0x80A2 pon_pagina_c0b4: 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa 
 C 0x80CF lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x80D8 lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x80DE lee_fila: la fila A del teclado (SNSMAT) guardando IX
-C 0x80FB trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
 C 0x8151 lee_fila: la fila A del teclado (SNSMAT) guardando IX
 C 0x8162 entrada_de_tabla: HL = la palabra A de la tabla de HL
 C 0x8195 borra_hl: BC + 1 bytes desde HL a 0
@@ -287,9 +285,7 @@ C 0x81F0 descomprime: descomprime a 0xD800 lo que apunta HL con el banco base A 
 C 0x81F6 da_la_vuelta_b: solo de arriba abajo
 C 0x81FF a_grupos_alta: p10:8235 con 0xC93E = 0x20
 C 0x8240 a_un_grupo: los patrones apuntados del grupo C
-C 0x824B por_12: A = A x 12
 C 0x825C copia_patron: lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo de la VRAM (p00:4E8A)
-C 0x826A trozo_de_vram: HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
 C 0x8277 copia_a_vram: copia BC bytes de HL a la VRAM en DE; el bit 0 de A es el bit 16 de la direccion
 C 0x827E banco_del_puntero: pone en 0xA000 el banco 0x0C + A + los 3 bits altos de H (0xD703) y deja H en 0xA0-0xBF
 C 0x8281 rle: el RLE: 0 acaba, n < 0x80 repite el byte de detras, 0x81-0xFF copian n and 0x7F bytes

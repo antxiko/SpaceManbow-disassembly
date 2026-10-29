@@ -76,7 +76,6 @@ RAM = {
     0xCE44: ("cuantas fichas de actor quedan libres (p04:671A la baja al crear uno, p04:6E98 la sube)", "p04:671A"),
     0xCE50: ("las veces que no ha habido ficha libre para un actor", "p04:673E"),
     0xEF00: ("la paleta: 16 colores x 3 componentes x 2 bytes (actual y paso)", "p00:4DA9"),
-    0xF0F0: ("el banco de 0x4000 (no se cambia)", "p00:4110"),
     0xF0FA: ("por que paso va el cuadro de partida (p00:438E)", "p00:4391"),
     0xF0FC: ("la fase con la que empieza la partida", "p00:433B"),
     0xF0FD: ("las vidas con las que se sigue", "p00:4340"),
@@ -134,7 +133,10 @@ RAM16 = {}
 # Tramos (banco, desde, hasta) en los que la RAM de 0xD700-0xD8FF es otra cosa:
 # el bufer de lo que se descomprime (p10:827B a 0xD800, el largo en 0xD700) y el
 # de las letras de p01:693A. Ahi los nombres de RAM no valen.
-RAM_PRESTADA = ((10, 0x8000, 0xA000), (1, 0x692E, 0x6981))
+RAM_PRESTADA = ((10, 0x8000, 0xA000), (1, 0x692E, 0x6981),
+                # p03: los graficos de las secuencias usan 0xCA00 (paleta) y 0xCB00
+                # (un caracter) de bufer
+                (3, 0xADD0, 0xB070))
 
 # Los actores: 20 fichas de 0x40 bytes en 0xCE80 (p04:6056, p04:62CB), 18 de
 # 0x20 en 0xD460 (p04:6485), la nave en 0xCA40, sus dos opciones en 0xCAC0 y
@@ -260,7 +262,8 @@ CAMPOS_CANAL = {
 CARGAS_CANAL = tuple(0xC600 + 0x40 * k for k in range(8))
 
 # Los objetos de las secuencias: 0x30 fichas de 0x20 bytes en 0xE100 (p03:A754),
-# y la copia de trabajo de 0xE0C0 (p03:AD76). Campos leidos en p03:A795 (el
+# y la copia de trabajo de 0xE0C0 (p03:AD76). Solo hasta p03:ADD0: de ahi en
+# adelante IX es la lista de graficos (p03:AE15), de 6 bytes por entrada. Campos leidos en p03:A795 (el
 # movimiento), p03:A818 (el guion), p03:A8EF (la caja) y p03:ABDD (pintarlo).
 CAMPOS_OBJETO = {
     0x00: "el objeto esta en marcha",
@@ -290,14 +293,14 @@ CAMPOS_OBJETO = {
 }
 CARGAS_OBJETO = tuple(0xE100 + 0x20 * k for k in range(0x30)) + (0xE0C0,)
 
-FICHAS = ((CARGAS_OBJETO, {3: ((0xA000, 0xC000),)}, CAMPOS_OBJETO),
+FICHAS = ((CARGAS_OBJETO, {3: ((0xA713, 0xADD0),)}, CAMPOS_OBJETO),
           (CARGAS_CANAL, {28: ((0x6000, 0x8000),)}, CAMPOS_CANAL),
           (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 7: ((0x8000, 0x8400),), 2: ((0x8000, 0xA000),), 4: ((0x6000, 0x8000),), 5: ((0x8000, 0xA000),),
                           6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR),
           # con IY: el objeto que manda la orden (p03), y el otro actor (el padre,
           # el hijo o la nave) en los bancos de actores; p02 no, que usa IY
           # para las casillas de las armas (0xCB40, fichas de 8 bytes)
-          (CARGAS_OBJETO, {3: ((0xA000, 0xC000),)}, CAMPOS_OBJETO, "iy"),
+          (CARGAS_OBJETO, {3: ((0xA713, 0xADD0),)}, CAMPOS_OBJETO, "iy"),
           (CARGAS_ACTOR, {0: ((0x4F00, 0x5E8A),), 7: ((0x8000, 0x8400),), 4: ((0x6000, 0x8000),),
                           5: ((0x8000, 0xA000),), 6: ((0xA000, 0xC000),)}, CAMPOS_ACTOR, "iy"))
 

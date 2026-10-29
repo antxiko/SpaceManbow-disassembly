@@ -253,7 +253,7 @@ mueve_objetos:		; los 0x30 objetos de 0x20 bytes de 0xE100 (p03:A78E)
 L_A75A:
 	push bc			;a75a
 	call objeto		;a75b   ; objeto: su guion (p03:A818) y su movimiento (p03:A795)
-	ld bc,00020h		;a75e
+	ld bc,00020h		;a75e   ; el objeto siguiente (0x20 bytes)
 	add ix,bc		;a761
 	pop bc			;a763
 	djnz L_A75A		;a764
@@ -263,13 +263,13 @@ pinta_objetos:		; las 16 prioridades, de la 15 a la 0 (p03:A771)
 L_A769:
 	push bc			;a769
 	call pinta_prioridad		;a76a   ; pinta_prioridad: los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
-	pop bc			;a76d
+	pop bc			;a76d   ; de la prioridad 16 a la 1
 	djnz L_A769		;a76e
 	ret			;a770
 pinta_prioridad:		; los objetos con ix+0x0C igual a B - 1 (p03:ABB8)
-	ld c,b			;a771
+	ld c,b			;a771   ; C = la prioridad que se pinta ahora
 	dec c			;a772
-	ld ix,0e100h		;a773
+	ld ix,0e100h		;a773   ; los 0x30 objetos
 	ld b,030h		;a777
 L_A779:
 	push bc			;a779
@@ -278,7 +278,7 @@ L_A779:
 	push ix		;a77e
 	call z,pinta_objeto		;a780   ; pinta_objeto: si se ve: su rectangulo en su sitio (p03:ABDD) o, si da la vuelta por un borde, en dos o cuatro trozos (p03:AC2F, p03:AC6E, p03:ACAD)
 	pop ix		;a783
-	ld bc,00020h		;a785
+	ld bc,00020h		;a785   ; el siguiente
 	add ix,bc		;a788
 	pop bc			;a78a
 	djnz L_A779		;a78b
@@ -395,20 +395,20 @@ orden_crea_objeto:		; orden 0: [objeto][guion][Y][X] crea otro objeto con ese gu
 	call guarda_puntero_del_guion		;a871   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;a874
 lee_crea_objeto:		; lee los datos de la orden 0 y crea el objeto (p03:A88E)
-	ld a,(hl)			;a877
+	ld a,(hl)			;a877   ; el numero del objeto nuevo
 	inc hl			;a878
-	ld c,(hl)			;a879
+	ld c,(hl)			;a879   ; BC = su guion
 	inc hl			;a87a
 	ld b,(hl)			;a87b
 	inc hl			;a87c
-	ld d,(hl)			;a87d
+	ld d,(hl)			;a87d   ; D, E = su sitio respecto al que lo crea
 	inc hl			;a87e
 	ld e,(hl)			;a87f
 	inc hl			;a880
-	ex af,af'			;a881
+	ex af,af'			;a881   ; la prioridad en A'
 	ld a,(hl)			;a882
 	inc hl			;a883
-	push hl			;a884
+	push hl			;a884   ; HL detras de los datos: la orden siguiente
 	push ix		;a885
 	call crea_objeto		;a887   ; crea_objeto: el objeto A (p03:AB61) con su guion, prioridad y sitio respecto al de IY; si no hay, vuelve cuatro niveles atras
 	pop ix		;a88a
@@ -457,11 +457,11 @@ orden_caja:		; orden 1: el rectangulo de graficos que pinta el objeto (p03:A8DD)
 	call guarda_puntero_del_guion		;a8d9   ; guarda_puntero_del_guion: ix+2-3 = HL
 	ret			;a8dc
 lee_caja:		; lee los 4 bytes y pone la caja (p03:A8EF)
-	ld c,(hl)			;a8dd
+	ld c,(hl)			;a8dd   ; BC = el origen del rectangulo
 	inc hl			;a8de
 	ld b,(hl)			;a8df
 	inc hl			;a8e0
-	ld d,(hl)			;a8e1
+	ld d,(hl)			;a8e1   ; D, E = su desplazamiento
 	inc hl			;a8e2
 	ld e,(hl)			;a8e3
 	inc hl			;a8e4
@@ -495,7 +495,7 @@ pon_caja:		; el rectangulo de origen (ix+0x0E-0x0F), su tamano (ix+0x12-0x13), e
 	set 0,(ix+00dh)		;a912   ; pone a uno el bit 0 de las banderas del objeto (bit 0 se ve; 1, 3 y 4 da la vuelta; 2 y 5 como se copia)
 	ret			;a916
 cuatro_bytes:		; D, E, B y C de HL
-	ld d,(hl)			;a917
+	ld d,(hl)			;a917   ; D, E y luego B, C, en ese orden
 	inc hl			;a918
 	ld e,(hl)			;a919
 	inc hl			;a91a
@@ -505,17 +505,17 @@ cuatro_bytes:		; D, E, B y C de HL
 	inc hl			;a91e
 	ret			;a91f
 banderas_en_linea:		; la orden 2 con su dato detras del call
-	pop hl			;a920
-	call L_A932		;a921
+	pop hl			;a920   ; la orden se usa tambien desde codigo: sus datos van detras del call y se vuelve detras de ellos
+	call L_A932		;a921   ; el dato y HL detras de el
 	jp (hl)			;a924
 orden_banderas:		; orden 2: ix+0x0D or el dato
 	call puntero_del_guion		;a925   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;a928
-	call L_A932		;a929
+	call L_A932		;a929   ; el dato y HL detras de el
 	call guarda_puntero_del_guion		;a92c   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;a92f
 L_A932:
-	ld a,(hl)			;a932
+	ld a,(hl)			;a932   ; el dato y HL detras de el
 	inc hl			;a933
 	push hl			;a934
 	push ix		;a935
@@ -529,16 +529,16 @@ pon_banderas:		; ix+0x0D or A
 	ret			;a944
 espera_en_linea:		; la orden 3 con su dato detras del call
 	pop hl			;a945
-	call L_A955		;a946
+	call L_A955		;a946   ; el dato
 	jp (hl)			;a949
 orden_espera:		; orden 3: espera N cuadros (ix+1)
 	call puntero_del_guion		;a94a   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;a94d
-	call L_A955		;a94e
+	call L_A955		;a94e   ; el dato
 	call guarda_puntero_del_guion		;a951   ; guarda_puntero_del_guion: ix+2-3 = HL
 	ret			;a954
 L_A955:
-	ld a,(hl)			;a955
+	ld a,(hl)			;a955   ; el dato
 	inc hl			;a956
 	push hl			;a957
 	push ix		;a958
@@ -551,17 +551,17 @@ pon_espera:		; ix+1 = A
 	ret			;a964
 espera_senal_en_linea:		; la orden 4 con su dato detras del call
 	pop hl			;a965
-	call L_A976		;a966
+	call L_A976		;a966   ; el numero de la senal
 	jp (hl)			;a969
 orden_espera_senal:		; orden 4: se queda hasta que la senal N (0xE0F0 + N) se pone
 	call puntero_del_guion		;a96a   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;a96d
-	call L_A976		;a96e
+	call L_A976		;a96e   ; el numero de la senal
 	ret c			;a971
 	call guarda_puntero_del_guion		;a972   ; guarda_puntero_del_guion: ix+2-3 = HL
 	ret			;a975
 L_A976:
-	ld a,(hl)			;a976
+	ld a,(hl)			;a976   ; el numero de la senal
 	inc hl			;a977
 	push hl			;a978
 	push ix		;a979
@@ -570,27 +570,27 @@ L_A976:
 	pop hl			;a980
 	ret			;a981
 mira_senal:		; acarreo si la senal A de 0xE0F0 no esta puesta
-	ld hl,0e0f0h		;a982
+	ld hl,0e0f0h		;a982   ; las 16 senales de 0xE0F0
 	ld e,a			;a985
 	ld d,000h		;a986
 	add hl,de			;a988
 	ld a,(hl)			;a989
 	or a			;a98a
 	ret nz			;a98b
-	scf			;a98c
+	scf			;a98c   ; acarreo: no esta
 	ret			;a98d
 senal_en_linea:		; la orden 5 con su dato detras del call
 	pop hl			;a98e
-	call L_A9A0		;a98f
+	call L_A9A0		;a98f   ; el numero de la senal
 	jp (hl)			;a992
 orden_senal:		; orden 5: pone la senal N
 	call puntero_del_guion		;a993   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;a996
-	call L_A9A0		;a997
+	call L_A9A0		;a997   ; el numero de la senal
 	call guarda_puntero_del_guion		;a99a   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;a99d
 L_A9A0:
-	ld a,(hl)			;a9a0
+	ld a,(hl)			;a9a0   ; el numero de la senal
 	inc hl			;a9a1
 	push hl			;a9a2
 	push ix		;a9a3
@@ -599,7 +599,7 @@ L_A9A0:
 	pop hl			;a9aa
 	ret			;a9ab
 pon_senal:		; 0xE0F0 + A = 1
-	ld hl,0e0f0h		;a9ac
+	ld hl,0e0f0h		;a9ac   ; la senal puesta
 	ld e,a			;a9af
 	ld d,000h		;a9b0
 	add hl,de			;a9b2
@@ -656,16 +656,16 @@ acarreo:		; scf
 	ret			;aa08
 colores_ya_en_linea:		; la orden 8 con su puntero detras del call
 	pop hl			;aa09
-	call L_AA1B		;aa0a
+	call L_AA1B		;aa0a   ; la direccion de los colores
 	jp (hl)			;aa0d
 orden_colores_ya:		; orden 8: los colores de la lista tal cual (p00:4C94)
 	call puntero_del_guion		;aa0e   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aa11
-	call L_AA1B		;aa12
+	call L_AA1B		;aa12   ; la direccion de los colores
 	call guarda_puntero_del_guion		;aa15   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;aa18
 L_AA1B:
-	ld e,(hl)			;aa1b
+	ld e,(hl)			;aa1b   ; la direccion de los colores
 	inc hl			;aa1c
 	ld d,(hl)			;aa1d
 	inc hl			;aa1e
@@ -681,16 +681,16 @@ L_AA29:
 	ret			;aa2d
 fundido_en_linea:		; la orden 9 con su puntero detras del call
 	pop hl			;aa2e
-	call L_AA40		;aa2f
+	call L_AA40		;aa2f   ; la direccion de los colores
 	jp (hl)			;aa32
 orden_fundido:		; orden 9: fundido a los colores de la lista (p00:4CE0, p00:4CF5)
 	call puntero_del_guion		;aa33   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aa36
-	call L_AA40		;aa37
+	call L_AA40		;aa37   ; la direccion de los colores
 	call guarda_puntero_del_guion		;aa3a   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;aa3d
 L_AA40:
-	ld e,(hl)			;aa40
+	ld e,(hl)			;aa40   ; la direccion de los colores
 	inc hl			;aa41
 	ld d,(hl)			;aa42
 	inc hl			;aa43
@@ -707,16 +707,16 @@ L_AA4E:
 	ret			;aa55
 llama_en_linea:		; la orden 0x0A con su direccion detras del call
 	pop hl			;aa56
-	call L_AA68		;aa57
+	call L_AA68		;aa57   ; la direccion a la que se llama
 	jp (hl)			;aa5a
 orden_llama:		; orden 0x0A: llama a la direccion que lleva
 	call puntero_del_guion		;aa5b   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aa5e
-	call L_AA68		;aa5f
+	call L_AA68		;aa5f   ; la direccion a la que se llama
 	call guarda_puntero_del_guion		;aa62   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;aa65
 L_AA68:
-	ld e,(hl)			;aa68
+	ld e,(hl)			;aa68   ; la direccion a la que se llama
 	inc hl			;aa69
 	ld d,(hl)			;aa6a
 	inc hl			;aa6b
@@ -731,16 +731,16 @@ L_AA76:
 	jp (hl)			;aa77
 velocidad_en_linea:		; la orden 0x0B con sus datos detras del call
 	pop hl			;aa78
-	call L_AA88		;aa79
+	call L_AA88		;aa79   ; D = la velocidad en X y E la de Y
 	jp (hl)			;aa7c
 orden_velocidad:		; orden 0x0B: la velocidad del objeto en X (D) y en Y (E), con signo
 	call puntero_del_guion		;aa7d   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aa80
-	call L_AA88		;aa81
+	call L_AA88		;aa81   ; D = la velocidad en X y E la de Y
 	call guarda_puntero_del_guion		;aa84   ; guarda_puntero_del_guion: ix+2-3 = HL
 	ret			;aa87
 L_AA88:
-	ld d,(hl)			;aa88
+	ld d,(hl)			;aa88   ; D = la velocidad en X y E la de Y
 	inc hl			;aa89
 	ld e,(hl)			;aa8a
 	inc hl			;aa8b
@@ -764,16 +764,16 @@ L_AA96:
 	ret			;aaa8
 desplazamiento_en_linea:		; la orden 0x0C con sus datos detras del call
 	pop hl			;aaa9
-	call L_AABB		;aaaa
+	call L_AABB		;aaaa   ; D, E: el desplazamiento
 	jp (hl)			;aaad
 orden_desplazamiento:		; orden 0x0C: ix+0x14 = D, ix+0x15 = E
 	call puntero_del_guion		;aaae   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aab1
-	call L_AABB		;aab2
+	call L_AABB		;aab2   ; D, E: el desplazamiento
 	call guarda_puntero_del_guion		;aab5   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;aab8
 L_AABB:
-	ld d,(hl)			;aabb
+	ld d,(hl)			;aabb   ; D, E: el desplazamiento
 	inc hl			;aabc
 	ld e,(hl)			;aabd
 	inc hl			;aabe
@@ -789,16 +789,16 @@ L_AAC9:
 	ret			;aacf
 salta_en_linea:		; la orden 0x0D con su direccion detras del call
 	pop hl			;aad0
-	call L_AAE2		;aad1
+	call L_AAE2		;aad1   ; la direccion a la que salta el guion
 	jp (hl)			;aad4
 orden_salta:		; orden 0x0D: el guion sigue en la direccion que lleva
 	call puntero_del_guion		;aad5   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;aad8
-	call L_AAE2		;aad9
+	call L_AAE2		;aad9   ; la direccion a la que salta el guion
 	call guarda_puntero_del_guion		;aadc   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;aadf
 L_AAE2:
-	ld e,(hl)			;aae2
+	ld e,(hl)			;aae2   ; la direccion a la que salta el guion
 	inc hl			;aae3
 	ld d,(hl)			;aae4
 	inc hl			;aae5
@@ -820,29 +820,29 @@ orden_fin:		; orden 0x0E: borra el objeto
 L_AAFF:
 	push hl			;aaff
 	push ix		;ab00
-	call L_AB09		;ab02
+	call L_AB09		;ab02   ; los 0x20 bytes del objeto a 0: deja de estar en marcha
 	pop ix		;ab05
 	pop hl			;ab07
 	ret			;ab08
 L_AB09:
-	push ix		;ab09
+	push ix		;ab09   ; los 0x20 bytes del objeto a 0: deja de estar en marcha
 	pop hl			;ab0b
 	ld bc,0001fh		;ab0c
 	call 04648h		;ab0f   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	scf			;ab12
+	scf			;ab12   ; acarreo: el guion no sigue
 	ret			;ab13
 sonido_en_linea:		; la orden 0x0F con su dato detras del call
 	pop hl			;ab14
-	call L_AB26		;ab15
+	call L_AB26		;ab15   ; el numero del sonido
 	jp (hl)			;ab18
 orden_sonido:		; orden 0x0F: pide el sonido N (p00:4AF5)
 	call puntero_del_guion		;ab19   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;ab1c
-	call L_AB26		;ab1d
+	call L_AB26		;ab1d   ; el numero del sonido
 	call guarda_puntero_del_guion		;ab20   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;ab23
 L_AB26:
-	ld a,(hl)			;ab26
+	ld a,(hl)			;ab26   ; el numero del sonido
 	inc hl			;ab27
 	push hl			;ab28
 	push ix		;ab29
@@ -855,27 +855,27 @@ L_AB32:
 	ret			;ab35
 color_en_linea:		; la orden 0x10 con sus datos detras del call
 	pop hl			;ab36
-	call L_AB48		;ab37
+	call L_AB48		;ab37   ; D, E: los dos bytes del color
 	jp (hl)			;ab3a
 orden_color:		; orden 0x10: el color (nibble alto de E) con los bytes D y E (p00:4776)
 	call puntero_del_guion		;ab3b   ; puntero_del_guion: HL = ix+2-3
 	inc hl			;ab3e
-	call L_AB48		;ab3f
+	call L_AB48		;ab3f   ; D, E: los dos bytes del color
 	call guarda_puntero_del_guion		;ab42   ; guarda_puntero_del_guion: ix+2-3 = HL
 	jp L_A823		;ab45
 L_AB48:
-	ld e,(hl)			;ab48
+	ld e,(hl)			;ab48   ; D, E: los dos bytes del color
 	inc hl			;ab49
 	ld d,(hl)			;ab4a
 	inc hl			;ab4b
 	push hl			;ab4c
 	push ix		;ab4d
-	call L_AB56		;ab4f
+	call L_AB56		;ab4f   ; el numero del color, en el nibble alto de E
 	pop ix		;ab52
 	pop hl			;ab54
 	ret			;ab55
 L_AB56:
-	ld a,e			;ab56
+	ld a,e			;ab56   ; el numero del color, en el nibble alto de E
 	and 0f0h		;ab57
 	rrca			;ab59
 	rrca			;ab5a
@@ -885,25 +885,25 @@ L_AB56:
 	ret			;ab60
 objeto_nuevo:		; el objeto A (p03:AB83) borrado, en marcha (ix+0 = 1) y con sus limites por defecto
 	call ficha_de_objeto		;ab61   ; ficha_de_objeto: HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
-	ret c			;ab64
+	ret c			;ab64   ; no hay objeto con ese numero
 	push hl			;ab65
 	pop ix		;ab66
 	ld bc,0001fh		;ab68
 	call 04648h		;ab6b   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
-	ld (ix+000h),001h		;ab6e
-	ld (ix+015h),028h		;ab72
+	ld (ix+000h),001h		;ab6e   ; en marcha
+	ld (ix+015h),028h		;ab72   ; sus limites por defecto
 	ld (ix+014h),00ah		;ab76
 	ld (ix+016h),014h		;ab7a
 	ld (ix+017h),00ch		;ab7e
 	ret			;ab82
 ficha_de_objeto:		; HL = 0xE100 + 0x20 x A; acarreo si A pasa de 0x2F
-	cp 030h		;ab83
+	cp 030h		;ab83   ; solo hay 0x30 objetos
 	ccf			;ab85
 	ret c			;ab86
 	ld l,a			;ab87
 	ld h,000h		;ab88
 	ld de,0e100h		;ab8a
-	add hl,hl			;ab8d
+	add hl,hl			;ab8d   ; x 32
 	add hl,hl			;ab8e
 	add hl,hl			;ab8f
 	add hl,hl			;ab90
@@ -919,18 +919,18 @@ borra_objetos_menos_0:		; 0xE120-0xE6FF a 0
 	ld bc,005dfh		;aba0
 	jp 04648h		;aba3   ; borra_memoria: pone a 0 BC + 1 bytes desde HL
 por_32_con_signo:		; HL = A x 32 con signo
-	ld l,a			;aba6
+	ld l,a			;aba6   ; A con signo a 16 bits
 	rlca			;aba7
 	sbc a,a			;aba8
 	ld h,a			;aba9
-	add hl,hl			;abaa
+	add hl,hl			;abaa   ; x 32: el desplazamiento en las unidades de la posicion
 	add hl,hl			;abab
 	add hl,hl			;abac
 	add hl,hl			;abad
 	add hl,hl			;abae
 	ret			;abaf
 parte_alta:		; A = los 3 bits altos de HL y HL x 8
-	xor a			;abb0
+	xor a			;abb0   ; los 3 bits que salen por arriba van a A
 	add hl,hl			;abb1
 	adc a,a			;abb2
 	add hl,hl			;abb3
@@ -1126,15 +1126,15 @@ pinta_en_cuatro:		; partido en cuatro
 	pop ix		;ad73
 	ret			;ad75
 copia_objeto_a_e0c0:		; copia la ficha de IY a 0xE0C0 y la usa como IX
-	push iy		;ad76
+	push iy		;ad76   ; la ficha de IY a 0xE0C0
 	pop hl			;ad78
-	ld ix,0e0c0h		;ad79
+	ld ix,0e0c0h		;ad79   ; IX en la copia: se puede cambiar sin tocar la de verdad
 	ld de,0e0c0h		;ad7d
 	ld bc,00020h		;ad80
 	ldir		;ad83
 	ret			;ad85
 copia_del_vdp:		; de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
-	push de			;ad86
+	push de			;ad86   ; de caracteres a puntos: el ancho y el alto x 8
 	push af			;ad87
 	ld a,b			;ad88
 	add a,a			;ad89
@@ -1146,7 +1146,7 @@ copia_del_vdp:		; de puntos a coordenadas del VDP y la copia: logica (p00:487C) 
 	add a,a			;ad8f
 	add a,a			;ad90
 	ld c,a			;ad91
-	ld a,l			;ad92
+	ld a,l			;ad92   ; la X de origen x 8 y la pagina en sus bits 5 y 6
 	ld d,a			;ad93
 	add a,a			;ad94
 	add a,a			;ad95
@@ -1156,16 +1156,16 @@ copia_del_vdp:		; de puntos a coordenadas del VDP y la copia: logica (p00:487C) 
 	and 060h		;ad99
 	add a,a			;ad9b
 	push af			;ad9c
-	ld a,h			;ad9d
+	ld a,h			;ad9d   ; la Y de origen x 8
 	add a,a			;ad9e
 	add a,a			;ad9f
 	add a,a			;ada0
 	ld h,a			;ada1
 	pop af			;ada2
 	pop de			;ada3
-	bit 6,d		;ada4
+	bit 6,d		;ada4   ; el bit 6 de D elige la copia
 	jr nz,L_ADBE		;ada6
-	rlc d		;ada8
+	rlc d		;ada8   ; la operacion logica en el nibble alto
 	rlc d		;adaa
 	rlc d		;adac
 	rlc d		;adae
@@ -1178,7 +1178,7 @@ copia_del_vdp:		; de puntos a coordenadas del VDP y la copia: logica (p00:487C) 
 	pop ix		;adbb
 	ret			;adbd
 L_ADBE:
-	or d			;adbe
+	or d			;adbe   ; la copia rapida: la pagina
 	rlca			;adbf
 	rlca			;adc0
 	and 00fh		;adc1
@@ -1190,10 +1190,10 @@ L_ADBE:
 	pop ix		;adcd
 	ret			;adcf
 origen_del_grafico:		; la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	ld a,(ix+003h)		;add0   ; lee por donde va el guion del objeto (alto)
+	ld a,(ix+003h)		;add0   ; la entrada de la lista de graficos: +3 los bits altos del puntero
 	and 007h		;add3
 	ld h,a			;add5
-	ld a,(ix+004h)		;add6   ; lee la X del objeto (fraccion)
+	ld a,(ix+004h)		;add6   ; +4: la direccion de destino
 	ld d,a			;add9
 	and 01fh		;adda
 	ld e,a			;addc
@@ -1206,28 +1206,28 @@ origen_del_grafico:		; la direccion de un grafico de la lista: banco, y su sitio
 	add hl,de			;ade4
 	add hl,hl			;ade5
 	add hl,hl			;ade6
-	ld de,06000h		;ade7
+	ld de,06000h		;ade7   ; los graficos en 0x6000, con su banco
 	add hl,de			;adea
 	ex de,hl			;adeb
-	ld h,(ix+002h)		;adec   ; lee por donde va el guion del objeto (bajo)
-	ld l,(ix+001h)		;adef   ; lee la espera del guion del objeto (orden 3)
-	ld a,(ix+000h)		;adf2   ; lee el objeto esta en marcha
+	ld h,(ix+002h)		;adec   ; +1 y +2: el puntero en el banco
+	ld l,(ix+001h)		;adef
+	ld a,(ix+000h)		;adf2   ; +0: el banco base
 	and 01fh		;adf5
 	call banco_del_grafico		;adf7   ; banco_del_grafico: el banco C y H, pasando al siguiente cada 0x2000
-	ld a,c			;adfa
+	ld a,c			;adfa   ; los dos bancos seguidos en 0x6000 y 0x8000
 	call 04c0eh		;adfb   ; bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
-	ld a,(ix+005h)		;adfe   ; lee la X del objeto
-	sub (ix+004h)		;ae01   ; le resta la X del objeto (fraccion)
+	ld a,(ix+005h)		;adfe   ; +5 - +4: cuantos caracteres
+	sub (ix+004h)		;ae01
 	inc a			;ae04
 	ld b,a			;ae05
 	ret			;ae06
 banco_del_grafico:		; el banco C y H, pasando al siguiente cada 0x2000
-	ld c,a			;ae07
+	ld c,a			;ae07   ; C = el banco
 	ld a,h			;ae08
 	add a,020h		;ae09
 	ld h,a			;ae0b
 L_AE0C:
-	cp 080h		;ae0c
+	cp 080h		;ae0c   ; mientras el puntero pase de 0x8000, un banco mas
 	ret c			;ae0e
 	sub 020h		;ae0f
 	ld h,a			;ae11
@@ -1236,15 +1236,15 @@ L_AE0C:
 carga_graficos:		; la lista de IX hasta un 0: cada entrada (p03:AE27), de 6 bytes
 	call 047d2h		;ae15   ; espera_orden_vdp: espera a que el VDP acabe su orden (estado 2, bit 0)
 L_AE18:
-	ld a,(ix+000h)		;ae18   ; lee el objeto esta en marcha
+	ld a,(ix+000h)		;ae18   ; 0 acaba la lista
 	or a			;ae1b
 	ret z			;ae1c
 	call un_grafico		;ae1d   ; un_grafico: segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
-	ld de,00006h		;ae20
+	ld de,00006h		;ae20   ; la entrada siguiente (6 bytes)
 	add ix,de		;ae23
 	jr L_AE18		;ae25
 un_grafico:		; segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03:AE8C) o ya a 4 bits; el bit 7 elige la pagina alta
-	ld a,(ix+000h)		;ae27   ; lee el objeto esta en marcha
+	ld a,(ix+000h)		;ae27
 	and 007h		;ae2a
 	ret z			;ae2c
 	dec a			;ae2d
@@ -1258,7 +1258,7 @@ un_grafico:		; segun los bits 0-2: a 1, 2 o 4 bits por punto (con su paleta, p03
 	ld de,00002h		;ae3d
 	add ix,de		;ae40
 	call origen_del_grafico		;ae42   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae45   ; mira el bit 7 de el objeto esta en marcha
+	bit 7,(ix+000h)		;ae45
 	jp nz,de_1_bit_alta		;ae49   ; de_1_bit_alta: lo mismo a la pagina alta
 	jp de_1_bit		;ae4c   ; de_1_bit: graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
 L_AE4F:
@@ -1267,7 +1267,7 @@ L_AE4F:
 	ld de,00003h		;ae54
 	add ix,de		;ae57
 	call origen_del_grafico		;ae59   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae5c   ; mira el bit 7 de el objeto esta en marcha
+	bit 7,(ix+000h)		;ae5c
 	jp nz,de_2_bits_alta		;ae60   ; de_2_bits_alta: lo mismo a la pagina alta
 	jp de_2_bits		;ae63   ; de_2_bits: graficos de 2 bits por punto a 4
 L_AE66:
@@ -1276,22 +1276,22 @@ L_AE66:
 	ld de,00005h		;ae6b
 	add ix,de		;ae6e
 	call origen_del_grafico		;ae70   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae73   ; mira el bit 7 de el objeto esta en marcha
+	bit 7,(ix+000h)		;ae73
 	jp nz,de_4_bits_alta		;ae77   ; de_4_bits_alta: lo mismo a la pagina alta
 	jp de_4_bits		;ae7a   ; de_4_bits: graficos de 4 bits por punto con paleta propia
 L_AE7D:
 	inc ix		;ae7d
 	call origen_del_grafico		;ae7f   ; origen_del_grafico: la direccion de un grafico de la lista: banco, y su sitio en 0x6000 (p00:4C0E)
-	bit 7,(ix+000h)		;ae82   ; mira el bit 7 de el objeto esta en marcha
+	bit 7,(ix+000h)		;ae82
 	jp nz,caracteres_volteados		;ae86   ; caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
 	jp 0493dh		;ae89   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 paleta_del_grafico:		; B bytes de colores de la lista a nibbles en 0xCA00
 	push ix		;ae8c
 	pop hl			;ae8e
-	inc hl			;ae8f
-	ld de,0ca00h		;ae90   ; apunta a el estado de la partida
+	inc hl			;ae8f   ; los colores van detras del primer byte
+	ld de,0ca00h		;ae90   ; a 0xCA00, un color por byte
 L_AE93:
-	ld a,(hl)			;ae93
+	ld a,(hl)			;ae93   ; el nibble alto
 	ld c,a			;ae94
 	rrca			;ae95
 	rrca			;ae96
@@ -1301,7 +1301,7 @@ L_AE93:
 	ld (de),a			;ae9b
 	inc hl			;ae9c
 	inc de			;ae9d
-	ld a,c			;ae9e
+	ld a,c			;ae9e   ; el bajo
 	and 00fh		;ae9f
 	ld (de),a			;aea1
 	inc de			;aea2
@@ -1309,19 +1309,19 @@ L_AE93:
 	ret			;aea5
 mapa_de_secuencia:		; con el banco A (p00:4C0E): el mapa de HL + 0x2000, palabras por casilla de 32 columnas; 0xFFFF acaba y 0xFFFE salta
 	call 04c0eh		;aea6   ; bancos_en_6000_8000: pone el banco A en 0x6000 y el A + 1 en 0x8000
-	ld de,02000h		;aea9
+	ld de,02000h		;aea9   ; el mapa empieza 0x2000 mas alla
 	add hl,de			;aeac
-	ld de,00040h		;aead
+	ld de,00040h		;aead   ; D = la columna (0-31) y E = la fila
 L_AEB0:
-	ld c,(hl)			;aeb0
+	ld c,(hl)			;aeb0   ; una palabra por casilla
 	inc hl			;aeb1
 	ld b,(hl)			;aeb2
 	inc hl			;aeb3
-	ld a,b			;aeb4
+	ld a,b			;aeb4   ; 0xFFFF acaba
 	and c			;aeb5
 	inc a			;aeb6
 	ret z			;aeb7
-	inc a			;aeb8
+	inc a			;aeb8   ; 0xFFFE se salta la casilla
 	jr z,L_AEC2		;aeb9
 	push hl			;aebb
 	push de			;aebc
@@ -1329,7 +1329,7 @@ L_AEB0:
 	pop de			;aec0
 	pop hl			;aec1
 L_AEC2:
-	ld a,d			;aec2
+	ld a,d			;aec2   ; la columna siguiente; tras la 31, la fila siguiente
 	inc a			;aec3
 	ld d,a			;aec4
 	cp 020h		;aec5
@@ -1344,9 +1344,9 @@ casilla_de_secuencia:		; el sitio del caracter (p03:AED7) y lo copia (p03:AEF0)
 	call copia_caracter_8		;aed3   ; copia_caracter_8: un caracter de 8 x 8 a la casilla D, E (p03:AD86)
 	ret			;aed6
 sitio_del_caracter:		; de la palabra B, C: H y L en la pagina de los graficos
-	ld a,c			;aed7
+	ld a,c			;aed7   ; la palabra: los 5 bits bajos son la columna del caracter en la pagina de graficos
 	ld h,a			;aed8
-	and 0e0h		;aed9
+	and 0e0h		;aed9   ; y los altos (de B y C) la fila, desde la 0x18
 	rr b		;aedb
 	rra			;aedd
 	rr b		;aede
@@ -1364,7 +1364,7 @@ sitio_del_caracter:		; de la palabra B, C: H y L en la pagina de los graficos
 	ret			;aeef
 copia_caracter_8:		; un caracter de 8 x 8 a la casilla D, E (p03:AD86)
 	push hl			;aef0
-	ld a,e			;aef1
+	ld a,e			;aef1   ; la fila de destino x 8 y la pagina
 	ld h,a			;aef2
 	add a,a			;aef3
 	add a,a			;aef4
@@ -1377,21 +1377,21 @@ copia_caracter_8:		; un caracter de 8 x 8 a la casilla D, E (p03:AD86)
 	rlca			;aefc
 	res 7,a		;aefd
 	push af			;aeff
-	ld a,d			;af00
+	ld a,d			;af00   ; la columna de destino x 8
 	add a,a			;af01
 	add a,a			;af02
 	add a,a			;af03
 	ld d,a			;af04
 	pop af			;af05
 	pop hl			;af06
-	ld bc,00101h		;af07
+	ld bc,00101h		;af07   ; un caracter de 1 x 1
 	call copia_del_vdp		;af0a   ; copia_del_vdp: de puntos a coordenadas del VDP y la copia: logica (p00:487C) o rapida (p00:4838) segun el bit 6 de D
 	ret			;af0d
 de_1_bit:		; graficos de 1 bit por punto a 4 en 0xCB00 (p03:AF3A) y a la VRAM (p00:493D)
 	push bc			;af0e
 	push de			;af0f
 	exx			;af10
-	ld hl,0cb00h		;af11
+	ld hl,0cb00h		;af11   ; el caracter pasado a 4 bits va a 0xCB00
 	exx			;af14
 L_AF15:
 	push bc			;af15
@@ -1400,7 +1400,7 @@ L_AF15:
 	djnz L_AF15		;af1a
 	pop de			;af1c
 	pop bc			;af1d
-	ld hl,0cb00h		;af1e
+	ld hl,0cb00h		;af1e   ; y de ahi a la VRAM
 	jp 0493dh		;af21   ; copia_caracteres: B caracteres de p00:490B seguidos, 8 puntos a la derecha cada uno y bajando al llegar al borde
 de_1_bit_alta:		; lo mismo a la pagina alta
 	push bc			;af24
@@ -1416,11 +1416,11 @@ L_AF2B:
 	pop de			;af32
 	pop bc			;af33
 	ld hl,0cb00h		;af34
-	jp caracteres_volteados		;af37   ; caracteres_volteados: B caracteres volteados (p03:B05B) desde HL + 3
+	jp caracteres_volteados		;af37   ; a la pagina alta, volteados
 filas_de_1_bit:		; 8 filas
 	ld b,008h		;af3a
 L_AF3C:
-	ld e,(hl)			;af3c
+	ld e,(hl)			;af3c   ; un byte por fila
 	inc hl			;af3d
 	push bc			;af3e
 	call fila_de_1_bit		;af3f   ; fila_de_1_bit: un byte de 1 bit por punto a 4 bytes con los colores de 0xCA00
@@ -1430,14 +1430,14 @@ L_AF3C:
 fila_de_1_bit:		; un byte de 1 bit por punto a 4 bytes con los colores de 0xCA00
 	ld b,004h		;af46
 L_AF48:
-	xor a			;af48
+	xor a			;af48   ; cada punto: su color en 0xCA00 (0 o 1)
 	rl e		;af49
 	rla			;af4b
 	exx			;af4c
 	ld e,a			;af4d
 	ld d,0cah		;af4e
 	ld a,(de)			;af50
-	add a,a			;af51
+	add a,a			;af51   ; el primer punto en el nibble alto
 	add a,a			;af52
 	add a,a			;af53
 	add a,a			;af54
@@ -1449,7 +1449,7 @@ L_AF48:
 	exx			;af5b
 	ld e,a			;af5c
 	ld d,0cah		;af5d
-	ld a,(de)			;af5f
+	ld a,(de)			;af5f   ; el segundo en el bajo
 	or c			;af60
 	ld (hl),a			;af61
 	inc hl			;af62
@@ -1495,13 +1495,13 @@ L_AF95:
 	djnz L_AF95		;af9a
 	ret			;af9c
 fila_de_2_bits:		; dos bytes de 2 bits por punto a 4 bytes con los colores de 0xCA00
-	ld b,004h		;af9d
+	ld b,004h		;af9d   ; dos bytes por fila
 	ld e,(hl)			;af9f
 	inc hl			;afa0
 	ld d,(hl)			;afa1
 	inc hl			;afa2
 L_AFA3:
-	xor a			;afa3
+	xor a			;afa3   ; cada punto: dos bits, uno de cada byte
 	rl d		;afa4
 	rla			;afa6
 	rl e		;afa7
@@ -1509,7 +1509,7 @@ L_AFA3:
 	exx			;afaa
 	ld e,a			;afab
 	ld d,0cah		;afac
-	ld a,(de)			;afae
+	ld a,(de)			;afae   ; su color en 0xCA00 (0 a 3)
 	add a,a			;afaf
 	add a,a			;afb0
 	add a,a			;afb1
@@ -1570,7 +1570,7 @@ L_AFF6:
 	djnz L_AFF6		;affb
 	ret			;affd
 fila_de_4_bits:		; tres bytes a 4 bytes de 4 bits por punto con los colores de 0xCA00
-	ld b,004h		;affe
+	ld b,004h		;affe   ; tres bytes por fila
 	ld e,(hl)			;b000
 	inc hl			;b001
 	ld d,(hl)			;b002
@@ -1578,7 +1578,7 @@ fila_de_4_bits:		; tres bytes a 4 bytes de 4 bits por punto con los colores de 0
 	ld c,(hl)			;b004
 	inc hl			;b005
 L_B006:
-	xor a			;b006
+	xor a			;b006   ; cada punto: tres bits, uno de cada byte (8 colores)
 	rl c		;b007
 	rla			;b009
 	rl d		;b00a
@@ -1613,19 +1613,19 @@ L_B006:
 	djnz L_B006		;b02e
 	ret			;b030
 caracter_volteado:		; un caracter de 8 x 8 volteado de izquierda a derecha a la VRAM en DE
-	push de			;b031
+	push de			;b031   ; el puerto de datos del VDP
 	ld a,(00007h)		;b032
 	ld c,a			;b035
-	ld b,008h		;b036
+	ld b,008h		;b036   ; 8 filas
 L_B038:
 	push bc			;b038
 	ex de,hl			;b039
-	xor a			;b03a
+	xor a			;b03a   ; apunta la VRAM a la fila
 	call 046f0h		;b03b   ; direccion_vram: apunta el VDP a escribir en HL (el bit 0 de A, bit 16; registro 14)
 	ex de,hl			;b03e
 	ld b,004h		;b03f
 L_B041:
-	ld a,(hl)			;b041
+	ld a,(hl)			;b041   ; los 4 bytes de la fila de derecha a izquierda, con los dos puntos de cada byte cambiados
 	dec hl			;b042
 	rrca			;b043
 	rrca			;b044
@@ -1633,10 +1633,10 @@ L_B041:
 	rrca			;b046
 	out (c),a		;b047
 	djnz L_B041		;b049
-	ld c,008h		;b04b
+	ld c,008h		;b04b   ; el final de la fila siguiente
 	add hl,bc			;b04d
 	ex de,hl			;b04e
-	ld c,080h		;b04f
+	ld c,080h		;b04f   ; la fila siguiente de la VRAM (0x80)
 	add hl,bc			;b051
 	ex de,hl			;b052
 	pop bc			;b053

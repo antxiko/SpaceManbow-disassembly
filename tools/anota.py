@@ -99,6 +99,30 @@ def medidas():
             m = re.match(r"^0x[0-9A-Fa-f]+\s+#\s+p(\d\d):([0-9A-Fa-f]{4}) (?:call|jp|jr)", ln)
             if m:
                 fuera[(int(m.group(1)), int(m.group(2), 16))] = mm
+    # y lo que sabe el trazador de cartucho entero de cada `call`/`jp`: si en
+    # todos los repartos con los que se llega a la instruccion la ventana del
+    # destino tiene el mismo banco, ese es (las .entries solo apuntan un
+    # llamador por destino)
+    try:
+        import bancos
+        rom = open(glob.glob(os.path.join(RAIZ, "*.rom"))[0], "rb").read()
+        t = bancos.traza_completa(rom, os.path.join(RAIZ, "src"))[0]
+    except Exception:                               # noqa: BLE001
+        return fuera
+    saltos = {0xCD, 0xC3} | set(bancos.CALL_CC) | set(bancos.JP_CC)
+    for (b, pc), confs in t.config_de.items():
+        if (b, pc) in fuera or not confs:
+            continue
+        i = b * 0x2000 + (pc - ORG[b])
+        if rom[i] not in saltos:
+            continue
+        dest = rom[i + 1] | rom[i + 2] << 8
+        if not 0x6000 <= dest < 0xC000:
+            continue
+        k = (dest - 0x6000) >> 13
+        destinos = {c[k] for c in confs}
+        if len(destinos) == 1:
+            fuera[(b, pc)] = destinos.pop()
     return fuera
 
 

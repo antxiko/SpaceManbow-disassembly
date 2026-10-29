@@ -578,7 +578,6 @@ C 0x8F78 al_banco_31: sin interrupciones del VDP, guarda la pila, cambia la RAM 
 C 0x8F86 apaga_interrupcion: sin lineas (p00:4B78) y sin el bit 5 del registro 1
 C 0x8F99 cambia_ram: con A = 0xAF: la RAM de la pagina 1 por la de 0xC000-0xCFFF (p02:8F34); entrando en 0x8F13 (`xor a`), 0x5000-0x70EF por 0xD000-0xF0EF
 C 0x8FA4 banco_en_6000: pone el banco A en 0x6000
-C 0x8FAA vector_guion: jp p04:625E (los actores que salen por el guion de la fase)
 C 0x8FAD enciende_lineas: 0xC940 = 1
 C 0x8FB7 apaga_lineas: borra 0xC940-0xC9FF y quita la interrupcion de linea (bit 4 del registro 0)
 C 0x8FC6 cambia_ram: con A = 0xAF: la RAM de la pagina 1 por la de 0xC000-0xCFFF (p02:8F34); entrando en 0x8F13 (`xor a`), 0x5000-0x70EF por 0xD000-0xF0EF

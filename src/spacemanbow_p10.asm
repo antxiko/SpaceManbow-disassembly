@@ -71,7 +71,7 @@ L_8059:
 paleta_de_la_lista:		; los colores de IX como destino (p00:4CE0) e IX detras
 	push ix		;8069
 	pop hl			;806b
-	call 04ce0h		;806c   ; prepara_paleta: espera al fundido de antes y apunta como destino los colores de la lista de HL (p00:4D01); al llegar a un byte 0xF0 o mayor, 0xEF60 = 0x80
+	call 04ce0h		;806c   ; los colores de la lista como destino; HL se queda en su byte final
 	push hl			;806f   ; IX en el final de la paleta
 	pop ix		;8070
 	ret			;8072
@@ -166,7 +166,7 @@ pide_pagina_c0b5:		; 0xC0B5 = A
 	ret			;80f7
 pon_pagina_c0b4:		; 0xC0B4 = A y los registros 10, 3 y 4 del VDP para esa pagina
 	ld (0c0b4h),a		;80f8
-	call 04e82h		;80fb   ; trozo_de_vram_4: la direccion de VRAM del trozo A x 4 (p00:4E8A) con 0xC93E a 0
+	call 04e82h		;80fb   ; la direccion de VRAM de la pagina A (p00:4E82)
 	push ix		;80fe
 	and 001h		;8100
 	push hl			;8102
@@ -380,7 +380,7 @@ L_823C:
 	ret			;8249
 a_un_grupo:		; los patrones apuntados del grupo C
 	ld a,c			;824a
-	call por_12		;824b   ; por_12: A = A x 12
+	call por_12		;824b   ; el grupo C empieza en 0xD710 + 12 x C
 	ld c,a			;824e
 	ld b,000h		;824f
 	ld hl,0d710h		;8251
@@ -404,7 +404,7 @@ copia_patron:		; lo descomprimido de 0xD800 (0xD700 bytes) al patron D del trozo
 	add hl,hl			;8267
 	add hl,hl			;8268
 	push hl			;8269
-	call 04e8ah		;826a   ; trozo_de_vram: HL = 0x4000 x (A / 4) + 0x0800 x (A and 3) + 0x100 x 0xC93E, y A = 0xFF (64 KB altos) si el trozo pasa de 12 (p00:4EA9)
+	call 04e8ah		;826a   ; la direccion del trozo de VRAM del grupo (p00:4E8A)
 	pop de			;826d
 	add hl,de			;826e
 	ex de,hl			;826f
