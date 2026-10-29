@@ -113,9 +113,20 @@ class Juego(Partida):
             self.cuadros(1)
         self.cuadros(60)
         if fase is not None:
-            self.mem[FASE_INICIAL] = fase
+            # la octava (7) se empieza desde la septima: ver abajo
+            self.mem[FASE_INICIAL] = 6 if fase == 7 else fase
         while self.mem[ESTADO] != 4:
             self.pulsa()
+        if fase == 7:
+            # la octava fase no carga graficos (su lista, p10:9156, esta vacia):
+            # se juega con los que deja la septima. Se empieza en la septima y
+            # se da por acabada (0xCA0F = 1, lo que deja su jefe al morir)
+            while self.mem[FASE] != 6 or self.mem[JUEGO] != 2:
+                self.cuadros(1)
+            self.cuadros(60)
+            self.mem[0xCA0F] = 1
+            while self.mem[FASE] != 7 or self.mem[JUEGO] != 2:
+                self.cuadros(1)
         self.inmortal = inmortal
         self.dispara = dispara
         return self

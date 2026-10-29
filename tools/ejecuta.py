@@ -199,12 +199,19 @@ class Partida(Msx):
                 self.en_halt = False
                 self.pc = (self.pc + 1) & 0xFFFF
             v = getattr(self.vdp, "r", None)
+            self.regs_linea2 = None
             if v is not None and v[0] & 0x10 and self.iff:
                 # la interrupcion de linea (R0 bit 4, la linea en R19): antes
                 # que el VBLANK, con FH puesto en S#1
                 self.vdp.fh = 1
                 self._atiende()
                 self.regs_linea = bytes(self.vdp.r)
+                if v[0] & 0x10 and self.iff:
+                    # la segunda (p00:42BF: la lista de 0xC0A4, otra tabla de
+                    # sprites para la parte de abajo)
+                    self.vdp.fh = 1
+                    self._atiende()
+                    self.regs_linea2 = bytes(self.vdp.r)
             if v is not None:
                 self.vdp.f = 0x80             # S#0: el VBLANK
             if self.iff:
@@ -271,7 +278,8 @@ class Partida(Msx):
         de ahi abajo con los que dejo la interrupcion de linea (regs_linea).
         En cada tramo, la pagina de R2, el desplazamiento vertical de R23 y el
         ajuste horizontal de R18 (4 bits con signo: el cuadro entero se corre
-        a la izquierda con los valores positivos)."""
+        a la izquierda con los valores positivos); con R9 sin el bit LN, de la
+        linea 192 abajo es borde."""
         from PIL import Image
         v = self.vdp
         arriba = getattr(self, "regs_cuadro", None) or bytes(v.r)
@@ -288,6 +296,12 @@ class Partida(Msx):
             dx = aj - 16 if aj >= 8 else aj
             yy = (y + r[23]) & 0xFF
             g3 = (r[0] & 0x0E) == 0x04 and not (r[1] & 0x18)
+            if y >= 192 and not (r[9] & 0x80):
+                # sin el bit LN de R9, 192 lineas: lo de abajo es borde, del
+                # color de fondo de R7
+                for x in range(256):
+                    px[x, y] = v.rgb(r[7] & 15)
+                continue
             for x in range(256):
                 xx = x + dx
                 if not 0 <= xx < 256:
@@ -297,5 +311,13 @@ class Partida(Msx):
                 else:
                     px[x, y] = v.rgb(v.punto(xx, pag * 256 + yy))
         if sprites and abajo is not None and not (abajo[8] & 2):
-            v.sprites(im, abajo, corte)
+            abajo2 = getattr(self, "regs_linea2", None)
+            if abajo2 is not None:
+                # la segunda interrupcion de linea: la linea de R19 que puso la
+                # primera; de ahi abajo, la tabla de sprites de la segunda
+                corte2 = min(212, (abajo[19] - abajo[23]) & 0xFF)
+                v.sprites(im, abajo, corte, corte2)
+                v.sprites(im, abajo2, corte2)
+            else:
+                v.sprites(im, abajo, corte)
         return im

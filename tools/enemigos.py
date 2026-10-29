@@ -84,6 +84,20 @@ def tramos(fase):
     return d, vistos
 
 
+def caja(n, t, im):
+    """Un recorte de 64 x 64 de la pantalla alrededor del primer actor de
+    tipo t (su X y su Y en caracteres: ix+0x0A, ix+8; la zona de juego
+    empieza en la linea 28, p00:4270)."""
+    for a in FICHAS:
+        if n.mem[a] == t:
+            x, y = 8 * n.mem[a + 0x0A] + 8, 8 * n.mem[a + 8] + 28 + 8
+            if not (0 <= x < 256 and 0 <= y < 212):
+                return None
+            x0, y0 = max(0, min(192, x - 32)), max(0, min(148, y - 32))
+            return im.crop((x0, y0, x0 + 64, y0 + 64))
+    return None
+
+
 def graba(fase, carpeta, solo=None):
     d, vistos = tramos(fase)
     n = partida(fase)
@@ -98,11 +112,17 @@ def graba(fase, carpeta, solo=None):
         g = Gif()
         u = min(vistos[t][1], p + TOPE)
         j = p
+        recorte = None
         while j <= u:
             procesado(m)
-            g.pon(m.foto_partida())
+            im = m.foto_partida()
+            g.pon(im)
+            if recorte is None and j - p >= 12:
+                recorte = caja(m, t, im)
             j += 1
         g.guarda(os.path.join(carpeta, "enemigo_f%d_%02X.gif" % (fase, t)))
+        if recorte:
+            recorte.save(os.path.join(carpeta, "enemigo_f%d_%02X.png" % (fase, t)))
 
 
 if __name__ == "__main__":

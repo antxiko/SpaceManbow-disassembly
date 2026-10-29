@@ -178,12 +178,21 @@ test:
 # Programs, no el python3 de la Store).
 PYIMG ?= python
 
+# Las imagenes de la web: las juntan de lo que dejan en work/ las herramientas
+# (recorrido.py, pantallas.py, armas.py, enemigos.py, jefes.py, secuencias.py;
+# ver tools/imagenes_web.py). Necesitan PIL: el python de Programs.
+PYIMG ?= /c/Users/Antxiko/AppData/Local/Programs/Python/Python313/python.exe
+imagenes: $(ROM)
+	$(PYIMG) tools/imagenes_web.py docs
+
 # La web: en el repositorio solo van las paginas en markdown; GitHub Pages las
 # convierte con Jekyll (tools/jekyll.py escribe su configuracion y plantillas).
-# La portada la monta make_web.py con lo de tools/contenido_web.py. Para
-# comprobar los enlaces se construye en local con el mismo Jekyll (3.10).
+# La de los enemigos la escribe tools/paginas_web.py de lo medido. La portada
+# la monta make_web.py con lo de tools/contenido_web.py. Para comprobar los
+# enlaces se construye en local con el mismo Jekyll (3.10).
 JEKYLL ?= C:/msys64/mingw64/bin/ruby C:/msys64/mingw64/bin/jekyll
 web: $(ROM)
+	python3 tools/paginas_web.py docs
 	python3 tools/jekyll.py docs
 	python3 tools/make_web.py docs/imagenes docs/index.html en
 	python3 tools/make_web.py docs/imagenes docs/es/index.html es

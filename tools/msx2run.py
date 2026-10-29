@@ -211,7 +211,7 @@ class V9938:
                 px[x, y] = self.rgb(self.punto(x, base + y))
         return im
 
-    def sprites(self, im, r=None, desde=0):
+    def sprites(self, im, r=None, desde=0, hasta=None):
         """Los 32 sprites del modo 2 encima de im, como los pinta el chip: la tabla de
         atributos de R5/R11 (y = 216 acaba), la de colores 0x200 por debajo (un
         color por linea; el bit 7, EC, lo corre 32 puntos a la izquierda), los
@@ -223,7 +223,8 @@ class V9938:
         px = im.load()
         # r: los registros con los que se pintan (por defecto, los de ahora);
         # la Y de los sprites va con el desplazamiento vertical de R23, y no
-        # se pinta por encima de la linea `desde` (la pantalla partida)
+        # se pinta por encima de la linea `desde` ni desde `hasta` (la pantalla
+        # partida)
         r = r if r is not None else self.r
         attr = ((r[11] & 3) << 15) | ((r[5] & 0xFC) << 7)
         cols = attr - 0x200
@@ -267,7 +268,7 @@ class V9938:
                     for ay in range(amp):
                         for ax in range(amp):
                             xx, yy = dx + col * amp + ax, (y + fila * amp + ay) & 0xFF
-                            if 0 <= xx < 256 and desde <= yy < im.height:
+                            if 0 <= xx < 256 and desde <= yy < (hasta or im.height):
                                 grupo[(xx, yy)] = grupo.get((xx, yy), 0) | color
         if grupo is not None:
             cierra()
