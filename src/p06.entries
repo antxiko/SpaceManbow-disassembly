@@ -103,6 +103,7 @@
 0xB077   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:468D (ret)
 0xB0B9   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6A99 (ret)
 0xB0BC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6ADA (ret)
+0xB0C1   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0xB0C1
 0xB0CB   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0xB0CC   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xB0E3   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))

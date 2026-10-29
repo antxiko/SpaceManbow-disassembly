@@ -15,8 +15,13 @@
 0x8003   # p00:4547 call
 0x8006   # p00:43DD call cc
 0x8012   # p00:455F call
+0x8015   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8015
 0x8018   # p00:4570 call
+0x828A   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x828A
+0x844A   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x844A
+0x8451   # codigo huerfano: 6 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8451
 0x861E   # p02:8605 entrada 0 de la tabla de 0x8608 (call 0x461A en 0x8605)
+0x8637   # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x8637
 0x87BE   # p02:87A9 entrada 0 de la tabla de 0x87AC (call 0x461A en 0x87A9)
 0x8877   # p02:87A9 entrada 8 de la tabla de 0x87AC (call 0x461A en 0x87A9)
 0x889C   # p02:888D entrada 0 de la tabla de 0x8890 (call 0x461A en 0x888D)
@@ -27,6 +32,7 @@
 0x8934   # p02:888D entrada 5 de la tabla de 0x8890 (call 0x461A en 0x888D)
 0x8BF1   # p02:8605 entrada 10 de la tabla de 0x8608 (call 0x461A en 0x8605)
 0x8C9C   # p02:8605 entrada 1 de la tabla de 0x8608 (call 0x461A en 0x8605)
+0x8D29   # codigo huerfano: 37 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x8D29
 0x8D4E   # p02:87A9 entrada 4 de la tabla de 0x87AC (call 0x461A en 0x87A9)
 0x8E50   # p02:8605 entrada 3 de la tabla de 0x8608 (call 0x461A en 0x8605)
 0x8E9B   # p02:87A9 entrada 7 de la tabla de 0x87AC (call 0x461A en 0x87A9)

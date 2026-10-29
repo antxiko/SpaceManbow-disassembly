@@ -34,26 +34,14 @@ DATA_sin_leer_600F:
 	defb 0c3h,06ah,060h	; 600f
 
 ; ======================================================================
-; CODIGO 0x6012..0x6015  (3 bytes)
+; CODIGO 0x6012..0x60e3  (209 bytes)
 ; ======================================================================
 
 
 L_6012:
 	jp L_62CB		;6012
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6015: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (3 bytes)
-;   0x6015..0x6018  (3 bytes)
-DATA_sin_leer_6015:
-	defb 0c3h,0e1h,078h	; 6015
-
-; ======================================================================
-; CODIGO 0x6018..0x6074  (92 bytes)
-; ======================================================================
-
-
+L_6015:
+	jp L_78E1		;6015
 L_6018:
 	jp L_7DE4		;6018
 L_601B:
@@ -108,20 +96,11 @@ L_606A:
 	ret z			;606d
 	jp c,L_7D9C		;606e
 	jp L_64A2		;6071
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6074: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0x6074..0x607d  (9 bytes)
-DATA_sin_leer_6074:
-	defb 0ddh,07eh,034h,0cbh,077h,0c8h,0c3h,098h,06eh	; 6074  .~4.w...n
-
-; ======================================================================
-; CODIGO 0x607d..0x60e3  (102 bytes)
-; ======================================================================
-
-
+L_6074:
+	ld a,(ix+034h)		;6074
+	bit 6,a		;6077
+	ret z			;6079
+	jp L_6E98		;607a
 L_607D:
 	ld bc,01440h		;607d
 	ld ix,0ce80h		;6080
@@ -312,7 +291,7 @@ DATA_leido_617E:
 	defb 094h,057h,095h,067h,096h,0ffh	; 620e
 
 ; ======================================================================
-; CODIGO 0x6214..0x62c4  (176 bytes)
+; CODIGO 0x6214..0x6315  (257 bytes)
 ; ======================================================================
 
 
@@ -418,20 +397,10 @@ L_62BB:
 	call L_60D6		;62bf
 	xor a			;62c2
 	ret			;62c3
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_62C4: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (7 bytes)
-;   0x62c4..0x62cb  (7 bytes)
-DATA_sin_leer_62C4:
-	defb 021h,000h,0e9h,022h,034h,0cah,0c9h	; 62c4
-
-; ======================================================================
-; CODIGO 0x62cb..0x6315  (74 bytes)
-; ======================================================================
-
-
+L_62C4:
+	ld hl,0e900h		;62c4
+	ld (0ca34h),hl		;62c7
+	ret			;62ca
 L_62CB:
 	ld ix,0ce80h		;62cb
 	ld b,014h		;62cf
@@ -728,7 +697,7 @@ DATA_sin_leer_66C5:
 	defb 000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 66c5  ...........
 
 ; ======================================================================
-; CODIGO 0x66d0..0x685d  (397 bytes)
+; CODIGO 0x66d0..0x68d4  (516 bytes)
 ; ======================================================================
 
 
@@ -982,21 +951,16 @@ L_684C:
 L_6859:
 	or a			;6859
 	jp 04656h		;685a
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_685D: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (20 bytes)
-;   0x685d..0x6871  (20 bytes)
-DATA_sin_leer_685D:
-	defb 057h,03eh,001h,0cdh,071h,068h,0d8h,0cdh,056h,046h,0cdh,0dch,066h,0cdh,04dh,069h	; 685d  W>..qh..VF..f.Mi
-	defb 0b7h,0c3h,056h,046h	; 686d
-
-; ======================================================================
-; CODIGO 0x6871..0x68d4  (99 bytes)
-; ======================================================================
-
-
+L_685D:
+	ld d,a			;685d
+	ld a,001h		;685e
+	call L_6871		;6860
+	ret c			;6863
+	call 04656h		;6864
+	call L_66DC		;6867
+	call L_694D		;686a
+	or a			;686d
+	jp 04656h		;686e
 L_6871:
 	ld hl,0ce44h		;6871
 	ld b,(hl)			;6874
@@ -1125,7 +1089,7 @@ DATA_sin_leer_690F:
 	defb 07eh,00ah,080h,0ddh,077h,00ah,0c9h	; 691f
 
 ; ======================================================================
-; CODIGO 0x6926..0x6b15  (495 bytes)
+; CODIGO 0x6926..0x6c09  (739 bytes)
 ; ======================================================================
 
 
@@ -1431,20 +1395,13 @@ L_6B07:
 	rlca			;6b0e
 	call c,04612h		;6b0f
 	jp 04650h		;6b12
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6B15: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (14 bytes)
-;   0x6b15..0x6b23  (14 bytes)
-DATA_sin_leer_6B15:
-	defb 0ddh,06eh,00dh,0ddh,066h,00eh,07ch,007h,0dch,012h,046h,0c3h,050h,046h	; 6b15  .n..f.|...F.PF
-
-; ======================================================================
-; CODIGO 0x6b23..0x6b8e  (107 bytes)
-; ======================================================================
-
-
+L_6B15:
+	ld l,(ix+00dh)		;6b15
+	ld h,(ix+00eh)		;6b18
+	ld a,h			;6b1b
+	rlca			;6b1c
+	call c,04612h		;6b1d
+	jp 04650h		;6b20
 L_6B23:
 	ld l,(ix+00fh)		;6b23
 	ld h,(ix+010h)		;6b26
@@ -1497,20 +1454,9 @@ L_6B85:
 	ld (0ca26h),a		;6b85
 	call L_71D6		;6b88
 	jp L_7270		;6b8b
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6B8E: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (6 bytes)
-;   0x6b8e..0x6b94  (6 bytes)
-DATA_sin_leer_6B8E:
-	defb 0cdh,0b8h,071h,0c3h,070h,072h	; 6b8e
-
-; ======================================================================
-; CODIGO 0x6b94..0x6c09  (117 bytes)
-; ======================================================================
-
-
+L_6B8E:
+	call L_71B8		;6b8e
+	jp L_7270		;6b91
 L_6B94:
 	ld c,000h		;6b94
 	ld a,(0ca4ah)		;6b96
@@ -1811,7 +1757,7 @@ DATA_sin_leer_6D0E:
 	defb 009h,0ddh,07eh,02ah,0ddh,077h,008h,0ddh,07eh,02bh,0ddh,077h,007h,0c9h	; 6d1e  ..~*.w..~+.w..
 
 ; ======================================================================
-; CODIGO 0x6d2c..0x6d96  (106 bytes)
+; CODIGO 0x6d2c..0x6e97  (363 bytes)
 ; ======================================================================
 
 
@@ -1871,23 +1817,42 @@ L_6D4F:
 	ld (ix+00ch),h		;6d8f
 	ld (ix+00bh),l		;6d92
 	ret			;6d95
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6D96: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (61 bytes)
-;   0x6d96..0x6dd3  (61 bytes)
-DATA_sin_leer_6D96:
-	defb 0e5h,042h,04bh,0ddh,066h,00eh,0ddh,06eh,00dh,054h,05dh,029h,029h,0b7h,0edh,052h	; 6d96  .BK.f..n.T]))..R
-	defb 009h,0cbh,02ch,0cbh,01dh,0cbh,02ch,0cbh,01dh,0ddh,074h,00eh,0ddh,075h,00dh,0c1h	; 6da6  ..,...,...t..u..
-	defb 0ddh,066h,00ch,0ddh,06eh,00bh,054h,05dh,029h,029h,0b7h,0edh,052h,009h,0cbh,02ch	; 6db6  .f..n.T]))..R..,
-	defb 0cbh,01dh,0cbh,02ch,0cbh,01dh,0ddh,074h,00ch,0ddh,075h,00bh,0c9h	; 6dc6  ...,...t..u..
-
-; ======================================================================
-; CODIGO 0x6dd3..0x6e97  (196 bytes)
-; ======================================================================
-
-
+L_6D96:
+	push hl			;6d96
+	ld b,d			;6d97
+	ld c,e			;6d98
+	ld h,(ix+00eh)		;6d99
+	ld l,(ix+00dh)		;6d9c
+	ld d,h			;6d9f
+	ld e,l			;6da0
+	add hl,hl			;6da1
+	add hl,hl			;6da2
+	or a			;6da3
+	sbc hl,de		;6da4
+	add hl,bc			;6da6
+	sra h		;6da7
+	rr l		;6da9
+	sra h		;6dab
+	rr l		;6dad
+	ld (ix+00eh),h		;6daf
+	ld (ix+00dh),l		;6db2
+	pop bc			;6db5
+	ld h,(ix+00ch)		;6db6
+	ld l,(ix+00bh)		;6db9
+	ld d,h			;6dbc
+	ld e,l			;6dbd
+	add hl,hl			;6dbe
+	add hl,hl			;6dbf
+	or a			;6dc0
+	sbc hl,de		;6dc1
+	add hl,bc			;6dc3
+	sra h		;6dc4
+	rr l		;6dc6
+	sra h		;6dc8
+	rr l		;6dca
+	ld (ix+00ch),h		;6dcc
+	ld (ix+00bh),l		;6dcf
+	ret			;6dd2
 L_6DD3:
 	call L_6E2C		;6dd3
 L_6DD6:
@@ -3043,7 +3008,7 @@ DATA_sin_leer_75DE:
 	defb 030h,001h,01ch,03ah,01ch,0cah,0ddh,086h,009h,030h,001h,014h	; 75ee  0..:.....0..
 
 ; ======================================================================
-; CODIGO 0x75fa..0x76f0  (246 bytes)
+; CODIGO 0x75fa..0x7720  (294 bytes)
 ; ======================================================================
 
 
@@ -3217,20 +3182,8 @@ L_76D0:
 	ld l,d			;76ed
 	ex de,hl			;76ee
 	ret			;76ef
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_76F0: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x76f0..0x76f1  (1 bytes)
-DATA_sin_leer_76F0:
-	defb 0c9h	; 76f0
-
-; ======================================================================
-; CODIGO 0x76f1..0x7720  (47 bytes)
-; ======================================================================
-
-
+L_76F0:
+	ret			;76f0
 L_76F1:
 	ld a,d			;76f1
 	cp 020h		;76f2
@@ -3269,7 +3222,7 @@ DATA_sin_leer_7720:
 	defb 063h,02eh,000h,016h,000h	; 7720
 
 ; ======================================================================
-; CODIGO 0x7725..0x78e1  (444 bytes)
+; CODIGO 0x7725..0x7b51  (1068 bytes)
 ; ======================================================================
 
 
@@ -3557,20 +3510,9 @@ L_78B2:
 	inc hl			;78de
 	or a			;78df
 	ret			;78e0
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_78E1: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0x78e1..0x78e6  (5 bytes)
-DATA_sin_leer_78E1:
-	defb 0ddh,036h,019h,000h,0c9h	; 78e1
-
-; ======================================================================
-; CODIGO 0x78e6..0x7a96  (432 bytes)
-; ======================================================================
-
-
+L_78E1:
+	ld (ix+019h),000h		;78e1
+	ret			;78e5
 L_78E6:
 	ld l,(ix+000h)		;78e6
 	ld h,0dfh		;78e9
@@ -3803,7 +3745,7 @@ L_7A36:
 	ret			;7a3d
 L_7A3E:
 	call L_7A5F		;7a3e
-	jr $+121		;7a41
+	jr L_7ABA		;7a41
 L_7A43:
 	push af			;7a43
 	call 04bb0h		;7a44
@@ -3860,20 +3802,10 @@ L_7A70:
 	ld c,(hl)			;7a93
 	inc hl			;7a94
 	ret			;7a95
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_7A96: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0x7a96..0x7a9f  (9 bytes)
-DATA_sin_leer_7A96:
-	defb 0cdh,0b0h,04bh,0cdh,0a8h,07ah,0c3h,099h,04bh	; 7a96  ..K..z..K
-
-; ======================================================================
-; CODIGO 0x7a9f..0x7b51  (178 bytes)
-; ======================================================================
-
-
+L_7A96:
+	call 04bb0h		;7a96
+	call L_7AA8		;7a99
+	jp 04b99h		;7a9c
 L_7A9F:
 	inc d			;7a9f
 	ld a,d			;7aa0
@@ -4017,7 +3949,7 @@ DATA_sin_leer_7B51:
 	defb 000h,019h,037h,0c9h	; 7b61
 
 ; ======================================================================
-; CODIGO 0x7b65..0x7c0f  (170 bytes)
+; CODIGO 0x7b65..0x7cf6  (401 bytes)
 ; ======================================================================
 
 
@@ -4148,21 +4080,20 @@ L_7C01:
 	ldir		;7c09
 	ld hl,0d700h		;7c0b
 	ret			;7c0e
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_7C0F: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (24 bytes)
-;   0x7c0f..0x7c27  (24 bytes)
-DATA_sin_leer_7C0F:
-	defb 0ddh,0e5h,0fdh,0e5h,0fdh,0e5h,0ddh,0e5h,0fdh,0e1h,0ddh,0e1h,0ddh,07eh,000h,0cdh	; 7c0f  .............~..
-	defb 026h,07ch,0fdh,0e1h,0ddh,0e1h,0c9h,0c9h	; 7c1f  &|......
-
-; ======================================================================
-; CODIGO 0x7c27..0x7cf6  (207 bytes)
-; ======================================================================
-
-
+L_7C0F:
+	push ix		;7c0f
+	push iy		;7c11
+	push iy		;7c13
+	push ix		;7c15
+	pop iy		;7c17
+	pop ix		;7c19
+	ld a,(ix+000h)		;7c1b
+	call L_7C26		;7c1e
+	pop iy		;7c21
+	pop ix		;7c23
+	ret			;7c25
+L_7C26:
+	ret			;7c26
 L_7C27:
 	bit 4,(ix+015h)		;7c27
 	ret z			;7c2b

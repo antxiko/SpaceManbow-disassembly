@@ -370,7 +370,7 @@ DATA_leido_A835:
 	defb 03bh,0abh	; a855
 
 ; ======================================================================
-; CODIGO 0xa857..0xa865  (14 bytes)
+; CODIGO 0xa857..0xb070  (2073 bytes)
 ; ======================================================================
 
 
@@ -382,18 +382,10 @@ L_A85E:
 	ld (ix+002h),l		;a85e
 	ld (ix+003h),h		;a861
 	ret			;a864
-
-; ----------------------------------------------------------------------
-; DATOS leido_A865: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa865..0xa86a  (5 bytes)
-DATA_leido_A865:
-	defb 0e1h,0cdh,077h,0a8h,0e9h	; a865
-
-; ======================================================================
-; CODIGO 0xa86a..0xa8cd  (99 bytes)
-; ======================================================================
-
-
+L_A865:
+	pop hl			;a865
+	call L_A877		;a866
+	jp (hl)			;a869
 L_A86A:
 	call L_A857		;a86a
 	inc hl			;a86d
@@ -452,18 +444,10 @@ L_A88E:
 	ld (ix+005h),h		;a8c6
 	ld (ix+004h),l		;a8c9
 	ret			;a8cc
-
-; ----------------------------------------------------------------------
-; DATOS leido_A8CD: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa8cd..0xa8d2  (5 bytes)
-DATA_leido_A8CD:
-	defb 0e1h,0cdh,0ddh,0a8h,0e9h	; a8cd
-
-; ======================================================================
-; CODIGO 0xa8d2..0xa920  (78 bytes)
-; ======================================================================
-
-
+L_A8CD:
+	pop hl			;a8cd
+	call L_A8DD		;a8ce
+	jp (hl)			;a8d1
 L_A8D2:
 	call L_A857		;a8d2
 	inc hl			;a8d5
@@ -518,18 +502,10 @@ L_A917:
 	ld c,(hl)			;a91d
 	inc hl			;a91e
 	ret			;a91f
-
-; ----------------------------------------------------------------------
-; DATOS leido_A920: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa920..0xa925  (5 bytes)
-DATA_leido_A920:
-	defb 0e1h,0cdh,032h,0a9h,0e9h	; a920
-
-; ======================================================================
-; CODIGO 0xa925..0xa945  (32 bytes)
-; ======================================================================
-
-
+L_A920:
+	pop hl			;a920
+	call L_A932		;a921
+	jp (hl)			;a924
 L_A925:
 	call L_A857		;a925
 	inc hl			;a928
@@ -549,18 +525,10 @@ L_A93E:
 	or (ix+00dh)		;a93e
 	ld (ix+00dh),a		;a941
 	ret			;a944
-
-; ----------------------------------------------------------------------
-; DATOS leido_A945: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa945..0xa94a  (5 bytes)
-DATA_leido_A945:
-	defb 0e1h,0cdh,055h,0a9h,0e9h	; a945
-
-; ======================================================================
-; CODIGO 0xa94a..0xa965  (27 bytes)
-; ======================================================================
-
-
+L_A945:
+	pop hl			;a945
+	call L_A955		;a946
+	jp (hl)			;a949
 L_A94A:
 	call L_A857		;a94a
 	inc hl			;a94d
@@ -579,18 +547,10 @@ L_A955:
 L_A961:
 	ld (ix+001h),a		;a961
 	ret			;a964
-
-; ----------------------------------------------------------------------
-; DATOS leido_A965: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa965..0xa96a  (5 bytes)
-DATA_leido_A965:
-	defb 0e1h,0cdh,076h,0a9h,0e9h	; a965
-
-; ======================================================================
-; CODIGO 0xa96a..0xa98e  (36 bytes)
-; ======================================================================
-
-
+L_A965:
+	pop hl			;a965
+	call L_A976		;a966
+	jp (hl)			;a969
 L_A96A:
 	call L_A857		;a96a
 	inc hl			;a96d
@@ -617,18 +577,10 @@ L_A982:
 	ret nz			;a98b
 	scf			;a98c
 	ret			;a98d
-
-; ----------------------------------------------------------------------
-; DATOS leido_A98E: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa98e..0xa993  (5 bytes)
-DATA_leido_A98E:
-	defb 0e1h,0cdh,0a0h,0a9h,0e9h	; a98e
-
-; ======================================================================
-; CODIGO 0xa993..0xa9b6  (35 bytes)
-; ======================================================================
-
-
+L_A98E:
+	pop hl			;a98e
+	call L_A9A0		;a98f
+	jp (hl)			;a992
 L_A993:
 	call L_A857		;a993
 	inc hl			;a996
@@ -651,18 +603,10 @@ L_A9AC:
 	add hl,de			;a9b2
 	ld (hl),001h		;a9b3
 	ret			;a9b5
-
-; ----------------------------------------------------------------------
-; DATOS leido_A9B6: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa9b6..0xa9bb  (5 bytes)
-DATA_leido_A9B6:
-	defb 0e1h,0cdh,0c8h,0a9h,0e9h	; a9b6
-
-; ======================================================================
-; CODIGO 0xa9bb..0xa9ea  (47 bytes)
-; ======================================================================
-
-
+L_A9B6:
+	pop hl			;a9b6
+	call L_A9C8		;a9b7
+	jp (hl)			;a9ba
 L_A9BB:
 	call L_A857		;a9bb
 	inc hl			;a9be
@@ -687,18 +631,10 @@ L_A9D2:
 	ld bc,0000fh		;a9e3
 	call 04648h		;a9e6
 	ret			;a9e9
-
-; ----------------------------------------------------------------------
-; DATOS leido_A9EA: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xa9ea..0xa9ef  (5 bytes)
-DATA_leido_A9EA:
-	defb 0e1h,0cdh,0fdh,0a9h,0e9h	; a9ea
-
-; ======================================================================
-; CODIGO 0xa9ef..0xaa09  (26 bytes)
-; ======================================================================
-
-
+L_A9EA:
+	pop hl			;a9ea
+	call L_A9FD		;a9eb
+	jp (hl)			;a9ee
 L_A9EF:
 	call L_A857		;a9ef
 	inc hl			;a9f2
@@ -716,18 +652,10 @@ L_A9FD:
 L_AA07:
 	scf			;aa07
 	ret			;aa08
-
-; ----------------------------------------------------------------------
-; DATOS leido_AA09: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xaa09..0xaa0e  (5 bytes)
-DATA_leido_AA09:
-	defb 0e1h,0cdh,01bh,0aah,0e9h	; aa09
-
-; ======================================================================
-; CODIGO 0xaa0e..0xaa2e  (32 bytes)
-; ======================================================================
-
-
+L_AA09:
+	pop hl			;aa09
+	call L_AA1B		;aa0a
+	jp (hl)			;aa0d
 L_AA0E:
 	call L_A857		;aa0e
 	inc hl			;aa11
@@ -749,18 +677,10 @@ L_AA29:
 	ex de,hl			;aa29
 	call 04c94h		;aa2a
 	ret			;aa2d
-
-; ----------------------------------------------------------------------
-; DATOS leido_AA2E: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
-;   0xaa2e..0xaa33  (5 bytes)
-DATA_leido_AA2E:
-	defb 0e1h,0cdh,040h,0aah,0e9h	; aa2e
-
-; ======================================================================
-; CODIGO 0xaa33..0xaa56  (35 bytes)
-; ======================================================================
-
-
+L_AA2E:
+	pop hl			;aa2e
+	call L_AA40		;aa2f
+	jp (hl)			;aa32
 L_AA33:
 	call L_A857		;aa33
 	inc hl			;aa36
@@ -783,20 +703,10 @@ L_AA4E:
 	call 04ce0h		;aa4f
 	call 04cf5h		;aa52
 	ret			;aa55
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AA56: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xaa56..0xaa5b  (5 bytes)
-DATA_sin_leer_AA56:
-	defb 0e1h,0cdh,068h,0aah,0e9h	; aa56
-
-; ======================================================================
-; CODIGO 0xaa5b..0xaa78  (29 bytes)
-; ======================================================================
-
-
+L_AA56:
+	pop hl			;aa56
+	call L_AA68		;aa57
+	jp (hl)			;aa5a
 L_AA5B:
 	call L_A857		;aa5b
 	inc hl			;aa5e
@@ -817,20 +727,10 @@ L_AA68:
 L_AA76:
 	ex de,hl			;aa76
 	jp (hl)			;aa77
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AA78: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xaa78..0xaa7d  (5 bytes)
-DATA_sin_leer_AA78:
-	defb 0e1h,0cdh,088h,0aah,0e9h	; aa78
-
-; ======================================================================
-; CODIGO 0xaa7d..0xaaa9  (44 bytes)
-; ======================================================================
-
-
+L_AA78:
+	pop hl			;aa78
+	call L_AA88		;aa79
+	jp (hl)			;aa7c
 L_AA7D:
 	call L_A857		;aa7d
 	inc hl			;aa80
@@ -860,20 +760,10 @@ L_AA96:
 	ld (ix+00ah),e		;aaa2
 	ld (ix+00bh),a		;aaa5
 	ret			;aaa8
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AAA9: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xaaa9..0xaaae  (5 bytes)
-DATA_sin_leer_AAA9:
-	defb 0e1h,0cdh,0bbh,0aah,0e9h	; aaa9
-
-; ======================================================================
-; CODIGO 0xaaae..0xaad0  (34 bytes)
-; ======================================================================
-
-
+L_AAA9:
+	pop hl			;aaa9
+	call L_AABB		;aaaa
+	jp (hl)			;aaad
 L_AAAE:
 	call L_A857		;aaae
 	inc hl			;aab1
@@ -895,20 +785,10 @@ L_AAC9:
 	ld (ix+014h),d		;aac9
 	ld (ix+015h),e		;aacc
 	ret			;aacf
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AAD0: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xaad0..0xaad5  (5 bytes)
-DATA_sin_leer_AAD0:
-	defb 0e1h,0cdh,0e2h,0aah,0e9h	; aad0
-
-; ======================================================================
-; CODIGO 0xaad5..0xaaee  (25 bytes)
-; ======================================================================
-
-
+L_AAD0:
+	pop hl			;aad0
+	call L_AAE2		;aad1
+	jp (hl)			;aad4
 L_AAD5:
 	call L_A857		;aad5
 	inc hl			;aad8
@@ -924,20 +804,10 @@ L_AAE2:
 	ld (ix+002h),l		;aae7
 	ld (ix+003h),h		;aaea
 	ret			;aaed
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AAEE: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xaaee..0xaaf3  (5 bytes)
-DATA_sin_leer_AAEE:
-	defb 0e1h,0cdh,0ffh,0aah,0e9h	; aaee
-
-; ======================================================================
-; CODIGO 0xaaf3..0xab14  (33 bytes)
-; ======================================================================
-
-
+L_AAEE:
+	pop hl			;aaee
+	call L_AAFF		;aaef
+	jp (hl)			;aaf2
 L_AAF3:
 	call L_A857		;aaf3
 	inc hl			;aaf6
@@ -959,20 +829,10 @@ L_AB09:
 	call 04648h		;ab0f
 	scf			;ab12
 	ret			;ab13
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AB14: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xab14..0xab19  (5 bytes)
-DATA_sin_leer_AB14:
-	defb 0e1h,0cdh,026h,0abh,0e9h	; ab14
-
-; ======================================================================
-; CODIGO 0xab19..0xab36  (29 bytes)
-; ======================================================================
-
-
+L_AB14:
+	pop hl			;ab14
+	call L_AB26		;ab15
+	jp (hl)			;ab18
 L_AB19:
 	call L_A857		;ab19
 	inc hl			;ab1c
@@ -991,20 +851,10 @@ L_AB26:
 L_AB32:
 	call 04af5h		;ab32
 	ret			;ab35
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AB36: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0xab36..0xab3b  (5 bytes)
-DATA_sin_leer_AB36:
-	defb 0e1h,0cdh,048h,0abh,0e9h	; ab36
-
-; ======================================================================
-; CODIGO 0xab3b..0xab94  (89 bytes)
-; ======================================================================
-
-
+L_AB36:
+	pop hl			;ab36
+	call L_AB48		;ab37
+	jp (hl)			;ab3a
 L_AB3B:
 	call L_A857		;ab3b
 	inc hl			;ab3e
@@ -1058,20 +908,10 @@ L_AB83:
 	add hl,hl			;ab91
 	add hl,de			;ab92
 	ret			;ab93
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_AB94: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0xab94..0xab9d  (9 bytes)
-DATA_sin_leer_AB94:
-	defb 021h,000h,0e1h,001h,0ffh,005h,0c3h,048h,046h	; ab94  !......HF
-
-; ======================================================================
-; CODIGO 0xab9d..0xb070  (1235 bytes)
-; ======================================================================
-
-
+L_AB94:
+	ld hl,0e100h		;ab94
+	ld bc,005ffh		;ab97
+	jp 04648h		;ab9a
 L_AB9D:
 	ld hl,0e120h		;ab9d
 	ld bc,005dfh		;aba0

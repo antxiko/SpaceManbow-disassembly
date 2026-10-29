@@ -44,6 +44,8 @@
 0x75B7   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 0x75D2   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 0x75E9   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
+0x75F3   # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x75F3
+0x75F5   # codigo huerfano: 2 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x75F5
 0x75F7   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 0x75FE   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))
 0x7604   # se ejecuta jugando (tools/cobertura.py): se llega desde p28:758B (jp (hl))

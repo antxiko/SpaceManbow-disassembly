@@ -11,11 +11,14 @@
 # encuentra tools/z80trace.py solo, siguiendo el flujo.
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
-0x6D09   # p04:6C4F llamada lejana (call 0x4C2A con los bancos 9-10-11 detras)
+0x6D03   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D03
+0x6D06   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D06
 0x6D0C   # p04:6C60 llamada lejana (call 0x4C2A con los bancos 9-10-11 detras)
 0x6D0F   # p00:451B call
 0x6D12   # p00:43F7 call
 0x6D15   # p00:43A8 call
+0x6D69   # codigo huerfano: 12 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6D69
+0x707D   # codigo huerfano: 1 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x707D
 0x798F   # p09:7871 entrada 0 de la tabla de 0x7874 (call 0x461A en 0x7871)
 0x79A4   # p09:7871 entrada 1 de la tabla de 0x7874 (call 0x461A en 0x7871)
 0x79DA   # p09:7871 entrada 2 de la tabla de 0x7874 (call 0x461A en 0x7871)
@@ -38,5 +41,6 @@
 0x7E1C   # p09:7C58 entrada 3 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
 0x7E28   # p09:7C58 entrada 1 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
 0x7E3F   # p09:7C58 entrada 5 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
+0x7EBD   # codigo huerfano: 17 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x7EBD
 0x7ECE   # p09:7C58 entrada 6 de la tabla de 0x7C5B (call 0x461A en 0x7C58)
 0x7EDE   # p09:7C58 entrada 4 de la tabla de 0x7C5B (call 0x461A en 0x7C58)

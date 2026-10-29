@@ -2474,7 +2474,7 @@ DATA_leido_758C:
 	defb 0e9h,075h,0f3h,075h,0f5h,075h,0f7h,075h,0feh,075h,004h,076h,0e7h,076h,0f4h,076h	; 759c  .u.u.u.u.u.v.v.v
 
 ; ======================================================================
-; CODIGO 0x75ac..0x75f3  (71 bytes)
+; CODIGO 0x75ac..0x76fa  (334 bytes)
 ; ======================================================================
 
 
@@ -2518,20 +2518,12 @@ L_75E9:
 	and 00fh		;75ed
 	ld (ix+03ch),a		;75ef
 	ret			;75f2
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_75F3: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (4 bytes)
-;   0x75f3..0x75f7  (4 bytes)
-DATA_sin_leer_75F3:
-	defb 0e1h,0c9h,0e1h,0c9h	; 75f3
-
-; ======================================================================
-; CODIGO 0x75f7..0x76fa  (259 bytes)
-; ======================================================================
-
-
+L_75F3:
+	pop hl			;75f3
+	ret			;75f4
+L_75F5:
+	pop hl			;75f5
+	ret			;75f6
 L_75F7:
 	pop hl			;75f7
 	inc hl			;75f8

@@ -79,8 +79,8 @@ L_8069:
 ; ----------------------------------------------------------------------
 ; DATOS sin_leer_8073: ninguna partida de la campana lo lee
 ;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (236 bytes)
-;   0x8073..0x815f  (236 bytes)
+;   nadie (129 bytes)
+;   0x8073..0x80f4  (129 bytes)
 DATA_sin_leer_8073:
 	defb 03ah,007h,000h,04fh,011h,000h,000h,03eh,0ffh,0edh,079h,01dh,020h,0fbh,015h,020h	; 8073  :..O...>..y. ..
 	defb 0f8h,0c9h,0afh,006h,000h,0edh,079h,03ch,010h,0fbh,0c9h,03eh,008h,0cdh,057h,081h	; 8083  ......y<...>..W.
@@ -90,19 +90,85 @@ DATA_sin_leer_8073:
 	defb 047h,00eh,017h,0cdh,047h,000h,0f1h,0c1h,0ddh,0e1h,03eh,008h,0cdh,057h,081h,03ch	; 80c3  G...G.....>..W.<
 	defb 0c8h,018h,0f7h,03eh,002h,0cdh,057h,081h,0f5h,03eh,003h,0cdh,057h,081h,0c1h,0cbh	; 80d3  ...>..W..>..W...
 	defb 010h,017h,0cbh,010h,017h,02fh,0e6h,07fh,0c9h,00eh,0ffh,00fh,00ch,030h,0fch,079h	; 80e3  ...../.......0.y
-	defb 0c9h,032h,0b5h,0c0h,0c9h,032h,0b4h,0c0h,0cdh,082h,04eh,0ddh,0e5h,0e6h,001h,0e5h	; 80f3  .2...2....N.....
-	defb 0f5h,011h,000h,020h,019h,0c5h,006h,006h,0cbh,02fh,0cbh,01ch,0cbh,01dh,010h,0f8h	; 8103  ... ...../......
-	defb 0c1h,03eh,000h,0b4h,067h,03eh,07fh,0b5h,06fh,0b4h,0c5h,0f5h,044h,00eh,00ah,0cdh	; 8113  .>..g>..o...D...
-	defb 047h,000h,0f1h,0c1h,0c5h,0f5h,045h,00eh,003h,0cdh,047h,000h,0f1h,0c1h,0f1h,0e1h	; 8123  G.....E...G.....
-	defb 0c5h,006h,003h,0cbh,02fh,0cbh,01ch,0cbh,01dh,010h,0f8h,0c1h,07ch,0f6h,003h,0c5h	; 8133  ..../.......|...
-	defb 0f5h,047h,00eh,004h,0cdh,047h,000h,0f1h,0c1h,0ddh,0e1h,0c9h,03eh,007h,0cdh,057h	; 8143  .G...G......>..W
-	defb 081h,0cbh,05fh,0c9h,0ddh,0e5h,0cdh,041h,001h,0ddh,0e1h,0c9h	; 8153  .._....A....
+	defb 0c9h	; 80f3
 
 ; ======================================================================
-; CODIGO 0x815f..0x8165  (6 bytes)
+; CODIGO 0x80f4..0x8165  (113 bytes)
 ; ======================================================================
 
 
+L_80F4:
+	ld (0c0b5h),a		;80f4
+	ret			;80f7
+L_80F8:
+	ld (0c0b4h),a		;80f8
+	call 04e82h		;80fb
+	push ix		;80fe
+	and 001h		;8100
+	push hl			;8102
+	push af			;8103
+	ld de,02000h		;8104
+	add hl,de			;8107
+	push bc			;8108
+	ld b,006h		;8109
+L_810B:
+	sra a		;810b
+	rr h		;810d
+	rr l		;810f
+	djnz L_810B		;8111
+	pop bc			;8113
+	ld a,000h		;8114
+	or h			;8116
+	ld h,a			;8117
+	ld a,07fh		;8118
+	or l			;811a
+	ld l,a			;811b
+	or h			;811c
+	push bc			;811d
+	push af			;811e
+	ld b,h			;811f
+	ld c,00ah		;8120
+	call 00047h		;8122   ; BIOS WRTVDP - Writes data in the VDP-register
+	pop af			;8125
+	pop bc			;8126
+	push bc			;8127
+	push af			;8128
+	ld b,l			;8129
+	ld c,003h		;812a
+	call 00047h		;812c   ; BIOS WRTVDP - Writes data in the VDP-register
+	pop af			;812f
+	pop bc			;8130
+	pop af			;8131
+	pop hl			;8132
+	push bc			;8133
+	ld b,003h		;8134
+L_8136:
+	sra a		;8136
+	rr h		;8138
+	rr l		;813a
+	djnz L_8136		;813c
+	pop bc			;813e
+	ld a,h			;813f
+	or 003h		;8140
+	push bc			;8142
+	push af			;8143
+	ld b,a			;8144
+	ld c,004h		;8145
+	call 00047h		;8147   ; BIOS WRTVDP - Writes data in the VDP-register
+	pop af			;814a
+	pop bc			;814b
+	pop ix		;814c
+	ret			;814e
+L_814F:
+	ld a,007h		;814f
+	call L_8157		;8151
+	bit 3,a		;8154
+	ret			;8156
+L_8157:
+	push ix		;8157
+	call 00141h		;8159   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
+	pop ix		;815c
+	ret			;815e
 L_815F:
 	ld hl,08165h		;815f
 	jp 0468eh		;8162

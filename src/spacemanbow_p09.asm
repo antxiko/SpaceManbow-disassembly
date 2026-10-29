@@ -528,26 +528,16 @@ DATA_sin_leer_6CE0:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 6cf0  ................
 
 ; ======================================================================
-; CODIGO 0x6d00..0x6d03  (3 bytes)
+; CODIGO 0x6d00..0x6d18  (24 bytes)
 ; ======================================================================
 
 
 L_6D00:
 	jp 0801fh		;6d00
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6D03: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (6 bytes)
-;   0x6d03..0x6d09  (6 bytes)
-DATA_sin_leer_6D03:
-	defb 0c3h,0f4h,080h,0c3h,000h,000h	; 6d03
-
-; ======================================================================
-; CODIGO 0x6d09..0x6d18  (15 bytes)
-; ======================================================================
-
-
+L_6D03:
+	jp 080f4h		;6d03
+L_6D06:
+	jp 00000h		;6d06   ; BIOS CHKRAM - Tests RAM and sets RAM slot for the system  [alias: STARTUP, RESET, BOOT]
 L_6D09:
 	jp 0800fh		;6d09
 L_6D0C:
@@ -569,7 +559,7 @@ DATA_sin_leer_6D18:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 6d28  ........
 
 ; ======================================================================
-; CODIGO 0x6d30..0x6d69  (57 bytes)
+; CODIGO 0x6d30..0x7002  (722 bytes)
 ; ======================================================================
 
 
@@ -596,20 +586,11 @@ L_6D59:
 	call 04b8fh		;6d62
 	call L_6E77		;6d65
 	ret			;6d68
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_6D69: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (12 bytes)
-;   0x6d69..0x6d75  (12 bytes)
-DATA_sin_leer_6D69:
-	defb 0cdh,075h,06dh,0cdh,099h,06fh,0cdh,06bh,047h,0c3h,08fh,04bh	; 6d69  .um..o.kG..K
-
-; ======================================================================
-; CODIGO 0x6d75..0x7002  (653 bytes)
-; ======================================================================
-
-
+L_6D69:
+	call L_6D75		;6d69
+	call L_6F99		;6d6c
+	call 0476bh		;6d6f
+	jp 04b8fh		;6d72
 L_6D75:
 	ld hl,0705ch		;6d75
 	ld b,009h		;6d78
@@ -988,7 +969,7 @@ DATA_sin_leer_706E:
 	defb 008h,00ah	; 706e
 
 ; ======================================================================
-; CODIGO 0x7070..0x707d  (13 bytes)
+; CODIGO 0x7070..0x7085  (21 bytes)
 ; ======================================================================
 
 
@@ -1000,20 +981,8 @@ L_7070:
 	ld (0c0d8h),a		;7076
 	ret nz			;7079
 	jp 04da9h		;707a
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_707D: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x707d..0x707e  (1 bytes)
-DATA_sin_leer_707D:
-	defb 0c9h	; 707d
-
-; ======================================================================
-; CODIGO 0x707e..0x7085  (7 bytes)
-; ======================================================================
-
-
+L_707D:
+	ret			;707d
 L_707E:
 	call L_7221		;707e
 	call L_70E4		;7081
@@ -3051,7 +3020,7 @@ DATA_leido_7D76:
 	defb 0d0h,0b2h	; 7d86
 
 ; ======================================================================
-; CODIGO 0x7d88..0x7ebd  (309 bytes)
+; CODIGO 0x7d88..0x7f63  (475 bytes)
 ; ======================================================================
 
 
@@ -3263,21 +3232,14 @@ L_7EB8:
 	sub 040h		;7eb9
 	ld l,a			;7ebb
 	ret			;7ebc
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_7EBD: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (17 bytes)
-;   0x7ebd..0x7ece  (17 bytes)
-DATA_sin_leer_7EBD:
-	defb 01eh,001h,0cdh,071h,07ch,03eh,008h,011h,018h,000h,0cdh,0fch,07eh,011h,008h,000h	; 7ebd  ...q|>......~...
-	defb 0c9h	; 7ecd
-
-; ======================================================================
-; CODIGO 0x7ece..0x7f63  (149 bytes)
-; ======================================================================
-
-
+L_7EBD:
+	ld e,001h		;7ebd
+	call L_7C71		;7ebf
+	ld a,008h		;7ec2
+	ld de,00018h		;7ec4
+	call L_7EFC		;7ec7
+	ld de,00008h		;7eca
+	ret			;7ecd
 L_7ECE:
 	call L_7C71		;7ece
 	ld d,000h		;7ed1

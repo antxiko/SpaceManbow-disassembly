@@ -30,26 +30,14 @@ DATA_sin_leer_8009:
 	defb 0c3h,011h,08fh,0c3h,064h,08fh,0c3h,0c5h,08fh	; 8009  ....d....
 
 ; ======================================================================
-; CODIGO 0x8012..0x8015  (3 bytes)
+; CODIGO 0x8012..0x817d  (363 bytes)
 ; ======================================================================
 
 
 L_8012:
 	jp L_8238		;8012
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8015: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (3 bytes)
-;   0x8015..0x8018  (3 bytes)
-DATA_sin_leer_8015:
-	defb 0c3h,08ah,082h	; 8015
-
-; ======================================================================
-; CODIGO 0x8018..0x817d  (357 bytes)
-; ======================================================================
-
-
+L_8015:
+	jp L_828A		;8015
 L_8018:
 	jp L_8220		;8018
 L_801B:
@@ -270,7 +258,7 @@ DATA_sin_leer_81E0:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 8200  .............
 
 ; ======================================================================
-; CODIGO 0x820d..0x828a  (125 bytes)
+; CODIGO 0x820d..0x831a  (269 bytes)
 ; ======================================================================
 
 
@@ -329,20 +317,8 @@ L_8279:
 	ld (0cb1ah),a		;8283
 	call L_84A5		;8286
 	ret			;8289
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_828A: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x828a..0x828b  (1 bytes)
-DATA_sin_leer_828A:
-	defb 0c9h	; 828a
-
-; ======================================================================
-; CODIGO 0x828b..0x831a  (143 bytes)
-; ======================================================================
-
-
+L_828A:
+	ret			;828a
 L_828B:
 	ld ix,0cac0h		;828b
 	call L_8296		;828f
@@ -604,7 +580,7 @@ DATA_leido_842D:
 	defb 010h,008h,020h,010h,000h,000h,000h,000h,000h,018h	; 842d  .. .......
 
 ; ======================================================================
-; CODIGO 0x8437..0x844a  (19 bytes)
+; CODIGO 0x8437..0x8590  (345 bytes)
 ; ======================================================================
 
 
@@ -620,38 +596,16 @@ L_8443:
 	ld b,080h		;8443
 	ld c,003h		;8445
 	jp L_84AC		;8447
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_844A: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0x844a..0x844b  (1 bytes)
-DATA_sin_leer_844A:
-	defb 0c9h	; 844a
-
-; ======================================================================
-; CODIGO 0x844b..0x8451  (6 bytes)
-; ======================================================================
-
-
+L_844A:
+	ret			;844a
 L_844B:
 	ld a,00ah		;844b
 	call 04af5h		;844d
 	ret			;8450
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8451: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (6 bytes)
-;   0x8451..0x8457  (6 bytes)
-DATA_sin_leer_8451:
-	defb 03eh,00fh,0cdh,0f5h,04ah,0c9h	; 8451
-
-; ======================================================================
-; CODIGO 0x8457..0x8590  (313 bytes)
-; ======================================================================
-
-
+L_8451:
+	ld a,00fh		;8451
+	call 04af5h		;8453
+	ret			;8456
 L_8457:
 	ld a,001h		;8457
 	ld (0cb1dh),a		;8459
@@ -908,7 +862,7 @@ DATA_leido_860A:
 	defb 01eh,086h,0f1h,08bh	; 861a
 
 ; ======================================================================
-; CODIGO 0x861e..0x8637  (25 bytes)
+; CODIGO 0x861e..0x87ac  (398 bytes)
 ; ======================================================================
 
 
@@ -937,20 +891,9 @@ L_861F:
 	ld h,(hl)			;8634
 	ld l,a			;8635
 	ret			;8636
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8637: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (5 bytes)
-;   0x8637..0x863c  (5 bytes)
-DATA_sin_leer_8637:
-	defb 0ddh,07eh,003h,018h,008h	; 8637
-
-; ======================================================================
-; CODIGO 0x863c..0x87ac  (368 bytes)
-; ======================================================================
-
-
+L_8637:
+	ld a,(ix+003h)		;8637
+	jr L_8644		;863a
 L_863C:
 	ld a,(iy+000h)		;863c
 	and 00fh		;863f
@@ -1551,7 +1494,7 @@ DATA_sin_leer_8BF0:
 	defb 000h	; 8bf0
 
 ; ======================================================================
-; CODIGO 0x8bf1..0x8d29  (312 bytes)
+; CODIGO 0x8bf1..0x8ddc  (491 bytes)
 ; ======================================================================
 
 
@@ -1705,22 +1648,25 @@ L_8D1C:
 	ld (ix+005h),a		;8d24
 	or a			;8d27
 	ret			;8d28
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_8D29: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (37 bytes)
-;   0x8d29..0x8d4e  (37 bytes)
-DATA_sin_leer_8D29:
-	defb 001h,0dch,08dh,0cdh,01fh,086h,0ddh,073h,00bh,0ddh,072h,00ch,0ddh,071h,00dh,0ddh	; 8d29  .......s..r..q..
-	defb 070h,00eh,03ah,008h,0cbh,0cdh,079h,04eh,087h,04fh,07ah,0b7h,028h,002h,03eh,001h	; 8d39  p.:...yN.Oz.(.>.
-	defb 081h,0ddh,077h,005h,0c9h	; 8d49
-
-; ======================================================================
-; CODIGO 0x8d4e..0x8ddc  (142 bytes)
-; ======================================================================
-
-
+L_8D29:
+	ld bc,08ddch		;8d29
+	call L_861F		;8d2c
+	ld (ix+00bh),e		;8d2f
+	ld (ix+00ch),d		;8d32
+	ld (ix+00dh),c		;8d35
+	ld (ix+00eh),b		;8d38
+	ld a,(0cb08h)		;8d3b
+	call 04e79h		;8d3e
+	add a,a			;8d41
+	ld c,a			;8d42
+	ld a,d			;8d43
+	or a			;8d44
+	jr z,L_8D49		;8d45
+	ld a,001h		;8d47
+L_8D49:
+	add a,c			;8d49
+	ld (ix+005h),a		;8d4a
+	ret			;8d4d
 L_8D4E:
 	call 06a7fh		;8d4e
 L_8D51:

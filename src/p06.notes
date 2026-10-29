@@ -27,7 +27,6 @@ D 0xACDE 0xAE0A leido_ACDE  lo leen p04:7B6C, p04:7B6E, p04:7C01, p04:7C09 jugan
 D 0xAED3 0xAED8 leido_AED3  lo leen p06:AECE jugando (tools/cobertura.py) (5 bytes)
 D 0xAF37 0xAF66 leido_AF37  lo leen p06:AEED, p06:AEEF, p06:AEF1, p06:AEF3, p06:AF22, p06:AF32 jugando (tools/cobertura.py) (47 bytes)
 D 0xB025 0xB04E leido_B025  lo leen p04:7B6C, p04:7B6E, p04:7C01, p04:7C09, p06:AF82, p06:AF87, p06:AFA5, p06:AFCF y 2 mas jugando (tools/cobertura.py) (41 bytes)
-D 0xB0C1 0xB0C2 sin_leer_B0C1  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (1 bytes)
 D 0xB0D7 0xB0DD sin_leer_B0D7  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (6 bytes)
 D 0xB0DD 0xB0E3 leido_B0DD  lo leen p00:461F, p00:4621 jugando (tools/cobertura.py) (6 bytes)
 D 0xB248 0xB268 leido_B248  lo leen p06:B1D8 jugando (tools/cobertura.py) (32 bytes)

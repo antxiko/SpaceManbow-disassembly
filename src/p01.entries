@@ -15,7 +15,9 @@
 0x6003   # p00:439B call
 0x6006   # p00:4521 call
 0x6009   # p03:BDE1 call
+0x6015   # codigo huerfano: 3 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x6015
 0x603E   # p01:602F entrada 0 de la tabla de 0x6032 (call 0x461A en 0x602F)
+0x604B   # codigo huerfano: 5 bytes que acaban en un salto; el trazado no entra y ninguna instruccion salta, llama o carga 0x604B
 0x6050   # p01:602F entrada 1 de la tabla de 0x6032 (call 0x461A en 0x602F)
 0x6065   # p01:605C entrada 0 de la tabla de 0x605F (call 0x461A en 0x605C)
 0x607B   # p01:605C entrada 1 de la tabla de 0x605F (call 0x461A en 0x605C)
@@ -32,6 +34,7 @@
 0x61E2   # p01:602F entrada 5 de la tabla de 0x6032 (call 0x461A en 0x602F)
 0x61EF   # p01:61E8 entrada 0 de la tabla de 0x61EB (call 0x461A en 0x61E8)
 0x6202   # p01:61E8 entrada 1 de la tabla de 0x61EB (call 0x461A en 0x61E8)
+0x6249   # codigo huerfano: 13 bytes que acaban en ret; el trazado no entra y ninguna instruccion salta, llama o carga 0x6249
 0x6271   # p01:6264 entrada 0 de la tabla de 0x6267 (call 0x461A en 0x6264)
 0x627E   # p01:6277 entrada 0 de la tabla de 0x627A (call 0x461A en 0x6277)
 0x6288   # p01:6277 entrada 1 de la tabla de 0x627A (call 0x461A en 0x6277)

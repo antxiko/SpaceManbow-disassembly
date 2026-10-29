@@ -2054,7 +2054,7 @@ DATA_leido_B025:
 	defb 0f9h,001h,000h,0feh,008h,0f9h,001h,001h,0ffh	; b045  .........
 
 ; ======================================================================
-; CODIGO 0xb04e..0xb0c1  (115 bytes)
+; CODIGO 0xb04e..0xb0d7  (137 bytes)
 ; ======================================================================
 
 
@@ -2118,20 +2118,8 @@ L_B0BC:
 	jp 06c1dh		;b0bd
 L_B0C0:
 	ret			;b0c0
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_B0C1: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (1 bytes)
-;   0xb0c1..0xb0c2  (1 bytes)
-DATA_sin_leer_B0C1:
-	defb 0c9h	; b0c1
-
-; ======================================================================
-; CODIGO 0xb0c2..0xb0d7  (21 bytes)
-; ======================================================================
-
-
+L_B0C1:
+	ret			;b0c1
 L_B0C2:
 	call L_B4C1		;b0c2
 	ld de,0b455h		;b0c5

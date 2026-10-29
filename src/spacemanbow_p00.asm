@@ -123,7 +123,7 @@ DATA_leido_410C:
 	defb 058h,041h,070h,042h	; 410c
 
 ; ======================================================================
-; CODIGO 0x4110..0x4432  (802 bytes)
+; CODIGO 0x4110..0x45a3  (1171 bytes)
 ; ======================================================================
 
 
@@ -489,6 +489,7 @@ L_4384:
 	jr L_4357		;438c
 L_438E:
 	call L_4453		;438e
+L_4391:
 	push hl			;4391
 	ld hl,0f0fah		;4392
 	ld (hl),000h		;4395
@@ -570,21 +571,23 @@ L_440F:
 	ld (0e900h),a		;442c
 	ld a,002h		;442f
 	ret			;4431
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_4432: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (32 bytes)
-;   0x4432..0x4452  (32 bytes)
-DATA_sin_leer_4432:
-	defb 03ah,00ch,0c9h,0cbh,057h,0c8h,03ah,01eh,0cah,03ch,0feh,006h,038h,001h,0afh,032h	; 4432  :...W.:..<..8..2
-	defb 01eh,0cah,03ah,00fh,0cbh,0c6h,001h,027h,032h,00fh,0cbh,03eh,001h,0c3h,09fh,046h	; 4442  ..:....'2..>...F
-
-; ======================================================================
-; CODIGO 0x4452..0x448b  (57 bytes)
-; ======================================================================
-
-
+L_4432:
+	ld a,(0c90ch)		;4432   ; depuracion: solo se llega si el byte 0x4032 de la cabecera no es 0xFF (p00:441E); con el bit 2 de 0xC90C sube 0xCA1E en ciclo de 0 a 5 y suma una vida BCD en 0xCB0F
+	bit 2,a		;4435
+	ret z			;4437
+	ld a,(0ca1eh)		;4438
+	inc a			;443b
+	cp 006h		;443c
+	jr c,L_4441		;443e
+	xor a			;4440
+L_4441:
+	ld (0ca1eh),a		;4441
+	ld a,(0cb0fh)		;4444
+	add a,001h		;4447
+	daa			;4449
+	ld (0cb0fh),a		;444a
+	ld a,001h		;444d
+	jp L_469F		;444f
 L_4452:
 	ret			;4452
 L_4453:
@@ -618,20 +621,10 @@ L_4475:
 	ld a,081h		;4485
 	call L_4AEB		;4487
 	ret			;448a
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_448B: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (7 bytes)
-;   0x448b..0x4492  (7 bytes)
-DATA_sin_leer_448B:
-	defb 021h,002h,0cah,034h,0c3h,091h,043h	; 448b
-
-; ======================================================================
-; CODIGO 0x4492..0x45a3  (273 bytes)
-; ======================================================================
-
-
+L_448B:
+	ld hl,0ca02h		;448b
+	inc (hl)			;448e
+	jp L_4391		;448f
 L_4492:
 	dec a			;4492
 	jr z,L_44AC		;4493
@@ -784,7 +777,7 @@ DATA_sin_leer_45A3:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 45f3  .............
 
 ; ======================================================================
-; CODIGO 0x4600..0x462e  (46 bytes)
+; CODIGO 0x4600..0x47a4  (420 bytes)
 ; ======================================================================
 
 
@@ -837,18 +830,18 @@ L_4624:
 	ld d,(hl)			;462b
 	ex de,hl			;462c
 	ret			;462d
-
-; ----------------------------------------------------------------------
-; DATOS leido_462E: lo leen p00:4681 jugando (tools/cobertura.py) (11 bytes)
-;   0x462e..0x4639  (11 bytes)
-DATA_leido_462E:
-	defb 087h,085h,06fh,030h,001h,024h,05eh,023h,056h,0ebh,0c9h	; 462e  ..o0.$^#V..
-
-; ======================================================================
-; CODIGO 0x4639..0x465f  (38 bytes)
-; ======================================================================
-
-
+L_462E:
+	add a,a			;462e
+	add a,l			;462f
+	ld l,a			;4630
+	jr nc,L_4634		;4631
+	inc h			;4633
+L_4634:
+	ld e,(hl)			;4634
+	inc hl			;4635
+	ld d,(hl)			;4636
+	ex de,hl			;4637
+	ret			;4638
 L_4639:
 	ld l,a			;4639
 	ld h,000h		;463a
@@ -886,21 +879,27 @@ L_4656:
 	pop ix		;465a
 	pop iy		;465c
 	ret			;465e
-
-; ----------------------------------------------------------------------
-; DATOS leido_465F: lo leen p00:4681 jugando (tools/cobertura.py) (25 bytes)
-;   0x465f..0x4678  (25 bytes)
-DATA_leido_465F:
-	defb 0cdh,038h,001h,00fh,00fh,0e6h,003h,04fh,006h,000h,021h,0c1h,0fch,009h,0b6h,04fh	; 465f  .8.....O..!....O
-	defb 023h,023h,023h,023h,07eh,0e6h,00ch,0b1h,0c9h	; 466f  ####~....
-
-; ======================================================================
-; CODIGO 0x4678..0x46a2  (42 bytes)
-; ======================================================================
-
-
+L_465F:
+	call 00138h		;465f   ; BIOS RSLREG - Reads the primary slot register
+	rrca			;4662
+	rrca			;4663
+	and 003h		;4664
+	ld c,a			;4666
+	ld b,000h		;4667
+	ld hl,0fcc1h		;4669
+	add hl,bc			;466c
+	or (hl)			;466d
+	ld c,a			;466e
+	inc hl			;466f
+	inc hl			;4670
+	inc hl			;4671
+	inc hl			;4672
+	ld a,(hl)			;4673
+	and 00ch		;4674
+	or c			;4676
+	ret			;4677
 L_4678:
-	push hl			;4678
+	push hl			;4678   ; numero al azar: A = byte(0x4600+C) xor B xor byte(0x4700+C), con B y C en 0xC917/0xC918 y C que avanza en cada llamada; la tabla son los propios bytes del codigo de 0x4600-0x47FF, por eso la campana ve leer como dato rutinas que nadie llama
 	push bc			;4679
 	ld bc,(0c917h)		;467a
 	ld h,046h		;467e
@@ -940,18 +939,8 @@ L_469F:
 	inc sp			;469f
 	inc sp			;46a0
 	ret			;46a1
-
-; ----------------------------------------------------------------------
-; DATOS leido_46A2: lo leen p00:4681 jugando (tools/cobertura.py) (1 bytes)
-;   0x46a2..0x46a3  (1 bytes)
-DATA_leido_46A2:
-	defb 0c9h	; 46a2
-
-; ======================================================================
-; CODIGO 0x46a3..0x46c0  (29 bytes)
-; ======================================================================
-
-
+L_46A2:
+	ret			;46a2
 L_46A3:
 	ex de,hl			;46a3
 	ld a,c			;46a4
@@ -976,21 +965,14 @@ L_46BA:
 	dec a			;46bc
 	jr nz,L_46BA		;46bd
 	ret			;46bf
-
-; ----------------------------------------------------------------------
-; DATOS leido_46C0: lo leen p00:4681 jugando (tools/cobertura.py) (5 bytes)
-;   0x46c0..0x46c5  (5 bytes)
-DATA_leido_46C0:
-	defb 0d5h,016h,0afh,018h,003h	; 46c0
-
-; ======================================================================
-; CODIGO 0x46c5..0x4713  (78 bytes)
-; ======================================================================
-
-
+L_46C0:
+	push de			;46c0
+	ld d,0afh		;46c1
+	jr L_46C8		;46c3
 L_46C5:
 	push de			;46c5
 	ld d,000h		;46c6
+L_46C8:
 	push af			;46c8
 	ld a,d			;46c9
 	call L_46F0		;46ca
@@ -1047,19 +1029,20 @@ L_46F0:
 	pop bc			;4710
 	ei			;4711
 	ret			;4712
-
-; ----------------------------------------------------------------------
-; DATOS leido_4713: lo leen p00:4684 jugando (tools/cobertura.py) (18 bytes)
-;   0x4713..0x4725  (18 bytes)
-DATA_leido_4713:
-	defb 079h,008h,03ah,007h,000h,03ch,04fh,078h,0f3h,0edh,079h,008h,0f6h,080h,0fbh,0edh	; 4713  y.:..<Ox..y.....
-	defb 079h,0c9h	; 4723
-
-; ======================================================================
-; CODIGO 0x4725..0x474a  (37 bytes)
-; ======================================================================
-
-
+L_4713:
+	ld a,c			;4713
+	ex af,af'			;4714
+	ld a,(00007h)		;4715
+	inc a			;4718
+	ld c,a			;4719
+	ld a,b			;471a
+	di			;471b
+	out (c),a		;471c
+	ex af,af'			;471e
+	or 080h		;471f
+	ei			;4721
+	out (c),a		;4722
+	ret			;4724
 L_4725:
 	call L_4758		;4725
 	call L_474B		;4728
@@ -1078,18 +1061,8 @@ L_473E:
 	ld c,001h		;4744
 	call 00047h		;4746   ; BIOS WRTVDP - Writes data in the VDP-register
 	ret			;4749
-
-; ----------------------------------------------------------------------
-; DATOS leido_474A: lo leen p00:4684 jugando (tools/cobertura.py) (1 bytes)
-;   0x474a..0x474b  (1 bytes)
-DATA_leido_474A:
-	defb 0c9h	; 474a
-
-; ======================================================================
-; CODIGO 0x474b..0x47a4  (89 bytes)
-; ======================================================================
-
-
+L_474A:
+	ret			;474a
 L_474B:
 	ld a,(0f3e0h)		;474b
 	and 0bfh		;474e
@@ -1158,7 +1131,7 @@ DATA_leido_47A4:
 	defb 071h,001h,073h,003h,061h,006h,064h,006h,011h,004h,065h,002h,055h,005h,077h,007h	; 47b4  q.s.a.d...e.U.w.
 
 ; ======================================================================
-; CODIGO 0x47c4..0x48c8  (260 bytes)
+; CODIGO 0x47c4..0x4952  (398 bytes)
 ; ======================================================================
 
 
@@ -1338,24 +1311,45 @@ L_487C:
 	out (c),a		;48c4
 	ei			;48c6
 	ret			;48c7
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_48C8: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (67 bytes)
-;   0x48c8..0x490b  (67 bytes)
-DATA_sin_leer_48C8:
-	defb 032h,0f5h,0fah,057h,087h,06fh,087h,087h,087h,05fh,087h,067h,03ah,0e1h,0f3h,0e6h	; 48c8  2..W.o..._.g:...
-	defb 01fh,0b4h,047h,00eh,002h,0cdh,047h,000h,03ah,0e9h,0ffh,0e6h,001h,0b5h,047h,00eh	; 48d8  ..G...G.:.....G.
-	defb 00ah,0cdh,047h,000h,03ah,0e3h,0f3h,0e6h,00fh,0b3h,047h,00eh,004h,0cdh,047h,000h	; 48e8  ..G.:.....G...G.
-	defb 042h,00eh,00bh,0cdh,047h,000h,03ah,0e5h,0f3h,0e6h,00fh,0b3h,047h,00eh,006h,0cdh	; 48f8  B...G.:.....G...
-	defb 047h,000h,0c9h	; 4908
-
-; ======================================================================
-; CODIGO 0x490b..0x4952  (71 bytes)
-; ======================================================================
-
-
+L_48C8:
+	ld (0faf5h),a		;48c8   ; ni la campana ni el trazado llegan aqui: guarda A en 0xFAF5 y escribe los registros 2, 10, 4, 11 y 6 del VDP con la BIOS WRTVDP, mezclando A con las copias de 0xF3E1-0xF3E5
+	ld d,a			;48cb
+	add a,a			;48cc
+	ld l,a			;48cd
+	add a,a			;48ce
+	add a,a			;48cf
+	add a,a			;48d0
+	ld e,a			;48d1
+	add a,a			;48d2
+	ld h,a			;48d3
+	ld a,(0f3e1h)		;48d4
+	and 01fh		;48d7
+	or h			;48d9
+	ld b,a			;48da
+	ld c,002h		;48db
+	call 00047h		;48dd   ; BIOS WRTVDP - Writes data in the VDP-register
+	ld a,(0ffe9h)		;48e0
+	and 001h		;48e3
+	or l			;48e5
+	ld b,a			;48e6
+	ld c,00ah		;48e7
+	call 00047h		;48e9   ; BIOS WRTVDP - Writes data in the VDP-register
+	ld a,(0f3e3h)		;48ec
+	and 00fh		;48ef
+	or e			;48f1
+	ld b,a			;48f2
+	ld c,004h		;48f3
+	call 00047h		;48f5   ; BIOS WRTVDP - Writes data in the VDP-register
+	ld b,d			;48f8
+	ld c,00bh		;48f9
+	call 00047h		;48fb   ; BIOS WRTVDP - Writes data in the VDP-register
+	ld a,(0f3e5h)		;48fe
+	and 00fh		;4901
+	or e			;4903
+	ld b,a			;4904
+	ld c,006h		;4905
+	call 00047h		;4907   ; BIOS WRTVDP - Writes data in the VDP-register
+	ret			;490a
 L_490B:
 	push de			;490b
 	ld b,008h		;490c
@@ -1723,7 +1717,7 @@ DATA_sin_leer_4B30:
 	defb 0f3h	; 4b30
 
 ; ======================================================================
-; CODIGO 0x4b31..0x4c07  (214 bytes)
+; CODIGO 0x4b31..0x4c1c  (235 bytes)
 ; ======================================================================
 
 
@@ -1838,20 +1832,10 @@ L_4BEF:
 	ld (0f0f3h),a		;4c00
 	ld (0b000h),a		;4c03
 	ret			;4c06
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_4C07: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (7 bytes)
-;   0x4c07..0x4c0e  (7 bytes)
-DATA_sin_leer_4C07:
-	defb 032h,0f1h,0f0h,032h,000h,070h,0c9h	; 4c07
-
-; ======================================================================
-; CODIGO 0x4c0e..0x4c1c  (14 bytes)
-; ======================================================================
-
-
+L_4C07:
+	ld (0f0f1h),a		;4c07
+	ld (07000h),a		;4c0a
+	ret			;4c0d
 L_4C0E:
 	ld (0f0f1h),a		;4c0e
 	ld (07000h),a		;4c11
@@ -2566,7 +2550,7 @@ DATA_leido_509C:
 	defb 004h,00bh,011h	; 509c
 
 ; ======================================================================
-; CODIGO 0x509f..0x50cd  (46 bytes)
+; CODIGO 0x509f..0x5157  (184 bytes)
 ; ======================================================================
 
 
@@ -2603,20 +2587,8 @@ L_50C3:
 	and 080h		;50c9
 	or c			;50cb
 	ret			;50cc
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_50CD: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (3 bytes)
-;   0x50cd..0x50d0  (3 bytes)
-DATA_sin_leer_50CD:
-	defb 0c3h,098h,06eh	; 50cd
-
-; ======================================================================
-; CODIGO 0x50d0..0x5101  (49 bytes)
-; ======================================================================
-
-
+L_50CD:
+	jp 06e98h		;50cd
 L_50D0:
 	ld a,(ix+001h)		;50d0
 	or a			;50d3
@@ -2650,21 +2622,15 @@ L_50F6:
 	jp L_469F		;50fd
 L_5100:
 	ret			;5100
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_5101: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (17 bytes)
-;   0x5101..0x5112  (17 bytes)
-DATA_sin_leer_5101:
-	defb 0cdh,08ch,06fh,021h,044h,0ceh,034h,0ddh,036h,000h,000h,0ddh,036h,015h,000h,0c9h	; 5101  ..o!D.4.6...6...
-	defb 0c9h	; 5111
-
-; ======================================================================
-; CODIGO 0x5112..0x5157  (69 bytes)
-; ======================================================================
-
-
+L_5101:
+	call 06f8ch		;5101
+	ld hl,0ce44h		;5104
+	inc (hl)			;5107
+	ld (ix+000h),000h		;5108
+	ld (ix+015h),000h		;510c
+	ret			;5110
+L_5111:
+	ret			;5111
 L_5112:
 	ld a,(ix+001h)		;5112
 	dec a			;5115
@@ -3009,7 +2975,7 @@ DATA_leido_537C:
 	defb 000h,001h	; 537c
 
 ; ======================================================================
-; CODIGO 0x537e..0x53bb  (61 bytes)
+; CODIGO 0x537e..0x53e7  (105 bytes)
 ; ======================================================================
 
 
@@ -3047,20 +3013,10 @@ L_53B5:
 	call 06bebh		;53b5
 L_53B8:
 	jp 06c1dh		;53b8
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_53BB: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0x53bb..0x53c4  (9 bytes)
-DATA_sin_leer_53BB:
-	defb 0ddh,036h,00ah,014h,0ddh,036h,008h,010h,0c9h	; 53bb  .6...6...
-
-; ======================================================================
-; CODIGO 0x53c4..0x53e7  (35 bytes)
-; ======================================================================
-
-
+L_53BB:
+	ld (ix+00ah),014h		;53bb
+	ld (ix+008h),010h		;53bf
+	ret			;53c3
 L_53C4:
 	ld a,(ix+001h)		;53c4
 	dec a			;53c7
@@ -3095,7 +3051,7 @@ DATA_leido_53E9:
 	defb 000h,000h,001h	; 53e9
 
 ; ======================================================================
-; CODIGO 0x53ec..0x54b8  (204 bytes)
+; CODIGO 0x53ec..0x5508  (284 bytes)
 ; ======================================================================
 
 
@@ -3199,20 +3155,11 @@ L_54AF:
 	call 06bebh		;54b2
 L_54B5:
 	jp 06c1dh		;54b5
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_54B8: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (9 bytes)
-;   0x54b8..0x54c1  (9 bytes)
-DATA_sin_leer_54B8:
-	defb 0e6h,02fh,0c0h,0ddh,034h,02ah,0c3h,043h,071h	; 54b8  ./..4*.Cq
-
-; ======================================================================
-; CODIGO 0x54c1..0x5508  (71 bytes)
-; ======================================================================
-
-
+L_54B8:
+	and 02fh		;54b8
+	ret nz			;54ba
+	inc (ix+02ah)		;54bb
+	jp 07143h		;54be
 L_54C1:
 	ld a,(ix+001h)		;54c1
 	dec a			;54c4
@@ -4162,7 +4109,7 @@ DATA_sin_leer_5B2B:
 	defb 0ddh,07eh,001h,03dh,028h,015h	; 5b2b
 
 ; ======================================================================
-; CODIGO 0x5b31..0x5b46  (21 bytes)
+; CODIGO 0x5b31..0x5b67  (54 bytes)
 ; ======================================================================
 
 
@@ -4175,21 +4122,19 @@ L_5B31:
 	ld hl,0ce4dh		;5b3f
 	inc (hl)			;5b42
 	jp 06c1dh		;5b43
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_5B46: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (28 bytes)
-;   0x5b46..0x5b62  (28 bytes)
-DATA_sin_leer_5B46:
-	defb 011h,067h,05bh,0cdh,065h,07bh,0cdh,0d2h,06ah,0c0h,0cdh,062h,05bh,006h,007h,0cdh	; 5b46  .g[.e{..j..b[...
-	defb 0c2h,06ah,0cah,098h,06eh,03dh,03eh,034h,0cah,0f5h,04ah,0c9h	; 5b56  .j..n=>4..J.
-
-; ======================================================================
-; CODIGO 0x5b62..0x5b67  (5 bytes)
-; ======================================================================
-
-
+L_5B46:
+	ld de,05b67h		;5b46
+	call 07b65h		;5b49
+	call 06ad2h		;5b4c
+	ret nz			;5b4f
+	call L_5B62		;5b50
+	ld b,007h		;5b53
+	call 06ac2h		;5b55
+	jp z,06e98h		;5b58
+	dec a			;5b5b
+	ld a,034h		;5b5c
+	jp z,L_4AF5		;5b5e
+	ret			;5b61
 L_5B62:
 	ld (ix+017h),002h		;5b62
 	ret			;5b66
@@ -4207,7 +4152,7 @@ DATA_sin_leer_5B67:
 	defb 00ah,001h,009h,0feh,001h,014h,001h,00ah,0feh,006h,01bh,001h,00bh,0ffh	; 5ba7  ..............
 
 ; ======================================================================
-; CODIGO 0x5bb5..0x5c68  (179 bytes)
+; CODIGO 0x5bb5..0x5ccf  (282 bytes)
 ; ======================================================================
 
 
@@ -4299,21 +4244,19 @@ L_5C52:
 	add a,002h		;5c63
 	cp 004h		;5c65
 	ret			;5c67
-
-; ----------------------------------------------------------------------
-; DATOS sin_leer_5C68: ninguna partida de la campana lo lee
-;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
-;   nadie (28 bytes)
-;   0x5c68..0x5c84  (28 bytes)
-DATA_sin_leer_5C68:
-	defb 0ddh,046h,008h,0ddh,04eh,007h,009h,0ddh,074h,008h,0ddh,075h,007h,0ebh,0ddh,046h	; 5c68  .F..N...t..u...F
-	defb 00ah,0ddh,04eh,009h,009h,0ddh,074h,00ah,0ddh,075h,009h,0c9h	; 5c78  ..N...t..u..
-
-; ======================================================================
-; CODIGO 0x5c84..0x5ccf  (75 bytes)
-; ======================================================================
-
-
+L_5C68:
+	ld b,(ix+008h)		;5c68
+	ld c,(ix+007h)		;5c6b
+	add hl,bc			;5c6e
+	ld (ix+008h),h		;5c6f
+	ld (ix+007h),l		;5c72
+	ex de,hl			;5c75
+	ld b,(ix+00ah)		;5c76
+	ld c,(ix+009h)		;5c79
+	add hl,bc			;5c7c
+	ld (ix+00ah),h		;5c7d
+	ld (ix+009h),l		;5c80
+	ret			;5c83
 L_5C84:
 	ld a,(0ca34h)		;5c84
 	and 00fh		;5c87
