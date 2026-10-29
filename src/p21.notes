@@ -1,0 +1,5 @@
+# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
+D 0x8000 0x8E68 leido_8000  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (3688 bytes)
+D 0x8E68 0x9000 sin_leer_8E68  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (408 bytes)
+D 0x9000 0xA000 leido_9000  lo leen p03:AEB0, p03:AEB2, p03:B000, p03:B002, p03:B004 jugando (tools/cobertura.py) (4096 bytes)
+# --- fin de los datos de datos_leidos.py ---

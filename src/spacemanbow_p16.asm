@@ -10,8 +10,10 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8000..0xa000  (8192 bytes)
-DATA_8000:
+; DATOS leido_8000: lo leen p10:8290, p10:82A3, p10:82AF jugando
+;   (tools/cobertura.py) (8192 bytes)
+;   0x8000..0xa000  (8192 bytes)
+DATA_leido_8000:
 	defb 02fh,005h,03fh,083h,0c0h,0ffh,000h,007h,066h,002h,0ffh,008h,0c0h,007h,099h,000h	; 8000  /.?.....f.......
 	defb 094h,0d8h,032h,0e8h,032h,0e8h,0e8h,08dh,0d0h,0d0h,021h,08dh,021h,08dh,08dh,0d0h	; 8010  ..2.2.....!.!...
 	defb 0f0h,0edh,080h,0d0h,0dfh,004h,00fh,087h,0e9h,083h,0d2h,0d2h,001h,0ffh,001h,003h	; 8020  ................

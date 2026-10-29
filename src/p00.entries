@@ -67,6 +67,7 @@
 0x4C15   # p28:6436 call
 0x4C23   # p10:82E3 call
 0x4C2A   # p04:6C4F call
+0x4C61   # se ejecuta jugando (tools/cobertura.py): se llega desde p10:800E (ret)
 0x4C7A   # p01:7837 call
 0x4C94   # p03:AA2A call
 0x4CDC   # p09:7A77 call cc

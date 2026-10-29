@@ -294,6 +294,6 @@ class Partida(Msx):
                     px[x, y] = v.rgb(self._punto_g3(r, xx, yy))
                 else:
                     px[x, y] = v.rgb(v.punto(xx, pag * 256 + yy))
-        if sprites and not (v.r[8] & 2):
-            v.sprites(im)
+        if sprites and abajo is not None and not (abajo[8] & 2):
+            v.sprites(im, abajo, corte)
         return im

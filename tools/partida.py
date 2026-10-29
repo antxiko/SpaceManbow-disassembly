@@ -19,8 +19,8 @@ Lo medido que usa (ver las notas de p00, p01 y p02):
     5 boton 2; 0xC90A, lo recien pulsado.
   - p02:8099 `call 7C44 / ret nc`: el choque de la nave (p04:7C44, con el
     banco 4 en 0x6000). Con acarreo, la nave empieza a morir (0xCA41 = 1).
-    Con `inmortal` se vuelve de p04:7C44 sin acarreo: la nave atraviesa todo
-    y la fase sigue adelante.
+    Con `inmortal` se vuelve de p04:7C44 sin acarreo cuando la llama la nave
+    (vuelta a p02:809C): la nave atraviesa todo y la fase sigue adelante.
 
 Uso como modulo:
     j = Juego(); j.hasta_partida(fase=3, inmortal=True); j.juega(600)
@@ -39,6 +39,9 @@ ESTADO, PASO, FASE, VIDAS = 0xC900, 0xC901, 0xCA10, 0xCB0F
 JUEGO, JUEGO_PASO = 0xCA00, 0xCA01
 FASE_INICIAL = 0xF0FC
 CHOQUE = (4, 0x7C44)                # (banco en 0x6000, rutina)
+# p04:7C44 es el choque de todo (tambien p04:6DEC-6E3B y p06:BC3D, BCEF: los
+# disparos): solo se salta cuando la llama la nave, que vuelve a p02:809C.
+CHOQUE_VUELTA = 0x809C
 ESPACIO = (8, 0xFE)                 # SNSMAT fila 8, bit 0
 ARRIBA, ABAJO, IZQUIERDA, DERECHA = 0xDF, 0xBF, 0xEF, 0x7F   # fila 8
 BOTON2 = (4, 0xFB)                  # SNSMAT fila 4, bit 2 (M)
@@ -62,7 +65,8 @@ class Juego(Partida):
 
     def paso(self):
         if (self.inmortal and self.pc == CHOQUE[1]
-                and self.bancos[0x6000] == CHOQUE[0]):
+                and self.bancos[0x6000] == CHOQUE[0]
+                and self.mem[self.sp] | (self.mem[self.sp + 1] << 8) == CHOQUE_VUELTA):
             self.f &= 0xFE                 # sin acarreo: no hay choque
             self.pc = self._pop()
             return

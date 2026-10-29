@@ -1,0 +1,18 @@
+# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
+D 0xA000 0xA1B5 leido_A000  lo leen p04:7A82, p04:7A8E, p04:7A91, p04:7A93, p04:7AC2, p04:7ACF, p04:7ADC, p04:7AE9 y 4 mas jugando (tools/cobertura.py) (437 bytes)
+D 0xA1B5 0xA22D sin_leer_A1B5  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (120 bytes)
+D 0xA22D 0xA4B3 leido_A22D  lo leen p04:7A82, p04:7A8E, p04:7A91, p04:7A93, p04:7AC2, p04:7ACF, p04:7ADC, p04:7AE9 y 4 mas jugando (tools/cobertura.py) (646 bytes)
+D 0xA4B3 0xA4C3 sin_leer_A4B3  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (16 bytes)
+D 0xA4C3 0xA65F leido_A4C3  lo leen p04:7A75, p04:7A77, p04:7A82, p04:7A8E, p04:7A91, p04:7A93, p04:7AC2, p04:7ACF y 8 mas jugando (tools/cobertura.py) (412 bytes)
+D 0xA65F 0xA67C sin_leer_A65F  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (29 bytes)
+D 0xA67C 0xB353 leido_A67C  lo leen p04:7798, p04:779A, p04:77A2, p04:77B9, p04:77F2, p04:77F4, p04:77F6, p04:7884 y 23 mas jugando (tools/cobertura.py) (3287 bytes)
+D 0xB353 0xB36F sin_leer_B353  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (28 bytes)
+D 0xB36F 0xB383 leido_B36F  lo leen p04:77B9, p04:7884, p04:7886, p04:788A, p04:7890, p04:7893 jugando (tools/cobertura.py) (20 bytes)
+D 0xB383 0xB3D0 sin_leer_B383  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (77 bytes)
+D 0xB3D0 0xB75B leido_B3D0  lo leen p04:77A2, p04:77B9, p04:7884, p04:7886, p04:788A, p04:7890, p04:7893, p04:7A82 y 12 mas jugando (tools/cobertura.py) (907 bytes)
+D 0xB75B 0xB76E sin_leer_B75B  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (19 bytes)
+D 0xB76E 0xB888 leido_B76E  lo leen p04:7A82, p04:7A8E, p04:7A91, p04:7A93, p04:7AC2, p04:7ACF, p04:7ADC, p04:7AE9 jugando (tools/cobertura.py) (282 bytes)
+D 0xB888 0xB9A4 sin_leer_B888  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (284 bytes)
+D 0xB9A4 0xBFF0 leido_B9A4  lo leen p04:7A82, p04:7A8E, p04:7A91, p04:7A93, p04:7AC2, p04:7ACF, p04:7ADC, p04:7AE9 y 4 mas jugando (tools/cobertura.py) (1612 bytes)
+D 0xBFF0 0xC000 sin_leer_BFF0  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (16 bytes)
+# --- fin de los datos de datos_leidos.py ---

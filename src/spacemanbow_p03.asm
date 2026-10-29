@@ -10,8 +10,9 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa000..0xa600  (1536 bytes)
-DATA_A000:
+; DATOS leido_A000: lo leen p04:6236 jugando (tools/cobertura.py) (1536 bytes)
+;   0xa000..0xa600  (1536 bytes)
+DATA_leido_A000:
 	defb 003h,030h,015h,04dh,005h,004h,030h,015h,04dh,005h,00ah,030h,019h,04ah,005h,006h	; a000  .0.M..0.M..0.J..
 	defb 030h,01bh,04ah,005h,010h,030h,01dh,04ah,005h,00eh,030h,020h,04ah,005h,003h,030h	; a010  0.J..0.J..0 J..0
 	defb 021h,04ah,005h,008h,030h,022h,04ah,005h,003h,030h,024h,04ah,005h,012h,030h,026h	; a020  !J..0"J..0$J..0&
@@ -206,8 +207,10 @@ L_A6AE:
 	ret			;a6bc
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa6bd..0xa713  (86 bytes)
-DATA_A6BD:
+; DATOS leido_A6BD: lo leen p00:4A23, p00:4A25, p04:6236 jugando
+;   (tools/cobertura.py) (86 bytes)
+;   0xa6bd..0xa713  (86 bytes)
+DATA_leido_A6BD:
 	defb 000h,006h,001h,022h,002h,01fh,005h,0efh,006h,01fh,008h,00ah,009h,000h,00bh,001h	; a6bd  ..."............
 	defb 016h,080h,00ah,088h,000h,097h,000h,092h,020h,082h,03ah,008h,0c9h,04fh,0cbh,041h	; a6cd  ........ .:..O.A
 	defb 03eh,0ffh,020h,025h,0cbh,049h,03eh,001h,020h,01fh,03ah,007h,0c9h,04fh,0cbh,051h	; a6dd  >. %.I>. .:..O.Q
@@ -359,8 +362,9 @@ L_A823:
 	call 0461ah		;a832
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa835..0xa857  (34 bytes)
-DATA_A835:
+; DATOS leido_A835: lo leen p04:6236 jugando (tools/cobertura.py) (34 bytes)
+;   0xa835..0xa857  (34 bytes)
+DATA_leido_A835:
 	defb 06ah,0a8h,0d2h,0a8h,025h,0a9h,04ah,0a9h,06ah,0a9h,093h,0a9h,0bbh,0a9h,0efh,0a9h	; a835  j...%.J.j.......
 	defb 00eh,0aah,033h,0aah,05bh,0aah,07dh,0aah,0aeh,0aah,0d5h,0aah,0f3h,0aah,019h,0abh	; a845  ..3.[.}.........
 	defb 03bh,0abh	; a855
@@ -380,8 +384,9 @@ L_A85E:
 	ret			;a864
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa865..0xa86a  (5 bytes)
-DATA_A865:
+; DATOS leido_A865: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa865..0xa86a  (5 bytes)
+DATA_leido_A865:
 	defb 0e1h,0cdh,077h,0a8h,0e9h	; a865
 
 ; ======================================================================
@@ -449,8 +454,9 @@ L_A88E:
 	ret			;a8cc
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa8cd..0xa8d2  (5 bytes)
-DATA_A8CD:
+; DATOS leido_A8CD: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa8cd..0xa8d2  (5 bytes)
+DATA_leido_A8CD:
 	defb 0e1h,0cdh,0ddh,0a8h,0e9h	; a8cd
 
 ; ======================================================================
@@ -514,8 +520,9 @@ L_A917:
 	ret			;a91f
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa920..0xa925  (5 bytes)
-DATA_A920:
+; DATOS leido_A920: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa920..0xa925  (5 bytes)
+DATA_leido_A920:
 	defb 0e1h,0cdh,032h,0a9h,0e9h	; a920
 
 ; ======================================================================
@@ -544,8 +551,9 @@ L_A93E:
 	ret			;a944
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa945..0xa94a  (5 bytes)
-DATA_A945:
+; DATOS leido_A945: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa945..0xa94a  (5 bytes)
+DATA_leido_A945:
 	defb 0e1h,0cdh,055h,0a9h,0e9h	; a945
 
 ; ======================================================================
@@ -573,8 +581,9 @@ L_A961:
 	ret			;a964
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa965..0xa96a  (5 bytes)
-DATA_A965:
+; DATOS leido_A965: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa965..0xa96a  (5 bytes)
+DATA_leido_A965:
 	defb 0e1h,0cdh,076h,0a9h,0e9h	; a965
 
 ; ======================================================================
@@ -610,8 +619,9 @@ L_A982:
 	ret			;a98d
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa98e..0xa993  (5 bytes)
-DATA_A98E:
+; DATOS leido_A98E: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa98e..0xa993  (5 bytes)
+DATA_leido_A98E:
 	defb 0e1h,0cdh,0a0h,0a9h,0e9h	; a98e
 
 ; ======================================================================
@@ -643,8 +653,9 @@ L_A9AC:
 	ret			;a9b5
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa9b6..0xa9bb  (5 bytes)
-DATA_A9B6:
+; DATOS leido_A9B6: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa9b6..0xa9bb  (5 bytes)
+DATA_leido_A9B6:
 	defb 0e1h,0cdh,0c8h,0a9h,0e9h	; a9b6
 
 ; ======================================================================
@@ -678,8 +689,9 @@ L_A9D2:
 	ret			;a9e9
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa9ea..0xa9ef  (5 bytes)
-DATA_A9EA:
+; DATOS leido_A9EA: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xa9ea..0xa9ef  (5 bytes)
+DATA_leido_A9EA:
 	defb 0e1h,0cdh,0fdh,0a9h,0e9h	; a9ea
 
 ; ======================================================================
@@ -706,8 +718,9 @@ L_AA07:
 	ret			;aa08
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaa09..0xaa0e  (5 bytes)
-DATA_AA09:
+; DATOS leido_AA09: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xaa09..0xaa0e  (5 bytes)
+DATA_leido_AA09:
 	defb 0e1h,0cdh,01bh,0aah,0e9h	; aa09
 
 ; ======================================================================
@@ -738,8 +751,9 @@ L_AA29:
 	ret			;aa2d
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaa2e..0xaa33  (5 bytes)
-DATA_AA2E:
+; DATOS leido_AA2E: lo leen p04:6236 jugando (tools/cobertura.py) (5 bytes)
+;   0xaa2e..0xaa33  (5 bytes)
+DATA_leido_AA2E:
 	defb 0e1h,0cdh,040h,0aah,0e9h	; aa2e
 
 ; ======================================================================
@@ -771,8 +785,11 @@ L_AA4E:
 	ret			;aa55
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaa56..0xaa5b  (5 bytes)
-DATA_AA56:
+; DATOS sin_leer_AA56: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xaa56..0xaa5b  (5 bytes)
+DATA_sin_leer_AA56:
 	defb 0e1h,0cdh,068h,0aah,0e9h	; aa56
 
 ; ======================================================================
@@ -802,8 +819,11 @@ L_AA76:
 	jp (hl)			;aa77
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaa78..0xaa7d  (5 bytes)
-DATA_AA78:
+; DATOS sin_leer_AA78: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xaa78..0xaa7d  (5 bytes)
+DATA_sin_leer_AA78:
 	defb 0e1h,0cdh,088h,0aah,0e9h	; aa78
 
 ; ======================================================================
@@ -842,8 +862,11 @@ L_AA96:
 	ret			;aaa8
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaaa9..0xaaae  (5 bytes)
-DATA_AAA9:
+; DATOS sin_leer_AAA9: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xaaa9..0xaaae  (5 bytes)
+DATA_sin_leer_AAA9:
 	defb 0e1h,0cdh,0bbh,0aah,0e9h	; aaa9
 
 ; ======================================================================
@@ -874,8 +897,11 @@ L_AAC9:
 	ret			;aacf
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaad0..0xaad5  (5 bytes)
-DATA_AAD0:
+; DATOS sin_leer_AAD0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xaad0..0xaad5  (5 bytes)
+DATA_sin_leer_AAD0:
 	defb 0e1h,0cdh,0e2h,0aah,0e9h	; aad0
 
 ; ======================================================================
@@ -900,8 +926,11 @@ L_AAE2:
 	ret			;aaed
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaaee..0xaaf3  (5 bytes)
-DATA_AAEE:
+; DATOS sin_leer_AAEE: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xaaee..0xaaf3  (5 bytes)
+DATA_sin_leer_AAEE:
 	defb 0e1h,0cdh,0ffh,0aah,0e9h	; aaee
 
 ; ======================================================================
@@ -932,8 +961,11 @@ L_AB09:
 	ret			;ab13
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xab14..0xab19  (5 bytes)
-DATA_AB14:
+; DATOS sin_leer_AB14: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xab14..0xab19  (5 bytes)
+DATA_sin_leer_AB14:
 	defb 0e1h,0cdh,026h,0abh,0e9h	; ab14
 
 ; ======================================================================
@@ -961,8 +993,11 @@ L_AB32:
 	ret			;ab35
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xab36..0xab3b  (5 bytes)
-DATA_AB36:
+; DATOS sin_leer_AB36: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (5 bytes)
+;   0xab36..0xab3b  (5 bytes)
+DATA_sin_leer_AB36:
 	defb 0e1h,0cdh,048h,0abh,0e9h	; ab36
 
 ; ======================================================================
@@ -1025,8 +1060,11 @@ L_AB83:
 	ret			;ab93
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xab94..0xab9d  (9 bytes)
-DATA_AB94:
+; DATOS sin_leer_AB94: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (9 bytes)
+;   0xab94..0xab9d  (9 bytes)
+DATA_sin_leer_AB94:
 	defb 021h,000h,0e1h,001h,0ffh,005h,0c3h,048h,046h	; ab94  !......HF
 
 ; ======================================================================
@@ -1785,8 +1823,10 @@ L_B06B:
 	ret			;b06f
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb070..0xbdc3  (3411 bytes)
-DATA_B070:
+; DATOS leido_B070: lo leen p03:A917, p03:A919, p03:A91B, p03:A91D jugando
+;   (tools/cobertura.py) (312 bytes)
+;   0xb070..0xb1a8  (312 bytes)
+DATA_leido_B070:
 	defb 0ffh,0ffh,0ffh,0ffh,000h,000h,000h,000h,001h,000h,001h,000h,002h,000h,002h,000h	; b070  ................
 	defb 003h,000h,003h,000h,004h,000h,004h,000h,005h,000h,005h,000h,006h,000h,006h,000h	; b080  ................
 	defb 007h,000h,007h,000h,008h,000h,008h,000h,009h,000h,009h,000h,00ah,000h,00ah,000h	; b090  ................
@@ -1806,8 +1846,22 @@ DATA_B070:
 	defb 015h,022h,015h,023h,01dh,020h,01dh,020h,01ch,022h,01ch,023h,01ch,020h,01ch,021h	; b170  .".#. . .".#. .!
 	defb 01dh,022h,01dh,023h,01eh,021h,01eh,022h,01fh,020h,01fh,021h,01eh,023h,01fh,024h	; b180  .".#.!.". .!.#.$
 	defb 01fh,023h,01fh,024h,001h,001h,014h,00ch,001h,00dh,014h,018h,016h,010h,01fh,01bh	; b190  .#.$............
-	defb 015h,000h,01ch,007h,01ch,008h,01fh,00bh,01dh,005h,01fh,007h,01dh,003h,01eh,004h	; b1a0  ................
-	defb 01dh,001h,01eh,002h,01dh,001h,01dh,001h,01fh,001h,01eh,001h,01fh,001h,01fh,001h	; b1b0  ................
+	defb 015h,000h,01ch,007h,01ch,008h,01fh,00bh	; b1a0  ........
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_B1A8: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (24 bytes)
+;   0xb1a8..0xb1c0  (24 bytes)
+DATA_sin_leer_B1A8:
+	defb 01dh,005h,01fh,007h,01dh,003h,01eh,004h,01dh,001h,01eh,002h,01dh,001h,01dh,001h	; b1a8  ................
+	defb 01fh,001h,01eh,001h,01fh,001h,01fh,001h	; b1b8  ........
+
+; ----------------------------------------------------------------------
+; DATOS leido_B1C0: lo leen p03:A917, p03:A919, p03:A91B, p03:A91D jugando
+;   (tools/cobertura.py) (144 bytes)
+;   0xb1c0..0xb250  (144 bytes)
+DATA_leido_B1C0:
 	defb 015h,008h,019h,00fh,000h,019h,006h,01fh,007h,019h,00dh,01fh,00eh,019h,011h,01ch	; b1c0  ................
 	defb 012h,019h,015h,01ch,00eh,01dh,00fh,01eh,010h,01dh,010h,01eh,011h,01dh,013h,01eh	; b1d0  ................
 	defb 018h,01ch,01bh,023h,01ch,01ch,01fh,023h,014h,01fh,017h,026h,010h,01fh,013h,026h	; b1e0  ...#...#...&...&
@@ -1817,7 +1871,21 @@ DATA_B070:
 	defb 000h,032h,007h,032h,000h,033h,006h,033h,000h,034h,009h,034h,000h,035h,006h,035h	; b220  .2.2.3.3.4.4.5.5
 	defb 000h,036h,007h,036h,000h,037h,00fh,037h,000h,038h,008h,038h,000h,039h,007h,039h	; b230  .6.6.7.7.8.8.9.9
 	defb 000h,03ah,008h,03ah,000h,03bh,001h,03bh,000h,03ch,005h,03ch,000h,03dh,00ch,03dh	; b240  .:.:.....<.<.=.=
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_B250: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0xb250..0xb260  (16 bytes)
+DATA_sin_leer_B250:
 	defb 008h,038h,014h,038h,000h,020h,00fh,020h,008h,03ch,011h,03ch,005h,03fh,014h,03fh	; b250  .8.8. . .<.<.?.?
+
+; ----------------------------------------------------------------------
+; DATOS leido_B260: lo leen p00:4C9C, p00:4CE8, p00:4D5F, p03:A82C, p03:A877,
+;   p03:A879, p03:A87B, p03:A87D y 27 mas jugando (tools/cobertura.py) (1503
+;   bytes)
+;   0xb260..0xb83f  (1503 bytes)
+DATA_leido_B260:
 	defb 001h,00eh,00ah,02ah,08ch,004h,0adh,0adh,001h,00eh,00ah,0c2h,0bch,001h,0e8h,0f2h	; b260  ...*............
 	defb 002h,023h,045h,00ah,012h,077h,000h,000h,07fh,002h,023h,045h,00ah,002h,065h,001h	; b270  .#E..w....#E..e.
 	defb 000h,0c3h,002h,023h,045h,00ah,012h,07fh,000h,080h,0ffh,002h,068h,0efh,00ah,012h	; b280  ...#E.......h...
@@ -1911,96 +1979,110 @@ DATA_B070:
 	defb 005h,003h,001h,00dh,0cdh,0b7h,000h,019h,0e1h,0b6h,008h,000h,009h,003h,004h,000h	; b800  ................
 	defb 01ah,0e1h,0b6h,018h,010h,00bh,003h,001h,000h,01bh,0e1h,0b6h,018h,004h,009h,003h	; b810  ................
 	defb 002h,000h,01ch,0e1h,0b6h,008h,004h,009h,003h,001h,000h,01dh,0e1h,0b6h,000h,000h	; b820  ................
-	defb 005h,003h,001h,000h,01eh,0e1h,0b6h,020h,008h,005h,003h,001h,00dh,006h,0b8h,000h	; b830  ....... ........
-	defb 013h,0e1h,0b6h,008h,000h,009h,003h,004h,000h,014h,0e1h,0b6h,018h,010h,00bh,003h	; b840  ................
-	defb 001h,000h,015h,0e1h,0b6h,018h,004h,009h,003h,002h,000h,016h,0e1h,0b6h,008h,004h	; b850  ................
-	defb 009h,003h,001h,000h,017h,0e1h,0b6h,000h,000h,005h,003h,001h,000h,018h,0e1h,0b6h	; b860  ................
-	defb 020h,008h,005h,003h,001h,00dh,03fh,0b8h,008h,098h,0b4h,008h,0a3h,0b4h,008h,0ddh	; b870   .....?.........
-	defb 0b4h,00fh,04eh,000h,00fh,0f4h,0b8h,000h,000h,00fh,000h,011h,0fah,0b8h,000h,000h	; b880  ..N.............
-	defb 00fh,000h,004h,016h,0b9h,000h,008h,008h,000h,006h,01ch,0b9h,078h,040h,007h,003h	; b890  ............x@..
-	defb 012h,00fh,04fh,005h,001h,003h,003h,000h,005h,038h,0b9h,000h,0f8h,00fh,000h,012h	; b8a0  ..O......8......
-	defb 073h,0b9h,000h,0f8h,00fh,003h,00ch,000h,001h,0e7h,0b8h,000h,000h,00fh,000h,002h	; b8b0  s...............
-	defb 000h,0b9h,000h,000h,00eh,000h,003h,00bh,0b9h,050h,000h,00eh,003h,001h,005h,000h	; b8c0  .........P......
-	defb 003h,001h,00fh,050h,009h,0b9h,0b4h,003h,02dh,006h,00dh,0a3h,0b9h,00ch,001h,061h	; b8d0  ...P....-......a
-	defb 001h,00ch,0b1h,000h,000h,00eh,007h,001h,0f4h,0b0h,000h,000h,002h,004h,002h,010h	; b8e0  ................
-	defb 00bh,000h,0e0h,007h,001h,0fch,0b0h,000h,000h,00eh,001h,010h,0b1h,050h,000h,00eh	; b8f0  .............P..
-	defb 001h,0fch,0b0h,000h,000h,004h,000h,00bh,0e0h,000h,007h,001h,010h,0b1h,000h,000h	; b900  ................
-	defb 004h,000h,00bh,030h,000h,007h,001h,00ch,0b1h,000h,000h,007h,001h,014h,0b1h,000h	; b910  ...0............
-	defb 000h,004h,001h,001h,014h,0b1h,000h,001h,001h,014h,0b1h,000h,0ffh,001h,014h,0b1h	; b920  ................
-	defb 000h,0fdh,001h,014h,0b1h,000h,000h,007h,00ch,000h,06dh,001h,050h,0b1h,020h,038h	; b930  ..........m.P. 8
-	defb 001h,054h,0b1h,018h,038h,001h,058h,0b1h,018h,030h,001h,05ch,0b1h,010h,030h,001h	; b940  .T..8.X..0.\..0.
-	defb 060h,0b1h,010h,030h,001h,064h,0b1h,008h,028h,001h,068h,0b1h,000h,020h,001h,048h	; b950  `..0.d..(.h.. .H
-	defb 0b1h,018h,040h,001h,04ch,0b1h,010h,040h,001h,06ch,0b1h,008h,038h,001h,070h,0b1h	; b960  ..@.L..@.l..8.p.
-	defb 000h,038h,00eh,00ch,000h,06dh,003h,001h,001h,074h,0b1h,080h,038h,001h,078h,0b1h	; b970  .8...m...t..8.x.
-	defb 080h,030h,001h,07ch,0b1h,088h,030h,001h,080h,0b1h,088h,030h,001h,084h,0b1h,090h	; b980  .0.|..0....0....
-	defb 028h,001h,088h,0b1h,098h,020h,003h,003h,001h,08ch,0b1h,090h,038h,001h,090h,0b1h	; b990  (.... ......8...
-	defb 098h,038h,00eh,008h,098h,0b4h,008h,0a3h,0b4h,008h,0d0h,0b4h,000h,025h,016h,0b7h	; b9a0  .8...........%..
-	defb 000h,000h,000h,000h,001h,0d7h,0b9h,000h,000h,007h,000h,002h,0e4h,0b9h,020h,088h	; b9b0  .............. .
-	defb 004h,003h,003h,005h,000h,000h,003h,0efh,0b9h,000h,000h,002h,005h,001h,003h,060h	; b9c0  ...............`
-	defb 005h,00fh,003h,00ah,00dh,020h,0b5h,001h,0f0h,0b0h,000h,000h,002h,004h,002h,010h	; b9d0  ..... ..........
-	defb 00bh,000h,020h,007h,001h,0c4h,0b0h,000h,000h,00bh,0a0h,040h,003h,01eh,00eh,001h	; b9e0  .. ........@....
-	defb 094h,0b0h,045h,02bh,001h,09ch,0b0h,045h,02bh,001h,070h,0b0h,045h,02bh,003h,005h	; b9f0  ..E+...E+.p.E+..
-	defb 001h,028h,0b1h,045h,02bh,001h,02ch,0b1h,047h,027h,001h,030h,0b1h,048h,024h,001h	; ba00  .(.E+.,.G'.0.H$.
-	defb 034h,0b1h,049h,023h,001h,038h,0b1h,03fh,025h,00bh,0e0h,020h,003h,016h,00bh,050h	; ba10  4.I#.8.?%.. ...P
-	defb 0e0h,003h,013h,001h,03ch,0b1h,043h,022h,001h,040h,0b1h,042h,024h,001h,044h,0b1h	; ba20  ....<.C".@.B$.D.
-	defb 042h,022h,001h,044h,0b1h,03eh,01eh,001h,018h,0b1h,03ah,01dh,001h,018h,0b1h,030h	; ba30  B".D.>....:....0
-	defb 01eh,001h,01ch,0b1h,02ah,020h,001h,01ch,0b1h,024h,024h,001h,020h,0b1h,021h,02ah	; ba40  ....* ...$$. .!*
-	defb 001h,020h,0b1h,020h,032h,001h,020h,0b1h,024h,035h,001h,024h,0b1h,026h,037h,001h	; ba50  . . 2. .$5.$.&7.
-	defb 024h,0b1h,029h,038h,001h,070h,0b0h,029h,038h,003h,003h,001h,094h,0b0h,027h,034h	; ba60  $.)8.p.)8.....'4
-	defb 001h,098h,0b0h,025h,035h,001h,09ch,0b0h,023h,036h,00eh,008h,001h,0b5h,000h,001h	; ba70  ...%5...#6......
-	defb 0b3h,0bah,000h,000h,007h,000h,002h,0beh,0bah,048h,00eh,002h,000h,003h,0dah,0bah	; ba80  .........H......
-	defb 030h,015h,005h,003h,005h,009h,084h,0b4h,00fh,053h,003h,002h,005h,001h,003h,008h	; ba90  0........S......
-	defb 00fh,049h,003h,050h,000h,003h,0b8h,0b6h,000h,000h,000h,003h,064h,003h,012h,006h	; baa0  .I.P........d...
-	defb 00dh,00ah,0bbh,001h,094h,0b1h,000h,000h,002h,008h,00bh,0d0h,000h,007h,001h,0c0h	; bab0  ................
-	defb 0b1h,000h,000h,00bh,000h,0f0h,003h,008h,00bh,000h,000h,003h,002h,00bh,000h,010h	; bac0  ................
-	defb 003h,008h,00bh,000h,000h,003h,003h,00dh,0beh,0bah,001h,0e0h,0b1h,000h,000h,004h	; bad0  ................
-	defb 001h,00bh,0f0h,000h,003h,003h,001h,0e4h,0b1h,000h,000h,001h,0f4h,0b1h,0f8h,000h	; bae0  ................
-	defb 001h,0e4h,0b1h,000h,000h,00bh,0e0h,000h,001h,0e8h,0b1h,000h,000h,001h,0ech,0b1h	; baf0  ................
-	defb 000h,000h,001h,0f0h,0b1h,000h,000h,00dh,0f8h,0bah,008h,098h,0b4h,008h,0aeh,0b4h	; bb00  ................
-	defb 008h,0f4h,0b4h,000h,001h,094h,0bbh,000h,000h,007h,003h,005h,000h,00fh,016h,0bch	; bb10  ................
-	defb 000h,000h,000h,003h,0dch,003h,0dch,003h,057h,000h,002h,0a1h,0bbh,024h,068h,001h	; bb20  ........W....$h.
-	defb 003h,022h,005h,001h,003h,013h,000h,00ah,0bch,0bbh,0a0h,028h,006h,003h,082h,000h	; bb30  .".........(....
-	defb 003h,0c9h,0bbh,0e0h,018h,005h,000h,004h,0d2h,0bbh,0d8h,040h,005h,003h,02dh,000h	; bb40  ...........@..-.
-	defb 005h,0dbh,0bbh,0f8h,006h,001h,000h,006h,004h,0bch,0d0h,039h,002h,003h,01eh,000h	; bb50  ...........9....
-	defb 007h,00dh,0bch,0d0h,00dh,003h,003h,06eh,000h,008h,0e4h,0bbh,0a8h,01dh,004h,003h	; bb60  .......n........
-	defb 0cch,000h,01dh,0d4h,0bch,000h,000h,001h,003h,019h,000h,008h,0b8h,0b6h,000h,000h	; bb70  ................
-	defb 000h,003h,028h,00fh,084h,003h,02dh,008h,001h,0b5h,003h,012h,005h,00fh,003h,028h	; bb80  ..(...-........(
-	defb 006h,00dh,07bh,0bah,001h,098h,0b1h,000h,000h,002h,004h,002h,008h,00bh,020h,000h	; bb90  ..{........... .
-	defb 007h,001h,0a0h,0b1h,000h,000h,00bh,000h,0c0h,004h,001h,00bh,010h,0c0h,003h,00ah	; bba0  ................
-	defb 00bh,020h,0d0h,003h,00ah,00bh,020h,0e0h,003h,037h,00eh,007h,001h,0a4h,0b1h,000h	; bbb0  . .... ..7......
-	defb 000h,00bh,0e8h,000h,003h,0c8h,003h,064h,00eh,001h,0dch,0b1h,000h,000h,00bh,048h	; bbc0  .......d.......H
-	defb 000h,007h,001h,0d8h,0b1h,000h,000h,00bh,050h,000h,007h,001h,0d4h,0b1h,000h,000h	; bbd0  ........P.......
-	defb 00bh,038h,000h,007h,001h,0c8h,0b1h,000h,000h,00bh,028h,000h,003h,060h,000h,01eh	; bbe0  .8........(..`..
-	defb 090h,0bdh,000h,000h,000h,001h,0c4h,0b1h,000h,000h,001h,0c8h,0b1h,000h,000h,003h	; bbf0  ................
-	defb 004h,00dh,0f5h,0bbh,001h,0cch,0b1h,000h,000h,00bh,038h,000h,007h,001h,0d0h,0b1h	; bc00  ..........8.....
-	defb 000h,000h,00bh,050h,000h,007h,000h,010h,0e2h,0bch,03bh,060h,001h,003h,028h,000h	; bc10  ...P.......`..(.
-	defb 011h,0eah,0bch,02bh,060h,001h,003h,019h,000h,012h,0f2h,0bch,030h,060h,001h,003h	; bc20  ...+`.......0`..
-	defb 00fh,000h,013h,0fah,0bch,028h,060h,001h,003h,025h,000h,014h,002h,0bdh,024h,060h	; bc30  .....(`..%....$`
-	defb 001h,003h,019h,000h,015h,00ah,0bdh,028h,060h,001h,003h,00fh,000h,016h,012h,0bdh	; bc40  .......(`.......
-	defb 024h,060h,001h,003h,00fh,000h,017h,01ah,0bdh,030h,060h,001h,003h,023h,000h,018h	; bc50  $`.......0`..#..
-	defb 022h,0bdh,034h,060h,001h,003h,019h,000h,019h,02ah,0bdh,030h,060h,001h,003h,017h	; bc60  ".4`.....*.0`...
-	defb 000h,01ah,032h,0bdh,030h,060h,001h,003h,00dh,000h,01bh,03ah,0bdh,034h,060h,001h	; bc70  ..2.0`.....:.4`.
-	defb 003h,025h,000h,011h,042h,0bdh,028h,060h,001h,003h,019h,000h,012h,04ah,0bdh,034h	; bc80  .%..B.(`.....J.4
-	defb 060h,001h,003h,00fh,000h,013h,052h,0bdh,030h,060h,001h,003h,030h,000h,014h,05ah	; bc90  `.....R.0`..0..Z
-	defb 0bdh,010h,060h,001h,003h,019h,000h,015h,062h,0bdh,02bh,060h,001h,003h,014h,000h	; bca0  ..`.....b.+`....
-	defb 016h,06ah,0bdh,030h,060h,001h,003h,032h,000h,017h,072h,0bdh,02bh,060h,001h,003h	; bcb0  .j.0`..2..r.+`..
-	defb 00eh,000h,018h,07ah,0bdh,048h,060h,001h,003h,00eh,000h,019h,082h,0bdh,038h,060h	; bcc0  ...z.H`.......8`
-	defb 001h,003h,062h,00eh,001h,04ch,0b2h,01bh,060h,00bh,000h,0e0h,003h,032h,00bh,000h	; bcd0  ..b..L..`....2..
-	defb 000h,007h,001h,0f8h,0b1h,000h,000h,00dh,08ah,0bdh,001h,0fch,0b1h,000h,000h,00dh	; bce0  ................
-	defb 08ah,0bdh,001h,000h,0b2h,000h,000h,00dh,08ah,0bdh,001h,004h,0b2h,000h,000h,00dh	; bcf0  ................
-	defb 08ah,0bdh,001h,008h,0b2h,000h,000h,00dh,08ah,0bdh,001h,00ch,0b2h,000h,000h,00dh	; bd00  ................
-	defb 08ah,0bdh,001h,010h,0b2h,000h,000h,00dh,08ah,0bdh,001h,014h,0b2h,000h,000h,00dh	; bd10  ................
-	defb 08ah,0bdh,001h,018h,0b2h,000h,000h,00dh,08ah,0bdh,001h,01ch,0b2h,000h,000h,00dh	; bd20  ................
-	defb 08ah,0bdh,001h,020h,0b2h,000h,000h,00dh,08ah,0bdh,001h,024h,0b2h,000h,000h,00dh	; bd30  ... .......$....
-	defb 08ah,0bdh,001h,028h,0b2h,000h,000h,00dh,08ah,0bdh,001h,02ch,0b2h,000h,000h,00dh	; bd40  ...(.......,....
-	defb 08ah,0bdh,001h,030h,0b2h,000h,000h,00dh,08ah,0bdh,001h,034h,0b2h,000h,000h,00dh	; bd50  ...0.......4....
-	defb 08ah,0bdh,001h,038h,0b2h,000h,000h,00dh,08ah,0bdh,001h,03ch,0b2h,000h,000h,00dh	; bd60  ...8.......<....
-	defb 08ah,0bdh,001h,040h,0b2h,000h,000h,00dh,08ah,0bdh,001h,044h,0b2h,000h,000h,00dh	; bd70  ...@.......D....
-	defb 08ah,0bdh,001h,048h,0b2h,000h,000h,00dh,08ah,0bdh,00bh,000h,0e0h,003h,068h,00eh	; bd80  ...H..........h.
-	defb 010h,0c4h,070h,010h,0b0h,070h,003h,003h,010h,0c3h,060h,010h,0b0h,050h,003h,001h	; bd90  ..p..p....`..P..
-	defb 010h,0c2h,050h,010h,0b0h,030h,003h,001h,010h,0c1h,040h,010h,0b0h,010h,003h,001h	; bda0  ..P..0....@.....
-	defb 010h,0c2h,050h,010h,0b0h,030h,003h,001h,010h,0c3h,060h,010h,0b0h,050h,003h,001h	; bdb0  ..P..0....`..P..
-	defb 00dh,090h,0bdh	; bdc0
+	defb 005h,003h,001h,000h,01eh,0e1h,0b6h,020h,008h,005h,003h,001h,00dh,006h,0b8h	; b830  ....... .......
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_B83F: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (57 bytes)
+;   0xb83f..0xb878  (57 bytes)
+DATA_sin_leer_B83F:
+	defb 000h,013h,0e1h,0b6h,008h,000h,009h,003h,004h,000h,014h,0e1h,0b6h,018h,010h,00bh	; b83f  ................
+	defb 003h,001h,000h,015h,0e1h,0b6h,018h,004h,009h,003h,002h,000h,016h,0e1h,0b6h,008h	; b84f  ................
+	defb 004h,009h,003h,001h,000h,017h,0e1h,0b6h,000h,000h,005h,003h,001h,000h,018h,0e1h	; b85f  ................
+	defb 0b6h,020h,008h,005h,003h,001h,00dh,03fh,0b8h	; b86f  . .....?.
+
+; ----------------------------------------------------------------------
+; DATOS leido_B878: lo leen p03:A82C, p03:A877, p03:A879, p03:A87B, p03:A87D,
+;   p03:A87F, p03:A882, p03:A8DD y 20 mas jugando (tools/cobertura.py) (1355
+;   bytes)
+;   0xb878..0xbdc3  (1355 bytes)
+DATA_leido_B878:
+	defb 008h,098h,0b4h,008h,0a3h,0b4h,008h,0ddh,0b4h,00fh,04eh,000h,00fh,0f4h,0b8h,000h	; b878  ..........N.....
+	defb 000h,00fh,000h,011h,0fah,0b8h,000h,000h,00fh,000h,004h,016h,0b9h,000h,008h,008h	; b888  ................
+	defb 000h,006h,01ch,0b9h,078h,040h,007h,003h,012h,00fh,04fh,005h,001h,003h,003h,000h	; b898  ....x@....O.....
+	defb 005h,038h,0b9h,000h,0f8h,00fh,000h,012h,073h,0b9h,000h,0f8h,00fh,003h,00ch,000h	; b8a8  .8......s.......
+	defb 001h,0e7h,0b8h,000h,000h,00fh,000h,002h,000h,0b9h,000h,000h,00eh,000h,003h,00bh	; b8b8  ................
+	defb 0b9h,050h,000h,00eh,003h,001h,005h,000h,003h,001h,00fh,050h,009h,0b9h,0b4h,003h	; b8c8  .P.........P....
+	defb 02dh,006h,00dh,0a3h,0b9h,00ch,001h,061h,001h,00ch,0b1h,000h,000h,00eh,007h,001h	; b8d8  -......a........
+	defb 0f4h,0b0h,000h,000h,002h,004h,002h,010h,00bh,000h,0e0h,007h,001h,0fch,0b0h,000h	; b8e8  ................
+	defb 000h,00eh,001h,010h,0b1h,050h,000h,00eh,001h,0fch,0b0h,000h,000h,004h,000h,00bh	; b8f8  .....P..........
+	defb 0e0h,000h,007h,001h,010h,0b1h,000h,000h,004h,000h,00bh,030h,000h,007h,001h,00ch	; b908  ...........0....
+	defb 0b1h,000h,000h,007h,001h,014h,0b1h,000h,000h,004h,001h,001h,014h,0b1h,000h,001h	; b918  ................
+	defb 001h,014h,0b1h,000h,0ffh,001h,014h,0b1h,000h,0fdh,001h,014h,0b1h,000h,000h,007h	; b928  ................
+	defb 00ch,000h,06dh,001h,050h,0b1h,020h,038h,001h,054h,0b1h,018h,038h,001h,058h,0b1h	; b938  ..m.P. 8.T..8.X.
+	defb 018h,030h,001h,05ch,0b1h,010h,030h,001h,060h,0b1h,010h,030h,001h,064h,0b1h,008h	; b948  .0.\..0.`..0.d..
+	defb 028h,001h,068h,0b1h,000h,020h,001h,048h,0b1h,018h,040h,001h,04ch,0b1h,010h,040h	; b958  (.h.. .H..@.L..@
+	defb 001h,06ch,0b1h,008h,038h,001h,070h,0b1h,000h,038h,00eh,00ch,000h,06dh,003h,001h	; b968  .l..8.p..8...m..
+	defb 001h,074h,0b1h,080h,038h,001h,078h,0b1h,080h,030h,001h,07ch,0b1h,088h,030h,001h	; b978  .t..8.x..0.|..0.
+	defb 080h,0b1h,088h,030h,001h,084h,0b1h,090h,028h,001h,088h,0b1h,098h,020h,003h,003h	; b988  ...0....(.... ..
+	defb 001h,08ch,0b1h,090h,038h,001h,090h,0b1h,098h,038h,00eh,008h,098h,0b4h,008h,0a3h	; b998  ....8....8......
+	defb 0b4h,008h,0d0h,0b4h,000h,025h,016h,0b7h,000h,000h,000h,000h,001h,0d7h,0b9h,000h	; b9a8  .....%..........
+	defb 000h,007h,000h,002h,0e4h,0b9h,020h,088h,004h,003h,003h,005h,000h,000h,003h,0efh	; b9b8  ...... .........
+	defb 0b9h,000h,000h,002h,005h,001h,003h,060h,005h,00fh,003h,00ah,00dh,020h,0b5h,001h	; b9c8  .......`..... ..
+	defb 0f0h,0b0h,000h,000h,002h,004h,002h,010h,00bh,000h,020h,007h,001h,0c4h,0b0h,000h	; b9d8  .......... .....
+	defb 000h,00bh,0a0h,040h,003h,01eh,00eh,001h,094h,0b0h,045h,02bh,001h,09ch,0b0h,045h	; b9e8  ...@......E+...E
+	defb 02bh,001h,070h,0b0h,045h,02bh,003h,005h,001h,028h,0b1h,045h,02bh,001h,02ch,0b1h	; b9f8  +.p.E+...(.E+.,.
+	defb 047h,027h,001h,030h,0b1h,048h,024h,001h,034h,0b1h,049h,023h,001h,038h,0b1h,03fh	; ba08  G'.0.H$.4.I#.8.?
+	defb 025h,00bh,0e0h,020h,003h,016h,00bh,050h,0e0h,003h,013h,001h,03ch,0b1h,043h,022h	; ba18  %.. ...P....<.C"
+	defb 001h,040h,0b1h,042h,024h,001h,044h,0b1h,042h,022h,001h,044h,0b1h,03eh,01eh,001h	; ba28  .@.B$.D.B".D.>..
+	defb 018h,0b1h,03ah,01dh,001h,018h,0b1h,030h,01eh,001h,01ch,0b1h,02ah,020h,001h,01ch	; ba38  ..:....0....* ..
+	defb 0b1h,024h,024h,001h,020h,0b1h,021h,02ah,001h,020h,0b1h,020h,032h,001h,020h,0b1h	; ba48  .$$. .!*. . 2. .
+	defb 024h,035h,001h,024h,0b1h,026h,037h,001h,024h,0b1h,029h,038h,001h,070h,0b0h,029h	; ba58  $5.$.&7.$.)8.p.)
+	defb 038h,003h,003h,001h,094h,0b0h,027h,034h,001h,098h,0b0h,025h,035h,001h,09ch,0b0h	; ba68  8.....'4...%5...
+	defb 023h,036h,00eh,008h,001h,0b5h,000h,001h,0b3h,0bah,000h,000h,007h,000h,002h,0beh	; ba78  #6..............
+	defb 0bah,048h,00eh,002h,000h,003h,0dah,0bah,030h,015h,005h,003h,005h,009h,084h,0b4h	; ba88  .H......0.......
+	defb 00fh,053h,003h,002h,005h,001h,003h,008h,00fh,049h,003h,050h,000h,003h,0b8h,0b6h	; ba98  .S.......I.P....
+	defb 000h,000h,000h,003h,064h,003h,012h,006h,00dh,00ah,0bbh,001h,094h,0b1h,000h,000h	; baa8  ....d...........
+	defb 002h,008h,00bh,0d0h,000h,007h,001h,0c0h,0b1h,000h,000h,00bh,000h,0f0h,003h,008h	; bab8  ................
+	defb 00bh,000h,000h,003h,002h,00bh,000h,010h,003h,008h,00bh,000h,000h,003h,003h,00dh	; bac8  ................
+	defb 0beh,0bah,001h,0e0h,0b1h,000h,000h,004h,001h,00bh,0f0h,000h,003h,003h,001h,0e4h	; bad8  ................
+	defb 0b1h,000h,000h,001h,0f4h,0b1h,0f8h,000h,001h,0e4h,0b1h,000h,000h,00bh,0e0h,000h	; bae8  ................
+	defb 001h,0e8h,0b1h,000h,000h,001h,0ech,0b1h,000h,000h,001h,0f0h,0b1h,000h,000h,00dh	; baf8  ................
+	defb 0f8h,0bah,008h,098h,0b4h,008h,0aeh,0b4h,008h,0f4h,0b4h,000h,001h,094h,0bbh,000h	; bb08  ................
+	defb 000h,007h,003h,005h,000h,00fh,016h,0bch,000h,000h,000h,003h,0dch,003h,0dch,003h	; bb18  ................
+	defb 057h,000h,002h,0a1h,0bbh,024h,068h,001h,003h,022h,005h,001h,003h,013h,000h,00ah	; bb28  W....$h.."......
+	defb 0bch,0bbh,0a0h,028h,006h,003h,082h,000h,003h,0c9h,0bbh,0e0h,018h,005h,000h,004h	; bb38  ...(............
+	defb 0d2h,0bbh,0d8h,040h,005h,003h,02dh,000h,005h,0dbh,0bbh,0f8h,006h,001h,000h,006h	; bb48  ...@..-.........
+	defb 004h,0bch,0d0h,039h,002h,003h,01eh,000h,007h,00dh,0bch,0d0h,00dh,003h,003h,06eh	; bb58  ...9...........n
+	defb 000h,008h,0e4h,0bbh,0a8h,01dh,004h,003h,0cch,000h,01dh,0d4h,0bch,000h,000h,001h	; bb68  ................
+	defb 003h,019h,000h,008h,0b8h,0b6h,000h,000h,000h,003h,028h,00fh,084h,003h,02dh,008h	; bb78  ..........(...-.
+	defb 001h,0b5h,003h,012h,005h,00fh,003h,028h,006h,00dh,07bh,0bah,001h,098h,0b1h,000h	; bb88  .......(..{.....
+	defb 000h,002h,004h,002h,008h,00bh,020h,000h,007h,001h,0a0h,0b1h,000h,000h,00bh,000h	; bb98  ...... .........
+	defb 0c0h,004h,001h,00bh,010h,0c0h,003h,00ah,00bh,020h,0d0h,003h,00ah,00bh,020h,0e0h	; bba8  ......... .... .
+	defb 003h,037h,00eh,007h,001h,0a4h,0b1h,000h,000h,00bh,0e8h,000h,003h,0c8h,003h,064h	; bbb8  .7.............d
+	defb 00eh,001h,0dch,0b1h,000h,000h,00bh,048h,000h,007h,001h,0d8h,0b1h,000h,000h,00bh	; bbc8  .......H........
+	defb 050h,000h,007h,001h,0d4h,0b1h,000h,000h,00bh,038h,000h,007h,001h,0c8h,0b1h,000h	; bbd8  P........8......
+	defb 000h,00bh,028h,000h,003h,060h,000h,01eh,090h,0bdh,000h,000h,000h,001h,0c4h,0b1h	; bbe8  ..(..`..........
+	defb 000h,000h,001h,0c8h,0b1h,000h,000h,003h,004h,00dh,0f5h,0bbh,001h,0cch,0b1h,000h	; bbf8  ................
+	defb 000h,00bh,038h,000h,007h,001h,0d0h,0b1h,000h,000h,00bh,050h,000h,007h,000h,010h	; bc08  ..8........P....
+	defb 0e2h,0bch,03bh,060h,001h,003h,028h,000h,011h,0eah,0bch,02bh,060h,001h,003h,019h	; bc18  ...`..(....+`...
+	defb 000h,012h,0f2h,0bch,030h,060h,001h,003h,00fh,000h,013h,0fah,0bch,028h,060h,001h	; bc28  ....0`.......(`.
+	defb 003h,025h,000h,014h,002h,0bdh,024h,060h,001h,003h,019h,000h,015h,00ah,0bdh,028h	; bc38  .%....$`.......(
+	defb 060h,001h,003h,00fh,000h,016h,012h,0bdh,024h,060h,001h,003h,00fh,000h,017h,01ah	; bc48  `.......$`......
+	defb 0bdh,030h,060h,001h,003h,023h,000h,018h,022h,0bdh,034h,060h,001h,003h,019h,000h	; bc58  .0`..#..".4`....
+	defb 019h,02ah,0bdh,030h,060h,001h,003h,017h,000h,01ah,032h,0bdh,030h,060h,001h,003h	; bc68  .*.0`.....2.0`..
+	defb 00dh,000h,01bh,03ah,0bdh,034h,060h,001h,003h,025h,000h,011h,042h,0bdh,028h,060h	; bc78  ...:.4`..%..B.(`
+	defb 001h,003h,019h,000h,012h,04ah,0bdh,034h,060h,001h,003h,00fh,000h,013h,052h,0bdh	; bc88  .....J.4`.....R.
+	defb 030h,060h,001h,003h,030h,000h,014h,05ah,0bdh,010h,060h,001h,003h,019h,000h,015h	; bc98  0`..0..Z..`.....
+	defb 062h,0bdh,02bh,060h,001h,003h,014h,000h,016h,06ah,0bdh,030h,060h,001h,003h,032h	; bca8  b.+`.....j.0`..2
+	defb 000h,017h,072h,0bdh,02bh,060h,001h,003h,00eh,000h,018h,07ah,0bdh,048h,060h,001h	; bcb8  ..r.+`.....z.H`.
+	defb 003h,00eh,000h,019h,082h,0bdh,038h,060h,001h,003h,062h,00eh,001h,04ch,0b2h,01bh	; bcc8  ......8`..b..L..
+	defb 060h,00bh,000h,0e0h,003h,032h,00bh,000h,000h,007h,001h,0f8h,0b1h,000h,000h,00dh	; bcd8  `....2..........
+	defb 08ah,0bdh,001h,0fch,0b1h,000h,000h,00dh,08ah,0bdh,001h,000h,0b2h,000h,000h,00dh	; bce8  ................
+	defb 08ah,0bdh,001h,004h,0b2h,000h,000h,00dh,08ah,0bdh,001h,008h,0b2h,000h,000h,00dh	; bcf8  ................
+	defb 08ah,0bdh,001h,00ch,0b2h,000h,000h,00dh,08ah,0bdh,001h,010h,0b2h,000h,000h,00dh	; bd08  ................
+	defb 08ah,0bdh,001h,014h,0b2h,000h,000h,00dh,08ah,0bdh,001h,018h,0b2h,000h,000h,00dh	; bd18  ................
+	defb 08ah,0bdh,001h,01ch,0b2h,000h,000h,00dh,08ah,0bdh,001h,020h,0b2h,000h,000h,00dh	; bd28  ........... ....
+	defb 08ah,0bdh,001h,024h,0b2h,000h,000h,00dh,08ah,0bdh,001h,028h,0b2h,000h,000h,00dh	; bd38  ...$.......(....
+	defb 08ah,0bdh,001h,02ch,0b2h,000h,000h,00dh,08ah,0bdh,001h,030h,0b2h,000h,000h,00dh	; bd48  ...,.......0....
+	defb 08ah,0bdh,001h,034h,0b2h,000h,000h,00dh,08ah,0bdh,001h,038h,0b2h,000h,000h,00dh	; bd58  ...4.......8....
+	defb 08ah,0bdh,001h,03ch,0b2h,000h,000h,00dh,08ah,0bdh,001h,040h,0b2h,000h,000h,00dh	; bd68  ...<.......@....
+	defb 08ah,0bdh,001h,044h,0b2h,000h,000h,00dh,08ah,0bdh,001h,048h,0b2h,000h,000h,00dh	; bd78  ...D.......H....
+	defb 08ah,0bdh,00bh,000h,0e0h,003h,068h,00eh,010h,0c4h,070h,010h,0b0h,070h,003h,003h	; bd88  ......h...p..p..
+	defb 010h,0c3h,060h,010h,0b0h,050h,003h,001h,010h,0c2h,050h,010h,0b0h,030h,003h,001h	; bd98  ..`..P....P..0..
+	defb 010h,0c1h,040h,010h,0b0h,010h,003h,001h,010h,0c2h,050h,010h,0b0h,030h,003h,001h	; bda8  ..@.......P..0..
+	defb 010h,0c3h,060h,010h,0b0h,050h,003h,001h,00dh,090h,0bdh	; bdb8  ..`..P.....
 
 ; ======================================================================
 ; CODIGO 0xbdc3..0xbde7  (36 bytes)
@@ -2033,8 +2115,10 @@ L_BDD8:
 	jr L_BDD8		;bde5
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbde7..0xc000  (537 bytes)
-DATA_BDE7:
+; DATOS leido_BDE7: lo leen p01:6C6F, p03:BDD8, p03:BDDA jugando
+;   (tools/cobertura.py) (327 bytes)
+;   0xbde7..0xbf2e  (327 bytes)
+DATA_leido_BDE7:
 	defb 000h,0a0h,053h,054h,041h,046h,046h,000h,000h,0a4h,02dh,050h,052h,04fh,047h,052h	; bde7  ..STAFF...-PROGR
 	defb 041h,04dh,02dh,000h,000h,0a8h,054h,02eh,041h,044h,041h,043h,048h,049h,000h,000h	; bdf7  AM-...T.ADACHI..
 	defb 0ach,052h,02eh,053h,041h,047h,049h,053h,041h,04bh,041h,000h,000h,0b0h,02dh,043h	; be07  .R.SAGISAKA...-C
@@ -2055,17 +2139,25 @@ DATA_BDE7:
 	defb 039h,000h,000h,080h,044h,041h,04eh,047h,045h,052h,020h,054h,048h,052h,045h,041h	; bef7  9...DANGER THREA
 	defb 054h,045h,04eh,044h,000h,020h,0f0h,04fh,055h,052h,020h,047h,041h,04ch,041h,058h	; bf07  TEND. .OUR GALAX
 	defb 059h,000h,014h,0fch,020h,020h,020h,020h,020h,020h,020h,020h,020h,020h,020h,020h	; bf17  Y...
-	defb 020h,020h,020h,020h,000h,000h,000h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf27      ............
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf37  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf47  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf57  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf67  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf77  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf87  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf97  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfa7  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfb7  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfc7  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfd7  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfe7  ................
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bff7  .........
+	defb 020h,020h,020h,020h,000h,000h,000h	; bf27
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_BF2E: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (210 bytes)
+;   0xbf2e..0xc000  (210 bytes)
+DATA_sin_leer_BF2E:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf2e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf3e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf4e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf5e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf6e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf7e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf8e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bf9e  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfae  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfbe  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfce  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfde  ................
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bfee  ................
+	defb 0ffh,0ffh	; bffe

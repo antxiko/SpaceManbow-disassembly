@@ -1,0 +1,3 @@
+# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
+D 0x8000 0xA000 leido_8000  lo leen p00:46BA, p03:AF3C, p03:AF9F, p03:AFA1, p03:B000, p03:B002, p03:B004 jugando (tools/cobertura.py) (8192 bytes)
+# --- fin de los datos de datos_leidos.py ---

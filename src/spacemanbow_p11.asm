@@ -10,8 +10,10 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa000..0xc000  (8192 bytes)
-DATA_A000:
+; DATOS leido_A000: lo leen p03:AEB0, p03:AEB2, p03:AF9F, p03:AFA1, p03:B000,
+;   p03:B002, p03:B004 jugando (tools/cobertura.py) (8192 bytes)
+;   0xa000..0xc000  (8192 bytes)
+DATA_leido_A000:
 	defb 0ffh,004h,0afh,001h,0b0h,001h,0b1h,001h,0afh,001h,0b2h,001h,0b3h,001h,0b4h,001h	; a000  ................
 	defb 0b5h,001h,0b6h,001h,0b7h,001h,0b8h,001h,0b9h,001h,0bah,001h,0b2h,001h,0afh,001h	; a010  ................
 	defb 0bbh,001h,0bch,001h,0bdh,001h,0beh,001h,0afh,001h,00fh,003h,00fh,003h,03dh,004h	; a020  ..............=.

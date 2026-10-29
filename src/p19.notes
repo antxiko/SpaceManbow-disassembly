@@ -1,0 +1,11 @@
+# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
+D 0x8000 0x8491 leido_8000  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (1169 bytes)
+D 0x8491 0x84F3 sin_leer_8491  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (98 bytes)
+D 0x84F3 0x896F leido_84F3  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (1148 bytes)
+D 0x896F 0x89AE sin_leer_896F  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (63 bytes)
+D 0x89AE 0x8B03 leido_89AE  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (341 bytes)
+D 0x8B03 0x8B18 sin_leer_8B03  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (21 bytes)
+D 0x8B18 0x8E61 leido_8B18  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (841 bytes)
+D 0x8E61 0x8EE4 sin_leer_8E61  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (131 bytes)
+D 0x8EE4 0xA000 leido_8EE4  lo leen p10:8290, p10:82A3, p10:82AF jugando (tools/cobertura.py) (4380 bytes)
+# --- fin de los datos de datos_leidos.py ---

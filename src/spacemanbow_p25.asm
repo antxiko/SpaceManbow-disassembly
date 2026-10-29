@@ -10,16 +10,44 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8000..0xa000  (8192 bytes)
-DATA_8000:
+; DATOS leido_8000: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (64 bytes)
+;   0x8000..0x8040  (64 bytes)
+DATA_leido_8000:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 8000  ................
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 8010  ................
 	defb 002h,002h,002h,002h,0bch,0c2h,0bbh,0bah,0c4h,0c0h,0c1h,0c5h,002h,002h,002h,002h	; 8020  ................
 	defb 002h,002h,002h,002h,0bdh,0beh,0bbh,0bah,0c4h,0c3h,0bfh,0c5h,002h,002h,002h,002h	; 8030  ................
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8040: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8040..0x8050  (16 bytes)
+DATA_sin_leer_8040:
 	defb 000h,000h,000h,000h,000h,04bh,032h,000h,000h,061h,04eh,04fh,000h,06dh,051h,075h	; 8040  .....K2..aNO.mQu
+
+; ----------------------------------------------------------------------
+; DATOS leido_8050: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (32 bytes)
+;   0x8050..0x8070  (32 bytes)
+DATA_leido_8050:
 	defb 0a9h,064h,050h,076h,0b6h,052h,096h,099h,0aah,0b7h,0b8h,0a8h,092h,074h,097h,09ah	; 8050  .dPv.R.......t..
 	defb 0a9h,052h,083h,099h,0b6h,0b7h,0b8h,0a8h,0aah,0b9h,097h,09bh,092h,0bah,01eh,04ah	; 8060  .R.............J
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8070: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8070..0x8080  (16 bytes)
+DATA_sin_leer_8070:
 	defb 0a9h,094h,095h,0abh,037h,0b7h,0b8h,0a8h,039h,0b9h,097h,09bh,038h,0bah,01eh,04ah	; 8070  ....7...9...8..J
+
+; ----------------------------------------------------------------------
+; DATOS leido_8080: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (1728 bytes)
+;   0x8080..0x8740  (1728 bytes)
+DATA_leido_8080:
 	defb 023h,02ch,02bh,022h,024h,02dh,027h,025h,014h,026h,029h,012h,013h,028h,02ah,002h	; 8080  #,+"$-'%.&)..(*.
 	defb 04fh,000h,000h,000h,075h,000h,000h,000h,076h,000h,000h,000h,099h,000h,000h,000h	; 8090  O...u...v.......
 	defb 0abh,000h,000h,000h,0a8h,000h,000h,000h,09bh,000h,000h,000h,04ah,000h,000h,000h	; 80a0  ............J...
@@ -128,7 +156,20 @@ DATA_8000:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,06bh,055h,04eh,055h	; 8710  ............kUNU
 	defb 000h,000h,032h,039h,000h,000h,033h,03eh,000h,032h,039h,03ch,000h,033h,03eh,03dh	; 8720  ..29..3>.29<.3>=
 	defb 03ch,037h,038h,03ah,03dh,034h,036h,03ah,037h,038h,03ah,03ah,034h,036h,03bh,035h	; 8730  <78:=46:78::46.5
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8740: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8740..0x8750  (16 bytes)
+DATA_sin_leer_8740:
 	defb 03ch,037h,038h,03ah,03dh,034h,036h,03ah,037h,038h,03ah,03ah,034h,036h,03bh,035h	; 8740  <78:=46:78::46.5
+
+; ----------------------------------------------------------------------
+; DATOS leido_8750: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (1040 bytes)
+;   0x8750..0x8b60  (1040 bytes)
+DATA_leido_8750:
 	defb 03ah,03ah,03ah,03ah,03ah,03ah,03ah,03ah,03ah,03ah,03ah,03ah,083h,03bh,035h,083h	; 8750  ::::::::::::..5.
 	defb 000h,000h,000h,000h,000h,000h,0bbh,040h,000h,000h,0bch,042h,000h,000h,000h,000h	; 8760  .......@...B....
 	defb 000h,000h,000h,000h,041h,044h,049h,045h,043h,04bh,04ah,03fh,000h,0bdh,0c0h,04ch	; 8770  ....ADIECKJ?...L
@@ -194,13 +235,52 @@ DATA_8000:
 	defb 055h,05ch,05bh,05bh,056h,050h,04bh,053h,056h,050h,04bh,053h,057h,04ch,04dh,04eh	; 8b30  U\[[VPKSVPKSWLMN
 	defb 074h,074h,035h,03dh,060h,061h,06ah,060h,075h,078h,075h,098h,06fh,06eh,06eh,06fh	; 8b40  tt5=`aj`uxu.onno
 	defb 074h,074h,041h,027h,060h,061h,035h,03dh,075h,078h,075h,098h,07fh,080h,08ch,07fh	; 8b50  ttA'`a5=uxu.....
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8B60: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8b60..0x8b70  (16 bytes)
+DATA_sin_leer_8B60:
 	defb 074h,074h,042h,03dh,060h,061h,029h,026h,075h,078h,041h,027h,08dh,08dh,035h,03dh	; 8b60  ttB=`a)&uxA'..5=
+
+; ----------------------------------------------------------------------
+; DATOS leido_8B70: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (32 bytes)
+;   0x8b70..0x8b90  (32 bytes)
+DATA_leido_8B70:
 	defb 041h,03ch,044h,027h,035h,02dh,02eh,03dh,06bh,099h,099h,079h,063h,063h,064h,063h	; 8b70  A<D'5-.=k..yccdc
 	defb 042h,034h,011h,03dh,016h,02ah,040h,026h,041h,037h,019h,027h,035h,038h,039h,03dh	; 8b80  B4.=.*@&A7.'589=
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8B90: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8b90..0x8ba0  (16 bytes)
+DATA_sin_leer_8B90:
 	defb 016h,03dh,03eh,022h,029h,026h,01eh,037h,041h,027h,01fh,038h,035h,03dh,021h,023h	; 8b90  .=>")&.7A'.85=!#
+
+; ----------------------------------------------------------------------
+; DATOS leido_8BA0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (32 bytes)
+;   0x8ba0..0x8bc0  (32 bytes)
+DATA_leido_8BA0:
 	defb 016h,026h,047h,02ch,041h,027h,06ah,060h,035h,03dh,075h,098h,07fh,080h,08ch,07fh	; 8ba0  .&G,A'j`5=u.....
 	defb 029h,026h,048h,018h,016h,015h,049h,032h,041h,027h,075h,098h,035h,03dh,08dh,08dh	; 8bb0  )&H...I2A'u.5=..
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_8BC0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x8bc0..0x8bd0  (16 bytes)
+DATA_sin_leer_8BC0:
 	defb 028h,03eh,042h,026h,019h,01eh,029h,015h,039h,01fh,041h,027h,023h,021h,035h,03dh	; 8bc0  (>B&..).9.A'#!5=
+
+; ----------------------------------------------------------------------
+; DATOS leido_8BD0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7E89,
+;   p09:7E93, p09:7E9D, p09:7EA7 jugando (tools/cobertura.py) (1360 bytes)
+;   0x8bd0..0x9120  (1360 bytes)
+DATA_leido_8BD0:
 	defb 03eh,022h,028h,03eh,01eh,037h,019h,01eh,01fh,038h,039h,01fh,02dh,02eh,04dh,04eh	; 8bd0  >"(>.7...89.-.MN
 	defb 03eh,022h,028h,03eh,01eh,037h,019h,01eh,01fh,038h,039h,01fh,03ch,044h,04dh,04eh	; 8be0  >"(>.7...89.<DMN
 	defb 023h,01bh,01dh,023h,03eh,043h,017h,03eh,01fh,038h,039h,01fh,057h,05ah,05ah,04eh	; 8bf0  #..#>C.>.89.WZZN
@@ -286,7 +366,20 @@ DATA_8000:
 	defb 092h,08dh,098h,07bh,093h,08bh,08ch,084h,0a2h,083h,08fh,0a3h,099h,0a1h,074h,089h	; 90f0  ...{..........t.
 	defb 000h,071h,0a6h,0a0h,000h,000h,013h,095h,000h,000h,000h,071h,000h,000h,000h,000h	; 9100  .q.........q....
 	defb 09ah,0a2h,094h,075h,0a3h,09ah,099h,096h,0a6h,0a5h,099h,093h,071h,08eh,09dh,0a1h	; 9110  ...u........q...
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9120: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9120..0x9130  (16 bytes)
+DATA_sin_leer_9120:
 	defb 07bh,0a1h,07bh,0a1h,075h,075h,0a1h,0a1h,0a2h,0a1h,088h,07bh,097h,098h,079h,084h	; 9120  {.{.uu.....{..y.
+
+; ----------------------------------------------------------------------
+; DATOS leido_9130: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (1056 bytes)
+;   0x9130..0x9550  (1056 bytes)
+DATA_leido_9130:
 	defb 093h,008h,000h,000h,072h,000h,000h,000h,006h,000h,000h,000h,000h,000h,000h,000h	; 9130  ....r...........
 	defb 0a1h,093h,09bh,0a1h,0a4h,096h,094h,0a1h,09bh,093h,0a4h,008h,094h,0a1h,007h,000h	; 9140  ................
 	defb 004h,095h,0a0h,0a2h,000h,071h,09eh,09dh,000h,000h,071h,09fh,000h,000h,003h,06fh	; 9150  .....q....q....o
@@ -353,7 +446,20 @@ DATA_8000:
 	defb 07fh,096h,097h,098h,07fh,07fh,08dh,0a1h,088h,082h,097h,098h,086h,0a1h,077h,08eh	; 9520  ..............w.
 	defb 083h,080h,095h,098h,08eh,095h,0a3h,0a2h,08bh,085h,08ah,084h,0a3h,08dh,086h,098h	; 9530  ................
 	defb 0a1h,09ch,06ch,000h,0a1h,083h,093h,007h,0a1h,093h,093h,0a1h,093h,07fh,07fh,093h	; 9540  ..l.............
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9550: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9550..0x9560  (16 bytes)
+DATA_sin_leer_9550:
 	defb 07bh,081h,08dh,098h,097h,098h,08bh,08ch,09dh,099h,083h,08fh,0a0h,09ah,085h,074h	; 9550  {..............t
+
+; ----------------------------------------------------------------------
+; DATOS leido_9560: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (112 bytes)
+;   0x9560..0x95d0  (112 bytes)
+DATA_leido_9560:
 	defb 097h,098h,07bh,07fh,075h,075h,0a1h,080h,0a2h,0a1h,088h,07bh,097h,098h,079h,084h	; 9560  ..{.uu.....{..y.
 	defb 088h,094h,0a1h,07fh,08ch,084h,0a1h,080h,0a3h,09ah,088h,07bh,089h,098h,079h,084h	; 9570  ...........{..y.
 	defb 07bh,081h,08dh,098h,097h,098h,08bh,08ch,088h,0a1h,083h,08fh,079h,084h,0a1h,092h	; 9580  {...........y...
@@ -361,7 +467,20 @@ DATA_8000:
 	defb 098h,07ah,081h,08dh,087h,079h,084h,081h,000h,001h,002h,000h,000h,000h,000h,000h	; 95a0  .z...y..........
 	defb 07bh,0a1h,07bh,0a1h,098h,076h,082h,097h,000h,000h,001h,002h,000h,000h,000h,000h	; 95b0  {.{..v..........
 	defb 003h,070h,09eh,09dh,072h,090h,0a0h,09ch,081h,078h,09ah,099h,093h,096h,0a2h,094h	; 95c0  .p..r....x......
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_95D0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x95d0..0x95e0  (16 bytes)
+DATA_sin_leer_95D0:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 95d0  ................
+
+; ----------------------------------------------------------------------
+; DATOS leido_95E0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (176 bytes)
+;   0x95e0..0x9690  (176 bytes)
+DATA_leido_95E0:
 	defb 01eh,001h,01eh,001h,005h,002h,007h,020h,021h,021h,021h,021h,023h,023h,023h,023h	; 95e0  ....... !!!!####
 	defb 01eh,001h,01eh,001h,005h,002h,007h,020h,024h,02fh,021h,026h,040h,02eh,023h,04ah	; 95f0  ....... $/!&@.#J
 	defb 01eh,001h,01eh,001h,005h,002h,007h,020h,021h,021h,026h,021h,023h,023h,04ah,023h	; 9600  ....... !!&!##J#
@@ -373,9 +492,35 @@ DATA_8000:
 	defb 034h,047h,046h,048h,025h,00eh,00ch,00dh,034h,047h,046h,048h,025h,00eh,00ch,00dh	; 9660  4GFH%...4GFH%...
 	defb 010h,00fh,004h,008h,028h,001h,033h,009h,01fh,020h,00ah,00bh,028h,001h,01eh,001h	; 9670  ....(.3.. ..(...
 	defb 022h,022h,022h,022h,01dh,01dh,01dh,01dh,03ah,03ah,03ah,03ah,02ch,02ch,02ch,02ch	; 9680  """"....::::,,,,
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9690: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9690..0x96a0  (16 bytes)
+DATA_sin_leer_9690:
 	defb 089h,065h,067h,089h,05eh,06ah,06bh,05eh,068h,06bh,06ch,05eh,07bh,06ah,06ch,05eh	; 9690  .eg.^jk^hkl^{jl^
+
+; ----------------------------------------------------------------------
+; DATOS leido_96A0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (16 bytes)
+;   0x96a0..0x96b0  (16 bytes)
+DATA_leido_96A0:
 	defb 06bh,06ch,05eh,05dh,07dh,091h,09ah,068h,0bfh,0adh,071h,07bh,06bh,06ch,05eh,05dh	; 96a0  kl^]}..h..q{kl^]
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_96B0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x96b0..0x96c0  (16 bytes)
+DATA_sin_leer_96B0:
 	defb 089h,08eh,089h,08eh,05eh,05ch,05eh,05ch,05fh,08bh,0abh,05dh,05fh,09bh,0c6h,05ch	; 96b0  ....^\^\_..]_..\
+
+; ----------------------------------------------------------------------
+; DATOS leido_96C0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (320 bytes)
+;   0x96c0..0x9800  (320 bytes)
+DATA_leido_96C0:
 	defb 089h,08eh,089h,08eh,05eh,05ch,05eh,05ch,05fh,05dh,05fh,05dh,05fh,05ch,05fh,05ch	; 96c0  ....^\^\_]_]_\_\
 	defb 064h,08eh,067h,0c9h,060h,05ch,06bh,06dh,060h,05dh,06bh,06dh,060h,05ch,06bh,06dh	; 96d0  d.g.`\km`]km`\km
 	defb 089h,08eh,067h,089h,068h,05ch,06bh,05eh,07bh,05dh,06ch,05eh,05fh,05ch,06ch,05eh	; 96e0  ..g.h\k^{]l^_\l^
@@ -396,7 +541,20 @@ DATA_8000:
 	defb 05eh,05dh,06ch,05eh,05fh,07dh,091h,09ah,05eh,0bfh,0adh,071h,05fh,05ch,06ch,05eh	; 97d0  ^]l^_}..^..q_\l^
 	defb 060h,05dh,06ch,05eh,060h,07dh,091h,09ah,060h,0bfh,0adh,071h,060h,05ch,06ch,05eh	; 97e0  `]l^`}..`..q`\l^
 	defb 064h,0c9h,0bah,0bdh,060h,06dh,0c1h,063h,060h,06dh,08eh,089h,060h,05fh,05ch,05eh	; 97f0  d...`m.c`m..`_\^
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9800: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9800..0x9810  (16 bytes)
+DATA_sin_leer_9800:
 	defb 0b1h,0b2h,064h,0c9h,07fh,0c1h,060h,06dh,08eh,089h,060h,06dh,05ch,05eh,05eh,06dh	; 9800  ..d...`m..`m\^^m
+
+; ----------------------------------------------------------------------
+; DATOS leido_9810: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (128 bytes)
+;   0x9810..0x9890  (128 bytes)
+DATA_leido_9810:
 	defb 0c9h,0bah,0b2h,0bdh,06dh,0c1h,07eh,063h,06dh,089h,08eh,089h,05fh,05eh,05ch,05eh	; 9810  ....m.~cm..._^\^
 	defb 0aah,095h,0bah,0b2h,07fh,07eh,063h,07eh,08eh,089h,08eh,089h,05ch,05eh,05ch,05eh	; 9820  .....~c~....\^\^
 	defb 0b1h,0b2h,0bdh,064h,07fh,063h,0c1h,060h,08eh,089h,08eh,060h,05ch,05eh,05ch,05eh	; 9830  ...d.c.`...`\^\^
@@ -405,7 +563,20 @@ DATA_8000:
 	defb 022h,022h,027h,022h,049h,043h,030h,01dh,089h,08eh,067h,0c9h,05eh,05ch,06bh,06dh	; 9860  ""'"IC0...g.^\km
 	defb 00fh,02dh,010h,011h,01eh,001h,01eh,001h,064h,08eh,067h,089h,060h,05ch,06ch,05eh	; 9870  .-......d.g.`\l^
 	defb 00fh,02dh,010h,011h,01eh,001h,01eh,001h,089h,08eh,067h,0c9h,05eh,05ch,06bh,06dh	; 9880  .-........g.^\km
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9890: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9890..0x98a0  (16 bytes)
+DATA_sin_leer_9890:
 	defb 034h,047h,046h,048h,025h,00eh,00ch,00dh,089h,08eh,067h,089h,05eh,05ch,06bh,05eh	; 9890  4GFH%.....g.^\k^
+
+; ----------------------------------------------------------------------
+; DATOS leido_98A0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (336 bytes)
+;   0x98a0..0x99f0  (336 bytes)
+DATA_leido_98A0:
 	defb 034h,047h,046h,048h,025h,00eh,00ch,00dh,065h,067h,08eh,089h,06bh,06ch,05eh,05eh	; 98a0  4GFH%...eg..kl^^
 	defb 022h,022h,027h,022h,049h,043h,030h,01dh,065h,067h,08eh,0c9h,06bh,06ch,05eh,06dh	; 98b0  ""'"IC0.eg..kl^m
 	defb 05fh,05dh,06ch,06dh,05fh,05ch,06bh,06dh,08bh,0abh,06ch,06dh,09bh,0c6h,0c5h,06dh	; 98c0  _]lm_\km..lm...m
@@ -427,7 +598,20 @@ DATA_8000:
 	defb 060h,05ch,06bh,06dh,0cbh,08fh,066h,0cah,03ah,03ah,030h,03ah,02ch,02ch,031h,02ch	; 99c0  `\km..f.::0:,,1,
 	defb 060h,05ch,06bh,06dh,0cbh,08fh,066h,0cah,024h,02fh,021h,026h,040h,02eh,023h,04ah	; 99d0  `\km..f.$/!&@.#J
 	defb 060h,05ch,06ch,05eh,0cbh,08fh,066h,08ah,034h,047h,046h,048h,025h,00eh,00ch,00dh	; 99e0  `\l^..f.4GFH%...
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_99F0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x99f0..0x9a00  (16 bytes)
+DATA_sin_leer_99F0:
 	defb 060h,05ch,06ch,05eh,0cbh,08fh,066h,08ah,005h,002h,007h,020h,01eh,001h,01eh,001h	; 99f0  `\l^..f.... ....
+
+; ----------------------------------------------------------------------
+; DATOS leido_9A00: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (144 bytes)
+;   0x9a00..0x9a90  (144 bytes)
+DATA_leido_9A00:
 	defb 05eh,05ch,06bh,06dh,08ah,08fh,066h,0cah,005h,002h,007h,020h,01eh,001h,01eh,001h	; 9a00  ^\km..f.... ....
 	defb 05eh,05ch,06ch,05eh,08ah,08fh,066h,08ah,005h,002h,007h,020h,01eh,001h,01eh,001h	; 9a10  ^\l^..f.... ....
 	defb 05eh,05ch,06bh,06dh,08ah,08fh,066h,0cah,01eh,001h,01eh,001h,005h,002h,007h,020h	; 9a20  ^\km..f........
@@ -437,9 +621,22 @@ DATA_8000:
 	defb 05eh,05ch,06ch,05eh,08ah,08fh,066h,08ah,039h,044h,03bh,03ah,006h,006h,03ch,02ch	; 9a60  ^\l^..f.9D.:..<,
 	defb 05eh,05ch,06ch,05eh,08ah,08fh,066h,08ah,05eh,05dh,06bh,06dh,05fh,05ch,0c5h,06dh	; 9a70  ^\l^..f.^]km_\.m
 	defb 05eh,05ch,06ch,05eh,08ah,08fh,066h,08ah,05fh,05dh,06bh,05fh,05eh,05ch,06ch,05eh	; 9a80  ^\l^..f._]k_^\l^
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9A90: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (48 bytes)
+;   0x9a90..0x9ac0  (48 bytes)
+DATA_sin_leer_9A90:
 	defb 05fh,05ch,05dh,05eh,06dh,08ah,08fh,08ah,06dh,0c1h,07eh,063h,0cah,0bah,0b2h,0bdh	; 9a90  _\]^m...m.~c....
 	defb 05eh,05ch,05fh,05ch,08fh,08ah,08fh,08ah,07fh,07eh,063h,07eh,0c2h,096h,0bah,0b2h	; 9aa0  ^\_\.....~c~....
 	defb 05eh,05dh,05fh,05ch,08fh,08ah,08fh,060h,07fh,063h,0c1h,060h,0b1h,0b2h,0bdh,0cbh	; 9ab0  ^]_\...`.c.`....
+
+; ----------------------------------------------------------------------
+; DATOS leido_9AC0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07, p09:7F34,
+;   p09:7F3E, p09:7F48, p09:7F52 jugando (tools/cobertura.py) (944 bytes)
+;   0x9ac0..0x9e70  (944 bytes)
+DATA_leido_9AC0:
 	defb 05eh,05ch,06ch,05eh,08ah,08fh,066h,08ah,01eh,001h,01eh,001h,005h,002h,007h,020h	; 9ac0  ^\l^..f........
 	defb 060h,05ch,06bh,06dh,060h,05dh,06ch,06dh,060h,05ch,06ch,06dh,0cbh,08fh,066h,0cah	; 9ad0  `\km`]lm`\lm..f.
 	defb 060h,05ch,06bh,05fh,060h,05dh,06ch,05eh,060h,05ch,06ch,05eh,0cbh,08fh,066h,08ah	; 9ae0  `\k_`]l^`\l^..f.
@@ -499,11 +696,37 @@ DATA_8000:
 	defb 0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h,025h,01dh,025h,01dh,025h,021h,025h,021h	; 9e40  ........%.%.%!%!
 	defb 00fh,00fh,00fh,00fh,010h,010h,010h,010h,025h,025h,025h,025h,025h,025h,025h,025h	; 9e50  ........%%%%%%%%
 	defb 0bch,0bdh,0beh,0beh,0bah,0bbh,0c5h,0c5h,025h,025h,025h,025h,025h,025h,025h,025h	; 9e60  ........%%%%%%%%
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9E70: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9e70..0x9e80  (16 bytes)
+DATA_sin_leer_9E70:
 	defb 0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h,025h,024h,025h,025h,025h,024h,025h,025h	; 9e70  ........%$%%%$%%
+
+; ----------------------------------------------------------------------
+; DATOS leido_9E80: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (48 bytes)
+;   0x9e80..0x9eb0  (48 bytes)
+DATA_leido_9E80:
 	defb 0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h,01eh,01ah,01eh,025h,01ch,020h,01ch,025h	; 9e80  ...........%. .%
 	defb 0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h,025h,025h,025h,025h,025h,025h,025h,025h	; 9e90  ........%%%%%%%%
 	defb 0beh,0beh,0bch,0bdh,0c5h,0c5h,0bah,0bbh,025h,025h,025h,025h,025h,025h,025h,025h	; 9ea0  ........%%%%%%%%
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9EB0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9eb0..0x9ec0  (16 bytes)
+DATA_sin_leer_9EB0:
 	defb 0bch,0bdh,0beh,0beh,0bah,0bbh,0c5h,0c5h,0b8h,0b9h,025h,025h,0b8h,0b9h,025h,025h	; 9eb0  ..........%%..%%
+
+; ----------------------------------------------------------------------
+; DATOS leido_9EC0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (224 bytes)
+;   0x9ec0..0x9fa0  (224 bytes)
+DATA_leido_9EC0:
 	defb 0bch,0bdh,00fh,00fh,0bah,0bbh,010h,010h,0b8h,0b9h,025h,025h,0b8h,0b9h,025h,025h	; 9ec0  ..........%%..%%
 	defb 016h,016h,016h,016h,015h,015h,015h,015h,014h,013h,014h,013h,007h,00ah,007h,00ah	; 9ed0  ................
 	defb 023h,016h,023h,016h,024h,015h,024h,015h,014h,013h,014h,013h,007h,00ah,007h,00ah	; 9ee0  #.#.$.$.........
@@ -518,7 +741,20 @@ DATA_8000:
 	defb 023h,016h,023h,016h,024h,015h,024h,015h,0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h	; 9f70  #.#.$.$.........
 	defb 016h,021h,016h,021h,015h,01dh,015h,01dh,0beh,0beh,0beh,0beh,0c5h,0c5h,0c5h,0c5h	; 9f80  .!.!............
 	defb 016h,016h,016h,016h,015h,015h,015h,015h,0bch,0bdh,0beh,0beh,0bah,0bbh,0c5h,0c5h	; 9f90  ................
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9FA0: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (16 bytes)
+;   0x9fa0..0x9fb0  (16 bytes)
+DATA_sin_leer_9FA0:
 	defb 0b8h,0b9h,016h,016h,0b8h,0b9h,015h,015h,0bch,0bdh,014h,013h,0bah,0bbh,007h,00ah	; 9fa0  ................
+
+; ----------------------------------------------------------------------
+; DATOS leido_9FB0: lo leen p09:7DEC, p09:7DF5, p09:7DFE, p09:7E07 jugando
+;   (tools/cobertura.py) (80 bytes)
+;   0x9fb0..0xa000  (80 bytes)
+DATA_leido_9FB0:
 	defb 0b8h,0b9h,016h,016h,0b8h,0b9h,015h,015h,0bch,0bdh,0beh,0beh,0bah,0bbh,0c5h,0c5h	; 9fb0  ................
 	defb 009h,00ch,009h,00ch,008h,00bh,008h,00bh,012h,011h,012h,011h,018h,017h,018h,017h	; 9fc0  ................
 	defb 009h,021h,009h,021h,008h,01dh,008h,01dh,012h,019h,01ah,019h,018h,021h,01bh,021h	; 9fd0  .!.!.........!.!

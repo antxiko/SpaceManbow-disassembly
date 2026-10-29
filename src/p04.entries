@@ -22,6 +22,7 @@
 0x60E9   # p04:60E0 entrada 0 de la tabla de 0x60E3 (call 0x461A en 0x60E0)
 0x60F4   # p04:60E0 entrada 2 de la tabla de 0x60E3 (call 0x461A en 0x60E0)
 0x6458   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
+0x66C2   # se ejecuta jugando (tools/cobertura.py): se llega desde p06:BDDA (ret)
 0x66DF   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
 0x66E3   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6753 (ret)
 0x66EE   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
@@ -102,16 +103,29 @@
 0x6CF5   # p05:9514 jp
 0x6D2C   # p05:9544 call
 0x6D4F   # p06:B29F call
+0x6DD3   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:51F9 (ret)
 0x6DD6   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6E34 (ret)
+0x6DE1   # se ejecuta jugando (tools/cobertura.py): se llega desde p06:BD32 (salto)
 0x6DE4   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6E34 (ret)
+0x6DF5   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:5E3C (ret)
 0x6DF8   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6E34 (ret)
+0x6E09   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:8459 (salto)
 0x6E0C   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6E34 (ret)
+0x6E1D   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:9082 (ret)
+0x6E20   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6F42 (ret)
+0x6E26   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7C49 (salto)
 0x6E35   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
 0x6E44   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)
+0x6E6D   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:9A3F (ret)
+0x6E6E   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:9D1D (ret)
+0x6E71   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6F42 (ret)
+0x6E7E   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:7C40 (salto)
+0x6E81   # se ejecuta jugando (tools/cobertura.py): se llega desde p05:9E8F (salto)
+0x6E84   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6F42 (ret)
 0x6E91   # p06:AE10 call
 0x6E98   # p06:BF97 jp
 0x6EAC   # p05:9EBD jp
-0x6F55   # p05:9A5C call
+0x6F55   # p05:9B6C jp
 0x6F5B   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:673D (ret)
 0x6F60   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:6753 (ret)
 0x6F67   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4BAF (ret)

@@ -211,7 +211,7 @@ class V9938:
                 px[x, y] = self.rgb(self.punto(x, base + y))
         return im
 
-    def sprites(self, im):
+    def sprites(self, im, r=None, desde=0):
         """Los 32 sprites del modo 2 encima de im, como los pinta el chip: la tabla de
         atributos de R5/R11 (y = 216 acaba), la de colores 0x200 por debajo (un
         color por linea; el bit 7, EC, lo corre 32 puntos a la izquierda), los
@@ -221,11 +221,16 @@ class V9938:
         tapan sus colores se suman con OR. Un CC sin sprite delante no se ve. El
         color 0 es transparente: no tapa lo que hay debajo."""
         px = im.load()
-        attr = ((self.r[11] & 3) << 15) | ((self.r[5] & 0xFC) << 7)
+        # r: los registros con los que se pintan (por defecto, los de ahora);
+        # la Y de los sprites va con el desplazamiento vertical de R23, y no
+        # se pinta por encima de la linea `desde` (la pantalla partida)
+        r = r if r is not None else self.r
+        attr = ((r[11] & 3) << 15) | ((r[5] & 0xFC) << 7)
         cols = attr - 0x200
-        pat = (self.r[6] & 0x3F) << 11
-        grande = 16 if self.r[1] & 2 else 8
-        amp = 2 if self.r[1] & 1 else 1
+        pat = (r[6] & 0x3F) << 11
+        grande = 16 if r[1] & 2 else 8
+        amp = 2 if r[1] & 1 else 1
+        dy = r[23]
         lista = []
         for n in range(32):
             y = self.vram[attr + 4 * n]
@@ -243,7 +248,7 @@ class V9938:
             y, x, d = self.vram[attr + 4 * n:attr + 4 * n + 3]
             if grande == 16:
                 d &= 0xFC
-            y = (y + 1) & 0xFF
+            y = (y + 1 - dy) & 0xFF
             cc_sprite = self.vram[cols + 16 * n] & 0x40
             if not cc_sprite:
                 if grupo is not None:
@@ -262,7 +267,7 @@ class V9938:
                     for ay in range(amp):
                         for ax in range(amp):
                             xx, yy = dx + col * amp + ax, (y + fila * amp + ay) & 0xFF
-                            if 0 <= xx < 256 and yy < im.height:
+                            if 0 <= xx < 256 and desde <= yy < im.height:
                                 grupo[(xx, yy)] = grupo.get((xx, yy), 0) | color
         if grupo is not None:
             cierra()

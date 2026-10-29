@@ -1,0 +1,14 @@
+# --- DATOS LEIDOS JUGANDO (seccion que reescribe tools/datos_leidos.py; no editar a mano) ---
+D 0xA000 0xB8A3 leido_A000  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:7313, p28:7382, p28:738D, p28:73B4, p28:73E8 y 15 mas jugando (tools/cobertura.py) (6307 bytes)
+D 0xB8A3 0xB8CC sin_leer_B8A3  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (41 bytes)
+D 0xB8CC 0xB916 leido_B8CC  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:749C, p28:754B jugando (tools/cobertura.py) (74 bytes)
+D 0xB916 0xB943 sin_leer_B916  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (45 bytes)
+D 0xB943 0xB98D leido_B943  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:749C, p28:754B jugando (tools/cobertura.py) (74 bytes)
+D 0xB98D 0xB9BA sin_leer_B98D  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (45 bytes)
+D 0xB9BA 0xBA04 leido_B9BA  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:749C, p28:754B jugando (tools/cobertura.py) (74 bytes)
+D 0xBA04 0xBA31 sin_leer_BA04  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (45 bytes)
+D 0xBA31 0xBA9B leido_BA31  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:749C, p28:754B jugando (tools/cobertura.py) (106 bytes)
+D 0xBA9B 0xBABC sin_leer_BA9B  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (33 bytes)
+D 0xBABC 0xBCF0 leido_BABC  lo leen p28:6B9A, p28:6C56, p28:72EB, p28:7313, p28:7382, p28:738D, p28:742C, p28:7495 y 5 mas jugando (tools/cobertura.py) (564 bytes)
+D 0xBCF0 0xC000 sin_leer_BCF0  ninguna partida de la campana lo lee (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa nadie (784 bytes)
+# --- fin de los datos de datos_leidos.py ---

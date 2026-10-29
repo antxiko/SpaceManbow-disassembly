@@ -146,6 +146,8 @@
 0xB95E   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4652 (salto)
 0xB967   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4652 (salto)
 0xB973   # se ejecuta jugando (tools/cobertura.py): se llega desde p00:4652 (salto)
+0xBA28   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
+0xBA37   # se ejecuta jugando (tools/cobertura.py): se llega desde p06:B277 (ret)
 0xBA3B   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))
 0xBA41   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:635F (jp (hl))
 0xBA9F   # se ejecuta jugando (tools/cobertura.py): se llega desde p04:64D0 (jp (hl))

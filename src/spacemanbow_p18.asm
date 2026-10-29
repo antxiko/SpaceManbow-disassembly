@@ -10,8 +10,10 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8000..0xa000  (8192 bytes)
-DATA_8000:
+; DATOS leido_8000: lo leen p10:8290, p10:82A3, p10:82AF jugando
+;   (tools/cobertura.py) (8117 bytes)
+;   0x8000..0x9fb5  (8117 bytes)
+DATA_leido_8000:
 	defb 088h,0ffh,03fh,0e0h,073h,03bh,016h,00dh,03dh,003h,000h,08dh,0e0h,0f0h,038h,0d8h	; 8000  ..?.s...=.....8.
 	defb 0dch,000h,018h,02ch,02eh,01ah,00dh,013h,03fh,003h,000h,085h,0e0h,0f0h,0e8h,0dch	; 8010  ...,....?.......
 	defb 0dch,003h,000h,08dh,007h,00fh,017h,03bh,03bh,000h,018h,034h,074h,058h,0b0h,0c8h	; 8020  ...........4tX..
@@ -519,8 +521,23 @@ DATA_8000:
 	defb 004h,080h,030h,007h,005h,000h,08bh,0cch,00ch,003h,080h,0d8h,0c0h,080h,020h,001h	; 9f80  ..0........... .
 	defb 00ch,0e0h,003h,000h,002h,007h,09dh,000h,083h,006h,00ch,019h,018h,00ch,0c2h,033h	; 9f90  ...............3
 	defb 003h,000h,007h,000h,000h,0e0h,0e0h,000h,0c1h,060h,030h,098h,018h,030h,043h,0cch	; 9fa0  .........`0..0C.
-	defb 0c0h,000h,0e0h,000h,000h,0c0h,030h,04fh,0b2h,04dh,032h,01eh,009h,00ah,004h,00bh	; 9fb0  ......0O.M2.....
-	defb 011h,02dh,0c6h,074h,078h,010h,034h,068h,0f5h,05ah,0b7h,0d5h,04eh,09ch,074h,06ch	; 9fc0  .-.tx.4h.Z..N.tl
-	defb 094h,054h,06ah,02ah,015h,00ah,000h,030h,07dh,07fh,04fh,027h,01fh,00dh,00fh,017h	; 9fd0  .Tj*...0}.O'....
-	defb 03fh,05fh,07eh,0fch,058h,030h,038h,05ch,0fah,0e7h,06dh,03fh,0beh,0fch,0fah,0f2h	; 9fe0  ?_~.X08\..m?....
-	defb 0fah,0bah,09dh,05dh,03bh,016h,000h,0bah,000h,001h,009h,03fh,0c9h,02fh,000h,03bh	; 9ff0  ...].......?./..
+	defb 0c0h,000h,0e0h,000h,000h	; 9fb0
+
+; ----------------------------------------------------------------------
+; DATOS sin_leer_9FB5: ninguna partida de la campana lo lee
+;   (tools/cobertura.py); falta saber si es de una parte no jugada o no lo usa
+;   nadie (66 bytes)
+;   0x9fb5..0x9ff7  (66 bytes)
+DATA_sin_leer_9FB5:
+	defb 0c0h,030h,04fh,0b2h,04dh,032h,01eh,009h,00ah,004h,00bh,011h,02dh,0c6h,074h,078h	; 9fb5  .0O.M2......-.tx
+	defb 010h,034h,068h,0f5h,05ah,0b7h,0d5h,04eh,09ch,074h,06ch,094h,054h,06ah,02ah,015h	; 9fc5  .4h.Z..N.tl.Tj*.
+	defb 00ah,000h,030h,07dh,07fh,04fh,027h,01fh,00dh,00fh,017h,03fh,05fh,07eh,0fch,058h	; 9fd5  ..0}.O'....?_~.X
+	defb 030h,038h,05ch,0fah,0e7h,06dh,03fh,0beh,0fch,0fah,0f2h,0fah,0bah,09dh,05dh,03bh	; 9fe5  08\..m?.......].
+	defb 016h,000h	; 9ff5
+
+; ----------------------------------------------------------------------
+; DATOS leido_9FF7: lo leen p10:8290, p10:82A3 jugando (tools/cobertura.py) (9
+;   bytes)
+;   0x9ff7..0xa000  (9 bytes)
+DATA_leido_9FF7:
+	defb 0bah,000h,001h,009h,03fh,0c9h,02fh,000h,03bh	; 9ff7  ....?./..
