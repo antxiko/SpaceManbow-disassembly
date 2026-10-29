@@ -250,17 +250,19 @@ class Partida(Msx):
 
     def _punto_g3(self, r, x, y):
         """Un punto de SCREEN 4 (G3, patrones como SCREEN 2): la tabla de
-        nombres de R2, los dibujos de R4 y los colores de R3/R10, en tres
-        tercios de 8 filas."""
+        nombres de R2 (32 filas: con R23 se ven todas), los dibujos de R4 y los
+        colores de R3/R10; el tercio es el de la fila de nombres (de 0 a 3),
+        con la mascara de los bits bajos de R4 y de R3 (bits 11-12 y 11-13)."""
         vr = self.vdp.vram
         nom = (r[2] & 0x7F) << 10
         pat = (r[4] & 0x3C) << 11
         col = ((r[10] & 7) << 14) | ((r[3] & 0x80) << 6)
-        fila = (y >> 3) % 24
+        fila = (y >> 3) & 31
+        tercio = (fila >> 3) << 11
         n = vr[(nom + fila * 32 + (x >> 3)) & 0x1FFFF]
-        o = ((fila >> 3) << 11) + n * 8 + (y & 7)
-        b = vr[(pat + o) & 0x1FFFF]
-        c = vr[(col + o) & 0x1FFFF]
+        o = n * 8 + (y & 7)
+        b = vr[(pat + (tercio & ((r[4] & 3) << 11)) + o) & 0x1FFFF]
+        c = vr[(col + (tercio & ((r[3] & 0x7F) << 6)) + o) & 0x1FFFF]
         return c >> 4 if (b >> (7 - (x & 7))) & 1 else c & 15
 
     def foto_partida(self, sprites=True):
