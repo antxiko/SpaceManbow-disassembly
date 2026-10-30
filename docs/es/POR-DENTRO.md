@@ -112,6 +112,11 @@ Todo lo que sale en la web lo hace código de `tools/`:
   openMSX contra el cartucho ejecutado, cuadro de juego a cuadro de juego;
   `ciclos.py`, los ciclos de reloj de cada instrucción del Z80 para ejecutarlo
   al ritmo de verdad.
+- `omsx_graba_demo.tcl`, `lanza_graba_demo.ps1` y `demo_omsx.py`: las
+  demostraciones grabadas en openMSX (VRAM, paleta y registros de cada cuadro
+  del VDP) y pintadas; `coteja_demo_omsx.py`, su cotejo con el cartucho
+  ejecutado; `omsx_lineas.tcl`, cuándo llegan al VDP los registros de las
+  interrupciones de línea.
 
 ## Código compartido con otros cartuchos de Konami
 

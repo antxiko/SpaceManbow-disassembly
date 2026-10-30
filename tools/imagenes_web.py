@@ -12,8 +12,11 @@ herramientas (todo en work/, que no va al repositorio):
   capsula_XX.png     tools/capsulas.py work/capsulas
   tipo_fN_TT.png     tools/enemigo_suelto.py N work/suelto2 (solo los de la
                      pagina, tools/paginas_web.py)
-  presentacion.gif, final.gif   tools/secuencias.py ... work/sec (la demostracion no:
-                     no casa con el MSX, ver docs/es/LAS-SECUENCIAS.md)
+  presentacion.gif, final.gif   tools/secuencias.py ... work/sec
+  demostracion_N.gif tools/demo_omsx.py work/demo_graba*.bin (grabadas en
+                     openMSX con tools/lanza_graba_demo.ps1: la 1 sola, la 2
+                     con -demo 1 y la 3 con -demo 2; el cartucho ejecutado no
+                     las reproduce como el MSX, ver docs/es/LAS-SECUENCIAS.md)
 
 Uso: imagenes_web.py <docs>
 """
@@ -31,7 +34,8 @@ def main(docs):
     os.makedirs(dest, exist_ok=True)
     patrones = ["rec2/recorrido_f*.png", "logotipo.png", "armas2/arma_*.gif",
                 "jefes/jefe_f*.gif", "enem/enemigo_f*_*.gif",
-                "sec/presentacion.gif", "sec/final.gif", "fuente_sin_uso.png",
+                "sec/presentacion.gif", "sec/final.gif", "demo/demostracion_*.gif",
+                "fuente_sin_uso.png",
                 "capsulas/capsula_*.png", "suelto2/tipo_f*_*.png"]
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from paginas_web import usados

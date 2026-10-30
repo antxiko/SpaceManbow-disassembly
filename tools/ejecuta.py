@@ -41,6 +41,15 @@ LINEA, LINEAS = 228, 262
 CICLOS_CUADRO = LINEA * LINEAS          # 59.736
 CICLOS_BIOS = 100
 
+# las listas de registros de las interrupciones de linea llegan al VDP con la
+# otir, despues de esperar al borrado horizontal: en openMSX acaban 4,36
+# lineas tras la primera interrupcion y 3,2-3,4 tras la segunda
+# (tools/omsx_lineas.tcl). Asi que el fondo cambia de registros 5 y 4 lineas
+# por debajo de la linea de R19, y los sprites una mas (el VDP prepara los de
+# cada linea en la anterior). Cotejado con capturas de openMSX: bajo el
+# marcador quedan 6 lineas negras (tools/demo_omsx.py).
+RETRASO_LINEAS = (5, 4)
+
 
 class Partida(Msx):
     def __init__(self, rom, msx2=True):
@@ -359,15 +368,16 @@ class Partida(Msx):
         de ahi abajo con los que dejo la interrupcion de linea (regs_linea).
         En cada tramo, la pagina de R2, el desplazamiento vertical de R23 y el
         ajuste horizontal de R18 (4 bits con signo: el cuadro entero se corre
-        a la izquierda con los valores positivos); con R9 sin el bit LN, de la
-        linea 192 abajo es borde."""
+        a la izquierda con los valores positivos, sprites incluidos); con R9
+        sin el bit LN, de la linea 192 abajo es borde. Los registros de cada
+        interrupcion de linea entran RETRASO_LINEAS mas abajo que su linea."""
         from PIL import Image
         v = self.vdp
         arriba = getattr(self, "regs_cuadro", None) or bytes(v.r)
         abajo = getattr(self, "regs_linea", None)
         corte = 212
         if abajo is not None and arriba[0] & 0x10:
-            corte = min(212, (arriba[19] - arriba[23]) & 0xFF)
+            corte = min(212, ((arriba[19] - arriba[23]) & 0xFF) + RETRASO_LINEAS[0])
         im = Image.new("RGB", (256, 212))
         px = im.load()
         for y in range(212):
@@ -392,13 +402,18 @@ class Partida(Msx):
                 else:
                     px[x, y] = v.rgb(v.punto(xx, pag * 256 + yy))
         if sprites and abajo is not None and not (abajo[8] & 2):
+            # el ajuste de R18 corre tambien los sprites (cotejado con
+            # capturas de openMSX: tools/demo_omsx.py)
+            def corre(r):
+                aj = r[18] & 15
+                return -(aj - 16 if aj >= 8 else aj)
             abajo2 = getattr(self, "regs_linea2", None)
             if abajo2 is not None:
                 # la segunda interrupcion de linea: la linea de R19 que puso la
                 # primera; de ahi abajo, la tabla de sprites de la segunda
-                corte2 = min(212, (abajo[19] - abajo[23]) & 0xFF)
-                v.sprites(im, abajo, corte, corte2)
-                v.sprites(im, abajo2, corte2)
+                corte2 = min(212, ((abajo[19] - abajo[23]) & 0xFF) + RETRASO_LINEAS[1] + 1)
+                v.sprites(im, abajo, corte + 1, corte2, corre(abajo))
+                v.sprites(im, abajo2, corte2, corre=corre(abajo2))
             else:
-                v.sprites(im, abajo, corte)
+                v.sprites(im, abajo, corte + 1, corre=corre(abajo))
         return im

@@ -1,7 +1,8 @@
 # The sequences
 
 The intro and the ending, **whole and at the MSX's pace**, painted by the
-running cartridge (`tools/secuencias.py`).
+running cartridge (`tools/secuencias.py`), and the three demos, recorded in
+openMSX.
 
 The cartridge running here carries out the VDP commands instantly while the
 MSX waits for them to finish: the story lasts 7,414 frames on the MSX and
@@ -33,13 +34,61 @@ its boss leaves when it dies); the cartridge does the rest.
 
 ![The ending](imagenes/final.gif)
 
-## The demo is not here
+## The demos
 
 After the story three recorded demos are shown (see
-[Curiosities](CURIOSITIES.html)). They are not here because the running
-cartridge does not replay them as the MSX does: with the same recorded inputs,
-in openMSX the first one reaches its end (1,285 game frames) and here the ship
-dies at frame 667.
+[Curiosities](CURIOSITIES.html)), one each time: `0xC919` moves from one to the
+next and the table `p01:7877` gives the stage and starting point of each. They
+come in this order: **stage 1** from its second starting point, **stage 2**
+from the third and **stage 4** from the beginning.
+
+These are not painted by the running cartridge (see below why): they are
+**recorded in openMSX**, which replays them as the MSX does
+(`tools/omsx_graba_demo.tcl`, launched with `tools/lanza_graba_demo.ps1`). On
+every VDP frame the VRAM, the palette and the registers of the three bands of
+the screen are dumped (the status bar and the two lower parts, which the two
+line interrupts change), and `tools/demo_omsx.py` paints each frame with the
+same drawing code as the other GIFs. Each image lasts what it lasts in
+openMSX: one VDP frame, 1/60 of a second. To record the second and third
+without waiting for them, `0xC919` is written when the title screen comes
+up.
+
+### The first: stage 1 (1 minute 18 seconds)
+
+![The first demo](imagenes/demostracion_1.gif)
+
+### The second: stage 2 (1 minute 2 seconds)
+
+![The second demo](imagenes/demostracion_2.gif)
+
+### The third: stage 4 (1 minute 17 seconds)
+
+![The third demo](imagenes/demostracion_3.gif)
+
+### How it was checked
+
+- **Against openMSX screenshots** of three frames (frames 600, 1,500 and
+  3,000 of the first): **0 different pixels**. Getting there took two fixes
+  to the drawing code, which also apply to the other GIFs on this site (redone
+  with them): register 18's horizontal adjust moves **the sprites too**, not
+  only the background; and the line interrupts' registers **arrive late**: the
+  `otir` ends 4.36 lines after the first interrupt and 3.2-3.4 after the
+  second (measured in openMSX, `tools/omsx_lineas.tcl`), so six black lines
+  are left under the status bar.
+- **Against the running cartridge**, the first 68 game frames of the first
+  demo (`tools/coteja_demo_omsx.py`), the image of the last VDP frame of each:
+  **35 come out the same pixel for pixel**. From frame 6 on the VRAM only
+  differs in the tables that alternate with the interrupt (`0xC09B`): the
+  name tables (`0xC000-0xC7FF`) and the sprite tables (`0xF000-0xFFFF`). On
+  screen it shows in the POWER bar and in a turret of the battleship, and also
+  in the palette fade (frames 8 to 17) and in the frame where the screen is
+  loaded (frame 5). It is what the interrupt was already known to drive (see
+  below).
+
+### Why the running cartridge does not paint them
+
+With the same recorded inputs, in openMSX the first one reaches its end (1,285
+game frames) and here the ship dies at frame 667.
 
 Where they part is measured (`tools/coteja_demo.py`, with openMSX's RAM at the
 start of every game frame, `p01:6256`): **up to frame 67 the game is the

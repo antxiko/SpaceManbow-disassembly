@@ -1,7 +1,8 @@
 # Las secuencias
 
 La presentación y el final, **enteros y al ritmo del MSX**, pintados por el
-cartucho ejecutado (`tools/secuencias.py`).
+cartucho ejecutado (`tools/secuencias.py`), y las tres demostraciones,
+grabadas en openMSX.
 
 El cartucho ejecutado aquí hace las órdenes del VDP al instante y el MSX
 espera a que acaben: la historia dura en el MSX 7.414 cuadros y aquí 1.786, y
@@ -34,13 +35,61 @@ deja su jefe al morir); lo demás lo hace el cartucho.
 
 ![El final](../imagenes/final.gif)
 
-## La demostración no está
+## Las demostraciones
 
 Tras la historia salen tres demostraciones grabadas (ver
-[Curiosidades](CURIOSIDADES.html)). No están aquí porque el cartucho ejecutado
-no las reproduce igual que el MSX: con las mismas entradas grabadas, en
-openMSX la primera llega a su final (1.285 cuadros de juego) y aquí la nave
-muere en el 667.
+[Curiosidades](CURIOSIDADES.html)), una cada vez: `0xC919` pasa de una a otra
+y la tabla `p01:7877` da la fase y el punto de salida de cada una. Salen en
+este orden: la **fase 1** desde su segundo punto de salida, la **fase 2**
+desde el tercero y la **fase 4** desde el principio.
+
+Estas no las pinta el cartucho ejecutado (ver abajo por qué): están
+**grabadas en openMSX**, que las reproduce como el MSX
+(`tools/omsx_graba_demo.tcl`, lanzado con `tools/lanza_graba_demo.ps1`). En
+cada cuadro del VDP se vuelcan la VRAM, la paleta y los registros de los tres
+tramos de la pantalla (el marcador y las dos partes de abajo, que cambian las
+dos interrupciones de línea), y `tools/demo_omsx.py` pinta cada cuadro con el
+mismo dibujador que los demás GIF. Cada imagen dura lo que en openMSX: un
+cuadro del VDP, 1/60 de segundo. Para grabar la segunda y la tercera sin
+esperar a que salgan, se escribe en `0xC919` al llegar al título.
+
+### La primera: fase 1 (1 minuto y 18 segundos)
+
+![La primera demostración](../imagenes/demostracion_1.gif)
+
+### La segunda: fase 2 (1 minuto y 2 segundos)
+
+![La segunda demostración](../imagenes/demostracion_2.gif)
+
+### La tercera: fase 4 (1 minuto y 17 segundos)
+
+![La tercera demostración](../imagenes/demostracion_3.gif)
+
+### Cómo se ha cotejado
+
+- **Con capturas de pantalla de openMSX** en tres cuadros (el 600, el 1.500 y
+  el 3.000 de la primera): **0 puntos distintos**. Para llegar ahí hubo que
+  arreglar dos cosas del dibujador, que valen también para los demás GIF de
+  la web (rehechos con ellas): el ajuste horizontal del registro 18 corre
+  **también los sprites**, no solo el fondo; y los registros de las
+  interrupciones de línea **llegan tarde**: la `otir` acaba 4,36 líneas
+  después de la primera interrupción y 3,2-3,4 después de la segunda (medido
+  en openMSX, `tools/omsx_lineas.tcl`), así que bajo el marcador quedan seis
+  líneas negras.
+- **Con el cartucho ejecutado**, los 68 primeros cuadros de juego de la
+  primera (`tools/coteja_demo_omsx.py`), la imagen del último cuadro del VDP
+  de cada uno: **35 salen iguales punto a punto**. Desde el cuadro 6 la VRAM
+  solo difiere en las tablas que se alternan con la interrupción (`0xC09B`):
+  las de nombres (`0xC000-0xC7FF`) y las de sprites (`0xF000-0xFFFF`). En la
+  imagen se ve en la barra de POWER y en una torreta del acorazado, y además en
+  el fundido de la paleta (cuadros 8 a 17) y en el cuadro en que se carga la
+  pantalla (el 5). Es lo que ya se sabía que mueve la interrupción (ver
+  abajo).
+
+### Por qué no las pinta el cartucho ejecutado
+
+Con las mismas entradas grabadas, en openMSX la primera llega a su final
+(1.285 cuadros de juego) y aquí la nave muere en el 667.
 
 Está medido dónde se separan (`tools/coteja_demo.py`, con la RAM de openMSX al
 empezar cada cuadro de juego, `p01:6256`): **hasta el cuadro 67 la partida es

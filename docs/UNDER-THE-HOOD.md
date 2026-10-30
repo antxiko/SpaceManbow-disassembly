@@ -110,6 +110,10 @@ Everything on these pages is made by code in `tools/`:
 - `omsx_demo.tcl`, `lanza_demo.ps1` and `coteja_demo.py`: the demo in openMSX
   against the running cartridge, game frame by game frame; `ciclos.py`, the
   clock cycles of every Z80 instruction, to run it at the real pace.
+- `omsx_graba_demo.tcl`, `lanza_graba_demo.ps1` and `demo_omsx.py`: the demos
+  recorded in openMSX (VRAM, palette and registers of every VDP frame) and
+  painted; `coteja_demo_omsx.py`, their check against the running cartridge;
+  `omsx_lineas.tcl`, when the line interrupts' registers reach the VDP.
 
 ## Code shared with other Konami cartridges
 
